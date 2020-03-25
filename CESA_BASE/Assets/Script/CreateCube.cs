@@ -16,6 +16,9 @@ public class CreateCube : MonoBehaviour
     float MaxPosY = 5.0f;
     float MinPosY = -4.0f;
 
+    // 親の回転角度が欲しい！！
+    Transform m_parentTrans = null;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -30,6 +33,11 @@ public class CreateCube : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        m_parentTrans = transform.root;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -42,7 +50,7 @@ public class CreateCube : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            Cube _cube = Cube.Instantiate(cubePrefab, transform.position);
+            Cube _cube = Cube.Instantiate(cubePrefab, transform.position, m_parentTrans.rotation, m_parentTrans);
             AddCubeList(_cube);
         }
     }
@@ -76,17 +84,17 @@ public class CreateCube : MonoBehaviour
             if (Mathf.Abs(disX) > Mathf.Abs(disY))
             {
                 if (disX >= 0)
-                    objPos = nearObj.transform.position + new Vector3(ConstDefine.ConstParameter.CubeScele, 0.0f, 0.0f);
+                    objPos = nearObj.transform.position + m_parentTrans.rotation * new Vector3(ConstDefine.ConstParameter.CubeScele, 0.0f, 0.0f);
                 else
-                    objPos = nearObj.transform.position - new Vector3(ConstDefine.ConstParameter.CubeScele, 0.0f, 0.0f);
+                    objPos = nearObj.transform.position - m_parentTrans.rotation * new Vector3(ConstDefine.ConstParameter.CubeScele, 0.0f, 0.0f);
             }
             // Z座標のが近い
             else
             {
                 if (disY >= 0)
-                    objPos = nearObj.transform.position + new Vector3(0.0f, ConstDefine.ConstParameter.CubeScele, 0.0f);
+                    objPos = nearObj.transform.position + m_parentTrans.rotation * new Vector3(0.0f, ConstDefine.ConstParameter.CubeScele, 0.0f);
                 else
-                    objPos = nearObj.transform.position - new Vector3(0.0f, ConstDefine.ConstParameter.CubeScele, 0.0f);
+                    objPos = nearObj.transform.position - m_parentTrans.rotation * new Vector3(0.0f, ConstDefine.ConstParameter.CubeScele, 0.0f);
             }
         }
 
