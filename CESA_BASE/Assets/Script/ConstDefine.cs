@@ -4,6 +4,7 @@ namespace ConstDefine
     public readonly struct ConstParameter
     {
         public const float CubeScele = 1.0f;
+        public const float BURN_SPEED = 2.0f;
     }
 
 

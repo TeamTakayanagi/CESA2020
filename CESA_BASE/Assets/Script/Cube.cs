@@ -15,8 +15,22 @@ public class Cube : MonoBehaviour
 
     [SerializeField]
     private CubeType m_type;
+    [SerializeField]
+    private float m_BurnSpeed = ConstDefine.ConstParameter.BURN_SPEED;
+
+    [SerializeField]
+    private float m_burnRate = 0.0f;
+
     // 燃えているか
     private bool m_isBurn;
+
+    public float BurnRate
+    {
+        get
+        {
+            return m_burnRate;
+        }
+    }
 
     public bool Burn
     {
@@ -67,6 +81,18 @@ public class Cube : MonoBehaviour
         
     }
 
+    private void LateUpdate()
+    {
+        if (m_isBurn)
+        {
+            m_burnRate += Time.deltaTime / m_BurnSpeed;
+            if (m_burnRate >= 1.0f)
+            {
+                //m_burnRate = 1.0f;
+            }
+        }
+    }
+
     private void OnTriggerStay(Collider other)
     {
         // 燃えていないなら
@@ -76,16 +102,19 @@ public class Cube : MonoBehaviour
         // 
         if (other.transform.tag == TagName.Player)
         {
-            Cube cube = other.gameObject.GetComponent<Cube>();
-            if (cube.m_isBurn)
-                return;
-
-            cube.m_isBurn = true;
-            cube.gameObject.GetComponent<Renderer>().material.color = Color.red;
-            // 
-            if(cube.m_type == CubeType.Goal)
+            if (m_burnRate >= 1.0f)
             {
-                SceneManager.LoadScene(ConstDefine.Scene.Clear);
+                Cube cube = other.gameObject.GetComponent<Cube>();
+                if (cube.m_isBurn)
+                    return;
+
+                cube.m_isBurn = true;
+                cube.gameObject.GetComponent<Renderer>().material.color = Color.red;
+                // 
+                if (cube.m_type == CubeType.Goal)
+                {
+                    SceneManager.LoadScene(ConstDefine.Scene.Clear);
+                }
             }
         }
     }
