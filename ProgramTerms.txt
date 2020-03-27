@@ -1,0 +1,167 @@
+/* ――――――――――――――――――――――――――――――――
+ ＜禁止事項＞
+ ・ハンガリアン記法
+ ・CharacterController
+ ・RayCastの距離指定でMathf.Infinityを使用
+ ・Find()の利用
+ ・Resourceフォルダ(Unityが推奨していない公式バグ)
+  ――――――――――――――――――――――――――――――――
+ ＜命名規則＞
+ ・ハンガリアン記法禁止
+    ex: ○ pos;
+        × nPos;
+ ・ローワーキャメルケース
+    ex: ○ _playerPos;
+        × _PlayerPos; _playerpos;
+ ・ローカル変数の頭に 「_(アンダーバー)」を付ける
+    ex: ○ _playerPos;
+        × playerPos;
+ ・メンバ変数の頭に「m_」を付ける
+    ex: ○ m_pos;
+        × pos;
+ ・定数は全て大文字。Enumメンバも含む
+    ex: ○ SPEED;
+        × speed;
+  ――――――――――――――――――――――――――――――――
+ ＜コーディング規約＞
+ ・文字列も定数化する
+ ・メンバ変数はpublicにしない。
+  
+ ・短く済むならわざわざ省略しない
+ ×  int _t;
+ ○  int _time;
+
+ ・別の意味に取られるような省略はしない
+ ×  float _rad;
+ ○  float _radius; (ラジアンと被る)
+
+ ・慣例としてあるものはその例に習う。略語が一般的なもの
+ ×  RectTransform _rectTransform;
+ ○  RectTransform _rectTrans;
+ ×  Vector3       _position;
+ ○  Vector3       _pos;
+  ――――――――――――――――――――――――――――――――
+ ＜制作ルール＞
+ ・汎用的なオブジェクトはプレハブを使う。(変更が楽)
+ ・ヒエラルキー上のオブジェクトをインスペクターで取得しない。
+ ・Prefab用の変数と生成オブジェクト格納変数を分けて使う。(使いまわししない)
+ ・タグ名
+ 　種類があるものは「/」で分ける。（企画が決まり次第）
+    ex: Enemy/Slime
+        Enemy/Dragon
+
+ ・const変数は「constDefine.cs」に書く。
+    ex: const int PLAYER_SPEED = 10;
+
+ ・static変数はメモ帳に追加。使わない工夫をする。
+ ・プロジェクトセッティングを触りたい場合にメモ。レイヤーや入力など。
+ ・難しい処理やゴリラ処理はメモを必ず残す。また、相手が分からないだろうと思う処理はメモを残す。(処理順など)
+ ・フォルダ構成は事前に用意しておきますので、追加は相談すること。
+ ・仮実装は極力減らす。YAGNI(wiki参照)
+ ――――――――――――――――――――――――――――――――
+ オブジェクトの親子関係とコンポーネントをメモに記載する。
+ ex: プレイヤー　Player{
+                      タグ：Player
+                      レイヤー：Player
+                      <PlayerStatus(Script)>
+                      <リジットボディ>
+                      <スフィアコライダー>(Triggerの有無)
+                      Model(Prefab){
+                          ModelParts{
+                          }
+                      }
+                 }
+ ――――――――――――――――――――――――――――――――*/
+
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// この空間での列挙体と構造体の宣言は禁止
+public enum Kinshi
+{
+}
+
+// 名前空間は必ずつける
+namespace Base
+{
+    // クラス名：大文字スタート
+    public class Rule : MonoBehaviour
+    {
+        // メンバ変数名：publicは付けない。
+        //             ：「m_」を付ける。そのあと小文字スタート
+        //             ：警告を出さないように初期化も書く
+        private   Vector3       m_pos           = Vector3.zero;
+        [SerializeField]
+        private   Rigidbody     m_rigidbody     = null;
+        private   GameObject    m_playerObject  = null;
+        protected float         m_hp            = 0.0f;
+
+        // メンバ変数を公開したい場合はget/setアクセサリを使用
+        public Vector3 Pos
+        {
+            get
+            {
+                return m_pos;
+            }
+            set
+            {
+                m_pos = value;
+            }
+        }
+
+        // 以下の書き方の禁止。変数とアクセサリは別で用意する。
+        public Vector3 Rot { get; set; }
+
+        // Get○○/Set○○関数の実装禁止(アクセサリは使う。)
+        public Vector3 GetPos() { return m_pos; }
+
+        // Unity側で用意された関数にはアクセス修飾子は付けない(必要な場合は付ける)
+        void Awake()
+        {
+            // Awake()は変数などの初期化
+            // 自己完結できる処理
+
+            // 利用するコンポーネントは予めメンバ変数に格納する
+            // 自信のコンポーネントの取得
+            m_rigidbody = GetComponent<Rigidbody>();
+        }
+
+        void Start()
+        {
+            // Start()で他のオブジェクトと関係する処理。
+            // FindObjectOfType()など
+        }
+
+        void Update()
+        {
+            // 毎フレーム行われないログのみ。(フラグなど)
+            Debug.Log("使ってもいいけどマージ前には必ず消すように");
+        }
+
+        // 自作関数にはアクセス修飾子を必ずつける。
+        public void MyFunction()
+        {
+            {
+                // × 事前にメンバ変数に格納する
+                GetComponent<Rigidbody>().isKinematic = false;
+                // ○
+                m_rigidbody.isKinematic = false;
+            }
+            {
+                // × コンポーネントが無い場合にエラーになる
+                var obj  = GetComponent<Rigidbody>().gameObject;
+                // ○ 
+                var rgb  = FindObjectOfType<Rigidbody>();
+                if (rgb) m_playerObject = rgb.gameObject;
+            }
+        }
+        
+        // GUIManagerに引数で渡すように設計するので
+        // 個別に書くのは禁止にする.
+        public void OnGUI()
+        {// 禁止
+        }
+    }
+}

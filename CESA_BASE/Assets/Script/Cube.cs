@@ -76,14 +76,14 @@ public class Cube : MonoBehaviour
         // 
         if (other.transform.tag == TagName.Player)
         {
-            Cube cube = other.gameObject.GetComponent<Cube>();
-            if (cube.m_isBurn)
+            Cube _cube = other.gameObject.GetComponent<Cube>();
+            if (_cube.m_isBurn)
                 return;
 
-            cube.m_isBurn = true;
-            cube.gameObject.GetComponent<Renderer>().material.color = Color.red;
+            _cube.m_isBurn = true;
+            _cube.gameObject.GetComponent<Renderer>().material.color = Color.red;
             // 
-            if(cube.m_type == CubeType.Goal)
+            if(_cube.m_type == CubeType.Goal)
             {
                 SceneManager.LoadScene(ConstDefine.Scene.Clear);
             }
