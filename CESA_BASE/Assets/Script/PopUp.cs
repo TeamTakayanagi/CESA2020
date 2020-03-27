@@ -5,9 +5,20 @@ using UnityEngine.UI;
 
 public class PopUp : MonoBehaviour
 {
+    private MedalMgr m_medalMgr = null;
+    private Sprite m_medalSprite = null;
+
+    private bool m_updateFlg = false;
+
     // ポップアップのサイズ
-    Vector2 m_popupSize = new Vector2(0.8f*Screen.width, 0.8f*Screen.height);
-    RectTransform m_rectTrans;
+    private RectTransform m_rectTrans;
+    public RectTransform RectTrans
+    {
+        get
+        {
+            return m_rectTrans;
+        }
+    }
 
     // 生存フラグ
     private bool m_Exit;
@@ -27,10 +38,13 @@ public class PopUp : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        m_medalMgr = GetComponent<MedalMgr>();
+
         m_rectTrans = transform.root.GetComponent<RectTransform>();
-        
+        m_rectTrans.sizeDelta *= 0.5f;
+
         // サイズいじいじ
-        transform.GetComponent<RectTransform>().sizeDelta = m_rectTrans.sizeDelta * 0.5f;
+        transform.GetComponent<RectTransform>().sizeDelta = m_rectTrans.sizeDelta;
 
     }
 
@@ -48,9 +62,20 @@ public class PopUp : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
+    private void LateUpdate()
     {
+        if (m_updateFlg)
+        {
+            m_medalMgr.MedalCreate(m_medalSprite, 0.03f, 5);
+            m_updateFlg = false;
+        }
+    }
+
+    public void MedalInstance(Sprite _sprite)
+    {
+        m_medalSprite = _sprite;
         
+        m_updateFlg = true;
     }
 
     public void Click()
