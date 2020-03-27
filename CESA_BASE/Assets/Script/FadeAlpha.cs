@@ -6,9 +6,12 @@ using UnityEngine.UI;
 
 public class FadeAlpha : MonoBehaviour
 {
+    [SerializeField]
+    private float m_fadeSpeed = 0.01f;
+    private Color m_addAlpha = Color.black;
+
     private Image m_image;
 
-    private Color m_addAlpha = new Color(0, 0, 0, 0.001f);
     private enum _FadeStep
     {
         None = 0,
@@ -18,6 +21,11 @@ public class FadeAlpha : MonoBehaviour
         Max
     }
     private _FadeStep m_fadeStep = _FadeStep.None;
+
+    private void Awake()
+    {
+        m_addAlpha = new Color(0, 0, 0, m_fadeSpeed);
+    }
 
     // Start is called before the first frame update
     private void Start()
