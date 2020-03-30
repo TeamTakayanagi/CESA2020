@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CubeMgr : MonoBehaviour
+public class SelectCube : MonoBehaviour
 {
     LinkedList<Cube> m_cubeList = new LinkedList<Cube>();
     List<Vector3> m_outPos = new List<Vector3>();
@@ -41,25 +41,17 @@ public class CubeMgr : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //{
-        //    RaycastHit _hit;
-        //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //マウスのポジションを取得してRayに代入
+        // 必要なら、手間ののブロックを探索する処理
+        {
 
-        //    if (Physics.Raycast(ray, out _hit))  
-        //    {
-        //        //transform.position = new Vector3(transform.position.x, transform.position.y, _hit.collider.transform.position.z);
-        //        transform.position =  _hit.collider.transform.position;
-        //    }
-        //}
-        ////transform.position = new Vector3(transform.position.x, transform.position.y, -2.0f);
-
+        }
 
         // マウス座標をワールド座標で取得
         Vector3 screen =  Camera.main.WorldToScreenPoint(transform.position);
         mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z);
         mousePos = Camera.main.ScreenToWorldPoint(mousePos);
         // 
-        transform.position = FindNearPosision(new Vector3(mousePos.x, mousePos.y, screen.z));
+        transform.position = FindNearPosision(mousePos);
 
         // キューブ作成
         if (Input.GetMouseButtonDown(0))
