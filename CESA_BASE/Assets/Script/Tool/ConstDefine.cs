@@ -3,6 +3,7 @@ namespace ConstDefine
 {
     public readonly struct ConstParameter
     {
+        public const float BURN_SPEED = 2.0f;
         public const float CUBE_SCALE = 1.0f;
         public const float CAMERA_NEAR = 3.0f;
         public const float CAMERA_FAR = 15.0f;

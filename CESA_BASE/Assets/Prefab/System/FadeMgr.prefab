@@ -111,5 +111,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd97caf7e476d034f9fd077b052f0941, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FadePrefab: {fileID: 5616819905362565940, guid: 8374a7826fb70774697608922b109377,
+  FadePrefab: {fileID: 5503393452019379571, guid: 8374a7826fb70774697608922b109377,
     type: 3}
