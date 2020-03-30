@@ -5,10 +5,25 @@ using UnityEngine;
 public class GameMgr : SingletonMonoBehaviour<GameMgr>
 {
     [SerializeField]
-    Vector3 m_stageSizeMax = Vector3.zero;
+    private Vector3 m_stageSizeMax = Vector3.zero;
     [SerializeField]
-    Vector3 m_stageSizeMin = Vector3.zero;
+    private Vector3 m_stageSizeMin = Vector3.zero;
 
+    public Vector3 StageSizeMax
+    {
+        get
+        {
+            return m_stageSizeMax;
+        }
+    }
+    public Vector3 StageSizeMin
+    {
+        get
+        {
+            return m_stageSizeMin;
+        }
+    }
+    
     // Start is called before the first frame update
     void Start()
     {
