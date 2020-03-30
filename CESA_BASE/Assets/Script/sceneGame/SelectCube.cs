@@ -2,22 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CubeMgr : MonoBehaviour
+public class SelectCube : MonoBehaviour
 {
-    LinkedList<Cube> m_cubeList = new LinkedList<Cube>();
-    List<Vector3> m_outPos = new List<Vector3>();
     [SerializeField]
     Cube cubePrefab;
+    LinkedList<Cube> m_cubeList = new LinkedList<Cube>();
     Vector3 mousePos;
-    float MaxPosX = 5.0f;
-    float MinPosX = -4.0f;
-    float MaxPosY = 5.0f;
-    float MinPosY = -4.0f;
-    Vector3 m_v3SaveMouse = Vector3.zero;
-    Vector3 m_saveRot;
-
-    // 親の回転角度が欲しい！！
-    Transform m_parentTrans = null;
 
     // Start is called before the first frame update
     void Awake()
@@ -35,36 +25,27 @@ public class CubeMgr : MonoBehaviour
 
     private void Start()
     {
-        m_parentTrans = transform.root;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        //{
-        //    RaycastHit _hit;
-        //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //マウスのポジションを取得してRayに代入
-
-        //    if (Physics.Raycast(ray, out _hit))  
-        //    {
-        //        //transform.position = new Vector3(transform.position.x, transform.position.y, _hit.collider.transform.position.z);
-        //        transform.position =  _hit.collider.transform.position;
-        //    }
-        //}
-        ////transform.position = new Vector3(transform.position.x, transform.position.y, -2.0f);
-
-
         // マウス座標をワールド座標で取得
-        Vector3 screen =  Camera.main.WorldToScreenPoint(transform.position);
-        mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z);
-        mousePos = Camera.main.ScreenToWorldPoint(mousePos);
-        // 
-        transform.position = FindNearPosision(new Vector3(mousePos.x, mousePos.y, screen.z));
+        {
+            Vector3 screen = Camera.main.WorldToScreenPoint(transform.position);
+            mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z);
+            mousePos = Camera.main.ScreenToWorldPoint(mousePos);
+        }
+
+        // 生成場所を取得
+        transform.position = FindNearPosision(mousePos);
 
         // キューブ作成
         if (Input.GetMouseButtonDown(0))
         {
-            Cube _cube = Instantiate(cubePrefab, transform.position, m_parentTrans.rotation, m_parentTrans);
+            Cube _cube = Instantiate(cubePrefab, transform.position, Quaternion.identity);
+            _cube.transform.parent = transform.parent;
             AddCubeList(_cube);
         }
     }
@@ -91,27 +72,39 @@ public class CubeMgr : MonoBehaviour
 
         // そのオブジェクトの上下左右どちらにあるのか
         {
-            float disX, disY;
+            float disX, disY, disZ;
             disX = mousePos.x - nearObj.transform.position.x;
             disY = mousePos.y - nearObj.transform.position.y;
-
+            disZ = mousePos.z - nearObj.transform.position.z;
+            
             // X座標のが大きい
-            if (Mathf.Abs(disX) > Mathf.Abs(disY))
+            if (Mathf.Abs(disX) > Mathf.Abs(disY) && Mathf.Abs(disX) > Mathf.Abs(disZ))
             {
                 if (disX >= 0)
                     objPos = nearObj.transform.position + new Vector3(ConstDefine.ConstParameter.CUBE_SCALE, 0.0f, 0.0f);
                 else
                     objPos = nearObj.transform.position - new Vector3(ConstDefine.ConstParameter.CUBE_SCALE, 0.0f, 0.0f);
             }
-            // Z座標のが近い
-            else
+            // Y座標のが近い
+            else if(Mathf.Abs(disY) > Mathf.Abs(disZ))
             {
                 if (disY >= 0)
                     objPos = nearObj.transform.position + new Vector3(0.0f, ConstDefine.ConstParameter.CUBE_SCALE, 0.0f);
                 else
                     objPos = nearObj.transform.position - new Vector3(0.0f, ConstDefine.ConstParameter.CUBE_SCALE, 0.0f);
             }
+            // Z座標のが近い
+            else
+            {
+                if (disZ >= 0)
+                    objPos = nearObj.transform.position + new Vector3(0.0f, 0.0f, ConstDefine.ConstParameter.CUBE_SCALE);
+                else
+                    objPos = nearObj.transform.position - new Vector3(0.0f, 0.0f, ConstDefine.ConstParameter.CUBE_SCALE);
+            }
         }
+
+        Vector3 stageMax = GameMgr.Instance.StageSizeMax;
+        Vector3 stageMin = GameMgr.Instance.StageSizeMin;
 
         foreach (Cube cube in m_cubeList)
         {
@@ -119,8 +112,9 @@ public class CubeMgr : MonoBehaviour
             if (cube.transform.position != objPos &&
 
             // 画面外処理
-             (objPos.x <= MaxPosX && objPos.x >= MinPosX &&
-                objPos.y <= MaxPosY && objPos.y >= MinPosY))
+             objPos.x <= stageMax.x && objPos.x >= stageMin.x &&
+             objPos.y <= stageMax.y && objPos.y >= stageMin.y &&
+             objPos.z <= stageMax.z && objPos.z >= stageMin.z)
                 continue;
 
             return transform.position;
@@ -128,21 +122,9 @@ public class CubeMgr : MonoBehaviour
         return objPos;
     }
 
-    private bool CheakListPos(Vector3 pos)
-    {
-        for (int i = 0; i < m_outPos.Count;  ++i)
-        {
-            if(m_outPos[i] == pos)
-                return true;
-        }
-        return false;
-    }
-
     private void AddCubeList(Cube cube)
     {
         // キューブのリストに追加
         m_cubeList.AddLast(cube);
-        // 新たにキューブを設置できないポジションに追加
-        m_outPos.Add(cube.transform.position);
     }
 }
