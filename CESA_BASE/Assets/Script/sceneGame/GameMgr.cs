@@ -33,6 +33,11 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     // Update is called once per frame
     void Update()
     {
-        
+
+    }
+
+    void onGui()
+    {
+
     }
 }
