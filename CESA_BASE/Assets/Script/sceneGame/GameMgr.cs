@@ -47,7 +47,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 m_fieldFuse.AddLast(_cube);
 
         }
-    }
+
 
     // Update is called once per frame
     void Update()

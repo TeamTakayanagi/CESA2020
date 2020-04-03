@@ -5,8 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Fade
-  - Fuse
   - UICamera
+  - Fuse/L
+  - Fuse/pole
   layers:
   - Default
   - TransparentFX
