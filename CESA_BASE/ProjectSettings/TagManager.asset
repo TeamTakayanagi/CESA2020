@@ -6,8 +6,7 @@ TagManager:
   tags:
   - Fade
   - UICamera
-  - Fuse/L
-  - Fuse/pole
+  - Fuse
   layers:
   - Default
   - TransparentFX

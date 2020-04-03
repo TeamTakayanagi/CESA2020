@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 4990632690917202075}
   - component: {fileID: 4990632690917202074}
   - component: {fileID: 4990632690917202077}
-  - component: {fileID: 1341054612505085137}
+  - component: {fileID: 4644021485989880094}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Fuse
   m_TagString: Fuse
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -94,7 +94,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.2, y: 1.2, z: 1.2}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1341054612505085137
+--- !u!114 &4644021485989880094
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -103,12 +103,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4990632690917202079}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 764c9a67b11883a47a8e28e1d7131a8f, type: 3}
+  m_Script: {fileID: 11500000, guid: fc394b1b40dc9bf488459c406b81c7e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_type: 1
+  m_type: 0
   m_BurnSpeed: 2
   m_burnRate: 0
-  box_red: {fileID: 2100000, guid: aff15bbd0d4571446b7c994601c7286f, type: 2}
-  box_blue: {fileID: 2100000, guid: 67f965005d8a7af4eb0e612ccdc88dc9, type: 2}
-  box_white: {fileID: 2100000, guid: 5810fa57c53796d409bbfbda1f5d6b02, type: 2}

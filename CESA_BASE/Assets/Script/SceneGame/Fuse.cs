@@ -99,7 +99,7 @@ public class Fuse : MonoBehaviour
             return;
 
         // 
-        if (other.transform.tag == TagName.Fuse)
+        if (other.transform.tag == Utility.TagUtility.getParentTagName(TagName.Fuse))
         {
             if (m_burnRate >= 1.0f)
             {

@@ -36,8 +36,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     void Start()
     {
         m_createPos = OUTPOS;
+        string s = Utility.TagUtility.getParentTagName(ConstDefine.TagName.Fuse);
         // フィールドオブジェクトの取得
-        GameObject[] _cubes = GameObject.FindGameObjectsWithTag(ConstDefine.TagName.Fuse);
+        GameObject[] _cubes = GameObject.FindGameObjectsWithTag
+            (Utility.TagUtility.getParentTagName(ConstDefine.TagName.Fuse));
         foreach (GameObject obj in _cubes)
         {
             Fuse _cube = obj.GetComponent<Fuse>();
@@ -48,6 +50,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
         }
 
+    }
 
     // Update is called once per frame
     void Update()
