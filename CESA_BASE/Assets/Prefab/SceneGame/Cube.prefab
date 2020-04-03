@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1341054612505085137}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: Player
+  m_TagString: Fuse
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -107,3 +107,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_type: 1
+  m_BurnSpeed: 2
+  m_burnRate: 0

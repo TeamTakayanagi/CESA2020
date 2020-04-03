@@ -4,67 +4,66 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using ConstDefine;
 
-public class Cube : MonoBehaviour
+public class Fuse : MonoBehaviour
 {
-    enum CubeType
+    public enum FuseType
     {
+        Fuse,
         Start, 
-        Cube,
-        Goal
+        Goal,
+        UI
     }
 
     [SerializeField]
-    private CubeType m_type;
+    private FuseType m_type = FuseType.Fuse;
     [SerializeField]
     private float m_BurnSpeed = ConstDefine.ConstParameter.BURN_SPEED;
-
     [SerializeField]
     private float m_burnRate = 0.0f;
 
     // 燃えているか
-    private bool m_isBurn;
+    private bool m_isBurn = false;
+    private Vector3 m_defaultPos = Vector3.zero;
 
-    public float BurnRate
+    public FuseType Type
     {
         get
         {
-            return m_burnRate;
-        }
-    }
-
-    public bool Burn
-    {
-        get
-        {
-            return m_isBurn;
+            return m_type;
         }
         set
         {
-            m_isBurn = value;
+            m_type = value;
         }
     }
-
 
     // Start is called before the first frame update
     void Start()
     {
-        switch(m_type)
+        m_defaultPos = transform.position;
+        switch (m_type)
         {
-            case CubeType.Start:
+            case FuseType.Start:
                 {
                     gameObject.GetComponent<Renderer>().material.color = Color.red;
                     m_isBurn = true;
                     break;
                 }
-            case CubeType.Cube:
+            case FuseType.Fuse:
                 {
                     gameObject.GetComponent<Renderer>().material.color = Color.white;
                     m_isBurn = false;
                     break;
                 }
-            case CubeType.Goal:
+            case FuseType.Goal:
                 {
                     gameObject.GetComponent<Renderer>().material.color = Color.blue;
+                    m_isBurn = false;
+                    break;
+                }
+            case FuseType.UI:
+                {
+                    gameObject.GetComponent<Renderer>().material.color = Color.yellow;
                     m_isBurn = false;
                     break;
                 }
@@ -78,7 +77,7 @@ public class Cube : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     private void LateUpdate()
@@ -96,22 +95,22 @@ public class Cube : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         // 燃えていないなら
-        if (!m_isBurn)
+        if (m_type == FuseType.UI || !m_isBurn)
             return;
 
         // 
-        if (other.transform.tag == TagName.Player)
+        if (other.transform.tag == TagName.Fuse)
         {
             if (m_burnRate >= 1.0f)
             {
-                Cube cube = other.gameObject.GetComponent<Cube>();
-                if (cube.m_isBurn)
+                Fuse cube = other.gameObject.GetComponent<Fuse>();
+                if (cube.m_isBurn || cube.m_type == FuseType.UI)
                     return;
 
                 cube.m_isBurn = true;
                 cube.gameObject.GetComponent<Renderer>().material.color = Color.red;
                 // 
-                if (cube.m_type == CubeType.Goal)
+                if (cube.m_type == FuseType.Goal)
                 {
                     SceneManager.LoadScene(ConstDefine.Scene.Clear);
                 }
@@ -119,11 +118,10 @@ public class Cube : MonoBehaviour
         }
     }
 
-    public static Cube Instantiate(Cube prefab, Vector3 pos)
+    public void BackDefault(bool color)
     {
-        Cube _cube = Instantiate(prefab, pos, Quaternion.identity) as Cube;
-        _cube.m_isBurn = false;
-        _cube.m_type = CubeType.Cube;
-        return _cube;
+        transform.position = m_defaultPos;
+        if(color)
+            gameObject.GetComponent<Renderer>().material.color = Color.yellow;
     }
 }
