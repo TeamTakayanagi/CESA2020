@@ -24,6 +24,7 @@ public class Fuse : MonoBehaviour
     // 燃えているか
     private bool m_isBurn = false;
     private Vector3 m_defaultPos = Vector3.zero;
+    private Vector3 m_defaultRot = Vector3.zero;
 
     public FuseType Type
     {
@@ -36,11 +37,19 @@ public class Fuse : MonoBehaviour
             m_type = value;
         }
     }
+    public Vector3 DefaultRot
+    {
+        get
+        {
+            return m_defaultRot;
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         m_defaultPos = transform.position;
+        m_defaultRot = transform.localEulerAngles;
         switch (m_type)
         {
             case FuseType.Start:
@@ -77,19 +86,22 @@ public class Fuse : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if(m_type == FuseType.UI)
+        {
+            transform.localEulerAngles = m_defaultRot - Camera.main.transform.localEulerAngles;
+        }
     }
 
     private void LateUpdate()
     {
-        if (m_isBurn)
-        {
-            m_burnRate += Time.deltaTime / m_BurnSpeed;
-            if (m_burnRate >= 1.0f)
-            {
-                //m_burnRate = 1.0f;
-            }
-        }
+        //if (m_isBurn)
+        //{
+        //    m_burnRate += Time.deltaTime / m_BurnSpeed;
+        //    if (m_burnRate >= 1.0f)
+        //    {
+        //        m_burnRate = 1.0f;
+        //    }
+        //}
     }
 
     private void OnTriggerStay(Collider other)

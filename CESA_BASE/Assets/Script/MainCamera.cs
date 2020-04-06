@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MainCamera : MonoBehaviour
 {
+    [SerializeField]
+    GameObject target = null;
     bool isSceoll;
     Vector3 savePos;
 
@@ -33,22 +35,22 @@ public class MainCamera : MonoBehaviour
 
             if (difference.x > 0.0f)
             {
-                transform.RotateAround(Vector3.zero, transform.up, difference.x * Time.deltaTime * 10);
+                transform.RotateAround(target.transform.position, transform.up, difference.x * Time.deltaTime * 10);
                 savePos = Input.mousePosition;
             }
             else if (difference.x < 0.0f)
             {
-                transform.RotateAround(Vector3.zero, transform.up, difference.x * Time.deltaTime * 10);
+                transform.RotateAround(target.transform.position, transform.up, difference.x * Time.deltaTime * 10);
                 savePos = Input.mousePosition;
             }
             if (difference.y > 0.0f)
             {
-                transform.RotateAround(Vector3.zero, transform.right, -difference.y * Time.deltaTime * 10);
+                transform.RotateAround(target.transform.position, transform.right, -difference.y * Time.deltaTime * 10);
                 savePos = Input.mousePosition;
             }
             else if (difference.y < 0.0f)
             {
-                transform.RotateAround(Vector3.zero, transform.right, -difference.y * Time.deltaTime * 10);
+                transform.RotateAround(target.transform.position, transform.right, -difference.y * Time.deltaTime * 10);
                 savePos = Input.mousePosition;
             }
         }
@@ -56,7 +58,7 @@ public class MainCamera : MonoBehaviour
         else if(scroll != 0.0f)
         {
             Vector3 _pos = transform.position + transform.forward * scroll * ConstDefine.ConstParameter.VALUE_CAMERA;
-            float dis = Vector3.Distance(_pos, Vector3.zero);
+            float dis = Vector3.Distance(_pos, target.transform.position);
             if (dis > ConstDefine.ConstParameter.CAMERA_NEAR &&
                 dis < ConstDefine.ConstParameter.CAMERA_FAR)
             {

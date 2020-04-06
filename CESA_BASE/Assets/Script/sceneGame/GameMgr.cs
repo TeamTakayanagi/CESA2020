@@ -65,20 +65,24 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // 生成場所を取得
         m_createPos = FindNearPosision(m_mousePos);
 
+        // 導火線を選択しているなら
         if (m_selectFuse)
         {
-            // UI
+            // UI画面
             if (Input.mousePosition.x > Screen.width * 0.8f)
                 m_selectFuse.BackDefault(false);
-            // ゲーム
+            // ゲーム画面
             else
+            {
                 m_selectFuse.transform.position = m_createPos;
+                m_selectFuse.transform.localEulerAngles = m_selectFuse.DefaultRot;
+            }
         }
 
-        // キューブ探索
+        // 設置or選択
         if (Input.GetMouseButtonDown(0))
         {
-            // UI
+            // UI画面
             if (Input.mousePosition.x > Screen.width * 0.8f)
             {
                 // サブカメラ取得
@@ -86,8 +90,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 Ray ray = GameObject.FindGameObjectWithTag(ConstDefine.TagName.UICamera).GetComponent<Camera>().
                     ScreenPointToRay(Input.mousePosition);
 
+                // 導火線を選択
                 if (Physics.Raycast(ray, out hit))
                 {
+                    // 新規選択
                     if (!m_selectFuse || m_selectFuse.gameObject != hit.collider.gameObject)
                     {
                         Fuse _cube = hit.collider.gameObject.GetComponent<Fuse>();
@@ -100,6 +106,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                             m_selectFuse.gameObject.GetComponent<Renderer>().material.color = Color.cyan;
                         }
                     }
+                    // 選択解除
                     else
                     {
                         m_selectFuse.gameObject.GetComponent<Renderer>().material.color = Color.yellow;
@@ -107,13 +114,14 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     }
                 }
             }
-            // ゲーム
-            else if(m_selectFuse)
+            // ゲーム画面
+            else if (m_selectFuse)
             {
                 m_selectFuse.gameObject.GetComponent<Renderer>().material.color = Color.white;
                 m_selectFuse.Type = Fuse.FuseType.Fuse;
                 m_uiFuse.Remove(m_selectFuse);
                 m_fieldFuse.AddLast(m_selectFuse);
+                m_selectFuse.transform.localEulerAngles = m_selectFuse.DefaultRot;
                 m_selectFuse.transform.parent = transform;
                 m_selectFuse = null;
             }
@@ -127,14 +135,14 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         Vector3 objPos = Vector3.zero;
 
         // マウスのワールド座標に一番近いオブジェクトを取得
-        foreach (Fuse cube in m_fieldFuse)
+        foreach (Fuse fuse in m_fieldFuse)
         {
             // 2回目以降もしくは、距離を比べて遠ければ
             if (Vector3.Distance(nearObj.transform.position, mousePos) <
-                Vector3.Distance(cube.transform.position, mousePos))
+                Vector3.Distance(fuse.transform.position, mousePos))
                 continue;
 
-            nearObj = cube;
+            nearObj = fuse;
         }
 
         if (nearObj == null)
@@ -176,10 +184,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         Vector3 stageMax = StageSizeMax;
         Vector3 stageMin = StageSizeMin;
 
-        foreach (Fuse cube in m_fieldFuse)
+        foreach (Fuse fuse in m_fieldFuse)
         {
             // 2回目以降もしくは、距離を比べて遠ければ
-            if (cube.transform.position != objPos &&
+            if (fuse.transform.position != objPos &&
 
             // 画面外処理
              objPos.x <= stageMax.x && objPos.x >= stageMin.x &&
