@@ -105,22 +105,26 @@ public class Fuse : MonoBehaviour
     }
 
     private void OnTriggerEnter(Collider other)
+
+    // 
+    private void OnTriggerStay(Collider other)
     {
-        // 燃えていないなら
+        // UIかつ燃えていないものなら
         if (m_type == FuseType.UI || !m_isBurn)
             return;
 
-        // 
-        if (other.transform.tag == Utility.TagUtility.getParentTagName(TagName.Fuse))
+        // 導火線との判定
+        if (other.transform.tag == TagName.Fuse)
         {
             //if (m_burnRate > 0.0f)
             {
                 Fuse cube = other.gameObject.GetComponent<Fuse>();
+                // 相手が燃えているなら処理を飛ばす
                 if (cube.m_isBurn || cube.m_type == FuseType.UI)
                     return;
 
                 cube.m_isBurn = true;
-                cube.gameObject.GetComponent<Renderer>().material.color = new Color(1, 0, 0, gameObject.GetComponent<Renderer>().material.color.a); ;
+                cube.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
                 // 
                 if (cube.m_type == FuseType.Goal)
                 {

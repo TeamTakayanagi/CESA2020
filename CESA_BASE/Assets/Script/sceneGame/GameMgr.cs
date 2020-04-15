@@ -107,7 +107,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     // 選択解除
                     else
                     {
-                        m_selectFuse.gameObject.GetComponent<Renderer>().material.color = new Color(1, 1, 0, m_selectFuse.GetComponent<Renderer>().material.color.a);
+                        m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
                         m_selectFuse = null;
                     }
                 }
