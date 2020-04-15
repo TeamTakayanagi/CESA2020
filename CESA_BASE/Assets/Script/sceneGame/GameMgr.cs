@@ -7,6 +7,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private Vector3 OUTPOS = new Vector3(-50, -50, -50);
 
     [SerializeField]
+    private GameObject[] m_fusePrefab = null;
+
+    [SerializeField]
     private Vector3 m_stageSizeMax = Vector3.zero;
     [SerializeField]
     private Vector3 m_stageSizeMin = Vector3.zero;
@@ -15,6 +18,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private LinkedList<Fuse> m_uiFuse = new LinkedList<Fuse>();
     private Fuse m_selectFuse = null;
     private Vector3 m_createPos = Vector3.zero;
+
+    private CSVScript m_csvScript = null;
 
     public Vector3 StageSizeMax
     {
@@ -47,6 +52,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             else
                 m_fieldFuse.AddLast(_cube);
         }
+
+        CreateStage();
 
     }
 
@@ -196,5 +203,29 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             return m_createPos;
         }
         return objPos;
+    }
+
+    private void CreateStage()
+    {
+        m_csvScript = GetComponent<CSVScript>();
+        //m_csvScript.WriteCsv();
+        m_csvScript.LoadCsv();
+
+        for (int z = 0; z < m_csvScript.Stage.Count; z++)
+        {
+            for (int y = 0; y < m_csvScript.Stage[z].Count; y++)
+            {
+                for (int x = 0; x < m_csvScript.Stage[z][y].Length; x++)
+                {
+                    Vector3 _pos;
+                    _pos = new Vector3(m_csvScript.Stage[z][y].Length * 0.5f,
+                                        m_csvScript.Stage[z].Count * 0.5f,
+                                        m_csvScript.Stage.Count * 0.5f);
+
+                    Instantiate(m_fusePrefab[0], transform.position - _pos, Quaternion.identity, transform);
+                }
+            }
+        }
+
     }
 }
