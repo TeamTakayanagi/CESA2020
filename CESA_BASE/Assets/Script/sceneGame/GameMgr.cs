@@ -47,7 +47,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             else
                 m_fieldFuse.AddLast(_cube);
         }
-        Sound.Instance.PlayBGM(ConstDefine.Audio.BGM.GameMain);
+        //Sound.Instance.PlayBGM(ConstDefine.Audio.BGM.GameMain);
     }
 
     // Update is called once per frame
@@ -99,15 +99,15 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                         {
                             m_selectFuse = _cube;
                             foreach (Fuse _fuse in m_uiFuse)
-                                _fuse.GetComponent<Renderer>().material.color = new Color(1, 1, 0, m_selectFuse.GetComponent<Renderer>().material.color.a);
+                                _fuse.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
 
-                            m_selectFuse.gameObject.GetComponent<Renderer>().material.color = new Color(1, 0, 1, m_selectFuse.GetComponent<Renderer>().material.color.a);
+                            m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.cyan);
                         }
                     }
                     // 選択解除
                     else
                     {
-                        m_selectFuse.gameObject.GetComponent<Renderer>().material.color = new Color(1, 1, 0, m_selectFuse.GetComponent<Renderer>().material.color.a);
+                        m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
                         m_selectFuse = null;
                     }
                 }
@@ -115,7 +115,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             // ゲーム画面
             else if (m_selectFuse)
             {
-                m_selectFuse.gameObject.GetComponent<Renderer>().material.color = new Color(1, 1, 1, m_selectFuse.GetComponent<Renderer>().material.color.a);
+                m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
                 m_selectFuse.Type = Fuse.FuseType.Fuse;
                 m_uiFuse.Remove(m_selectFuse);
                 m_fieldFuse.AddLast(m_selectFuse);
