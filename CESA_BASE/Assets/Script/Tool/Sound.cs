@@ -34,7 +34,6 @@ public class Sound : SingletonMonoBehaviour<Sound>
         m_seSources = new List<AudioSource>();
         m_bgmDict = new Dictionary<string, AudioClip>();
         m_seDict = new Dictionary<string, AudioClip>();
-
         void AddClipDict(Dictionary<string, AudioClip> dict, AudioClip clip)
         {
             if (!dict.ContainsKey(clip.name))

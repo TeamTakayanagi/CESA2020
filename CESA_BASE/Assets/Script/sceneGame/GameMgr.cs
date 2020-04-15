@@ -68,7 +68,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         {
             // UI画面
             if (Input.mousePosition.x > Screen.width * 0.8f)
-                m_selectFuse.BackDefault(false);
+                transform.position = m_selectFuse.DefaultPos;
             // ゲーム画面
             else
             {

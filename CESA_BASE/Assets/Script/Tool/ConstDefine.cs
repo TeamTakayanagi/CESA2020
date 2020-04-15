@@ -15,14 +15,13 @@ namespace ConstDefine
 
     public readonly struct TagName
     {
-        public const string None = "Untagged";
+        public const string None = "None";
         public const string Untagged = "Untagged";
         public const string Player = "Player";
         public const string UICamera = "UICamera";
-        
-        // ここからparent
         public const string Fuse = "Fuse"; 
     }
+
     namespace Audio
     {
         public readonly struct BGM

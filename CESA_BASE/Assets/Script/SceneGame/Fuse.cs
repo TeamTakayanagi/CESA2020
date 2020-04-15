@@ -26,6 +26,13 @@ public class Fuse : MonoBehaviour
     private Vector3 m_defaultPos = Vector3.zero;
     private Vector3 m_defaultRot = Vector3.zero;
 
+    public Vector3 DefaultPos
+    {
+        get
+        {
+            return m_defaultPos;
+        }
+    }
     public FuseType Type
     {
         get
@@ -88,7 +95,7 @@ public class Fuse : MonoBehaviour
     {
         if(m_type == FuseType.UI)
         {
-            //transform.localEulerAngles = - m_defaultRot - Camera.main.transform.localEulerAngles;
+            transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, - m_defaultRot.y - Camera.main.transform.localEulerAngles.y, transform.localEulerAngles.z);
         }
     }
 
@@ -131,12 +138,5 @@ public class Fuse : MonoBehaviour
                 }
             }
         }
-    }
-
-    public void BackDefault(bool color)
-    {
-        transform.position = m_defaultPos;
-        if(color)
-            gameObject.GetComponent<Renderer>().material.color = Color.yellow;
     }
 }

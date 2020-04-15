@@ -9,7 +9,7 @@ public class MainCamera : MonoBehaviour
     private Vector3 m_target = Vector3.zero;
     private bool m_isSceoll;
     private Vector3 m_savePos;
-    private float m_moveRotate = 0.0f;
+    private float m_moveRotate = 90.0f;
     private float m_moveRadiuse = 10.0f;
 
     // Start is called before the first frame update
