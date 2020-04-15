@@ -43,8 +43,7 @@ public class StageMgr : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        m_stageData = GetComponent<CSVStageData>();
-
+        m_stageData = GameObject.FindGameObjectWithTag(ConstDefine.TagName.SceneMgr).GetComponent<CSVStageData>();
         m_endPos = m_initPos;
         
     }
@@ -67,7 +66,7 @@ public class StageMgr : MonoBehaviour
             for (int i = 0; i < m_stageNum; i++)
             {
                 m_panel = Instantiate(panelPrefab, transform);
-                m_panel.SetSprite(m_stageData.StageData[i][1]);
+                m_panel.SetParam(m_stageData.StageData[i][1], i);
             }
 
             m_step++;

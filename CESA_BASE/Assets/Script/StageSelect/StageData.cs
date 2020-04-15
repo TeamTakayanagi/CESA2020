@@ -22,6 +22,10 @@ public class StageData : MonoBehaviour
     private Image m_medalSprite = null;
     private int m_stageState = 0;
 
+    private int m_stageNum = 0;
+
+    private CSVScript m_csvScript = null;
+
     //private CSVStageData m_stageData = null;
     //private int m_step = 0;
     public bool PopUp
@@ -38,6 +42,8 @@ public class StageData : MonoBehaviour
         m_starMgr = GetComponent<MedalMgr>();
         m_medalSprite = GetComponent<Image>();
         m_medalSprite.sprite = null;
+
+        m_csvScript = GameObject.FindGameObjectWithTag(ConstDefine.TagName.SceneMgr).GetComponent<CSVScript>();
     }
 
     // Update is called once per frame
@@ -75,6 +81,7 @@ public class StageData : MonoBehaviour
 
     public void Click()
     {
+        m_csvScript.StageNum = m_stageNum;
         if (!transform.GetComponentInParent<StageMgr>().popFlg)
         {
             m_popup = Instantiate(popupPrefab, transform.root.position, Quaternion.identity, transform.root);
@@ -97,8 +104,11 @@ public class StageData : MonoBehaviour
         }
     }
 
-    public void SetSprite(int _spriteNum)
+    /// ///////////////////////
+    // 引　数：スプライト番号, ステージ数
+    public void SetParam(int _spriteNum, int _stageNum)
     {
         m_stageState = _spriteNum;
+        m_stageNum = _stageNum;
     }
 }

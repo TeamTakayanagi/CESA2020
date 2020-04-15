@@ -24,14 +24,28 @@ public class CSVScript : MonoBehaviour
     TextAsset csvFile;
     private List<List<string[]>> stageLList = new List<List<string[]>>();
 
-    private string m_csvPath = "/TextData/StageData.csv";
+    private string m_csvPath = "/TextData/StageData";
     private string str;         // ステージデータ格納用
+
+    private int m_stageNum = 0;
 
     public List<List<string[]>> Stage
     {
         get
         {
             return stageLList;
+        }
+    }
+
+    public int StageNum
+    {
+        get
+        {
+            return m_stageNum;
+        }
+        set
+        {
+            m_stageNum = value;
         }
     }
 
@@ -56,7 +70,7 @@ public class CSVScript : MonoBehaviour
     public bool LoadCsv()
     {
         //csvFile = Resources.Load(@"StageData") as TextAsset;
-        StreamReader reader = new StreamReader(Application.dataPath + m_csvPath);
+        StreamReader reader = new StreamReader(Application.dataPath + m_csvPath + m_stageNum + ".csv");
 
         int _roop = 0;
         string line = reader.ReadLine();
@@ -105,7 +119,7 @@ public class CSVScript : MonoBehaviour
             }
         }
 
-        StreamWriter sw = new StreamWriter(Application.dataPath + m_csvPath, false, Encoding.GetEncoding("Shift_JIS"));
+        StreamWriter sw = new StreamWriter(Application.dataPath + m_csvPath + ".csv", false, Encoding.GetEncoding("Shift_JIS"));
 
         for (int z = 0; z < 3; z++)
         {

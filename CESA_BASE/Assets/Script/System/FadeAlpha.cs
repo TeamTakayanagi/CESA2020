@@ -11,6 +11,7 @@ public class FadeAlpha : MonoBehaviour
     private Color m_addAlpha = Color.black;
 
     private Image m_image;
+    private Canvas m_canvasParent;
 
     private enum _FadeStep
     {
@@ -32,6 +33,7 @@ public class FadeAlpha : MonoBehaviour
     {
         m_image = GetComponent<Image>();
         m_image.color = Color.clear;
+        m_canvasParent = transform.root.GetComponent<Canvas>();
     }
 
     // Update is called once per frame
@@ -59,7 +61,7 @@ public class FadeAlpha : MonoBehaviour
         // シーン切り替え
         if (m_fadeStep == _FadeStep.SceneLoad)
         {
-            SceneManager.LoadScene("SampleScene");
+            SceneManager.LoadScene(1);
             m_fadeStep++;
         }
 
@@ -81,6 +83,7 @@ public class FadeAlpha : MonoBehaviour
     public void StartFade()
     {
         m_fadeStep = _FadeStep.FadeOut;
+        m_canvasParent.planeDistance = 50;
         transform.GetComponent<RectTransform>().sizeDelta = GetComponentInParent<RectTransform>().sizeDelta;
     }
 }

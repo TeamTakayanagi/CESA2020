@@ -52,7 +52,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             else
                 m_fieldFuse.AddLast(_cube);
         }
-
+        
+        m_csvScript = GameObject.FindGameObjectWithTag(ConstDefine.TagName.SceneMgr).GetComponent<CSVScript>();
         CreateStage();
 
     }
@@ -207,23 +208,21 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     private void CreateStage()
     {
-        m_csvScript = GetComponent<CSVScript>();
         //m_csvScript.WriteCsv();
         m_csvScript.LoadCsv();
 
         for (int z = 0; z < m_csvScript.Stage.Count; z++)
         {
-            //for (int y = 0; y < m_csvScript.Stage[z].Count; y++)
             for (int y = 0; y < m_csvScript.Stage[z].Count; y++)
             {
                 for (int x = 0; x < m_csvScript.Stage[z][y].Length; x++)
                 {
                     Vector3 _pos;
                     _pos = new Vector3(x - m_csvScript.Stage[z][y].Length * 0.5f,
-                                        y - m_csvScript.Stage[z].Count * 0.5f,
-                                        z - m_csvScript.Stage.Count * 0.5f);
+                                        z - m_csvScript.Stage.Count * 0.5f,
+                                        y - m_csvScript.Stage[z].Count * 0.5f);
 
-                    switch(m_csvScript.Stage[y][m_csvScript.Stage.Count - 1 - z][x][0])
+                    switch(m_csvScript.Stage[z][m_csvScript.Stage[z].Count - 1 - y][x][0])
                     {
                         // I字の導火線
                         case 'A':

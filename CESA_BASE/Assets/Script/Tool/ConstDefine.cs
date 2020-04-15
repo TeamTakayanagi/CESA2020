@@ -19,6 +19,8 @@ namespace ConstDefine
         public const string Untagged = "Untagged";
         public const string Player = "Player";
         public const string UICamera = "UICamera";
+
+        public const string SceneMgr = "SceneMgr";
         
         // ここからparent
         public const string Fuse = "Fuse"; 

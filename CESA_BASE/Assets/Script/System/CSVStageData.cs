@@ -31,7 +31,6 @@ public class CSVStageData : MonoBehaviour
 
     public bool LoadSaveData()
     {
-        Debug.Log(Application.dataPath + m_saveDataPass);
         StreamReader _strReader = new StreamReader(Application.dataPath + m_saveDataPass);
         
         while (_strReader.Peek() != -1)
