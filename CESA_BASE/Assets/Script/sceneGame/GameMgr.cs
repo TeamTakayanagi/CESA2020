@@ -213,16 +213,31 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
         for (int z = 0; z < m_csvScript.Stage.Count; z++)
         {
+            //for (int y = 0; y < m_csvScript.Stage[z].Count; y++)
             for (int y = 0; y < m_csvScript.Stage[z].Count; y++)
             {
                 for (int x = 0; x < m_csvScript.Stage[z][y].Length; x++)
                 {
                     Vector3 _pos;
-                    _pos = new Vector3(m_csvScript.Stage[z][y].Length * 0.5f,
-                                        m_csvScript.Stage[z].Count * 0.5f,
-                                        m_csvScript.Stage.Count * 0.5f);
+                    _pos = new Vector3(x - m_csvScript.Stage[z][y].Length * 0.5f,
+                                        y - m_csvScript.Stage[z].Count * 0.5f,
+                                        z - m_csvScript.Stage.Count * 0.5f);
 
-                    Instantiate(m_fusePrefab[0], transform.position - _pos, Quaternion.identity, transform);
+                    switch(m_csvScript.Stage[y][m_csvScript.Stage.Count - 1 - z][x][0])
+                    {
+                        // I字の導火線
+                        case 'A':
+                            Instantiate(m_fusePrefab[0], _pos, Quaternion.identity, transform);
+                            break;
+
+                        // L字の導火線
+                        case 'B':
+                            Instantiate(m_fusePrefab[1], _pos, Quaternion.identity, transform);
+                            break;
+
+                        default:
+                            break;
+                    }
                 }
             }
         }
