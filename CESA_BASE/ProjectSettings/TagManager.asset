@@ -9,6 +9,8 @@ TagManager:
   - Fuse
   - UI/Logo
   - UI/Stage
+  - Fuse/pole
+  - Fuse/L
   layers:
   - Default
   - TransparentFX

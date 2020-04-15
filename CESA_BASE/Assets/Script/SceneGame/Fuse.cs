@@ -54,25 +54,25 @@ public class Fuse : MonoBehaviour
         {
             case FuseType.Start:
                 {
-                    gameObject.GetComponent<Renderer>().material.color = Color.red;
+                    gameObject.GetComponent<Renderer>().material.color = new Color(1, 0, 0, gameObject.GetComponent<Renderer>().material.color.a);
                     m_isBurn = true;
                     break;
                 }
             case FuseType.Fuse:
                 {
-                    gameObject.GetComponent<Renderer>().material.color = Color.white;
+                    gameObject.GetComponent<Renderer>().material.color = new Color(1, 1, 1, gameObject.GetComponent<Renderer>().material.color.a); ;
                     m_isBurn = false;
                     break;
                 }
             case FuseType.Goal:
                 {
-                    gameObject.GetComponent<Renderer>().material.color = Color.blue;
+                    gameObject.GetComponent<Renderer>().material.color = new Color(0, 0, 1, gameObject.GetComponent<Renderer>().material.color.a); ;
                     m_isBurn = false;
                     break;
                 }
             case FuseType.UI:
                 {
-                    gameObject.GetComponent<Renderer>().material.color = Color.yellow;
+                    gameObject.GetComponent<Renderer>().material.color = new Color(1, 1, 0, gameObject.GetComponent<Renderer>().material.color.a);;
                     m_isBurn = false;
                     break;
                 }
@@ -88,7 +88,7 @@ public class Fuse : MonoBehaviour
     {
         if(m_type == FuseType.UI)
         {
-            transform.localEulerAngles = m_defaultRot - Camera.main.transform.localEulerAngles;
+            //transform.localEulerAngles = - m_defaultRot - Camera.main.transform.localEulerAngles;
         }
     }
 
@@ -113,16 +113,19 @@ public class Fuse : MonoBehaviour
         // 
         if (other.transform.tag == Utility.TagUtility.getParentTagName(TagName.Fuse))
         {
-            Fuse cube = other.gameObject.GetComponent<Fuse>();
-            if (cube.m_isBurn || cube.m_type == FuseType.UI)
-                return;
-
-            cube.m_isBurn = true;
-            cube.gameObject.GetComponent<Renderer>().material.color = Color.red;
-            // 
-            if (cube.m_type == FuseType.Goal)
+            //if (m_burnRate > 0.0f)
             {
-                SceneManager.LoadScene(ConstDefine.Scene.Clear);
+                Fuse cube = other.gameObject.GetComponent<Fuse>();
+                if (cube.m_isBurn || cube.m_type == FuseType.UI)
+                    return;
+
+                cube.m_isBurn = true;
+                cube.gameObject.GetComponent<Renderer>().material.color = new Color(1, 0, 0, gameObject.GetComponent<Renderer>().material.color.a); ;
+                // 
+                if (cube.m_type == FuseType.Goal)
+                {
+                    SceneManager.LoadScene(ConstDefine.Scene.Clear);
+                }
             }
         }
     }

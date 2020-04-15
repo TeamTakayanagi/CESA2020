@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameMgr : SingletonMonoBehaviour<GameMgr>
 {
-    private Vector3 OUTPOS = new Vector3(-20, -20, -20);
+    private Vector3 OUTPOS = new Vector3(-50, -50, -50);
 
     [SerializeField]
     private Vector3 m_stageSizeMax = Vector3.zero;
@@ -36,7 +36,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     void Start()
     {
         m_createPos = OUTPOS;
-        string s = Utility.TagUtility.getParentTagName(ConstDefine.TagName.Fuse);
         // フィールドオブジェクトの取得
         GameObject[] _cubes = GameObject.FindGameObjectsWithTag
             (Utility.TagUtility.getParentTagName(ConstDefine.TagName.Fuse));
@@ -47,7 +46,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 m_uiFuse.AddLast(_cube);
             else
                 m_fieldFuse.AddLast(_cube);
-
         }
 
     }
@@ -64,7 +62,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
         // 生成場所を取得
         m_createPos = FindNearPosision(m_mousePos);
-
+        
         // 導火線を選択しているなら
         if (m_selectFuse)
         {
@@ -101,15 +99,15 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                         {
                             m_selectFuse = _cube;
                             foreach (Fuse _fuse in m_uiFuse)
-                                _fuse.GetComponent<Renderer>().material.color = Color.yellow;
+                                _fuse.GetComponent<Renderer>().material.color = new Color(1, 1, 0, m_selectFuse.GetComponent<Renderer>().material.color.a);
 
-                            m_selectFuse.gameObject.GetComponent<Renderer>().material.color = Color.cyan;
+                            m_selectFuse.gameObject.GetComponent<Renderer>().material.color = new Color(1, 0, 1, m_selectFuse.GetComponent<Renderer>().material.color.a);
                         }
                     }
                     // 選択解除
                     else
                     {
-                        m_selectFuse.gameObject.GetComponent<Renderer>().material.color = Color.yellow;
+                        m_selectFuse.gameObject.GetComponent<Renderer>().material.color = new Color(1, 1, 0, m_selectFuse.GetComponent<Renderer>().material.color.a);
                         m_selectFuse = null;
                     }
                 }
@@ -117,7 +115,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             // ゲーム画面
             else if (m_selectFuse)
             {
-                m_selectFuse.gameObject.GetComponent<Renderer>().material.color = Color.white;
+                m_selectFuse.gameObject.GetComponent<Renderer>().material.color = new Color(1, 1, 1, m_selectFuse.GetComponent<Renderer>().material.color.a);
                 m_selectFuse.Type = Fuse.FuseType.Fuse;
                 m_uiFuse.Remove(m_selectFuse);
                 m_fieldFuse.AddLast(m_selectFuse);

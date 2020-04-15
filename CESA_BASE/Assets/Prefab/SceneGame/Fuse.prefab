@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4990632690917202074}
   - component: {fileID: 4990632690917202077}
   - component: {fileID: 4644021485989880094}
-  - component: {fileID: 1325297173838293253}
+  - component: {fileID: 6082244977284370244}
   m_Layer: 0
   m_Name: Fuse
   m_TagString: Fuse
@@ -110,7 +110,7 @@ MonoBehaviour:
   m_type: 0
   m_BurnSpeed: 2
   m_burnRate: 0
---- !u!54 &1325297173838293253
+--- !u!54 &6082244977284370244
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
