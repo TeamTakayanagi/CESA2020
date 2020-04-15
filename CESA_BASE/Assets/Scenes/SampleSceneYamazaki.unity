@@ -1662,13 +1662,14 @@ GameObject:
   m_Component:
   - component: {fileID: 747089249}
   - component: {fileID: 747089250}
+  - component: {fileID: 747089251}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Spark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &747089249
 Transform:
   m_ObjectHideFlags: 0
@@ -1677,7 +1678,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 747089248}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -3.96, y: 0.55, z: -5.39}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1696,8 +1697,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   effectAsset: {fileID: 11400000, guid: 0844763930d4e594da5cf1bed64d3af3, type: 2}
-  playOnStart: 0
-  isLooping: 0
+  playOnStart: 1
+  isLooping: 1
+--- !u!114 &747089251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 747089248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa6b1ab4143fed543b5e24b1f969e1c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_fuseObject: {fileID: 730926154}
 --- !u!1001 &854134051
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1938,6 +1952,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 90ed66082d9607b4d897cfcf63250c36, type: 2}
+    - target: {fileID: -1504981713932161579, guid: e0a804668265de24fbb92b91a39cdcfb,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: -927199367670048503, guid: e0a804668265de24fbb92b91a39cdcfb,
         type: 3}
       propertyPath: m_Name
