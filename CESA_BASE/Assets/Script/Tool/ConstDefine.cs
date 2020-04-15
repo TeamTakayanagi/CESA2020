@@ -23,6 +23,17 @@ namespace ConstDefine
         // ここからparent
         public const string Fuse = "Fuse"; 
     }
+    namespace Audio
+    {
+        public readonly struct BGM
+        {
+            public const string GameMain = "GameMain";
+        } 
+        public readonly struct SE
+        {
+
+        }
+    }
 
     public readonly struct Scene
     {

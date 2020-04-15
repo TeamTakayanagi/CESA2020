@@ -54,25 +54,25 @@ public class Fuse : MonoBehaviour
         {
             case FuseType.Start:
                 {
-                    gameObject.GetComponent<Renderer>().material.color = new Color(1, 0, 0, gameObject.GetComponent<Renderer>().material.color.a);
+                    gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
                     m_isBurn = true;
                     break;
                 }
             case FuseType.Fuse:
                 {
-                    gameObject.GetComponent<Renderer>().material.color = new Color(1, 1, 1, gameObject.GetComponent<Renderer>().material.color.a); ;
+                    gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
                     m_isBurn = false;
                     break;
                 }
             case FuseType.Goal:
                 {
-                    gameObject.GetComponent<Renderer>().material.color = new Color(0, 0, 1, gameObject.GetComponent<Renderer>().material.color.a); ;
+                    gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
                     m_isBurn = false;
                     break;
                 }
             case FuseType.UI:
                 {
-                    gameObject.GetComponent<Renderer>().material.color = new Color(1, 1, 0, gameObject.GetComponent<Renderer>().material.color.a);;
+                    gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
                     m_isBurn = false;
                     break;
                 }
@@ -104,7 +104,6 @@ public class Fuse : MonoBehaviour
         //}
     }
 
-    private void OnTriggerEnter(Collider other)
 
     // 
     private void OnTriggerStay(Collider other)
