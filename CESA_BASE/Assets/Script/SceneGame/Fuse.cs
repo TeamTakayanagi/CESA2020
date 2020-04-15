@@ -104,7 +104,7 @@ public class Fuse : MonoBehaviour
         //}
     }
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         // 燃えていないなら
         if (m_type == FuseType.UI || !m_isBurn)
