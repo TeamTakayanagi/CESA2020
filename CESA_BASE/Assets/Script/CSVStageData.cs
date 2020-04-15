@@ -7,7 +7,7 @@ public class CSVStageData : MonoBehaviour
 {
     private List<int[]> m_stageData = new List<int[]>();
 
-    private string m_saveDataPass = "/SaveData.csv";
+    private string m_saveDataPass = "/TextData/SaveData.csv";
 
     public List<int[]> StageData
     {

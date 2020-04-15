@@ -18,6 +18,10 @@ namespace ConstDefine
         public const string None = "Untagged";
         public const string Untagged = "Untagged";
         public const string Player = "Player";
+        public const string UICamera = "UICamera";
+        
+        // ここからparent
+        public const string Fuse = "Fuse"; 
     }
 
     public readonly struct Scene

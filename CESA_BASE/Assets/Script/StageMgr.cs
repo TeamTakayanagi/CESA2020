@@ -5,7 +5,7 @@ using UnityEngine;
 public class StageMgr : MonoBehaviour
 {
     [SerializeField]
-    private StageData panelPrefab;
+    private StageData panelPrefab = null;
     [SerializeField]
     private int m_stageNum;
 
