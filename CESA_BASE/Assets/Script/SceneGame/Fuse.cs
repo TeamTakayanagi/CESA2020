@@ -113,19 +113,16 @@ public class Fuse : MonoBehaviour
         // 
         if (other.transform.tag == Utility.TagUtility.getParentTagName(TagName.Fuse))
         {
-            if (m_burnRate >= 1.0f)
-            {
-                Fuse cube = other.gameObject.GetComponent<Fuse>();
-                if (cube.m_isBurn || cube.m_type == FuseType.UI)
-                    return;
+            Fuse cube = other.gameObject.GetComponent<Fuse>();
+            if (cube.m_isBurn || cube.m_type == FuseType.UI)
+                return;
 
-                cube.m_isBurn = true;
-                cube.gameObject.GetComponent<Renderer>().material.color = Color.red;
-                // 
-                if (cube.m_type == FuseType.Goal)
-                {
-                    SceneManager.LoadScene(ConstDefine.Scene.Clear);
-                }
+            cube.m_isBurn = true;
+            cube.gameObject.GetComponent<Renderer>().material.color = Color.red;
+            // 
+            if (cube.m_type == FuseType.Goal)
+            {
+                SceneManager.LoadScene(ConstDefine.Scene.Clear);
             }
         }
     }
