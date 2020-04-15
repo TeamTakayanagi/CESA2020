@@ -7,6 +7,8 @@ TagManager:
   - Fade
   - UICamera
   - Fuse
+  - UI/Logo
+  - UI/Stage
   layers:
   - Default
   - TransparentFX
