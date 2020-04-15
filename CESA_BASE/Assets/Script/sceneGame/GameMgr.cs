@@ -47,7 +47,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             else
                 m_fieldFuse.AddLast(_cube);
         }
-
+        Sound.Instance.PlayBGM(ConstDefine.Audio.BGM.GameMain);
     }
 
     // Update is called once per frame
