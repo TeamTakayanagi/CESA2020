@@ -5,7 +5,7 @@ using UnityEngine;
 public class MedalMgr : MonoBehaviour
 {
     [SerializeField]
-    private Star MedalPrefab;
+    private Star MedalPrefab = null;
 
     private RectTransform m_myRectTrans = null;
     private Star m_medal = null;

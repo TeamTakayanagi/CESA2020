@@ -1,22 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class GameMgr : SingletonMonoBehaviour<GameMgr>
 {
+    // デリゲート宣言
+    delegate void GameStep();
+
     private Vector3 OUTPOS = new Vector3(-50, -50, -50);
 
     [SerializeField]
-    public Texture2D cursorTexture;
+    private Texture2D cursorDefault = null;
+    [SerializeField]
+    private Texture2D cursorCatch = null;
     [SerializeField]
     private Vector3 m_stageSizeMax = Vector3.zero;
     [SerializeField]
     private Vector3 m_stageSizeMin = Vector3.zero;
+
     private Vector3 m_mousePos = Vector3.zero;
     private LinkedList<Fuse> m_fieldFuse = new LinkedList<Fuse>();
     private LinkedList<Fuse> m_uiFuse = new LinkedList<Fuse>();
     private Fuse m_selectFuse = null;
     private Vector3 m_createPos = Vector3.zero;
+    private GameStep m_gameStep = null;
+    private GameObject m_saveObj = null;
 
     public Vector3 StageSizeMax
     {
@@ -37,7 +46,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     // Start is called before the first frame update
     void Start()
     {
-        Cursor.SetCursor(cursorTexture, Vector2.zero, CursorMode.Auto);
+        // マウスカーソル用の画像をデフォルトに変更
+        Cursor.SetCursor(cursorDefault, Vector2.zero, CursorMode.Auto);
+
         m_createPos = OUTPOS;
         // フィールドオブジェクトの取得
         GameObject[] _cubes = GameObject.FindGameObjectsWithTag
@@ -50,11 +61,31 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             else
                 m_fieldFuse.AddLast(_cube);
         }
-        Sound.Instance.PlayBGM(ConstDefine.Audio.BGM.GameMain);
+        //Sound.Instance.PlayBGM(ConstDefine.Audio.BGM.GameMain);
+
+        //
+        GameObject canvas = GameObject.FindGameObjectWithTag(ConstDefine.TagName.UICanvas);
+        m_saveObj = canvas.transform.GetChild(0).gameObject;
+        m_gameStep = GameStart;
     }
 
     // Update is called once per frame
     void Update()
+    {
+        m_gameStep();
+    }
+
+    void GameStart()
+    {
+        Number number = m_saveObj.GetComponent<Number>();
+        if (number.TexCount < 0)
+        {
+            Destroy(m_saveObj);
+            m_gameStep = GameMain;
+        }
+    }
+
+    void GameMain()
     {
         // マウス座標をワールド座標で取得
         {
@@ -65,7 +96,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
         // 生成場所を取得
         m_createPos = FindNearPosision(m_mousePos);
-        
+
         // 導火線を選択しているなら
         if (m_selectFuse)
         {
@@ -78,6 +109,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 m_selectFuse.transform.position = m_createPos;
                 m_selectFuse.transform.localEulerAngles = m_selectFuse.DefaultRot;
             }
+
+            if (m_selectFuse.transform.position == OUTPOS)
+                return;
         }
 
         // 設置or選択
@@ -95,9 +129,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 if (Physics.Raycast(ray, out hit))
                 {
                     // 新規選択
-                    if (!m_selectFuse || m_selectFuse.gameObject != hit.collider.gameObject)
+                    if (!m_selectFuse || m_selectFuse.gameObject != hit.collider.transform.parent.gameObject)
                     {
-                        Fuse _cube = hit.collider.gameObject.GetComponent<Fuse>();
+                        Fuse _cube = hit.collider.transform.parent.GetComponent<Fuse>();
                         if (_cube.Type == Fuse.FuseType.UI)
                         {
                             m_selectFuse = _cube;
@@ -105,6 +139,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                                 _fuse.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
 
                             m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.cyan);
+                            // マウスカーソル用の画像を選択時に変更
+                            Cursor.SetCursor(cursorCatch, Vector2.zero, CursorMode.Auto);
                         }
                     }
                     // 選択解除
@@ -112,6 +148,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     {
                         m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
                         m_selectFuse = null;
+                        // マウスカーソル用の画像をデフォルトに変更
+                        Cursor.SetCursor(cursorDefault, Vector2.zero, CursorMode.Auto);
                     }
                 }
             }
@@ -124,9 +162,18 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 m_fieldFuse.AddLast(m_selectFuse);
                 m_selectFuse.transform.localEulerAngles = m_selectFuse.DefaultRot;
                 m_selectFuse.transform.parent = transform;
+
+                // UI選択用の子供オブジェクトを削除
+                GameObject chid = m_selectFuse.transform.GetChild(m_selectFuse.transform.childCount - 1).gameObject;
+                Destroy(chid);
+
                 m_selectFuse = null;
+                m_createPos = OUTPOS;
+                // マウスカーソル用の画像をデフォルトに変更
+                Cursor.SetCursor(cursorDefault, Vector2.zero, CursorMode.Auto);
             }
         }
+
     }
 
     private Vector3 FindNearPosision(Vector3 mousePos)

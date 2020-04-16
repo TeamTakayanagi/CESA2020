@@ -20,6 +20,7 @@ namespace ConstDefine
         public const string Player = "Player";
         public const string UICamera = "UICamera";
         public const string Fuse = "Fuse"; 
+        public const string UICanvas = "UICanvas"; 
     }
 
     namespace Audio

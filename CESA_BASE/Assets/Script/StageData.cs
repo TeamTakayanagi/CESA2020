@@ -6,16 +6,16 @@ using UnityEngine.UI;
 public class StageData : MonoBehaviour
 {
     [SerializeField]
-    private PopUp popupPrefab;
+    private PopUp popupPrefab = null;
 
     [SerializeField]
-    private Sprite m_notopenSprite;
+    private Sprite m_notopenSprite = null;
     [SerializeField]
-    private Sprite m_openSprite;
+    private Sprite m_openSprite = null;
     [SerializeField]
-    private Sprite m_silverSprite;
+    private Sprite m_silverSprite = null;
     [SerializeField]
-    private Sprite m_goldSprite;
+    private Sprite m_goldSprite = null;
 
     private PopUp m_popup;
     private MedalMgr m_starMgr = null;

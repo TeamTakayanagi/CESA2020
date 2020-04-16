@@ -1,16 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class UIFuse : MonoBehaviour
 {
     [System.Serializable]
-    private struct FuseStatus
+    private class FuseStatus
     {
-        public Fuse prefab;
-        public Vector3 rotate;
+        public Fuse prefab = null;
+        public Vector3 rotate = Vector3.zero;
     }
 
+    [SerializeField]
+    GameObject m_uiColider = null;
     [SerializeField]
     List<FuseStatus> m_uiList = new List<FuseStatus>();
     
@@ -25,6 +28,9 @@ public class UIFuse : MonoBehaviour
             _fuse.transform.localEulerAngles = m_uiList[i].rotate;
             _fuse.Type = Fuse.FuseType.UI;
             _fuse.transform.tag = ConstDefine.TagName.Fuse;
+            // UI専用のコライダーを子供に
+            GameObject _colider = Instantiate(m_uiColider, _fuse.transform.position, Quaternion.identity);
+            _colider.transform.SetParent(_fuse.transform, true);
         }
     }
 

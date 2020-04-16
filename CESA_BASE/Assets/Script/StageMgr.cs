@@ -7,7 +7,7 @@ public class StageMgr : MonoBehaviour
     [SerializeField]
     private StageData panelPrefab = null;
     [SerializeField]
-    private int m_stageNum;
+    private int m_stageNum = 0;
 
     private Vector3 m_initPos;
     private Vector3 m_endPos;

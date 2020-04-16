@@ -88,5 +88,20 @@ public class MainCamera : MonoBehaviour
             }
 #endif
         }
+        if (!m_isSceoll && Input.GetMouseButtonDown(2))
+        {
+            m_isSceoll = true;
+            m_savePos = Input.mousePosition;
+        }
+        else if (m_isSceoll && Input.GetMouseButtonUp(2))
+        {
+            m_isSceoll = false;
+        }
+        else if (m_isSceoll && Input.GetMouseButton(2))
+        {
+            Vector3 difference = Input.mousePosition - m_savePos;
+            transform.position -= transform.rotation * new Vector3(difference.x * Time.deltaTime, 0.0f, 0.0f);
+            m_savePos = Input.mousePosition;
+        }
     }
 }
