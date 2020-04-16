@@ -4,11 +4,20 @@ using UnityEngine;
 
 public class StageMgr : MonoBehaviour
 {
+    private enum StageMgrState
+    {
+        LoadCsv = 0,
+        StageInstance,
+        StageInsert,
+        StageSelect,
+        Max
+    }
+
     [SerializeField]
     private StageData panelPrefab = null;
     [SerializeField]
     private int m_stageNum;
-
+    
     private Vector3 m_initPos;
     private Vector3 m_endPos;
 
@@ -52,7 +61,7 @@ public class StageMgr : MonoBehaviour
     void Update()
     {
         // CSV読み込み
-        if (m_step == 0)
+        if (m_step == (int)StageMgrState.LoadCsv)
         {
             if (m_stageData.LoadSaveData())
             {
@@ -60,7 +69,7 @@ public class StageMgr : MonoBehaviour
             }
         }
 
-        if (m_step == 1)
+        if (m_step == (int)StageMgrState.StageInstance)
         {
             // ステージの選択肢生成
             for (int i = 0; i < m_stageNum; i++)
@@ -72,13 +81,23 @@ public class StageMgr : MonoBehaviour
             m_step++;
         }
 
-        if (m_step == 2)
+        // 横からイントゥ　のために　初期位置をずらす
+        else if (m_step == (int)StageMgrState.StageInsert)
         {
+            // ずらす前に今の位置情報を記憶しようね
             if (m_endPos == m_initPos)
             {
                 m_endPos = m_panel.transform.position;
                 m_endPos = new Vector3(m_endPos.x * -1, m_endPos.y, m_endPos.z);
             }
+
+            transform.position = new Vector3(1200, transform.position.y);
+            m_step++;
+        }
+
+        if (m_step == (int)StageMgrState.StageSelect)
+        {
+
 
             if (!popFlg)
             {
@@ -115,7 +134,7 @@ public class StageMgr : MonoBehaviour
 
     private void FixedUpdate()
     {
-        m_direction *= 0.95f;
+        m_direction *= 0.9f;
     }
 
     void Flick()

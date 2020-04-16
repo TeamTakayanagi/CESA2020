@@ -20,7 +20,7 @@ public class StageData : MonoBehaviour
     private PopUp m_popup;
     private MedalMgr m_starMgr = null;
     private Image m_medalSprite = null;
-    private int m_stageState = 0;
+    private int m_stageState = 0;   // ステージの状態：選択可能 = 1以上 / 不可能 = 0
 
     private int m_stageNum = 0;
 
@@ -81,6 +81,8 @@ public class StageData : MonoBehaviour
 
     public void Click()
     {
+        if (m_stageState <= 0) return;
+
         m_csvScript.StageNum = m_stageNum;
         if (!transform.GetComponentInParent<StageMgr>().popFlg)
         {
