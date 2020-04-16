@@ -95,7 +95,7 @@ public class Fuse : MonoBehaviour
     {
         if(m_type == FuseType.UI)
         {
-            transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, - m_defaultRot.y - Camera.main.transform.localEulerAngles.y, transform.localEulerAngles.z);
+           // transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, - m_defaultRot.y - Camera.main.transform.localEulerAngles.y, transform.localEulerAngles.z);
         }
     }
 

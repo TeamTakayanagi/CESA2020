@@ -24,6 +24,7 @@ public class UIFuse : MonoBehaviour
             _fuse.transform.localPosition = new Vector3((i & 1) * 2.0f - 1.0f, 9.0f - (int)(i / 2) * 2.0f, 5.0f);
             _fuse.transform.localEulerAngles = m_uiList[i].rotate;
             _fuse.Type = Fuse.FuseType.UI;
+            _fuse.transform.tag = ConstDefine.TagName.Fuse;
         }
     }
 

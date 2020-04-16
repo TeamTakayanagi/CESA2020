@@ -7,6 +7,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private Vector3 OUTPOS = new Vector3(-50, -50, -50);
 
     [SerializeField]
+    public Texture2D cursorTexture;
+    [SerializeField]
     private Vector3 m_stageSizeMax = Vector3.zero;
     [SerializeField]
     private Vector3 m_stageSizeMin = Vector3.zero;
@@ -35,6 +37,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     // Start is called before the first frame update
     void Start()
     {
+        Cursor.SetCursor(cursorTexture, Vector2.zero, CursorMode.Auto);
         m_createPos = OUTPOS;
         // フィールドオブジェクトの取得
         GameObject[] _cubes = GameObject.FindGameObjectsWithTag
@@ -47,7 +50,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             else
                 m_fieldFuse.AddLast(_cube);
         }
-        //Sound.Instance.PlayBGM(ConstDefine.Audio.BGM.GameMain);
+        Sound.Instance.PlayBGM(ConstDefine.Audio.BGM.GameMain);
     }
 
     // Update is called once per frame
@@ -68,7 +71,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         {
             // UI画面
             if (Input.mousePosition.x > Screen.width * 0.8f)
-                transform.position = m_selectFuse.DefaultPos;
+                m_selectFuse.transform.position = m_selectFuse.DefaultPos;
             // ゲーム画面
             else
             {
@@ -179,8 +182,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             }
         }
 
-        Vector3 stageMax = StageSizeMax;
-        Vector3 stageMin = StageSizeMin;
+        Vector3 stageMax = m_stageSizeMax;
+        Vector3 stageMin = m_stageSizeMin;
 
         foreach (Fuse fuse in m_fieldFuse)
         {
