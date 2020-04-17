@@ -12,6 +12,8 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
     int m_stageSizeZ = 0;
     [SerializeField]
     GameObject m_feildPrefab = null;
+    [SerializeField]
+    GameObject m_ground = null;
 
     Fuse m_selectFuse = null;
     GameObject m_cursorTouchObj = null;
@@ -21,7 +23,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 
     private void Awake()
     {
-        
+        m_ground.SetActive(false);
     }
 
     // Start is called before the first frame update
@@ -85,6 +87,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                         selectClone.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
                         selectClone.Type = Fuse.FuseType.Fuse;
                         selectClone.transform.localEulerAngles = m_createRot;
+                        selectClone.transform.parent = transform;
 
                         Destroy(hit.collider.gameObject);
                     }
@@ -105,6 +108,8 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                 }
             }
         }
+
+
     }
 
     // 空のボックスを用いてステージの枠を生成
@@ -112,6 +117,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
     {
         GameObject[] _objList = GameObject.FindGameObjectsWithTag(ConstDefine.TagName.Player);
         int difference = m_stageSizeX * m_stageSizeY * m_stageSizeZ - _objList.Length;
+        m_ground.transform.localPosition = new Vector3(m_ground.transform.localPosition.x, -Mathf.Ceil(m_stageSizeY / 2), m_ground.transform.localPosition.z);
 
         // 変更後のほうが設置可能数が多い（同数含む）なら
         if (difference >= 0)
@@ -174,11 +180,13 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
     {
         GameObject[] _objList = GameObject.FindGameObjectsWithTag(ConstDefine.TagName.Player);
         bool isSet = _objList[0].GetComponent<MeshRenderer>().enabled ^ true;
+
+        AllFuseDefault();
         foreach (GameObject _obj in _objList)
         {
             _obj.GetComponent<MeshRenderer>().enabled = isSet;
         }
-
+        m_ground.SetActive(!isSet);
         CameraDefault();
     }
 
@@ -188,6 +196,106 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         Camera.main.transform.position = m_cameraPos;
         Camera.main.transform.rotation = m_cameraRot;
     }
+
+    public void AllFuseDefault()
+    {
+        GameObject[] _fuseList = GameObject.FindGameObjectsWithTag(ConstDefine.TagName.Fuse);
+        foreach (GameObject _fuse in _fuseList)
+        {
+            _fuse.GetComponent<MeshRenderer>().enabled = true;
+            _fuse.gameObject.layer = 0;
+            for (int i = 0; i < _fuse.transform.childCount; ++i)
+            {
+                GameObject child = _fuse.transform.GetChild(i).gameObject;
+                MeshRenderer mesh = child.GetComponent<MeshRenderer>();
+                if (mesh)
+                    mesh.enabled = true;
+            }
+        }
+
+        GameObject[] _boxList = GameObject.FindGameObjectsWithTag(ConstDefine.TagName.Player);
+        foreach (GameObject _box in _boxList)
+        {
+            _box.GetComponent<MeshRenderer>().enabled = true;
+            _box.gameObject.layer = 0;
+        }
+    }
+
+    public void CutBoxR()
+    {
+        CutBox((int)RayPoint.PointPlace.right);
+    }       
+    public void CutBoxU()
+    {
+        CutBox((int)RayPoint.PointPlace.up);
+    }
+    public void CutBoxL()
+    {
+        CutBox((int)RayPoint.PointPlace.left);
+    }
+    public void CutBoxB()
+    {
+        CutBox((int)RayPoint.PointPlace.bottm);
+    }
+
+    public void CutBox(int rayPlace)
+    {
+        bool[] isCheak = { false, false, false };
+        RaycastHit hit = new RaycastHit();
+        GameObject rayPoint = Camera.main.transform.GetChild(rayPlace).gameObject;
+        Ray ray = new Ray(rayPoint.transform.position, -rayPoint.transform.position);
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (hit.collider.transform.tag == ConstDefine.TagName.Player ||
+                hit.collider.transform.tag == ConstDefine.TagName.Fuse)
+            {
+                Vector3 hitPos = hit.collider.transform.position;
+                Vector3 difference = rayPoint.transform.position - hitPos;
+                difference = new Vector3(Mathf.Abs(difference.x), Mathf.Abs(difference.y), Mathf.Abs(difference.z));
+                float maxValue = Mathf.Max(difference.x, difference.y, difference.z);
+                if (!isCheak[0] && difference.x == maxValue)
+                    isCheak[0] = true;
+                else if (!isCheak[1] && difference.y == maxValue)
+                    isCheak[1] = true;
+                else if (!isCheak[2] && difference.z == maxValue)
+                    isCheak[2] = true;
+
+                GameObject[] _boxList = GameObject.FindGameObjectsWithTag(ConstDefine.TagName.Player);
+                GameObject[] _fuseList = GameObject.FindGameObjectsWithTag(ConstDefine.TagName.Fuse);
+                foreach(GameObject _box in _boxList)
+                {
+                    if((isCheak[0] && _box.transform.position.x == hitPos.x ) ||
+                       (isCheak[1] && _box.transform.position.y == hitPos.y) ||
+                       (isCheak[2] && _box.transform.position.z == hitPos.z))
+                    {
+                        _box.GetComponent<MeshRenderer>().enabled = false;
+                        _box.gameObject.layer = 2;
+                    }
+                }
+                foreach (GameObject _fuse in _fuseList)
+                {
+                    if ((isCheak[0] && _fuse.transform.position.x == hitPos.x) ||
+                        (isCheak[1] && _fuse.transform.position.y == hitPos.y) ||
+                        (isCheak[2] && _fuse.transform.position.z == hitPos.z))
+                    {
+                        _fuse.GetComponent<MeshRenderer>().enabled = false;
+                        _fuse.gameObject.layer = 2;
+                        for(int i = 0; i < _fuse.transform.childCount; ++i)
+                        {
+                            GameObject child = _fuse.transform.GetChild(i).gameObject;
+                            MeshRenderer mesh = child.GetComponent<MeshRenderer>();
+                            if(mesh)
+                              mesh.enabled = false;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+
 
 /// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 数値テキストボックスの処理

@@ -6,14 +6,12 @@ public class MainCamera : MonoBehaviour
 {
     [SerializeField]
     private Vector3 m_target = Vector3.zero;
+    [SerializeField]
+    private bool m_isAroundCamera = false;
     private Vector3 m_savePos;
     private float m_moveRotate = 90.0f;
     private float m_moveRadiuse = 10.0f;
     private bool m_isScroll = false;
-    [SerializeField]
-    private bool m_isAroundCamera = false;
-    private const float CAMERA_MOVE = 1.0f;
-    private const float AROUND_MOVE = 10.0f;
 
     // Start is called before the first frame update
     void Awake()
@@ -45,21 +43,21 @@ public class MainCamera : MonoBehaviour
             Vector3 difference = Input.mousePosition - m_savePos;
             if (m_isAroundCamera)
             {
-                if (Mathf.Abs(difference.x) > 2.0f)
+                if (Mathf.Abs(difference.x) > ConstDefine.ConstParameter.PERMISSION_MOVE)
                 {
-                    transform.RotateAround(m_target, transform.up, difference.x * Time.deltaTime * AROUND_MOVE);
+                    transform.RotateAround(m_target, transform.up, difference.x * Time.deltaTime * ConstDefine.ConstParameter.AROUND_MOVE);
                     m_savePos = Input.mousePosition;
                 }
-                if (Mathf.Abs(difference.y) > 2.0f)
+                if (Mathf.Abs(difference.y) > ConstDefine.ConstParameter.PERMISSION_MOVE)
                 {
-                    transform.RotateAround(m_target, transform.right, -difference.y * Time.deltaTime * AROUND_MOVE);
+                    transform.RotateAround(m_target, transform.right, -difference.y * Time.deltaTime * ConstDefine.ConstParameter.AROUND_MOVE);
                     m_savePos = Input.mousePosition;
                 }
 
             }
             else
             {
-                m_moveRotate -= difference.x * Time.deltaTime * CAMERA_MOVE;
+                m_moveRotate -= difference.x * Time.deltaTime * ConstDefine.ConstParameter.CAMERA_MOVE;
                 m_savePos = Input.mousePosition;
                 transform.position = new Vector3(m_moveRadiuse * Mathf.Cos(m_moveRotate), m_moveRadiuse * Mathf.Sin(15), m_moveRadiuse * Mathf.Sin(m_moveRotate));
                 transform.LookAt(Vector3.zero);
