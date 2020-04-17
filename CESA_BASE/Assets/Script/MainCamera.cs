@@ -15,8 +15,10 @@ public class MainCamera : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+#if true
         transform.position = new Vector3(m_moveRadiuse * Mathf.Cos(m_moveRotate), m_moveRadiuse * Mathf.Sin(15), m_moveRadiuse * Mathf.Sin(m_moveRotate));
         transform.LookAt(Vector3.zero);
+#endif
     }
 
     // Update is called once per frame
@@ -24,6 +26,7 @@ public class MainCamera : MonoBehaviour
     {
         float scroll = Input.GetAxis("Mouse ScrollWheel");
 
+        // 周り移動
         if(!m_isSceoll && Input.GetMouseButtonDown(1))
         {
             m_isSceoll = true;
@@ -36,8 +39,7 @@ public class MainCamera : MonoBehaviour
         else if(m_isSceoll && Input.GetMouseButton(1))
         {
             Vector3 difference = Input.mousePosition - m_savePos;
-            const bool Camera = false;
-#if Camera
+#if false
             if (difference.x > 0.0f)
             {
                 transform.RotateAround(target, transform.up, difference.x * Time.deltaTime * CAMERA_MOVE);
@@ -65,10 +67,26 @@ public class MainCamera : MonoBehaviour
             transform.LookAt(Vector3.zero);
 #endif
         }
-        // カメラ移動
+        // 左右移動
+        else if (!m_isSceoll && Input.GetMouseButtonDown(2))
+        {
+            m_isSceoll = true;
+            m_savePos = Input.mousePosition;
+        }
+        else if (m_isSceoll && Input.GetMouseButtonUp(2))
+        {
+            m_isSceoll = false;
+        }
+        else if (m_isSceoll && Input.GetMouseButton(2))
+        {
+            Vector3 difference = Input.mousePosition - m_savePos;
+            transform.position -= transform.rotation * new Vector3(difference.x * Time.deltaTime, 0.0f, 0.0f);
+            m_savePos = Input.mousePosition;
+        }
+       // カメラ手前移動
         else if(scroll != 0.0f)
         {
-#if Camera
+#if false
           Vector3 _pos = transform.position + transform.forward * scroll * ConstDefine.ConstParameter.VALUE_CAMERA;
             float dis = Vector3.Distance(_pos, m_target);
             if (dis > ConstDefine.ConstParameter.CAMERA_NEAR &&
@@ -87,21 +105,6 @@ public class MainCamera : MonoBehaviour
                 transform.LookAt(Vector3.zero);
             }
 #endif
-        }
-        if (!m_isSceoll && Input.GetMouseButtonDown(2))
-        {
-            m_isSceoll = true;
-            m_savePos = Input.mousePosition;
-        }
-        else if (m_isSceoll && Input.GetMouseButtonUp(2))
-        {
-            m_isSceoll = false;
-        }
-        else if (m_isSceoll && Input.GetMouseButton(2))
-        {
-            Vector3 difference = Input.mousePosition - m_savePos;
-            transform.position -= transform.rotation * new Vector3(difference.x * Time.deltaTime, 0.0f, 0.0f);
-            m_savePos = Input.mousePosition;
         }
     }
 }

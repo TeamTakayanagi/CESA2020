@@ -9,10 +9,11 @@ public class Number : MonoBehaviour
     private const int COUNT = 60 * 2;
     [SerializeField]
     private Sprite[] texture2D = new Sprite[NUMBER];
+    [SerializeField]
+    private int m_texCount = 3;
     private int m_countDown = COUNT;
 
     private Image m_image = null;
-    private int m_texCount = 3;
 
     public int TexCount
     {

@@ -42,7 +42,7 @@ public class Title : MonoBehaviour
     private Quaternion m_initRot = new Quaternion();
 
     private float m_upSpeed = 0.5f;
-    private float m_downSpeed = 1.0f;
+    //private float m_downSpeed = 1.0f;
     private float m_delay = 0;
 
     private void Awake()

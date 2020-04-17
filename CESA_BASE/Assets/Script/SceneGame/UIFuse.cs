@@ -18,7 +18,7 @@ public class UIFuse : MonoBehaviour
     List<FuseStatus> m_uiList = new List<FuseStatus>();
     
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         for(int i = 0; i < m_uiList.Count; ++i)
         {
