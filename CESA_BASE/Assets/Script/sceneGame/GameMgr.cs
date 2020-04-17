@@ -9,8 +9,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     // デリゲート宣言
     delegate void GameStep();
 
-    private Vector3 OUTPOS = new Vector3(-50, -50, -50);
-
     [SerializeField]
     private Texture2D cursorDefault = null;
     [SerializeField]
@@ -20,7 +18,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     [SerializeField]
     private Vector3 m_stageSizeMin = Vector3.zero;
 
-    private Vector3 m_mousePos = Vector3.zero;
     private LinkedList<Fuse> m_fieldFuse = new LinkedList<Fuse>();
     private LinkedList<Fuse> m_uiFuse = new LinkedList<Fuse>();
     private Fuse m_selectFuse = null;
@@ -29,6 +26,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private GameObject m_saveObj = null;
     private int m_burnCount = 1;            // 燃えている導火線の数
     private int m_gameSpeed = 1;            // ゲーム加速処理
+    private Vector3 OUTPOS = new Vector3(-50, -50, -50);
 
     public int BurnCount
     {
@@ -77,11 +75,11 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         m_gameStep = GameStart;
 
         // フィールドオブジェクトの取得
-        GameObject[] _cubes = GameObject.FindGameObjectsWithTag
+        GameObject[] _fuseList = GameObject.FindGameObjectsWithTag
             (Utility.TagUtility.getParentTagName(ConstDefine.TagName.Fuse));
-        foreach (GameObject obj in _cubes)
+        foreach (GameObject _fuse in _fuseList)
         {
-            Fuse _cube = obj.GetComponent<Fuse>();
+            Fuse _cube = _fuse.GetComponent<Fuse>();
             if (_cube.Type == Fuse.FuseType.UI)
                 m_uiFuse.AddLast(_cube);
             else
@@ -122,14 +120,13 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     void GameMain()
     {
         // マウス座標をワールド座標で取得
-        {
-            Vector3 screen = Camera.main.WorldToScreenPoint(transform.position);
-            m_mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z);
-            m_mousePos = Camera.main.ScreenToWorldPoint(m_mousePos);
-        }
+        Vector3 mousePos = Vector3.zero;
+        Vector3 screen = Camera.main.WorldToScreenPoint(transform.position);
+        mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z);
+        mousePos = Camera.main.ScreenToWorldPoint(mousePos);
 
         // 生成場所を取得
-        m_createPos = FindNearPosision(m_mousePos);
+        m_createPos = FindNearPosision(mousePos);
 
         // 導火線を選択しているなら
         if (m_selectFuse)
@@ -219,7 +216,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 }
             }
         }
-
     }
 
     // ゲームクリア処理
