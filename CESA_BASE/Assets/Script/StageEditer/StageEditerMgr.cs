@@ -21,14 +21,14 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
     Quaternion m_cameraRot = Quaternion.identity;
     Vector3 m_createRot = Vector3.zero;
 
-    private void Awake()
-    {
-        m_ground.SetActive(false);
-    }
+    //private void Awake()
+    //{
+    //}
 
     // Start is called before the first frame update
     void Start()
     {
+        m_ground.SetActive(false);
         // UIの導火線仮選択
         m_selectFuse = GameObject.FindGameObjectWithTag(ConstDefine.TagName.Fuse).GetComponent<Fuse>();
         m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.cyan);
@@ -82,7 +82,8 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                     if (Input.GetMouseButtonDown(0) && m_selectFuse)
                     {
                         // その場所にまだ導火線がないなら
-                        Fuse selectClone = Instantiate(m_selectFuse);      // 複製
+                        Fuse selectClone = null;
+                        selectClone = Instantiate(m_selectFuse);      // 複製
                         selectClone.transform.position = hit.collider.transform.position;
                         selectClone.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
                         selectClone.Type = Fuse.FuseType.Fuse;
@@ -102,9 +103,26 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                     }
                 }
                 // 設置済みの導火線にタッチしているなら
-                else if (hit.collider.tag == ConstDefine.TagName.Fuse)
+                else if (hit.collider.transform.parent.tag == ConstDefine.TagName.Fuse)
                 {
-                    // 角度変更
+                    // 導火線設置
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        // 削除
+                        GameObject obj = Instantiate(m_feildPrefab, hit.collider.transform.parent.position, Quaternion.identity);
+                        obj.transform.parent = transform.GetChild(0);
+                        obj.transform.tag = ConstDefine.TagName.Player;
+                        Destroy(hit.collider.transform.parent.gameObject);
+                    }
+                    // 設置位置の色の変更
+                    else
+                    {
+                        if (m_cursorTouchObj)
+                            m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+
+                        m_cursorTouchObj = hit.collider.transform.parent.gameObject;
+                        m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
+                    }
                 }
             }
         }
@@ -172,7 +190,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         }
     }
 
-/// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ボタンの処理
 
     // 実際のステージを確認
@@ -368,6 +386,16 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             case 'Z':
                 m_createRot.z = num;
                 break;
+        }
+
+        GameObject[] _objList = GameObject.FindGameObjectsWithTag(ConstDefine.TagName.Fuse);
+        foreach(GameObject _obj in _objList)
+        {
+            Fuse _fuse = _obj.GetComponent<Fuse>();
+            if(_fuse.Type == Fuse.FuseType.UI)
+            {
+                _fuse.transform.localEulerAngles = m_createRot;
+            }
         }
     }
 }

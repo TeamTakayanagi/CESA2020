@@ -3,7 +3,7 @@ namespace ConstDefine
 {
     public readonly struct ConstParameter
     {
-        public const float BURN_MAX_TIME = 5.0f;                    // 燃えてる時間
+        public const float BURN_MAX_TIME = 15.0f;                    // 燃えてる時間
         public const float SPREAD_TIME = BURN_MAX_TIME * 0.1f;      // 燃え移り始める時間
         public const float CUBE_SCALE = 1.0f;
         public const float CAMERA_NEAR = 3.0f;
