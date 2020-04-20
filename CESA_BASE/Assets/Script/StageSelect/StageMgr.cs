@@ -47,6 +47,7 @@ public class StageMgr : MonoBehaviour
     private void Awake()
     {
         m_initPos = transform.position;
+
     }
 
     // Start is called before the first frame update
@@ -82,22 +83,35 @@ public class StageMgr : MonoBehaviour
         }
 
         // 横からイントゥ　のために　初期位置をずらす
-        else if (m_step == (int)StageMgrState.StageInsert)
+        if (m_step == (int)StageMgrState.StageInsert)
         {
             // ずらす前に今の位置情報を記憶しようね
+
+            transform.position = new Vector3(1200, transform.position.y);
+
+            //transform.position += m_direction;
+
+            if (transform.position.x > m_initPos.x)
+            {
+                if (!Input.GetMouseButton(0))
+                {
+                    //m_direction = Vector3.zero;
+                    //transform.position = m_initPos;
+                    transform.position = Vector3.Lerp(transform.position, m_initPos, Time.deltaTime * 20);
+                }
+            }
+
+            if (transform.position.x <= 0)
+                m_step++;
+        }
+
+        if (m_step == (int)StageMgrState.StageSelect)
+        {
             if (m_endPos == m_initPos)
             {
                 m_endPos = m_panel.transform.position;
                 m_endPos = new Vector3(m_endPos.x * -1, m_endPos.y, m_endPos.z);
             }
-
-            transform.position = new Vector3(1200, transform.position.y);
-            m_step++;
-        }
-
-        if (m_step == (int)StageMgrState.StageSelect)
-        {
-
 
             if (!popFlg)
             {
