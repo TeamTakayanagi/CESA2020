@@ -37,6 +37,14 @@ public class Fuse : MonoBehaviour
         }
     }
 
+
+    // material katokou 箱透けるように
+    public Material box_red;
+    public Material box_blue;
+    public Material box_white;
+    public Material box_yellow;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -45,19 +53,19 @@ public class Fuse : MonoBehaviour
         {
             case FuseType.Start:
                 {
-                    gameObject.GetComponent<Renderer>().material.color = Color.red;
+                    gameObject.GetComponent<Renderer>().material.color = box_red.color;
                     m_isBurn = true;
                     break;
                 }
             case FuseType.Fuse:
                 {
-                    gameObject.GetComponent<Renderer>().material.color = Color.white;
+                    gameObject.GetComponent<Renderer>().material.color = box_white.color;
                     m_isBurn = false;
                     break;
                 }
             case FuseType.Goal:
                 {
-                    gameObject.GetComponent<Renderer>().material.color = Color.blue;
+                    gameObject.GetComponent<Renderer>().material.color = box_blue.color;
                     m_isBurn = false;
                     break;
                 }
@@ -99,8 +107,9 @@ public class Fuse : MonoBehaviour
             return;
 
         // 
-        if (other.transform.tag == Utility.TagUtility.getParentTagName(TagName.Fuse))
-        {
+        //if (other.transform.tag == Utility.TagUtility.getParentTagName(TagName.Fuse))
+        if (other.transform.tag == TagName.Fuse)
+            {
             if (m_burnRate >= 1.0f)
             {
                 Fuse cube = other.gameObject.GetComponent<Fuse>();
@@ -108,7 +117,7 @@ public class Fuse : MonoBehaviour
                     return;
 
                 cube.m_isBurn = true;
-                cube.gameObject.GetComponent<Renderer>().material.color = Color.red;
+                cube.gameObject.GetComponent<Renderer>().material.color = box_red.color;
                 // 
                 if (cube.m_type == FuseType.Goal)
                 {
