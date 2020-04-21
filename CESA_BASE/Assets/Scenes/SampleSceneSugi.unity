@@ -1423,40 +1423,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab13068abb27543418c1e0e4e79e4c7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cursorDefault: {fileID: 2800000, guid: c4a3055fb0649864ba943d0e8cb9d7e5, type: 3}
-  cursorCatch: {fileID: 2800000, guid: c67227cef29f0e542b014e1a763c0044, type: 3}
+  m_cursorDefault: {fileID: 0}
+  m_cursorCatch: {fileID: 0}
   m_stageSizeMax: {x: 2, y: 2, z: 2}
   m_stageSizeMin: {x: -2, y: -2, z: -2}
   m_fireworks: {fileID: 2195708794517587777, guid: f4c0fe2d69964ef4ea51c05f5363beec,
     type: 3}
-  m_resultClear: {fileID: 2443468632429642405}
-  m_resultGameover: {fileID: 2443468630866470610}
-  m_animCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 1
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  TEXT_POS: {x: 0, y: 100, z: 0}
-  BUTTON_POS: {x: 0, y: -50, z: 0}
 --- !u!114 &1715064558
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1651,7 +1623,7 @@ GameObject:
   - component: {fileID: 2443468630866470611}
   m_Layer: 5
   m_Name: ResultGameover
-  m_TagString: Untagged
+  m_TagString: UI/GameOver
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2782,7 +2754,7 @@ GameObject:
   - component: {fileID: 2443468632429642406}
   m_Layer: 5
   m_Name: ResultClear
-  m_TagString: Untagged
+  m_TagString: UI/GameClear
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

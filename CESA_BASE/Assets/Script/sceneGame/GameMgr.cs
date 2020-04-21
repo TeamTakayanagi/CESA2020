@@ -18,38 +18,33 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     }
 
     [SerializeField]
-    private Texture2D cursorDefault = null;
+    private Texture2D m_cursorDefault = null;                           // マウスカーソル（通常時）
     [SerializeField]
-    private Texture2D cursorCatch = null;
+    private Texture2D m_cursorCatch = null;                             // マウスカーソル（UIの導火線選択時）
     [SerializeField]
-    private Vector3 m_stageSizeMax = Vector3.zero;
+    private Vector3 m_stageSizeMax = Vector3.zero;                      // ステージサイズ最大値
     [SerializeField]
-    private Vector3 m_stageSizeMin = Vector3.zero;
+    private Vector3 m_stageSizeMin = Vector3.zero;                      // ステージサイズ最小値
     [SerializeField]
-    private GameObject m_fireworks = null;
-    [SerializeField]
-    private GameObject m_resultClear = null;
-    [SerializeField]
-    private GameObject m_resultGameover = null;
-    [SerializeField]
-    private AnimationCurve m_animCurve = AnimationCurve.Linear(0, 0, 1, 1);
-    [SerializeField]
-    private Vector3 TEXT_POS = Vector3.zero;
-    [SerializeField]
-    private Vector3 BUTTON_POS = Vector3.zero;
-    private Vector3 END_OPOS = new Vector3(0.0f, 30.0f, 0.0f);
+    private GameObject m_fireworks = null;                              // 花火のプレハブ
 
-    private int m_burnCount = 1;            // 燃えている導火線の数
-    private int m_gameSpeed = 1;            // ゲーム加速処理
-    private Vector3 m_createPos = Vector3.zero;
-    private readonly Vector3 OUTPOS = new Vector3(-50, -50, -50);
-    private GameObject m_saveObj = null;
-    private Fuse m_selectFuse = null;
-    private LinkedList<Fuse> m_fieldFuse = new LinkedList<Fuse>();
-    private LinkedList<Fuse> m_uiFuse = new LinkedList<Fuse>();
-    private GameStep m_gameStep = null;
 
-    public const float DURATION = 1.0f;    // スライド時間（秒）
+    private Vector3 END_FIRE_POS = new Vector3(0.0f, 30.0f, 0.0f);      // 花火の終着地点との距離      
+    private readonly Vector3 TEXT_POS = new Vector3(0.0f, 100, 0.0f);   // リザルトテキストの移動距離
+    private readonly Vector3 BUTTON_POS = new Vector3(0.0f, -50, 0.0f); // リザルトボタンの移動距離              
+    private readonly Vector3 OUTPOS = new Vector3(-50, -50, -50);       // 導火線を生成できない位置
+    private readonly　AnimationCurve m_animCurve = AnimationCurve.Linear(0, 0, 1, 1);   // リザルトUIの移動用 
+
+    private int m_burnCount = 1;                                        // 燃えている導火線の数
+    private int m_gameSpeed = 1;                                        // ゲーム加速処理
+    private Vector3 m_createPos = Vector3.zero;                         // 導火線の生成位置
+    private GameObject m_saveObj = null;                                // 各GameStepごとにオブジェクトを格納（スタート：カウントダウン数字　ゲームクリア：花火）
+    private GameObject m_resultClear = null;                            // ゲームクリア用のUIの親オブジェクト
+    private GameObject m_resultGameover = null;                         // ゲームオーバー用のUIの親オブジェクト
+    private Fuse m_selectFuse = null;                                   // 選択しているUIの導火線          
+    private LinkedList<Fuse> m_fieldFuse = new LinkedList<Fuse>();      // ゲーム画面の導火線
+    private LinkedList<Fuse> m_uiFuse = new LinkedList<Fuse>();         // UI部分の導火線
+    private GameStep m_gameStep = null;                                 // 現在のゲームの進行状況の関数
 
     public int BurnCount
     {
@@ -95,9 +90,15 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     void Start()
     {
         // マウスカーソル用の画像をデフォルトに変更
-        Cursor.SetCursor(cursorDefault, Vector2.zero, CursorMode.Auto);
+        Cursor.SetCursor(m_cursorDefault, Vector2.zero, CursorMode.Auto);
+        // ゲームクリア用のUIの親オブジェクト取得
+        m_resultClear = GameObject.FindGameObjectWithTag(Utility.TagUtility.getChildTagName(StringDefine.TagName.GameClear));
+        // ゲームオーバー用のUIの親オブジェクト取得
+        m_resultGameover = GameObject.FindGameObjectWithTag(Utility.TagUtility.getChildTagName(StringDefine.TagName.GameOver));     
 
+        // 初期生成位置はわからないので生成不可能場所を格納
         m_createPos = OUTPOS;
+
         // 開始演出準備
         GameObject canvas = GameObject.FindGameObjectWithTag(StringDefine.TagName.UICanvas);
         m_saveObj = canvas.transform.GetChild(0).gameObject;
@@ -128,7 +129,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         m_gameStep();
     }
 
-    // スタート演出
+    /// <summary>
+    /// ゲームスタート処理
+    /// </summary>
     void GameStart()
     {
         Number number = m_saveObj.GetComponent<Number>();
@@ -149,7 +152,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
     }
 
-    // ゲームメイン処理
+    /// <summary>
+    /// ゲームメイン処理
+    /// </summary>
     void GameMain()
     {
 #if UNITY_EDITOR
@@ -173,7 +178,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         mousePos = Camera.main.ScreenToWorldPoint(mousePos);
 
         // 生成場所を取得
-        m_createPos = FindNearPosision(mousePos);
+        m_createPos = FindNearFuse(mousePos);
 
         // 導火線を選択しているなら
         if (m_selectFuse)
@@ -220,7 +225,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
                             m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.cyan);
                             // マウスカーソル用の画像を選択時に変更
-                            Cursor.SetCursor(cursorCatch, Vector2.zero, CursorMode.Auto);
+                            Cursor.SetCursor(m_cursorCatch, Vector2.zero, CursorMode.Auto);
                         }
                     }
                     // 選択解除
@@ -229,7 +234,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                         m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
                         m_selectFuse = null;
                         // マウスカーソル用の画像をデフォルトに変更
-                        Cursor.SetCursor(cursorDefault, Vector2.zero, CursorMode.Auto);
+                        Cursor.SetCursor(m_cursorDefault, Vector2.zero, CursorMode.Auto);
                     }
                 }
             }
@@ -271,7 +276,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     m_selectFuse = null;
                     m_createPos = OUTPOS;
                     // マウスカーソル用の画像をデフォルトに変更
-                    Cursor.SetCursor(cursorDefault, Vector2.zero, CursorMode.Auto);
+                    Cursor.SetCursor(m_cursorDefault, Vector2.zero, CursorMode.Auto);
                 }
                 // ゲーム加速
                 else
@@ -283,8 +288,12 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
     }
 
-
-    private Vector3 FindNearPosision(Vector3 mousePos)
+    /// <summary>
+    /// 一番近い導火線の座標から生成位置を決定
+    /// </summary>
+    /// <param name="mousePos">マウスのワールド座標</param>
+    /// <returns>導火線の生成位置</returns>
+    private Vector3 FindNearFuse(Vector3 mousePos)
     {
         // 一番近くにあるオブジェクト探索用変数
         Fuse nearObj = m_fieldFuse.First.Value;
@@ -356,6 +365,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         return objPos;
     }
 
+    /// <summary>
+    /// 導火線が燃え尽きた処理
+    /// </summary>
+    /// <param name="_fuse">燃え尽きた導火線</param>
     public void BurnOutFuse(Fuse _fuse)
     {
         m_fieldFuse.Remove(_fuse);
@@ -364,7 +377,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             m_resultClear.SetActive(true);
             Camera.main.GetComponent<MainCamera>().Control = false;
             m_saveObj = Instantiate(m_fireworks, _fuse.transform.position, Quaternion.identity);
-            END_OPOS += _fuse.transform.position;
+            END_FIRE_POS += _fuse.transform.position;
             m_gameStep = GameClear;
         }
         m_burnCount--;
@@ -375,21 +388,34 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
     }
 
-    // ゲームクリア処理
+    /// <summary>
+    /// ゲームクリア処理
+    /// </summary>
     public void GameClear()
     {
-        m_saveObj.transform.position = Vector3.Lerp(m_saveObj.transform.position, END_OPOS, Time.deltaTime);
+        // 花火を移動させメインカメラに注視させる
+        m_saveObj.transform.position = Vector3.Lerp(m_saveObj.transform.position, END_FIRE_POS, Time.deltaTime);
         Camera.main.transform.LookAt(m_saveObj.transform.position);
-        StartCoroutine(StartSlidePanel(m_resultClear));
+
+        // UIの移動
+        StartCoroutine(SlideResultUI(m_resultClear));
     }
 
+    /// <summary>
+    /// ゲームオーバー処理
+    /// </summary>
     public void GameOver()
     {
-        StartCoroutine(StartSlidePanel(m_resultGameover));
+        // UIの移動
+        StartCoroutine(SlideResultUI(m_resultGameover));
     }
 
-    //--- テキストのスライド ---
-    private IEnumerator StartSlidePanel(GameObject result)
+    /// <summary>
+    /// リザルトのUIの移動
+    /// </summary>
+    /// <param name="result">リザルトの種類</param>
+    /// <returns></returns>
+    private IEnumerator SlideResultUI(GameObject result)
     {
         float startTime = Time.time;             // 開始時間
         Vector3 moveDistance_text;            // 移動距離および方向
@@ -403,10 +429,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         moveDistance_text = TEXT_POS - startPos_text;
         moveDistance_button = BUTTON_POS - startPos_rePlay;
 
-        while ((Time.time - startTime) < DURATION)
+        while ((Time.time - startTime) < AdjustParameter.Result_Constant.DURATION)
         {
-            _text.localPosition = startPos_text + moveDistance_text * m_animCurve.Evaluate((Time.time - startTime) / DURATION);
-            _button.localPosition = startPos_rePlay + moveDistance_button * m_animCurve.Evaluate((Time.time - startTime) / DURATION);
+            _text.localPosition = startPos_text + moveDistance_text * m_animCurve.Evaluate((Time.time - startTime) / AdjustParameter.Result_Constant.DURATION);
+            _button.localPosition = startPos_rePlay + moveDistance_button * m_animCurve.Evaluate((Time.time - startTime) / AdjustParameter.Result_Constant.DURATION);
             yield return 0;
         }
     }

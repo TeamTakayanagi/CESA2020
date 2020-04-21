@@ -29,6 +29,13 @@ namespace AdjustParameter
         public const float UI_FUSE_INTERVAL_X = 2.0f;
         public const float UI_FUSE_INTERVAL_Y = 2.0f;
     }
+
+    public readonly struct Result_Constant
+    {
+        public const float DURATION = 1.0f;                                 // リザルトのUIのスライド時間（秒）
+    }
+
+
 }
 
 //---加工済み変数---
@@ -53,7 +60,11 @@ namespace StringDefine
         public const string Player = "Player";
         public const string UICamera = "UICamera";
         public const string Fuse = "Fuse"; 
-        public const string UICanvas = "UICanvas"; 
+        public const string UICanvas = "UICanvas";
+
+        // 「/」の後のタグ
+        public const string GameClear = "GameClear";
+        public const string GameOver = "GameOver";
     }
 
     namespace Audio
