@@ -13,6 +13,7 @@ public class MainCamera : MonoBehaviour
     private float m_moveRadiuse = 10.0f;
     private bool m_isScroll = false;
 
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -26,7 +27,7 @@ public class MainCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
+            float scroll = Input.GetAxis("Mouse ScrollWheel");
 
         // 周り移動
         if(!m_isScroll && Input.GetMouseButtonDown(1))
@@ -105,5 +106,6 @@ public class MainCamera : MonoBehaviour
                 }
             }
         }
+        
     }
 }

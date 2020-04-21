@@ -179,7 +179,6 @@ public class Fuse : MonoBehaviour
         if (other.transform.tag == ConstDefine.TagName.Fuse)
         {
             // 
-            if ()
             {
                 Fuse _fuse = other.gameObject.GetComponent<Fuse>();
                 // 相手が燃えているなら処理を飛ばす
