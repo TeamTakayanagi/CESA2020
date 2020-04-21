@@ -30,7 +30,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
     {
         m_ground.SetActive(false);
         // UIの導火線仮選択
-        m_selectFuse = GameObject.FindGameObjectWithTag(ConstDefine.TagName.Fuse).GetComponent<Fuse>();
+        m_selectFuse = GameObject.FindGameObjectWithTag(StringDefine.TagName.Fuse).GetComponent<Fuse>();
         m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.cyan);
 
         // カメラの初期情報保存
@@ -50,13 +50,13 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         // UI部分 
         if (Input.mousePosition.x > Screen.width * 0.8f)
         {
-            ray = GameObject.FindGameObjectWithTag(ConstDefine.TagName.UICamera).GetComponent<Camera>().
+            ray = GameObject.FindGameObjectWithTag(StringDefine.TagName.UICamera).GetComponent<Camera>().
                     ScreenPointToRay(Input.mousePosition);
 
             // 設置場所を選択
             if (Physics.Raycast(ray, out hit))
             {
-                if (hit.collider.transform.parent.tag == ConstDefine.TagName.Fuse)
+                if (hit.collider.transform.parent.tag == StringDefine.TagName.Fuse)
                 {
                     if (Input.GetMouseButtonDown(0))
                     {
@@ -76,7 +76,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             if (Physics.Raycast(ray, out hit))
             {
                 // 空ボックスなら
-                if (hit.collider.tag == ConstDefine.TagName.Player)
+                if (hit.collider.tag == StringDefine.TagName.Player)
                 {
                     // 導火線設置
                     if (Input.GetMouseButtonDown(0) && m_selectFuse)
@@ -103,7 +103,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                     }
                 }
                 // 設置済みの導火線にタッチしているなら
-                else if (hit.collider.transform.parent.tag == ConstDefine.TagName.Fuse)
+                else if (hit.collider.transform.parent.tag == StringDefine.TagName.Fuse)
                 {
                     // 導火線設置
                     if (Input.GetMouseButtonDown(0))
@@ -111,7 +111,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                         // 削除
                         GameObject obj = Instantiate(m_feildPrefab, hit.collider.transform.parent.position, Quaternion.identity);
                         obj.transform.parent = transform.GetChild(0);
-                        obj.transform.tag = ConstDefine.TagName.Player;
+                        obj.transform.tag = StringDefine.TagName.Player;
                         Destroy(hit.collider.transform.parent.gameObject);
                     }
                     // 設置位置の色の変更
@@ -133,7 +133,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
     // 空のボックスを用いてステージの枠を生成
     void CreateStage()
     {
-        GameObject[] _objList = GameObject.FindGameObjectsWithTag(ConstDefine.TagName.Player);
+        GameObject[] _objList = GameObject.FindGameObjectsWithTag(StringDefine.TagName.Player);
         int difference = m_stageSizeX * m_stageSizeY * m_stageSizeZ - _objList.Length;
         m_ground.transform.localPosition = new Vector3(m_ground.transform.localPosition.x, -Mathf.Ceil(m_stageSizeY / 2), m_ground.transform.localPosition.z);
 
@@ -160,7 +160,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                         {
                             obj = Instantiate(m_feildPrefab, new Vector3(x - half.x, y - half.y, z - half.z), Quaternion.identity);
                             obj.transform.parent = transform.GetChild(0);
-                            obj.transform.tag = ConstDefine.TagName.Player;
+                            obj.transform.tag = StringDefine.TagName.Player;
                         }
                     }
                 }
@@ -196,7 +196,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
     // 実際のステージを確認
     public void ViewPlayStage()
     {
-        GameObject[] _objList = GameObject.FindGameObjectsWithTag(ConstDefine.TagName.Player);
+        GameObject[] _objList = GameObject.FindGameObjectsWithTag(StringDefine.TagName.Player);
         bool isSet = _objList[0].GetComponent<MeshRenderer>().enabled ^ true;
 
         AllFuseDefault();
@@ -217,7 +217,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 
     public void AllFuseDefault()
     {
-        GameObject[] _fuseList = GameObject.FindGameObjectsWithTag(ConstDefine.TagName.Fuse);
+        GameObject[] _fuseList = GameObject.FindGameObjectsWithTag(StringDefine.TagName.Fuse);
         foreach (GameObject _fuse in _fuseList)
         {
             _fuse.GetComponent<MeshRenderer>().enabled = true;
@@ -231,7 +231,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             }
         }
 
-        GameObject[] _boxList = GameObject.FindGameObjectsWithTag(ConstDefine.TagName.Player);
+        GameObject[] _boxList = GameObject.FindGameObjectsWithTag(StringDefine.TagName.Player);
         foreach (GameObject _box in _boxList)
         {
             _box.GetComponent<MeshRenderer>().enabled = true;
@@ -265,8 +265,8 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 
         if (Physics.Raycast(ray, out hit))
         {
-            if (hit.collider.transform.tag == ConstDefine.TagName.Player ||
-                hit.collider.transform.tag == ConstDefine.TagName.Fuse)
+            if (hit.collider.transform.tag == StringDefine.TagName.Player ||
+                hit.collider.transform.tag == StringDefine.TagName.Fuse)
             {
                 Vector3 hitPos = hit.collider.transform.position;
                 Vector3 difference = rayPoint.transform.position - hitPos;
@@ -279,8 +279,8 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                 else if (!isCheak[2] && difference.z == maxValue)
                     isCheak[2] = true;
 
-                GameObject[] _boxList = GameObject.FindGameObjectsWithTag(ConstDefine.TagName.Player);
-                GameObject[] _fuseList = GameObject.FindGameObjectsWithTag(ConstDefine.TagName.Fuse);
+                GameObject[] _boxList = GameObject.FindGameObjectsWithTag(StringDefine.TagName.Player);
+                GameObject[] _fuseList = GameObject.FindGameObjectsWithTag(StringDefine.TagName.Fuse);
                 foreach(GameObject _box in _boxList)
                 {
                     if((isCheak[0] && _box.transform.position.x == hitPos.x ) ||
@@ -388,7 +388,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                 break;
         }
 
-        GameObject[] _objList = GameObject.FindGameObjectsWithTag(ConstDefine.TagName.Fuse);
+        GameObject[] _objList = GameObject.FindGameObjectsWithTag(StringDefine.TagName.Fuse);
         foreach(GameObject _obj in _objList)
         {
             Fuse _fuse = _obj.GetComponent<Fuse>();

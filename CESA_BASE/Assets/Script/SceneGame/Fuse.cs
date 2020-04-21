@@ -63,7 +63,7 @@ public class Fuse : MonoBehaviour
     private void Start()
     {
         m_defaultRot = transform.localEulerAngles;
-        m_burnTime = ConstDefine.ConstParameter.BURN_MAX_TIME;  // 燃え尽きるまでの時間
+        m_burnTime = AdjustParameter.Fuse_Constant.BURN_MAX_TIME;  // 燃え尽きるまでの時間
 
         switch (m_type)
         {
@@ -103,7 +103,7 @@ public class Fuse : MonoBehaviour
     {
         if (m_type != FuseType.UI && m_isBurn)
         {
-           // m_burnTime -= Time.deltaTime * GameMgr.Instance.GameSpeed;
+            m_burnTime -= Time.deltaTime * GameMgr.Instance.GameSpeed;
             if (m_burnTime <= 0.0f)
             {
                 // 燃え尽きた
@@ -128,7 +128,7 @@ public class Fuse : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
+    private void LateUpdate()
     {
         if (m_type == FuseType.UI)
         {
@@ -147,14 +147,14 @@ public class Fuse : MonoBehaviour
             return;
 
         // 導火線との判定
-        if (other.transform.tag == ConstDefine.TagName.Fuse)
+        if (other.transform.tag == StringDefine.TagName.Fuse)
         {
             Fuse _fuse = other.gameObject.GetComponent<Fuse>();
             // 相手が燃えているもしくは燃え尽きた後なら処理を飛ばす
             if (_fuse.m_isBurn || _fuse.m_burnTime <= 0.0f || _fuse.m_type == FuseType.UI)
                 return;
             // 
-            if (m_burnTime <= ConstDefine.ConstParameter.SPREAD_TIME)
+            if (m_burnTime <= AdjustParameter.Fuse_Constant.SPREAD_TIME)
             {
                 _fuse.m_isBurn = true;
                 _fuse.GetComponent<Renderer>().material.SetColor("_Color", Color.red);

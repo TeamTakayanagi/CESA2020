@@ -4,12 +4,6 @@ using UnityEngine;
 
 public class UIFuseMgr : SingletonMonoBehaviour<UIFuseMgr>
 {
-    public const float UI_FUSE_POS_Y = 11.0f;
-    public const float UI_FUSE_POS_Z = 5.0f;
-    public const float UI_FUSE_INTERVAL_X = 2.0f;
-    public const float UI_FUSE_INTERVAL_Y = 2.0f;
-    public const int CREATE_COOUNT = 60 * 5;
-    public const int UI_FUSE_MAX = 10;
     [System.Serializable]
     private class FuseStatus
     {
@@ -22,7 +16,7 @@ public class UIFuseMgr : SingletonMonoBehaviour<UIFuseMgr>
     [SerializeField]
     List<FuseStatus> m_uiList = new List<FuseStatus>();
     private Vector2 m_fuseAmount = Vector2.zero;        // 導火線の生成数（X：左レーン、　Y：右レーン）
-    private int m_createCount = CREATE_COOUNT;
+    private int m_createCount = AdjustParameter.UI_Fuse_Constant.CREATE_COOUNT;
 
     public Vector2 FuseAmount
     {
@@ -47,7 +41,7 @@ public class UIFuseMgr : SingletonMonoBehaviour<UIFuseMgr>
         int fuseAmount = (int)(m_fuseAmount.x + m_fuseAmount.y);
 
         // 生成数が一定数より少ないなら生成処理へ
-        if (fuseAmount < UI_FUSE_MAX)
+        if (fuseAmount < AdjustParameter.UI_Fuse_Constant.UI_FUSE_MAX)
         {
             m_createCount--;
             if (m_createCount <= 0)
@@ -64,11 +58,13 @@ public class UIFuseMgr : SingletonMonoBehaviour<UIFuseMgr>
                 Fuse _fuse = Instantiate(m_uiList[idx].prefab, transform.position, Quaternion.identity);
                 _fuse.transform.SetParent(transform, true);
 
-                _fuse.EndPos = new Vector3(place, 1.0f + ((fuseAmount - ((int)Mathf.Abs(m_fuseAmount.x - m_fuseAmount.y) / 2)) / 2) * UI_FUSE_INTERVAL_Y, UI_FUSE_POS_Z);
-                _fuse.transform.localPosition = new Vector3(place, UI_FUSE_POS_Y, UI_FUSE_POS_Z);
+                _fuse.EndPos = new Vector3(place,
+                    1.0f + ((fuseAmount - ((int)Mathf.Abs(m_fuseAmount.x - m_fuseAmount.y) / 2)) / 2) * AdjustParameter.UI_Fuse_Constant.UI_FUSE_INTERVAL_Y,
+                    AdjustParameter.UI_Fuse_Constant.UI_FUSE_POS_Z);
+                _fuse.transform.localPosition = new Vector3(place, AdjustParameter.UI_Fuse_Constant.UI_FUSE_POS_Y, AdjustParameter.UI_Fuse_Constant.UI_FUSE_POS_Z);
                 _fuse.transform.localEulerAngles = m_uiList[idx].rotate;
                 _fuse.Type = Fuse.FuseType.UI;
-                _fuse.transform.tag = ConstDefine.TagName.Fuse;
+                _fuse.transform.tag = StringDefine.TagName.Fuse;
 
 
                 GameMgr.Instance.UIFuse = _fuse;    // リストの末尾に追加
@@ -79,7 +75,7 @@ public class UIFuseMgr : SingletonMonoBehaviour<UIFuseMgr>
 
                 // 生成後処理
                 m_fuseAmount += new Vector2((-place + 1) / 2, (place + 1) / 2);
-                m_createCount = CREATE_COOUNT;
+                m_createCount = AdjustParameter.UI_Fuse_Constant.CREATE_COOUNT;
             }
         }
     }

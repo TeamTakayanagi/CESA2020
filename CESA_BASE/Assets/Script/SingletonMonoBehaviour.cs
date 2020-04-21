@@ -19,7 +19,6 @@ public abstract class SingletonMonoBehaviour<T> : MonoBehaviour where T : MonoBe
                     Debug.LogError(t + " をアタッチしているGameObjectはありません");
                 }
             }
-
             return instance;
         }
     }

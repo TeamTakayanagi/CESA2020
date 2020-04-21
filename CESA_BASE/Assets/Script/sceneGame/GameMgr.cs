@@ -9,6 +9,14 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     // デリゲート宣言
     delegate void GameStep();
 
+    private enum ResultPlacement
+    {
+        Text = 0,
+        Button,
+        //RePlay,
+        //Bask
+    }
+
     [SerializeField]
     private Texture2D cursorDefault = null;
     [SerializeField]
@@ -17,16 +25,31 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private Vector3 m_stageSizeMax = Vector3.zero;
     [SerializeField]
     private Vector3 m_stageSizeMin = Vector3.zero;
+    [SerializeField]
+    private GameObject m_fireworks = null;
+    [SerializeField]
+    private GameObject m_resultClear = null;
+    [SerializeField]
+    private GameObject m_resultGameover = null;
+    [SerializeField]
+    private AnimationCurve m_animCurve = AnimationCurve.Linear(0, 0, 1, 1);
+    [SerializeField]
+    private Vector3 TEXT_POS = Vector3.zero;
+    [SerializeField]
+    private Vector3 BUTTON_POS = Vector3.zero;
+    private Vector3 END_OPOS = new Vector3(0.0f, 30.0f, 0.0f);
 
-    private LinkedList<Fuse> m_fieldFuse = new LinkedList<Fuse>();
-    private LinkedList<Fuse> m_uiFuse = new LinkedList<Fuse>();
-    private Fuse m_selectFuse = null;
-    private Vector3 m_createPos = Vector3.zero;
-    private GameStep m_gameStep = null;
-    private GameObject m_saveObj = null;
     private int m_burnCount = 1;            // 燃えている導火線の数
     private int m_gameSpeed = 1;            // ゲーム加速処理
-    private Vector3 OUTPOS = new Vector3(-50, -50, -50);
+    private Vector3 m_createPos = Vector3.zero;
+    private readonly Vector3 OUTPOS = new Vector3(-50, -50, -50);
+    private GameObject m_saveObj = null;
+    private Fuse m_selectFuse = null;
+    private LinkedList<Fuse> m_fieldFuse = new LinkedList<Fuse>();
+    private LinkedList<Fuse> m_uiFuse = new LinkedList<Fuse>();
+    private GameStep m_gameStep = null;
+
+    public const float DURATION = 1.0f;    // スライド時間（秒）
 
     public int BurnCount
     {
@@ -68,7 +91,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
     }
 
-
     // Start is called before the first frame update
     void Start()
     {
@@ -77,13 +99,13 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
         m_createPos = OUTPOS;
         // 開始演出準備
-        GameObject canvas = GameObject.FindGameObjectWithTag(ConstDefine.TagName.UICanvas);
+        GameObject canvas = GameObject.FindGameObjectWithTag(StringDefine.TagName.UICanvas);
         m_saveObj = canvas.transform.GetChild(0).gameObject;
         m_gameStep = GameStart;
 
         // フィールドオブジェクトの取得
         GameObject[] _fuseList = GameObject.FindGameObjectsWithTag
-            (Utility.TagUtility.getParentTagName(ConstDefine.TagName.Fuse));
+            (Utility.TagUtility.getParentTagName(StringDefine.TagName.Fuse));
         foreach (GameObject _fuse in _fuseList)
         {
             Fuse _cube = _fuse.GetComponent<Fuse>();
@@ -96,6 +118,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             _cube.enabled = false;
         }
         UIFuseMgr.Instance.enabled = false;
+        Camera.main.GetComponent<MainCamera>().Control = true;
         //Sound.Instance.PlayBGM(ConstDefine.Audio.BGM.GameMain);
     }
 
@@ -116,7 +139,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
             // 導火線の更新処理再開
             GameObject[] _cubes = GameObject.FindGameObjectsWithTag
-                (Utility.TagUtility.getParentTagName(ConstDefine.TagName.Fuse));
+                (Utility.TagUtility.getParentTagName(StringDefine.TagName.Fuse));
             foreach (GameObject obj in _cubes)
             {
                 Fuse _cube = obj.GetComponent<Fuse>();
@@ -129,6 +152,20 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     // ゲームメイン処理
     void GameMain()
     {
+#if UNITY_EDITOR
+        if(Input.GetKeyUp(KeyCode.C))
+        {
+            m_resultClear.SetActive(true);
+            Camera.main.GetComponent<MainCamera>().Control = false;
+            m_saveObj = Instantiate(m_fireworks, Vector3.zero, Quaternion.identity);
+            m_gameStep = GameClear;
+        }
+        else if(Input.GetKeyUp(KeyCode.O))
+        {
+            m_gameStep = GameOver;
+        }
+#endif
+
         // マウス座標をワールド座標で取得
         Vector3 mousePos = Vector3.zero;
         Vector3 screen = Camera.main.WorldToScreenPoint(transform.position);
@@ -163,7 +200,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             {
                 // サブカメラ取得
                 RaycastHit hit = new RaycastHit();
-                Ray ray = GameObject.FindGameObjectWithTag(ConstDefine.TagName.UICamera).GetComponent<Camera>().
+                Ray ray = GameObject.FindGameObjectWithTag(StringDefine.TagName.UICamera).GetComponent<Camera>().
                     ScreenPointToRay(Input.mousePosition);
 
                 // 導火線を選択
@@ -204,9 +241,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 {
                     m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
                     m_selectFuse.Type = Fuse.FuseType.Fuse;
-                    UIFuseMgr.Instance.FuseAmount -=  new Vector2(((m_selectFuse.DefaultPos.x + 1) / 2 + 1) % 2, ((m_selectFuse.DefaultPos.x + 1) / 2) % 2);
+                    UIFuseMgr.Instance.FuseAmount -= new Vector2(((m_selectFuse.DefaultPos.x + 1) / 2 + 1) % 2, ((m_selectFuse.DefaultPos.x + 1) / 2) % 2);
 
-                   // UI部分の移動
+                    // UI部分の移動
                     foreach (Fuse _fuse in m_uiFuse)
                     {
                         if (_fuse == m_selectFuse)
@@ -215,7 +252,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                         if (m_selectFuse.DefaultPos.x == _fuse.DefaultPos.x &&
                             m_selectFuse.DefaultPos.y < _fuse.DefaultPos.y)
                         {
-                            if(_fuse.EndPos == Vector3.zero)
+                            if (_fuse.EndPos == Vector3.zero)
                                 _fuse.EndPos = _fuse.transform.localPosition - new Vector3(0.0f, 2.0f, 0.0f);
                             else
                                 _fuse.EndPos -= new Vector3(0.0f, 2.0f, 0.0f);
@@ -246,11 +283,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
     }
 
-    // ゲームクリア処理
-    void GameClear()
-    {
-
-    }
 
     private Vector3 FindNearPosision(Vector3 mousePos)
     {
@@ -283,25 +315,25 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             if (Mathf.Abs(disX) > Mathf.Abs(disY) && Mathf.Abs(disX) > Mathf.Abs(disZ))
             {
                 if (disX >= 0)
-                    objPos = nearObj.transform.position + new Vector3(ConstDefine.ConstParameter.CUBE_SCALE, 0.0f, 0.0f);
+                    objPos = nearObj.transform.position + new Vector3(AdjustParameter.Fuse_Constant.FUSE_SCALE, 0.0f, 0.0f);
                 else
-                    objPos = nearObj.transform.position - new Vector3(ConstDefine.ConstParameter.CUBE_SCALE, 0.0f, 0.0f);
+                    objPos = nearObj.transform.position - new Vector3(AdjustParameter.Fuse_Constant.FUSE_SCALE, 0.0f, 0.0f);
             }
             // Y座標のが近い
             else if (Mathf.Abs(disY) > Mathf.Abs(disZ))
             {
                 if (disY >= 0)
-                    objPos = nearObj.transform.position + new Vector3(0.0f, ConstDefine.ConstParameter.CUBE_SCALE, 0.0f);
+                    objPos = nearObj.transform.position + new Vector3(0.0f, AdjustParameter.Fuse_Constant.FUSE_SCALE, 0.0f);
                 else
-                    objPos = nearObj.transform.position - new Vector3(0.0f, ConstDefine.ConstParameter.CUBE_SCALE, 0.0f);
+                    objPos = nearObj.transform.position - new Vector3(0.0f, AdjustParameter.Fuse_Constant.FUSE_SCALE, 0.0f);
             }
             // Z座標のが近い
             else
             {
                 if (disZ >= 0)
-                    objPos = nearObj.transform.position + new Vector3(0.0f, 0.0f, ConstDefine.ConstParameter.CUBE_SCALE);
+                    objPos = nearObj.transform.position + new Vector3(0.0f, 0.0f, AdjustParameter.Fuse_Constant.FUSE_SCALE);
                 else
-                    objPos = nearObj.transform.position - new Vector3(0.0f, 0.0f, ConstDefine.ConstParameter.CUBE_SCALE);
+                    objPos = nearObj.transform.position - new Vector3(0.0f, 0.0f, AdjustParameter.Fuse_Constant.FUSE_SCALE);
             }
         }
 
@@ -327,14 +359,56 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     public void BurnOutFuse(Fuse _fuse)
     {
         m_fieldFuse.Remove(_fuse);
-        if(_fuse.Type == Fuse.FuseType.Goal)
+        if (_fuse.Type == Fuse.FuseType.Goal)
         {
+            m_resultClear.SetActive(true);
+            Camera.main.GetComponent<MainCamera>().Control = false;
+            m_saveObj = Instantiate(m_fireworks, _fuse.transform.position, Quaternion.identity);
+            END_OPOS += _fuse.transform.position;
             m_gameStep = GameClear;
         }
         m_burnCount--;
-        if(m_burnCount <= 0)
+        if (m_burnCount <= 0)
         {
-            SceneManager.LoadScene(ConstDefine.Scene.Clear);
+            m_resultGameover.SetActive(true);
+            m_gameStep = GameOver;
+        }
+    }
+
+    // ゲームクリア処理
+    public void GameClear()
+    {
+        m_saveObj.transform.position = Vector3.Lerp(m_saveObj.transform.position, END_OPOS, Time.deltaTime);
+        Camera.main.transform.LookAt(m_saveObj.transform.position);
+        StartCoroutine(StartSlidePanel(m_resultClear));
+    }
+
+    public void GameOver()
+    {
+        StartCoroutine(StartSlidePanel(m_resultGameover));
+    }
+
+    //--- テキストのスライド ---
+    private IEnumerator StartSlidePanel(GameObject result)
+    {
+        float startTime = Time.time;             // 開始時間
+        Vector3 moveDistance_text;            // 移動距離および方向
+        Vector3 moveDistance_button;            // 移動距離および方向
+        Transform _text = result.transform.GetChild((int)ResultPlacement.Text);
+        Transform _button = result.transform.GetChild((int)ResultPlacement.Button);
+
+        Vector3 startPos_text = _text.localPosition;  // 開始位置
+        Vector3 startPos_rePlay = _button.localPosition;  // 開始位置
+
+        moveDistance_text = TEXT_POS - startPos_text;
+        moveDistance_button = BUTTON_POS - startPos_rePlay;
+
+        while ((Time.time - startTime) < DURATION)
+        {
+            _text.localPosition = startPos_text + moveDistance_text * m_animCurve.Evaluate((Time.time - startTime) / DURATION);
+            _button.localPosition = startPos_rePlay + moveDistance_button * m_animCurve.Evaluate((Time.time - startTime) / DURATION);
+            yield return 0;
         }
     }
 }
+
