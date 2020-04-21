@@ -60,6 +60,13 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             return m_stageSizeMin;
         }
     }
+    public Fuse UIFuse
+    {
+        set
+        {
+            m_uiFuse.AddLast(value);
+        }
+    }
 
 
     // Start is called before the first frame update
@@ -88,6 +95,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             // スタート演出のため導火線の更新処理停止（ステージエディタ完成後修正予定）
             _cube.enabled = false;
         }
+        UIFuseMgr.Instance.enabled = false;
         //Sound.Instance.PlayBGM(ConstDefine.Audio.BGM.GameMain);
     }
 
@@ -103,8 +111,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         Number number = m_saveObj.GetComponent<Number>();
         if (number.TexCount < 0)
         {
-            Destroy(m_saveObj);
             m_gameStep = GameMain;
+            Destroy(m_saveObj);
+
             // 導火線の更新処理再開
             GameObject[] _cubes = GameObject.FindGameObjectsWithTag
                 (Utility.TagUtility.getParentTagName(ConstDefine.TagName.Fuse));
@@ -113,6 +122,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 Fuse _cube = obj.GetComponent<Fuse>();
                 _cube.enabled = true;
             }
+            UIFuseMgr.Instance.enabled = true;
         }
     }
 
@@ -162,14 +172,14 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     // 新規選択
                     if (!m_selectFuse || m_selectFuse.gameObject != hit.collider.transform.parent.gameObject)
                     {
-                        Fuse _cube = hit.collider.transform.parent.GetComponent<Fuse>();
-                        if (!_cube)
+                        Fuse _fuse = hit.collider.transform.parent.GetComponent<Fuse>();
+                        if (!_fuse || _fuse.EndPos != Vector3.zero)
                             return;
-                        if (_cube.Type == Fuse.FuseType.UI)
+                        if (_fuse.Type == Fuse.FuseType.UI)
                         {
-                            m_selectFuse = _cube;
-                            foreach (Fuse _fuse in m_uiFuse)
-                                _fuse.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
+                            m_selectFuse = _fuse;
+                            foreach (Fuse _uifuse in m_uiFuse)
+                                _uifuse.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
 
                             m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.cyan);
                             // マウスカーソル用の画像を選択時に変更
@@ -194,14 +204,32 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 {
                     m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
                     m_selectFuse.Type = Fuse.FuseType.Fuse;
+                    UIFuseMgr.Instance.FuseAmount -=  new Vector2(((m_selectFuse.DefaultPos.x + 1) / 2 + 1) % 2, ((m_selectFuse.DefaultPos.x + 1) / 2) % 2);
+
+                   // UI部分の移動
+                    foreach (Fuse _fuse in m_uiFuse)
+                    {
+                        if (_fuse == m_selectFuse)
+                            continue;
+
+                        if (m_selectFuse.DefaultPos.x == _fuse.DefaultPos.x &&
+                            m_selectFuse.DefaultPos.y < _fuse.DefaultPos.y)
+                        {
+                            if(_fuse.EndPos == Vector3.zero)
+                                _fuse.EndPos = _fuse.transform.localPosition - new Vector3(0.0f, 2.0f, 0.0f);
+                            else
+                                _fuse.EndPos -= new Vector3(0.0f, 2.0f, 0.0f);
+                        }
+                    }
+
                     m_uiFuse.Remove(m_selectFuse);
                     m_fieldFuse.AddLast(m_selectFuse);
                     m_selectFuse.transform.localEulerAngles = m_selectFuse.DefaultRot;
                     m_selectFuse.transform.parent = transform;
 
                     // UI選択用の子供オブジェクトを削除
-                    GameObject chid = m_selectFuse.transform.GetChild(m_selectFuse.transform.childCount - 1).gameObject;
-                    Destroy(chid);
+                    GameObject child = m_selectFuse.transform.GetChild(m_selectFuse.transform.childCount - 1).gameObject;
+                    Destroy(child);
 
                     m_selectFuse = null;
                     m_createPos = OUTPOS;

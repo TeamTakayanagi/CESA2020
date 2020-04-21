@@ -18,9 +18,22 @@ public class Fuse : MonoBehaviour
 
     // 燃えているか
     private bool m_isBurn = false;
+    private Vector3 m_endPos = Vector3.zero;
     private Vector3 m_defaultPos = Vector3.zero;
     private Vector3 m_defaultRot = Vector3.zero;
 
+    public Vector3 EndPos
+    {
+        get
+        {
+            return m_endPos;
+        }
+        set
+        {
+            m_endPos = value;
+            m_defaultPos =  transform.parent.position + value;
+        }
+    }
     public Vector3 DefaultPos
     {
         get
@@ -49,7 +62,6 @@ public class Fuse : MonoBehaviour
 
     private void Start()
     {
-        m_defaultPos = transform.position;
         m_defaultRot = transform.localEulerAngles;
         m_burnTime = ConstDefine.ConstParameter.BURN_MAX_TIME;  // 燃え尽きるまでの時間
 
@@ -100,6 +112,18 @@ public class Fuse : MonoBehaviour
                 gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.black);
                 // ここにゲーム管理の関数呼び出し
                 GameMgr.Instance.BurnOutFuse(this);
+            }
+        }
+        else if(m_type == FuseType.UI)
+        {
+            if (m_endPos != Vector3.zero)
+            {
+                transform.localPosition -= new Vector3(0.0f, 0.2f, 0.0f);
+                if(transform.localPosition.y <= m_endPos.y)
+                {
+                    transform.localPosition = m_endPos;
+                    m_endPos = Vector3.zero;
+                }
             }
         }
     }
