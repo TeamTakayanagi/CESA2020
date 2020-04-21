@@ -73,18 +73,6 @@ public class Title : MonoBehaviour
             m_step++;
         }
 
-        //// カメラが下りてくる
-        //if (m_step == TitleStep.Scroll)
-        //{
-        //    m_camera.transform.Translate(Vector3.down * m_downSpeed);
-
-        //    if (m_camera.transform.position.y <= m_charmPos.y)
-        //    {
-        //        m_camera.transform.position = m_charmPos;
-        //        m_step++;
-        //    }
-        //}
-
         // カメラが回転してくる
         if (m_step == TitleStep.Scroll)
         {
@@ -130,7 +118,7 @@ public class Title : MonoBehaviour
         if (m_step == TitleStep.Guid)
         {
             m_guid = Instantiate(m_guidPrefab, m_guidPos, Quaternion.identity, transform);
-
+            
             m_step++;
         }
 
@@ -162,6 +150,16 @@ public class Title : MonoBehaviour
             Instantiate(m_stagePrefab, m_stageCanvas.transform);
 
             m_step++;
+        }
+
+        // タイトル演出スキップ
+        if (m_step < TitleStep.Guid && Input.GetMouseButtonUp(0))
+        {
+            m_step = TitleStep.Wite;
+            m_camera.transform.rotation = Quaternion.identity;
+            m_logo.transform.position = m_logoupPos;
+            m_guid = Instantiate(m_guidPrefab, m_guidPos, Quaternion.identity, transform);
+
         }
 
     }

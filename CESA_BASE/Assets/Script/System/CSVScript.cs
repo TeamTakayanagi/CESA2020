@@ -22,16 +22,30 @@ public class CSVScript : MonoBehaviour
     };
 
     TextAsset csvFile;
-    public List<List<string[]>> stageLList = new List<List<string[]>>();
+    private List<List<string[]>> stageLList = new List<List<string[]>>();
 
-    string CsvPass = "Assets/Resources/StageData.csv";
-    string str;         // ステージデータ格納用
+    private string m_csvPath = "/TextData/StageData";
+    private string str;         // ステージデータ格納用
+
+    private int m_stageNum = 0;
 
     public List<List<string[]>> Stage
     {
         get
         {
             return stageLList;
+        }
+    }
+
+    public int StageNum
+    {
+        get
+        {
+            return m_stageNum;
+        }
+        set
+        {
+            m_stageNum = value;
         }
     }
 
@@ -55,32 +69,33 @@ public class CSVScript : MonoBehaviour
     // CSV読み込み
     public bool LoadCsv()
     {
-        csvFile = Resources.Load(@"StageData") as TextAsset;
-        StringReader reader = new StringReader(csvFile.text);
+        //csvFile = Resources.Load(@"StageData") as TextAsset;
+        StreamReader reader = new StreamReader(Application.dataPath + m_csvPath + m_stageNum + ".csv");
 
+        int _roop = 0;
+        string line = reader.ReadLine();
         while (reader.Peek() != -1) // reader.Peaekが-1になるまで
         {
-            string line = reader.ReadLine();
-            for (int z = 0; z < 3; z++)
+            stageLList.Add(new List<string[]>());
+            //for (int y = 0; y < 3; y++)
+            while (line != "!n")
             {
-                stageLList.Add(new List<string[]>());
-                for (int y = 0; y < 3; y++)
-                {
-                    stageLList[z].Add(line.Split(','));
-                    line = reader.ReadLine();
-                }
+                stageLList[_roop].Add(line.Split(','));
                 line = reader.ReadLine();
             }
+            line = reader.ReadLine();
+            _roop++;
+
         }
 
         // csvDatas[行][列]を指定して値を自由に取り出せる
-        for (int z = 0; z < 3; z++)
+        for (int z = 0; z < stageLList.Count; z++)
         {
-            for (int y = 0; y < 3; y++)
+            for (int y = 0; y < stageLList[z].Count; y++)
             {
-                for (int x = 0; x < 4; x++)
+                for (int x = 0; x < stageLList[z][y].Length; x++)
                 {
-                    Debug.Log(stageLList[y][z][x]);
+                    Debug.Log(stageLList[z][y][x]);
                 }
             }
         }
@@ -104,7 +119,7 @@ public class CSVScript : MonoBehaviour
             }
         }
 
-        StreamWriter sw = new StreamWriter(@CsvPass, false, Encoding.GetEncoding("Shift_JIS"));
+        StreamWriter sw = new StreamWriter(Application.dataPath + m_csvPath + ".csv", false, Encoding.GetEncoding("Shift_JIS"));
 
         for (int z = 0; z < 3; z++)
         {

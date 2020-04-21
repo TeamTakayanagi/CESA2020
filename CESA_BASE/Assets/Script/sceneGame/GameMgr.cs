@@ -25,6 +25,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private Vector3 m_stageSizeMax = Vector3.zero;                      // ステージサイズ最大値
     [SerializeField]
     private Vector3 m_stageSizeMin = Vector3.zero;                      // ステージサイズ最小値
+
     [SerializeField]
     private GameObject m_fireworks = null;                              // 花火のプレハブ
 
