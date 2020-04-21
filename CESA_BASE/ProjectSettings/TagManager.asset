@@ -12,6 +12,7 @@ TagManager:
   - Fuse/pole
   - Fuse/L
   - SceneMgr
+  - Stage
   layers:
   - Default
   - TransparentFX

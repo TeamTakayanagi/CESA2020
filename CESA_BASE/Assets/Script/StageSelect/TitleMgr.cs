@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Title : MonoBehaviour
+public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
 {
     // 後からコンスト定数に持っていく
     private const float m_charmTime = 3;
@@ -34,20 +34,40 @@ public class Title : MonoBehaviour
     private GameObject m_guid = null;
     private GameObject m_stageCanvas = null;
 
-    private Vector3 m_initPos = new Vector3(0, 200, -10);
-    private Vector3 m_charmPos = new Vector3(0, 0, -10);
-    private Vector3 m_logoupPos = new Vector3(0, 20, 85);
-    private Vector3 m_guidPos = new Vector3(0, -25, 85);
+    private Vector3 m_initCameraPos = new Vector3(0, 80, -10);
+    private Vector3 m_initLogoPos = new Vector3(0, -20, 0);
+    private Quaternion m_initCameraRot = Quaternion.Euler(new Vector3(-60, 0, 0));
+    private Quaternion m_initLogoRot = Quaternion.Euler(new Vector3(30, 0, 0));
+    private Vector3 m_initGuidPos = new Vector3(0, -50, -20);
+    private Quaternion m_initGuidRot = Quaternion.Euler(new Vector3(30, 0, 0));
 
-    private Quaternion m_initRot = new Quaternion();
+    private Quaternion m_lastCameraRot = Quaternion.Euler(30, 0, 0);
+    
+    private Vector3 m_logoupPos = new Vector3(0, 0, 0);
+
+    //---その打ち消す-------------------
+    private Vector3 m_initPos = new Vector3(0, 200, -10);
+    private Vector3 m_charmPos = new Vector3(0, 0, 0);
+    private Vector3 m_cameraLastPos = new Vector3(0, 80, -10);
+    private Vector3 m_guidPos = new Vector3(0, -25, 85);
+    //----------------------------------
+
 
     private float m_upSpeed = 0.5f;
     private float m_downSpeed = 1.0f;
     private float m_delay = 0;
 
+    public int Step
+    {
+        get
+        {
+            return (int)m_step;
+        }
+    }
+
     private void Awake()
     {
-        m_initRot = Quaternion.Euler(new Vector3(-60, 0, 0));
+
     }
 
     // Start is called before the first frame update
@@ -58,6 +78,11 @@ public class Title : MonoBehaviour
         m_camera = GameObject.FindGameObjectWithTag("MainCamera");
         m_stageCanvas = GameObject.FindGameObjectWithTag("UI/Stage");
 
+        m_camera.transform.position = m_initCameraPos;
+        m_camera.transform.rotation = m_initCameraRot;
+        m_logo.transform.rotation = m_initLogoRot;
+        m_logo.transform.position = m_logoCanvas.transform.position + m_logo.transform.rotation * m_initLogoPos;
+        
     }
 
     // Update is called once per frame
@@ -67,20 +92,19 @@ public class Title : MonoBehaviour
         if (m_step == TitleStep.Start)
         {
             //m_camera.transform.position = m_initPos;
-            m_camera.transform.position = m_charmPos;
-            m_camera.transform.rotation = m_initRot;
-
+            //m_camera.transform.position = m_cameraLastPos;
+            //m_camera.transform.rotation = m_initCameraRot;
             m_step++;
         }
 
         // カメラが回転してくる
         if (m_step == TitleStep.Scroll)
         {
-            m_camera.transform.Rotate(m_initRot * Vector3.right * 0.3f * Time.deltaTime * 60);
+            m_camera.transform.Rotate(m_initCameraRot * Vector3.right * 0.3f * Time.deltaTime * 60);
 
-            if (m_camera.transform.rotation.x >= 0)
+            if (m_camera.transform.rotation.x >= m_lastCameraRot.x)
             {
-                m_camera.transform.rotation = Quaternion.identity;
+                m_camera.transform.rotation = m_lastCameraRot;
                 m_step++;
             }
         }
@@ -102,9 +126,9 @@ public class Title : MonoBehaviour
         {
             m_logo.transform.Translate(Vector3.up * m_upSpeed * Time.deltaTime * 60);
 
-            if (m_logo.transform.position.y >= m_logoupPos.y)
+            if (m_logo.transform.position.y >= (m_logoCanvas.transform.position + m_logo.transform.rotation * m_logoupPos).y)
             {
-                m_logo.transform.position = m_logoupPos;
+                m_logo.transform.position = m_logoCanvas.transform.position + m_logo.transform.rotation * m_logoupPos;
                 m_delay += Time.deltaTime;
 
                 if (m_delay >= m_guidTime)
@@ -117,8 +141,9 @@ public class Title : MonoBehaviour
         // 
         if (m_step == TitleStep.Guid)
         {
-            m_guid = Instantiate(m_guidPrefab, m_guidPos, Quaternion.identity, transform);
-            
+            m_guid = Instantiate(m_guidPrefab, m_logoCanvas.transform.transform.position + m_initGuidRot * m_initGuidPos, Quaternion.Euler(30, 0, 0), transform);
+            //m_guid.transform.rotation = m_initGuidRot;
+
             m_step++;
         }
 
@@ -145,20 +170,20 @@ public class Title : MonoBehaviour
         }
 
         // ステージ選択画面
-        if (m_step == TitleStep.Select)
-        {
-            Instantiate(m_stagePrefab, m_stageCanvas.transform);
+        //if (m_step == TitleStep.Select)
+        //{
+        //    Instantiate(m_stagePrefab, m_stageCanvas.transform);
 
-            m_step++;
-        }
+        //    m_step++;
+        //}
 
         // タイトル演出スキップ
         if (m_step < TitleStep.Guid && Input.GetMouseButtonUp(0))
         {
             m_step = TitleStep.Wite;
-            m_camera.transform.rotation = Quaternion.identity;
-            m_logo.transform.position = m_logoupPos;
-            m_guid = Instantiate(m_guidPrefab, m_guidPos, Quaternion.identity, transform);
+            m_camera.transform.rotation = m_lastCameraRot;
+            m_logo.transform.position = m_logoCanvas.transform.position + m_logo.transform.rotation * m_logoupPos;
+            m_guid = Instantiate(m_guidPrefab, m_logoCanvas.transform.transform.position + m_initGuidRot * m_initGuidPos, m_initGuidRot, transform);
 
         }
 

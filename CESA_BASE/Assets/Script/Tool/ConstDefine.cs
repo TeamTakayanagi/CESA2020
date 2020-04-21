@@ -21,6 +21,7 @@ namespace ConstDefine
         public const string UICamera = "UICamera";
 
         public const string SceneMgr = "SceneMgr";
+        public const string Title = "Title";
         
         // ここからparent
         public const string Fuse = "Fuse"; 

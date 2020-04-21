@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 8674858246359862639}
   - component: {fileID: 8353563387688124000}
   - component: {fileID: 8674858246359862632}
-  - component: {fileID: 450028662760557088}
   - component: {fileID: 1560755662999877988}
+  - component: {fileID: 450028662760557088}
   m_Layer: 0
   m_Name: Cube_closs
   m_TagString: Player
@@ -111,21 +111,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.224877, y: 0.32173073, z: 0.32181373}
   m_Center: {x: -0.012438476, y: 0.0037534833, z: 0.031071499}
---- !u!114 &450028662760557088
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8674858246359862634}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc394b1b40dc9bf488459c406b81c7e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_type: 0
-  m_BurnSpeed: 2
-  m_burnRate: 0
 --- !u!54 &1560755662999877988
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -142,6 +127,21 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &450028662760557088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8674858246359862634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc394b1b40dc9bf488459c406b81c7e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_type: 0
+  m_BurnSpeed: 2
+  m_burnRate: 0
 --- !u!1001 &3367696739364308711
 PrefabInstance:
   m_ObjectHideFlags: 0
