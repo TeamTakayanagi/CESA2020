@@ -8,7 +8,7 @@ public class OutsideCanvas : MonoBehaviour
     private RectTransform m_myRectTrans = null;
 
     private Rect m_myRect = new Rect(0, 0, 1, 1);
-    private bool m_isVisible = true;        // 画面内でtrue
+    private bool m_isVisible = true;        // キャンバス内でtrue
 
     public bool isVisible
     {

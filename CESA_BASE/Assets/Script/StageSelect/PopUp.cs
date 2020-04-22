@@ -80,7 +80,7 @@ public class PopUp : MonoBehaviour
 
     public void Click()
     {
-        m_rectTrans.GetComponentInChildren<StageMgr>().popFlg = false;
+        //m_rectTrans.GetComponentInChildren<StageMgr>().popFlg = false;
         m_Exit = false;
     }
 }

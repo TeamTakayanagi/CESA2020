@@ -1,7 +1,12 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:CESA_BASE/Assets/Prefab/System/SceneMgr.prefab.meta
+guid: 96dba0241ba357d4d8d8fca6cbbdbc01
+PrefabImporter:
+=======
 guid: bb08eb304e54ea348833ba2470685e25
 folderAsset: yes
 DefaultImporter:
+>>>>>>> StageEditSave:CESA_BASE/Assets/Model.meta
   externalObjects: {}
   userData: 
   assetBundleName: 

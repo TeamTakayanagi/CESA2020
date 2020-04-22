@@ -123,6 +123,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         Camera.main.GetComponent<MainCamera>().Control = true;
         //Sound.Instance.PlayBGM(ConstDefine.Audio.BGM.GameMain);
     }
+    //Sound.Instance.PlayBGM(ConstDefine.Audio.BGM.GameMain);
 
     // Update is called once per frame
     void Update()

@@ -1,25 +1,34 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 {
     [SerializeField]
-    int m_stageSizeX = 0;
+    private int m_stageSizeX = 0;
     [SerializeField]
-    int m_stageSizeY = 0;
+    private int m_stageSizeY = 0;
     [SerializeField]
-    int m_stageSizeZ = 0;
+    private int m_stageSizeZ = 0;
     [SerializeField]
-    GameObject m_feildPrefab = null;
+    private GameObject m_feildPrefab = null;
     [SerializeField]
-    GameObject m_ground = null;
+    private GameObject m_ground = null;
 
-    Fuse m_selectFuse = null;
-    GameObject m_cursorTouchObj = null;
-    Vector3 m_cameraPos = Vector3.zero;
-    Quaternion m_cameraRot = Quaternion.identity;
-    Vector3 m_createRot = Vector3.zero;
+    private Fuse m_selectFuse = null;
+    private GameObject m_cursorTouchObj = null;
+    private Vector3 m_cameraPos = Vector3.zero;
+    private Quaternion m_cameraRot = Quaternion.identity;
+    private Vector3 m_createRot = Vector3.zero;
+    private InputField m_inputField = null;
+    private CSVScript m_CSVScript = null;
+
+    private string[,,] m_stage = null;
+    //private LinkedList<LinkedList<LinkedList<string>>> m_stageList = new LinkedList<LinkedList<LinkedList<string>>>();
+    private List<Vector3> m_stagePos = new List<Vector3>();
+    private List<string> m_stageType = new List<string>();
+    private List<List<string[]>> m_stageLList = new List<List<string[]>>();
 
     //private void Awake()
     //{
@@ -36,6 +45,10 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         // カメラの初期情報保存
         m_cameraPos = Camera.main.transform.position;
         m_cameraRot = Camera.main.transform.rotation;
+
+        m_inputField = GameObject.FindGameObjectWithTag("Button/Input").GetComponent<InputField>();
+        m_inputField.text = "StageDataXX";
+        m_CSVScript = GetComponent<CSVScript>();
 
         // 空ボックス生成
         CreateStage();
@@ -90,6 +103,48 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                         selectClone.transform.localEulerAngles = m_createRot;
                         selectClone.transform.parent = transform;
 
+                        // ステージ配列に情報追加
+                        Vector3 _pos = hit.transform.position;
+                        
+                        switch (m_selectFuse.tag)
+                        {
+                            case ConstDefine.Fuse.FuseI:
+                                m_stagePos.Add(_pos);
+                                m_stageType.Add("Fuse-I000");
+                                break;
+
+                            case ConstDefine.Fuse.FuseL:
+                                m_stagePos.Add(_pos);
+                                m_stageType.Add("Fuse-L000");
+                                break;
+
+                            case ConstDefine.Fuse.FuseT:
+                                m_stagePos.Add(_pos);
+                                m_stageType.Add("Fuse-T000");
+                                break;
+
+                            case ConstDefine.Fuse.FuseX:
+                                m_stagePos.Add(_pos);
+                                m_stageType.Add("Fuse-X000");
+                                break;
+
+                            case ConstDefine.Fuse.FuseLL:
+                                m_stagePos.Add(_pos);
+                                m_stageType.Add("FuseLL000");
+                                break;
+
+                            case ConstDefine.Fuse.FuseTT:
+                                m_stagePos.Add(_pos);
+                                m_stageType.Add("FuseTT000");
+                                break;
+
+                            case ConstDefine.Fuse.FuseXX:
+                                m_stagePos.Add(_pos);
+                                m_stageType.Add("FuseXX000");
+                                break;
+
+                        }
+
                         Destroy(hit.collider.gameObject);
                     }
                     // 設置位置の色の変更
@@ -113,6 +168,11 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                         obj.transform.parent = transform.GetChild(0);
                         obj.transform.tag = StringDefine.TagName.Player;
                         Destroy(hit.collider.transform.parent.gameObject);
+
+                        // 削除情報で上書き
+                        Vector3 _pos = hit.transform.position;
+                        m_stagePos.Add(_pos);
+                        m_stageType.Add("FuseXX000");
                     }
                     // 設置位置の色の変更
                     else
@@ -237,6 +297,35 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             _box.GetComponent<MeshRenderer>().enabled = true;
             _box.gameObject.layer = 0;
         }
+    }
+
+    // ステージ保存
+    public void StageSave()
+    {
+        if (m_inputField.text == null) return;
+
+        // 初期化
+        for (int z = 0; z < m_stageSizeZ; z++)
+        {
+            m_stageLList.Add(new List<string[]>());
+            for (int y = 0; y < m_stageSizeY; y++)
+            {
+                m_stageLList[z].Add(new string[m_stageSizeY]);
+                for (int x = 0; x < m_stageSizeX; x++)
+                {
+                    m_stageLList[z][y][x] = "---------";
+                }
+            }
+        }
+
+        for (int i = 0; i < m_stagePos.Count; i++)
+        {
+            Vector3 _pos = m_stagePos[i] + new Vector3(m_stageSizeX, m_stageSizeY, m_stageSizeZ) / 2;
+            //m_stage[(int)_pos.x, (int)_pos.y, (int)_pos.z] = m_stageType[i];
+            m_stageLList[(int)_pos.z][(int)_pos.y][(int)_pos.x] = m_stageType[i];
+        }
+        
+        m_CSVScript.WriteCsv(m_stageLList, m_inputField.text, m_stageSizeY);
     }
 
     public void CutBoxR()
