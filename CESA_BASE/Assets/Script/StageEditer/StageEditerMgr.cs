@@ -6,49 +6,39 @@ using UnityEngine.UI;
 public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 {
     [SerializeField]
-    private int m_stageSizeX = 0;
-    [SerializeField]
-    private int m_stageSizeY = 0;
-    [SerializeField]
-    private int m_stageSizeZ = 0;
-    [SerializeField]
     private GameObject m_feildPrefab = null;
     [SerializeField]
     private GameObject m_ground = null;
 
-    private Fuse m_selectFuse = null;
-    private GameObject m_cursorTouchObj = null;
     private Vector3 m_cameraPos = Vector3.zero;
+    private GameObject m_cursorTouchObj = null;
     private Quaternion m_cameraRot = Quaternion.identity;
-    private Vector3 m_createRot = Vector3.zero;
-    private InputField m_inputField = null;
-    private CSVScript m_CSVScript = null;
+    private Fuse m_selectFuse = null;
+    private CSVScript m_csvScript = null;
 
-    //private string[,,] m_stage = null;
-    //private LinkedList<LinkedList<LinkedList<string>>> m_stageList = new LinkedList<LinkedList<LinkedList<string>>>();
     private List<Vector3> m_stagePos = new List<Vector3>();
     private List<string> m_stageType = new List<string>();
     private List<List<string[]>> m_stageLList = new List<List<string[]>>();
 
-    //private void Awake()
-    //{
-    //}
+    private void Awake()
+    {
+        Camera.main.GetComponent<MainCamera>().Control = true;
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         m_ground.SetActive(false);
         // UIの導火線仮選択
-        m_selectFuse = GameObject.FindGameObjectWithTag(StringDefine.TagName.Fuse).GetComponent<Fuse>();
+        m_selectFuse = FindObjectOfType<Fuse>();
         m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.cyan);
 
         // カメラの初期情報保存
         m_cameraPos = Camera.main.transform.position;
         m_cameraRot = Camera.main.transform.rotation;
 
-        m_inputField = GameObject.FindGameObjectWithTag("Button/Input").GetComponent<InputField>();
-        m_inputField.text = "StageDataXX";
-        m_CSVScript = GetComponent<CSVScript>();
+        // CSV保存用関数
+        m_csvScript = GetComponent<CSVScript>();
 
         // 空ボックス生成
         CreateStage();
@@ -69,12 +59,12 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             // 設置場所を選択
             if (Physics.Raycast(ray, out hit))
             {
-                if (hit.collider.transform.parent.tag == StringDefine.TagName.Fuse)
+                if (Utility.TagUtility.getParentTagName(hit.collider.transform.parent.tag) == StringDefine.TagName.Fuse)
                 {
                     if (Input.GetMouseButtonDown(0))
                     {
                         if (m_selectFuse)
-                            m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
+                            m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
                         m_selectFuse = hit.collider.transform.parent.GetComponent<Fuse>();
                         m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.cyan);
                     }
@@ -100,49 +90,45 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                         selectClone.transform.position = hit.collider.transform.position;
                         selectClone.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
                         selectClone.Type = Fuse.FuseType.Fuse;
-                        selectClone.transform.localEulerAngles = m_createRot;
-                        selectClone.transform.parent = transform;
+                        selectClone.transform.localEulerAngles = new Vector3(
+                            inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotX),
+                            inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotY),
+                            inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotZ));
+
+                        selectClone.transform.parent = transform.GetChild(0);
 
                         // ステージ配列に情報追加
-                        Vector3 _pos = hit.transform.position;
+                        m_stagePos.Add(hit.transform.position);
                         
                         switch (m_selectFuse.tag)
                         {
-                            case ConstDefine.Fuse.FuseI:
-                                m_stagePos.Add(_pos);
+                            case StringDefine.TagName.FuseI:
                                 m_stageType.Add("Fuse-I000");
                                 break;
 
-                            case ConstDefine.Fuse.FuseL:
-                                m_stagePos.Add(_pos);
+                            case StringDefine.TagName.FuseL:
                                 m_stageType.Add("Fuse-L000");
                                 break;
 
-                            case ConstDefine.Fuse.FuseT:
-                                m_stagePos.Add(_pos);
+                            case StringDefine.TagName.FuseT:
                                 m_stageType.Add("Fuse-T000");
                                 break;
 
-                            case ConstDefine.Fuse.FuseX:
-                                m_stagePos.Add(_pos);
+                            case StringDefine.TagName.FuseX:
                                 m_stageType.Add("Fuse-X000");
                                 break;
 
-                            case ConstDefine.Fuse.FuseLL:
-                                m_stagePos.Add(_pos);
+                            case StringDefine.TagName.FuseLL:
                                 m_stageType.Add("FuseLL000");
                                 break;
 
-                            case ConstDefine.Fuse.FuseTT:
-                                m_stagePos.Add(_pos);
+                            case StringDefine.TagName.FuseTT:
                                 m_stageType.Add("FuseTT000");
                                 break;
 
-                            case ConstDefine.Fuse.FuseXX:
-                                m_stagePos.Add(_pos);
+                            case StringDefine.TagName.FuseXX:
                                 m_stageType.Add("FuseXX000");
                                 break;
-
                         }
 
                         Destroy(hit.collider.gameObject);
@@ -158,7 +144,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                     }
                 }
                 // 設置済みの導火線にタッチしているなら
-                else if (hit.collider.transform.parent.tag == StringDefine.TagName.Fuse)
+                else if (Utility.TagUtility.getParentTagName(hit.collider.transform.parent.tag) == StringDefine.TagName.Fuse)
                 {
                     // 導火線設置
                     if (Input.GetMouseButtonDown(0))
@@ -193,21 +179,28 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
     // 空のボックスを用いてステージの枠を生成
     void CreateStage()
     {
+        int _stageSizeX = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeX);
+        int _stageSizeY = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeY);
+        int _stageSizeZ = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeZ);
+
+        if (_stageSizeX == ProcessedtParameter.System_Constant.ERROR_INT ||
+            _stageSizeY == ProcessedtParameter.System_Constant.ERROR_INT ||
+            _stageSizeZ == ProcessedtParameter.System_Constant.ERROR_INT)
+            return;
+
         GameObject[] _objList = GameObject.FindGameObjectsWithTag(StringDefine.TagName.Player);
-        int difference = m_stageSizeX * m_stageSizeY * m_stageSizeZ - _objList.Length;
-        m_ground.transform.localPosition = new Vector3(m_ground.transform.localPosition.x, -Mathf.Ceil(m_stageSizeY / 2), m_ground.transform.localPosition.z);
+        int difference = _stageSizeX * _stageSizeY * _stageSizeZ - _objList.Length;
+        m_ground.transform.localPosition = new Vector3(m_ground.transform.localPosition.x, -Mathf.Ceil(_stageSizeY / 2), m_ground.transform.localPosition.z);
 
         // 変更後のほうが設置可能数が多い（同数含む）なら
         if (difference >= 0)
         {
-            Vector3 half = new Vector3(Mathf.Ceil(m_stageSizeX / 2), Mathf.Ceil(m_stageSizeY / 2), Mathf.Ceil(m_stageSizeZ / 2));
-            for (int z = 0; z < m_stageSizeZ; ++z)
-            {
-                for (int y = 0; y < m_stageSizeY; ++y)
-                {
-                    for (int x = 0; x < m_stageSizeX; ++x)
+            Vector3 half = new Vector3(Mathf.Ceil(_stageSizeX / 2), Mathf.Ceil(_stageSizeY / 2), Mathf.Ceil(_stageSizeZ / 2));
+            for (int z = 0; z < _stageSizeZ; ++z)
+                for (int y = 0; y < _stageSizeY; ++y)
+                    for (int x = 0; x < _stageSizeX; ++x)
                     {
-                        int idx = m_stageSizeY * m_stageSizeX * z + m_stageSizeX * y + x;
+                        int idx = _stageSizeY * _stageSizeX * z + _stageSizeX * y + x;
                         GameObject obj;
                         // 現状あるもの配置変更
                         if (_objList.Length > idx)
@@ -223,8 +216,6 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                             obj.transform.tag = StringDefine.TagName.Player;
                         }
                     }
-                }
-            }
         }
         // 変更前のほうが設置可能数が多いなら
         else
@@ -234,19 +225,15 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             for (int i = 0; i < difference; ++i)
                 Destroy(_objList[i]);
 
-            Vector3 half = new Vector3(Mathf.Ceil(m_stageSizeX / 2), Mathf.Ceil(m_stageSizeY / 2), Mathf.Ceil(m_stageSizeZ / 2));
-            for (int z = 0; z < m_stageSizeZ; ++z)
-            {
-                for (int y = 0; y < m_stageSizeY; ++y)
-                {
-                    for (int x = 0; x < m_stageSizeX; ++x)
+            Vector3 half = new Vector3(Mathf.Ceil(_stageSizeX / 2), Mathf.Ceil(_stageSizeY / 2), Mathf.Ceil(_stageSizeZ / 2));
+            for (int z = 0; z < _stageSizeZ; ++z)
+                for (int y = 0; y < _stageSizeY; ++y)
+                    for (int x = 0; x < _stageSizeX; ++x)
                     {
                         // 現状あるもの配置変更
-                        GameObject obj = _objList[m_stageSizeY * m_stageSizeX * z + m_stageSizeX * y + x + difference];
+                        GameObject obj = _objList[_stageSizeY * _stageSizeX * z + _stageSizeX * y + x + difference];
                         obj.transform.position = new Vector3(x - half.x, y - half.y, z - half.z);
                     }
-                }
-            }
         }
     }
 
@@ -277,41 +264,67 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 
     public void AllFuseDefault()
     {
-        GameObject[] _fuseList = GameObject.FindGameObjectsWithTag(StringDefine.TagName.Fuse);
-        foreach (GameObject _fuse in _fuseList)
+        GameObject _stage = transform.GetChild(0).gameObject;
+        for (int i = 0; i < _stage.transform.childCount; ++i)
         {
-            _fuse.GetComponent<MeshRenderer>().enabled = true;
-            _fuse.gameObject.layer = 0;
-            for (int i = 0; i < _fuse.transform.childCount; ++i)
+            GameObject _stageObj = _stage.transform.GetChild(i).gameObject;
+            _stageObj.GetComponent<MeshRenderer>().enabled = true;
+            _stageObj.gameObject.layer = 0;
+
+            Fuse _fuse = _stageObj.GetComponent<Fuse>();
+            if (_fuse)
             {
-                GameObject child = _fuse.transform.GetChild(i).gameObject;
-                MeshRenderer mesh = child.GetComponent<MeshRenderer>();
-                if (mesh)
-                    mesh.enabled = true;
+                for (int j = 0; j < _fuse.transform.childCount; ++j)
+                {
+                    GameObject child = _fuse.transform.GetChild(j).gameObject;
+                    MeshRenderer mesh = child.GetComponent<MeshRenderer>();
+                    if (mesh)
+                        mesh.enabled = true;
+                }
             }
         }
+        //    GameObject[] _fuseList = GameObject.FindGameObjectsWithTag(StringDefine.TagName.Fuse);
+        //foreach (GameObject _fuse in _fuseList)
+        //{
+        //    _fuse.GetComponent<MeshRenderer>().enabled = true;
+        //    _fuse.gameObject.layer = 0;
+        //    for (int i = 0; i < _fuse.transform.childCount; ++i)
+        //    {
+        //        GameObject child = _fuse.transform.GetChild(i).gameObject;
+        //        MeshRenderer mesh = child.GetComponent<MeshRenderer>();
+        //        if (mesh)
+        //            mesh.enabled = true;
+        //    }
+        //}
 
-        GameObject[] _boxList = GameObject.FindGameObjectsWithTag(StringDefine.TagName.Player);
-        foreach (GameObject _box in _boxList)
-        {
-            _box.GetComponent<MeshRenderer>().enabled = true;
-            _box.gameObject.layer = 0;
-        }
+        //GameObject[] _boxList = GameObject.FindGameObjectsWithTag(StringDefine.TagName.Player);
+        //foreach (GameObject _box in _boxList)
+        //{
+        //    _box.GetComponent<MeshRenderer>().enabled = true;
+        //    _box.gameObject.layer = 0;
+        //}
     }
 
     // ステージ保存
     public void StageSave()
     {
-        if (m_inputField.text == null) return;
+        int _stageSizeX = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeX);
+        int _stageSizeY = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeY);
+        int _stageSizeZ = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeZ);
+
+        if (_stageSizeX == ProcessedtParameter.System_Constant.ERROR_INT ||
+            _stageSizeY == ProcessedtParameter.System_Constant.ERROR_INT ||
+            _stageSizeZ == ProcessedtParameter.System_Constant.ERROR_INT)
+            return;
 
         // 初期化
-        for (int z = 0; z < m_stageSizeZ; z++)
+        for (int z = 0; z < _stageSizeZ; z++)
         {
             m_stageLList.Add(new List<string[]>());
-            for (int y = 0; y < m_stageSizeY; y++)
+            for (int y = 0; y < _stageSizeY; y++)
             {
-                m_stageLList[z].Add(new string[m_stageSizeY]);
-                for (int x = 0; x < m_stageSizeX; x++)
+                m_stageLList[z].Add(new string[_stageSizeY]);
+                for (int x = 0; x < _stageSizeX; x++)
                 {
                     m_stageLList[z][y][x] = "---------";
                 }
@@ -320,12 +333,11 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 
         for (int i = 0; i < m_stagePos.Count; i++)
         {
-            Vector3 _pos = m_stagePos[i] + new Vector3(m_stageSizeX, m_stageSizeY, m_stageSizeZ) / 2;
-            //m_stage[(int)_pos.x, (int)_pos.y, (int)_pos.z] = m_stageType[i];
+            Vector3 _pos = m_stagePos[i] + new Vector3(_stageSizeX, _stageSizeY, _stageSizeZ) / 2;
             m_stageLList[(int)_pos.z][(int)_pos.y][(int)_pos.x] = m_stageType[i];
         }
-        
-        m_CSVScript.WriteCsv(m_stageLList, m_inputField.text, m_stageSizeY);
+        string stageName = "Stage";
+        m_csvScript.WriteCsv(m_stageLList, stageName, _stageSizeY);
     }
 
     public void CutBoxR()
@@ -347,144 +359,94 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 
     public void CutBox(int rayPlace)
     {
-        bool[] isCheak = { false, false, false };
         RaycastHit hit = new RaycastHit();
         GameObject rayPoint = Camera.main.transform.GetChild(rayPlace).gameObject;
         Ray ray = new Ray(rayPoint.transform.position, -rayPoint.transform.position);
 
-        if (Physics.Raycast(ray, out hit))
-        {
-            if (hit.collider.transform.tag == StringDefine.TagName.Player ||
-                hit.collider.transform.tag == StringDefine.TagName.Fuse)
-            {
-                Vector3 hitPos = hit.collider.transform.position;
-                Vector3 difference = rayPoint.transform.position - hitPos;
-                difference = new Vector3(Mathf.Abs(difference.x), Mathf.Abs(difference.y), Mathf.Abs(difference.z));
-                float maxValue = Mathf.Max(difference.x, difference.y, difference.z);
-                if (!isCheak[0] && difference.x == maxValue)
-                    isCheak[0] = true;
-                else if (!isCheak[1] && difference.y == maxValue)
-                    isCheak[1] = true;
-                else if (!isCheak[2] && difference.z == maxValue)
-                    isCheak[2] = true;
+        if (!Physics.Raycast(ray, out hit) ||
+            (hit.collider.transform.tag != StringDefine.TagName.Player &&
+                Utility.TagUtility.getParentTagName(hit.collider.transform.tag) != StringDefine.TagName.Fuse))
+            return;
 
-                GameObject[] _boxList = GameObject.FindGameObjectsWithTag(StringDefine.TagName.Player);
-                GameObject[] _fuseList = GameObject.FindGameObjectsWithTag(StringDefine.TagName.Fuse);
-                foreach(GameObject _box in _boxList)
+        float maxValue;
+        bool[] isCheak = { false, false, false };
+        Vector3 hitPos = hit.collider.transform.position;
+        Vector3 difference = rayPoint.transform.position - hitPos;
+        difference = new Vector3(Mathf.Abs(difference.x), Mathf.Abs(difference.y), Mathf.Abs(difference.z));
+        maxValue = Mathf.Max(difference.x, difference.y, difference.z);
+
+        // 最大値を出している方向を調査
+        if (!isCheak[0] && difference.x == maxValue)
+            isCheak[0] = true;
+        else if (!isCheak[1] && difference.y == maxValue)
+            isCheak[1] = true;
+        else if (!isCheak[2] && difference.z == maxValue)
+            isCheak[2] = true;
+
+        GameObject _stage = transform.GetChild(0).gameObject;
+        for (int i = 0; i < _stage.transform.childCount; ++i)
+        {
+            GameObject _stageObj = _stage.transform.GetChild(i).gameObject;
+            if ((isCheak[0] && _stageObj.transform.position.x == hitPos.x) ||
+                (isCheak[1] && _stageObj.transform.position.y == hitPos.y) ||
+                (isCheak[2] && _stageObj.transform.position.z == hitPos.z))
+            {
+                _stageObj.GetComponent<MeshRenderer>().enabled = false;
+                _stageObj.gameObject.layer = 2;
+                Fuse _fuse = _stageObj.GetComponent<Fuse>();
+                if (_fuse)
                 {
-                    if((isCheak[0] && _box.transform.position.x == hitPos.x ) ||
-                       (isCheak[1] && _box.transform.position.y == hitPos.y) ||
-                       (isCheak[2] && _box.transform.position.z == hitPos.z))
+                    for (int j = 0; j < _fuse.transform.childCount; ++j)
                     {
-                        _box.GetComponent<MeshRenderer>().enabled = false;
-                        _box.gameObject.layer = 2;
-                    }
-                }
-                foreach (GameObject _fuse in _fuseList)
-                {
-                    if ((isCheak[0] && _fuse.transform.position.x == hitPos.x) ||
-                        (isCheak[1] && _fuse.transform.position.y == hitPos.y) ||
-                        (isCheak[2] && _fuse.transform.position.z == hitPos.z))
-                    {
-                        _fuse.GetComponent<MeshRenderer>().enabled = false;
-                        _fuse.gameObject.layer = 2;
-                        for(int i = 0; i < _fuse.transform.childCount; ++i)
-                        {
-                            GameObject child = _fuse.transform.GetChild(i).gameObject;
-                            MeshRenderer mesh = child.GetComponent<MeshRenderer>();
-                            if(mesh)
-                              mesh.enabled = false;
-                        }
+                        GameObject child = _fuse.transform.GetChild(j).gameObject;
+                        MeshRenderer mesh = child.GetComponent<MeshRenderer>();
+                        if (mesh)
+                            mesh.enabled = false;
                     }
                 }
             }
         }
+
     }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// イベント処理
 
-
-
-/// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// 数値テキストボックスの処理
-
-    // ステージサイズ
-    public int GetStageSize(char direction)
+    public void StageSize()
     {
-        int _stageSize = 0;
-        switch (direction)
-        {
-            case 'X':
-                _stageSize = m_stageSizeX;
-                break;
-            case 'Y':
-                _stageSize = m_stageSizeY;
-                break;
-            case 'Z':
-                _stageSize = m_stageSizeZ;
-                break;
-        }
-        return _stageSize;
-    }
-    public void SetStageSize(char direction, int num)
-    {
-        switch (direction)
-        {
-            case 'X':
-                m_stageSizeX = num;
-                CreateStage();
-                break;
-            case 'Y':
-                m_stageSizeY = num;
-                CreateStage();
-                break;
-            case 'Z':
-                m_stageSizeZ = num;
-                CreateStage();
-                break;
-        }
+        int _stageSizeX = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeX);
+        int _stageSizeY = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeY);
+        int _stageSizeZ = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeZ);
+
+        if (_stageSizeX == ProcessedtParameter.System_Constant.ERROR_INT ||
+            _stageSizeY == ProcessedtParameter.System_Constant.ERROR_INT ||
+            _stageSizeZ == ProcessedtParameter.System_Constant.ERROR_INT)
+            return;
+
+        CreateStage();
     }
 
-    // 導火線生成角度
-    public int GetCreateRot(char direction)
+    public void CreateRot()
     {
-        int _stageSize = 0;
-        switch (direction)
-        {
-            case 'X':
-                _stageSize = (int)m_createRot.x;
-                break;
-            case 'Y':
-                _stageSize = (int)m_createRot.y;
-                break;
-            case 'Z':
-                _stageSize = (int)m_createRot.z;
-                break;
-        }
-        return _stageSize;
-    }
-    public void SetCreateRot(char direction, int num)
-    {
-        switch (direction)
-        {
-            case 'X':
-                m_createRot.x = num;
-                break;
-            case 'Y':
-                m_createRot.y = num;
-                break;
-            case 'Z':
-                m_createRot.z = num;
-                break;
-        }
+        int _createRotX = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotX);
+        int _createRotY = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotY);
+        int _createRotZ = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotZ);
 
-        GameObject[] _objList = GameObject.FindGameObjectsWithTag(StringDefine.TagName.Fuse);
-        foreach(GameObject _obj in _objList)
+        if (_createRotX == ProcessedtParameter.System_Constant.ERROR_INT ||
+            _createRotY == ProcessedtParameter.System_Constant.ERROR_INT ||
+            _createRotZ == ProcessedtParameter.System_Constant.ERROR_INT)
+            return;
+
+        Fuse[] _fuseList = FindObjectsOfType<Fuse>();
+        foreach(Fuse _fuse in _fuseList)
         {
-            Fuse _fuse = _obj.GetComponent<Fuse>();
-            if(_fuse.Type == Fuse.FuseType.UI)
-            {
-                _fuse.transform.localEulerAngles = m_createRot;
-            }
+            if (_fuse.Type != Fuse.FuseType.UI)
+                continue;
+
+            _fuse.transform.localEulerAngles = new Vector3(
+                            inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotX),
+                            inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotY),
+                            inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotZ));
         }
     }
 }

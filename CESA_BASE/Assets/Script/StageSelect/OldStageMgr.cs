@@ -85,7 +85,7 @@ public class OldStageMgr : MonoBehaviour
         // 横からイントゥ　のために　初期位置をずらす
         if (m_step == (int)StageMgrState.StageInsert)
         {
-            // ずらす前に今の位置情報を記憶しようね
+            // ずらす前に今の位置情報を記憶
 
             transform.position = new Vector3(1200, transform.position.y);
 

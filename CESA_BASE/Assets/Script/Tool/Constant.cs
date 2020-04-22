@@ -9,8 +9,8 @@ namespace AdjustParameter
         public const float CAMERA_FAR = 15.0f;
         public const float VALUE_CAMERA = 0.5f;
         public const float CAMERA_MOVE = 1.0f;
-        public const float AROUND_MOVE = 10.0f;
-        public const float PERMISSION_MOVE = 100.0f;
+        public const float AROUND_MOVE = 5.0f;
+        public const float PERMISSION_MOVE = 20.0f;
     }
 
     public readonly struct Fuse_Constant
@@ -42,9 +42,10 @@ namespace AdjustParameter
 // 他のオブジェクトでも共有する定数があれば（共有しないなら各クラス内で）
 namespace ProcessedtParameter
 {
-    //public readonly struct Camera_Constant
-    //{
-    //}
+    public readonly struct System_Constant
+    {
+        public const int ERROR_INT = -999;                                 // int型エラー判別変数
+    }
 
     //public readonly struct Fuse_Constant
     //{
@@ -63,6 +64,14 @@ namespace StringDefine
         public const string UICanvas = "UICanvas";
         public const string UIGameClear = "UI/GameClear";
         public const string UIGameOver = "UI/GameOver";
+
+        public const string FuseI = "Fuse/I";
+        public const string FuseL = "Fuse/L";
+        public const string FuseT = "Fuse/T";
+        public const string FuseX = "Fuse/X";
+        public const string FuseLL = "Fuse/LL";
+        public const string FuseTT = "Fuse/TT";
+        public const string FuseXX = "Fuse/XX";
     }
 
     namespace Audio

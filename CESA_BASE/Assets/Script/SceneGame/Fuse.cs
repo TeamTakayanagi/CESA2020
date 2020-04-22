@@ -60,7 +60,7 @@ public class Fuse : MonoBehaviour
         }
     }
 
-    private void Start()
+    private void Awake()
     {
         m_defaultRot = transform.localEulerAngles;
         m_burnTime = AdjustParameter.Fuse_Constant.BURN_MAX_TIME;  // 燃え尽きるまでの時間
@@ -95,7 +95,12 @@ public class Fuse : MonoBehaviour
                 {
                     break;
                 }
-        }
+        }        
+    }
+
+    private void Start()
+    {
+
     }
 
     // Update is called once per frame

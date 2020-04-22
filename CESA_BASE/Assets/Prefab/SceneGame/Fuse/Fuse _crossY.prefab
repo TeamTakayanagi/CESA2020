@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 8340982296103275929}
   m_Layer: 0
   m_Name: Fuse _crossY
-  m_TagString: Fuse
+  m_TagString: Fuse/XX
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

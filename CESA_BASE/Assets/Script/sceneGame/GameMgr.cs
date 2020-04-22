@@ -87,6 +87,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
     }
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -123,7 +124,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         Camera.main.GetComponent<MainCamera>().Control = true;
         //Sound.Instance.PlayBGM(ConstDefine.Audio.BGM.GameMain);
     }
-    //Sound.Instance.PlayBGM(ConstDefine.Audio.BGM.GameMain);
 
     // Update is called once per frame
     void Update()

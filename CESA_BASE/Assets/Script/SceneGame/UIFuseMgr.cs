@@ -1,16 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 public class UIFuseMgr : SingletonMonoBehaviour<UIFuseMgr>
 {
+    [SerializeField]
+    private int m_firstCreate = 0;
     [SerializeField]
     GameObject m_uiColider = null;
     [SerializeField]
     List<Fuse> m_uiList = new List<Fuse>();
     private Vector2 m_fuseAmount = Vector2.zero;        // 導火線の生成数（X：左レーン、　Y：右レーン）
     private int m_createCount = AdjustParameter.UI_Fuse_Constant.CREATE_COOUNT;
-
+    private List<int> m_randomList = new List<int>();
     public Vector2 FuseAmount
     {
         get
@@ -23,6 +26,30 @@ public class UIFuseMgr : SingletonMonoBehaviour<UIFuseMgr>
         }
     }
 
+    private void Awake()
+    {
+        if (m_firstCreate > 0)
+        {
+            for (int i = 0; i < m_firstCreate; ++i)
+            {
+                Fuse _fuse = Instantiate(m_uiList[GetDuplicationRandom(0, m_uiList.Count)], Vector3.zero, Quaternion.identity);
+                _fuse.transform.SetParent(transform, true);
+                int y = ((i / 2) / 2);
+                _fuse.transform.localPosition = new Vector3((i % 2) * AdjustParameter.UI_Fuse_Constant.UI_FUSE_INTERVAL_X - 1.0f,
+                    1.0f + (i / 2) * AdjustParameter.UI_Fuse_Constant.UI_FUSE_INTERVAL_Y,
+                    AdjustParameter.UI_Fuse_Constant.UI_FUSE_POS_Z);
+                _fuse.Type = Fuse.FuseType.UI;
+
+                // UI専用のコライダーを子供に
+                GameObject _colider = Instantiate(m_uiColider, _fuse.transform.position, Quaternion.identity);
+                _colider.transform.SetParent(_fuse.transform, true);
+            }
+
+            // 生成数が最大値と同じなら
+            if(m_firstCreate == m_uiList.Count)
+                m_fuseAmount = new Vector2(AdjustParameter.UI_Fuse_Constant.UI_FUSE_MAX, AdjustParameter.UI_Fuse_Constant.UI_FUSE_MAX);
+        }     
+    }
     void Start()
     {
 
@@ -39,7 +66,7 @@ public class UIFuseMgr : SingletonMonoBehaviour<UIFuseMgr>
             m_createCount--;
             if (m_createCount <= 0)
             {
-                int idx = Random.Range(0, m_uiList.Count);  // 出すモデルをプレハブからランダム選択
+                int idx = GetDuplicationRandom(0, m_uiList.Count);  // 出すモデルをプレハブからランダム選択
 
                 // 出す場所を
                 int place;
@@ -57,7 +84,6 @@ public class UIFuseMgr : SingletonMonoBehaviour<UIFuseMgr>
                 _fuse.transform.localPosition = new Vector3(place, AdjustParameter.UI_Fuse_Constant.UI_FUSE_POS_Y, AdjustParameter.UI_Fuse_Constant.UI_FUSE_POS_Z);
                 _fuse.transform.localEulerAngles = new Vector3(90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4));
                 _fuse.Type = Fuse.FuseType.UI;
-                _fuse.transform.tag = StringDefine.TagName.Fuse;
 
 
                 GameMgr.Instance.UIFuse = _fuse;    // リストの末尾に追加
@@ -71,5 +97,25 @@ public class UIFuseMgr : SingletonMonoBehaviour<UIFuseMgr>
                 m_createCount = AdjustParameter.UI_Fuse_Constant.CREATE_COOUNT;
             }
         }
+    }
+
+    /// <summary>
+    /// 最小値以上最大値未満の重複なしランダム数を取得
+    /// </summary>
+    /// <param name="min">最小値</param>
+    /// <param name="max">最大値</param>
+    /// <returns></returns>
+    int GetDuplicationRandom(int min, int max)
+    {
+        if (m_randomList.Count <= 0)
+        {
+            for (int i = min; i < max; ++i)
+                m_randomList.Add(i);
+        }
+
+        int idx = Random.Range(0, m_randomList.Count);
+        int num = m_randomList[idx];
+        m_randomList.Remove(num);
+        return num;
     }
 }

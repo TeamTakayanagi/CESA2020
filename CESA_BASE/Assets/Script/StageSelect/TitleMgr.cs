@@ -7,7 +7,6 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     // 後からコンスト定数に持っていく
     private const float m_charmTime = 3;
     private const float m_guidTime = 1.0f;
-    // ==============================
 
     private enum TitleStep
     {
