@@ -6,9 +6,9 @@ using UnityEngine.UI;
 public class StageData : MonoBehaviour
 {
     [SerializeField]
-    private PopUp popupPrefab;
+    private PopUp m_popupPrefab = null;
 
-    private PopUp m_popup;
+    private PopUp m_popup = null;
     private MedalMgr m_starMgr = null;
     //private Image m_medalSprite = null;
     private int m_stageState = 0;   // ステージの状態：選択可能 = 1以上 / 不可能 = 0

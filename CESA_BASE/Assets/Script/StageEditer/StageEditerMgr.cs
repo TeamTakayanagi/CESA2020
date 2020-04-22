@@ -24,7 +24,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
     private InputField m_inputField = null;
     private CSVScript m_CSVScript = null;
 
-    private string[,,] m_stage = null;
+    //private string[,,] m_stage = null;
     //private LinkedList<LinkedList<LinkedList<string>>> m_stageList = new LinkedList<LinkedList<LinkedList<string>>>();
     private List<Vector3> m_stagePos = new List<Vector3>();
     private List<string> m_stageType = new List<string>();
