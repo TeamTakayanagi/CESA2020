@@ -10,6 +10,14 @@ TagManager:
   - UI/Logo
   - UI/Stage
   - UICanvas
+  - Fuse/I
+  - Fuse/L
+  - Fuse/T
+  - Fuse/X
+  - Fuse/LL
+  - Fuse/TT
+  - Fuse/XX
+  - Button/Input
   layers:
   - Default
   - TransparentFX

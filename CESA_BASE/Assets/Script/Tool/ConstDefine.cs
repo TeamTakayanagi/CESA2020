@@ -47,4 +47,17 @@ namespace ConstDefine
         public const string Game = "Player";
         public const string Clear = "GameClear";
     }
+
+    public readonly struct Fuse
+    {
+        //public const string[] FuseTag = { "Fuse/I", "Fuse/L", "Fuse/T", "Fuse/X", "Fuse/LL", "Fuse/TT", "Fuse/All" };
+
+        public const string FuseI = "Fuse/I";
+        public const string FuseL = "Fuse/L";
+        public const string FuseT = "Fuse/T";
+        public const string FuseX = "Fuse/X";
+        public const string FuseLL = "Fuse/LL";
+        public const string FuseTT = "Fuse/TT";
+        public const string FuseXX = "Fuse/XX";
+    }
 }

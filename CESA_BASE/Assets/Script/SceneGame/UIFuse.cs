@@ -18,10 +18,19 @@ public class UIFuse : MonoBehaviour
     List<FuseStatus> m_uiList = new List<FuseStatus>();
 
     public const int CREATE_COOUNT = 60;
+    private string[] m_FadeTag = new string[7];
 
     // Start is called before the first frame update
     void Awake()
     {
+        m_FadeTag[0] = ConstDefine.Fuse.FuseI;
+        m_FadeTag[1] = ConstDefine.Fuse.FuseL;
+        m_FadeTag[2] = ConstDefine.Fuse.FuseT;
+        m_FadeTag[3] = ConstDefine.Fuse.FuseX;
+        m_FadeTag[4] = ConstDefine.Fuse.FuseLL;
+        m_FadeTag[5] = ConstDefine.Fuse.FuseTT;
+        m_FadeTag[6] = ConstDefine.Fuse.FuseXX;
+
         for(int i = 0; i < m_uiList.Count; ++i)
         {
             Fuse _fuse = Instantiate(m_uiList[i].prefab, transform.position, Quaternion.identity);
@@ -29,7 +38,7 @@ public class UIFuse : MonoBehaviour
             _fuse.transform.localPosition = new Vector3((i & 1) * 2.0f - 1.0f, 1.0f + (int)(i / 2) * 2.0f, 5.0f);
             _fuse.transform.localEulerAngles = m_uiList[i].rotate;
             _fuse.Type = Fuse.FuseType.UI;
-            _fuse.transform.tag = ConstDefine.TagName.Fuse;
+            _fuse.transform.tag = m_FadeTag[i];
 
             // UI専用のコライダーを子供に
             GameObject _colider = Instantiate(m_uiColider, _fuse.transform.position, Quaternion.identity);
