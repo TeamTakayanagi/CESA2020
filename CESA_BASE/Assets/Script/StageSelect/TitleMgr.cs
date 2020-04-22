@@ -53,7 +53,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     //----------------------------------
 
     private float m_upSpeed = 0.5f;
-    private float m_downSpeed = 1.0f;
+    //private float m_downSpeed = 1.0f;
     private float m_delay = 0;
 
     public int Step

@@ -6,24 +6,9 @@ using System.Text;
 
 public class CSVScript : MonoBehaviour
 {
-    // 仮のステージ
-    string[,,] m_stage = new string[,,] {
-    {{ "A0", "A0", "A0", "A0", },
-     { "A0", "--", "--", "A0", },
-     { "A0", "A0", "--", "A0", },},
-
-    {{ "A0", "A0", "A0", "A0", },
-     { "A0", "--", "--", "A0", },
-     { "A0", "--", "--", "A0", },},
-
-    {{ "A0", "--", "--", "A0", },
-     { "A0", "--", "--", "A0", },
-     { "A0", "--", "--", "A0", },},
-    };
-
     TextAsset csvFile;
     private List<List<string[]>> stageLList = new List<List<string[]>>();
-
+    
     private string m_csvPath = "/TextData/StageData";
     private string str;         // ステージデータ格納用
 
@@ -77,7 +62,6 @@ public class CSVScript : MonoBehaviour
         while (reader.Peek() != -1) // reader.Peaekが-1になるまで
         {
             stageLList.Add(new List<string[]>());
-            //for (int y = 0; y < 3; y++)
             while (line != "!n")
             {
                 stageLList[_roop].Add(line.Split(','));
@@ -85,47 +69,35 @@ public class CSVScript : MonoBehaviour
             }
             line = reader.ReadLine();
             _roop++;
-
-        }
-
-        // csvDatas[行][列]を指定して値を自由に取り出せる
-        for (int z = 0; z < stageLList.Count; z++)
-        {
-            for (int y = 0; y < stageLList[z].Count; y++)
-            {
-                for (int x = 0; x < stageLList[z][y].Length; x++)
-                {
-                    Debug.Log(stageLList[z][y][x]);
-                }
-            }
         }
 
         return true;
     }
 
+
     // CSV書き込み
-    public bool WriteCsv()
+    public bool WriteCsv(List<List<string[]>> _stage, string _stageName, int _sizeY)
     {
-        for (int z = 0; z < 3; z++)
+        for (int z = 0; z < _stage.Count; z++)
         {
             stageLList.Add(new List<string[]>());
-            for (int y = 0; y < 3; y++)
+            for (int y = 0; y < _stage[z].Count; y++)
             {
-                stageLList[z].Add(new string[4]);
-                for (int x = 0; x < 4; x++)
+                stageLList[z].Add(new string[_sizeY]);
+                for (int x = 0; x < _stage[z][y].Length; x++)
                 {
-                    stageLList[z][y][x] = m_stage[z, y, x];
+                    stageLList[z][y][x] = _stage[z][y][x]; ;
                 }
             }
         }
+        
+        StreamWriter sw = new StreamWriter(Application.dataPath + m_csvPath + _stageName + ".csv", false, Encoding.GetEncoding("Shift_JIS"));
 
-        StreamWriter sw = new StreamWriter(Application.dataPath + m_csvPath + ".csv", false, Encoding.GetEncoding("Shift_JIS"));
-
-        for (int z = 0; z < 3; z++)
+        for (int z = 0; z < _stage.Count; z++)
         {
-            for (int y = 0; y < 3; y++)
+            for (int y = 0; y < _stage[z].Count; y++)
             {
-                for (int x = 0; x < 4; x++)
+                for (int x = 0; x < _stage[z][y].Length; x++)
                 {
                     str = string.Join(",", stageLList[z][y]);
                     str += ',';

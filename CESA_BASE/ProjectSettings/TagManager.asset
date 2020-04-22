@@ -9,10 +9,17 @@ TagManager:
   - Fuse
   - UI/Logo
   - UI/Stage
-  - Fuse/pole
+  - UICanvas
+  - Fuse/I
   - Fuse/L
   - SceneMgr
   - Stage
+  - Fuse/T
+  - Fuse/X
+  - Fuse/LL
+  - Fuse/TT
+  - Fuse/XX
+  - Button/Input
   layers:
   - Default
   - TransparentFX

@@ -4,19 +4,23 @@ using UnityEngine;
 
 public class MainCamera : MonoBehaviour
 {
-    const float radius = 13;
-    private const float CAMERA_MOVE = 1.0f;
     [SerializeField]
     private Vector3 m_target = Vector3.zero;
-    private bool m_isSceoll;
+    [SerializeField]
+    private bool m_isAroundCamera = false;
     private Vector3 m_savePos;
-    private float m_moveRotate = 0.0f;
+    private float m_moveRotate = 90.0f;
+    private float m_moveRadiuse = 10.0f;
+    private bool m_isScroll = false;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        transform.position = new Vector3(radius * Mathf.Cos(m_moveRotate), radius * Mathf.Sin(15), radius * Mathf.Sin(m_moveRotate));
-        transform.LookAt(Vector3.zero);
+        if (!m_isAroundCamera)
+        {
+            transform.position = new Vector3(m_moveRadiuse * Mathf.Cos(m_moveRotate), m_moveRadiuse * Mathf.Sin(15), m_moveRadiuse * Mathf.Sin(m_moveRotate));
+            transform.LookAt(Vector3.zero);
+        }
     }
 
     // Update is called once per frame
@@ -24,55 +28,81 @@ public class MainCamera : MonoBehaviour
     {
         float scroll = Input.GetAxis("Mouse ScrollWheel");
 
-        if(!m_isSceoll && Input.GetMouseButtonDown(1))
+        // 周り移動
+        if(!m_isScroll && Input.GetMouseButtonDown(1))
         {
-            m_isSceoll = true;
+            m_isScroll = true;
             m_savePos = Input.mousePosition;
         }
-        else if(m_isSceoll && Input.GetMouseButtonUp(1))
+        else if(m_isScroll && Input.GetMouseButtonUp(1))
         {
-            m_isSceoll = false;
+            m_isScroll = false;
         }
-        else if(m_isSceoll && Input.GetMouseButton(1))
+        else if(m_isScroll && Input.GetMouseButton(1))
         {
             Vector3 difference = Input.mousePosition - m_savePos;
-#if false
-            if (difference.x > 0.0f)
+            if (m_isAroundCamera)
             {
-                transform.RotateAround(target, transform.up, difference.x * Time.deltaTime * CAMERA_MOVE);
-                savePos = Input.mousePosition;
+                if (Mathf.Abs(difference.x) > ConstDefine.ConstParameter.PERMISSION_MOVE)
+                {
+                    transform.RotateAround(m_target, transform.up, difference.x * Time.deltaTime * ConstDefine.ConstParameter.AROUND_MOVE);
+                    m_savePos = Input.mousePosition;
+                }
+                if (Mathf.Abs(difference.y) > ConstDefine.ConstParameter.PERMISSION_MOVE)
+                {
+                    transform.RotateAround(m_target, transform.right, -difference.y * Time.deltaTime * ConstDefine.ConstParameter.AROUND_MOVE);
+                    m_savePos = Input.mousePosition;
+                }
+
             }
-            else if (difference.x < 0.0f)
+            else
             {
-                transform.RotateAround(target, transform.up, difference.x * Time.deltaTime * CAMERA_MOVE);
-                savePos = Input.mousePosition;
+                m_moveRotate -= difference.x * Time.deltaTime * ConstDefine.ConstParameter.CAMERA_MOVE;
+                m_savePos = Input.mousePosition;
+                transform.position = new Vector3(m_moveRadiuse * Mathf.Cos(m_moveRotate), m_moveRadiuse * Mathf.Sin(15), m_moveRadiuse * Mathf.Sin(m_moveRotate));
+                transform.LookAt(Vector3.zero);
             }
-            if (difference.y > 0.0f)
-            {
-                transform.RotateAround(target, transform.right, -difference.y * Time.deltaTime * CAMERA_MOVE);
-                savePos = Input.mousePosition;
-            }
-            else if (difference.y < 0.0f)
-            {
-                transform.RotateAround(target, transform.right, -difference.y * Time.deltaTime * CAMERA_MOVE);
-                savePos = Input.mousePosition;
-            }
-#else
-            m_moveRotate -= difference.x * Time.deltaTime * CAMERA_MOVE;
-            m_savePos = Input.mousePosition;
-            transform.position = new Vector3(radius * Mathf.Cos(m_moveRotate), radius * Mathf.Sin(15), radius * Mathf.Sin(m_moveRotate));
-            transform.LookAt(Vector3.zero);
-#endif
         }
-        // カメラ移動
+        // 左右移動
+        else if (!m_isAroundCamera && !m_isScroll && Input.GetMouseButtonDown(2))
+        {
+            m_isScroll = true;
+            m_savePos = Input.mousePosition;
+        }
+        else if (!m_isAroundCamera && m_isScroll && Input.GetMouseButtonUp(2))
+        {
+            m_isScroll = false;
+        }
+        else if (!m_isAroundCamera && m_isScroll && Input.GetMouseButton(2))
+        {
+            Vector3 difference = Input.mousePosition - m_savePos;
+            transform.position -= transform.rotation * new Vector3(difference.x * Time.deltaTime, 0.0f, 0.0f);
+            m_savePos = Input.mousePosition;
+        }
+       // カメラ手前移動
         else if(scroll != 0.0f)
         {
-            Vector3 _pos = transform.position + transform.forward * scroll * ConstDefine.ConstParameter.VALUE_CAMERA;
-            float dis = Vector3.Distance(_pos, m_target);
-            if (dis > ConstDefine.ConstParameter.CAMERA_NEAR &&
-                dis < ConstDefine.ConstParameter.CAMERA_FAR)
+            if (m_isAroundCamera)
             {
-                transform.position = _pos;
+                Vector3 _pos = transform.position + transform.forward * scroll * ConstDefine.ConstParameter.VALUE_CAMERA;
+                float dis = Vector3.Distance(_pos, m_target);
+                if (dis > ConstDefine.ConstParameter.CAMERA_NEAR &&
+                    dis < ConstDefine.ConstParameter.CAMERA_FAR)
+                {
+                    transform.position = _pos;
+                }
+            }
+            else
+            {
+                float next = m_moveRadiuse - scroll * ConstDefine.ConstParameter.VALUE_CAMERA * 10;
+
+                if (next > ConstDefine.ConstParameter.CAMERA_NEAR &&
+                    next < ConstDefine.ConstParameter.CAMERA_FAR)
+                {
+                    m_moveRadiuse = next;
+                    transform.position = new Vector3(m_moveRadiuse * Mathf.Cos(m_moveRotate), m_moveRadiuse * Mathf.Sin(15), m_moveRadiuse * Mathf.Sin(m_moveRotate));
+                    transform.LookAt(Vector3.zero);
+                }
             }
         }
     }

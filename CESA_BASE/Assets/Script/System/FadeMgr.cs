@@ -5,7 +5,7 @@ using UnityEngine;
 public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
 {
     [SerializeField]
-    private GameObject FadePrefab;
+    private GameObject FadePrefab = null;
     private GameObject m_fade;
 
     private bool m_fadeFlg;
