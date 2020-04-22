@@ -11,7 +11,6 @@ public class StageMgr : SingletonMonoBehaviour<StageMgr>
     // Start is called before the first frame update
     void Start()
     {
-        DontDestroyOnLoad(gameObject);
 
     }
 

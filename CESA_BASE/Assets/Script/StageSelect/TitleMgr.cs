@@ -52,7 +52,6 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     private Vector3 m_guidPos = new Vector3(0, -25, 85);
     //----------------------------------
 
-
     private float m_upSpeed = 0.5f;
     private float m_downSpeed = 1.0f;
     private float m_delay = 0;
@@ -165,6 +164,9 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
 
             if (!m_logo.GetComponent<OutsideCanvas>().isVisible && !m_guid.GetComponent<OutsideCanvas>().isVisible)
             {
+                Destroy(m_logo.gameObject);
+                Destroy(m_guid.gameObject);
+
                 m_step++;
             }
         }

@@ -31,8 +31,6 @@ public class StageData : MonoBehaviour
     void Start()
     {
         m_starMgr = GetComponent<MedalMgr>();
-        //m_medalSprite = GetComponent<Image>();
-        //m_medalSprite.sprite = null;
 
         m_csvScript = GameObject.FindGameObjectWithTag(ConstDefine.TagName.SceneMgr).GetComponent<CSVScript>();
     }
@@ -66,7 +64,7 @@ public class StageData : MonoBehaviour
         //        default:
         //            break;
         //    }
-            
+
         //    transform.GetComponentInParent<StageMgr>().popFlg = true;
         //}
     }
