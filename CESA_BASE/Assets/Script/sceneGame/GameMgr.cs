@@ -91,9 +91,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
         m_csvScript = GameObject.FindGameObjectWithTag(ConstDefine.TagName.SceneMgr).GetComponent<CSVScript>();
         CreateStage();
-
-        // スタート演出のため導火線の更新処理停止（ステージエディタ完成後修正予定）
-        _cube.enabled = false;
     }
     //Sound.Instance.PlayBGM(ConstDefine.Audio.BGM.GameMain);
 

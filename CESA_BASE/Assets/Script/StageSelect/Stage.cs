@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Stage : MonoBehaviour
 {
@@ -9,16 +10,18 @@ public class Stage : MonoBehaviour
 
     private PopUp m_popUP = null;
 
+    private Canvas m_stageCanvas = null;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        m_stageCanvas = GameObject.FindGameObjectWithTag(ConstDefine.TagName.UIStage).GetComponent<Canvas>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (TitleMgr.Instance.Step < 7)     return;
+        if (TitleMgr.Instance.Step < 7) return;
 
         if (Input.GetMouseButtonUp(0))
         {
@@ -30,9 +33,9 @@ public class Stage : MonoBehaviour
 
             if (is_hit)
             {
-                if (_hit.transform.tag == "Stage")
+                if (_hit.transform == transform)
                 {
-                    m_popUP = Instantiate(m_popUpPrefab, transform.root.position, Quaternion.identity, transform.root);
+                    m_popUP = Instantiate(m_popUpPrefab, m_stageCanvas.transform.position, m_stageCanvas.transform.rotation, m_stageCanvas.transform);
                 }
             }
         }

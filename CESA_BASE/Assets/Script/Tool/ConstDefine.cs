@@ -27,6 +27,7 @@ namespace ConstDefine
 
         public const string SceneMgr = "SceneMgr";
         public const string Title = "Title";
+        public const string UIStage = "UI/Stage";
         
         // ここからparent
         public const string Fuse = "Fuse"; 
