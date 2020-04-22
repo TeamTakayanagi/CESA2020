@@ -93,9 +93,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // マウスカーソル用の画像をデフォルトに変更
         Cursor.SetCursor(m_cursorDefault, Vector2.zero, CursorMode.Auto);
         // ゲームクリア用のUIの親オブジェクト取得
-        m_resultClear = GameObject.FindGameObjectWithTag(Utility.TagUtility.getChildTagName(StringDefine.TagName.GameClear));
+        m_resultClear = GameObject.FindGameObjectWithTag(StringDefine.TagName.UIGameClear);
         // ゲームオーバー用のUIの親オブジェクト取得
-        m_resultGameover = GameObject.FindGameObjectWithTag(Utility.TagUtility.getChildTagName(StringDefine.TagName.GameOver));     
+        m_resultGameover = GameObject.FindGameObjectWithTag(StringDefine.TagName.UIGameOver);     
 
         // 初期生成位置はわからないので生成不可能場所を格納
         m_createPos = OUTPOS;
@@ -220,11 +220,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                             return;
                         if (_fuse.Type == Fuse.FuseType.UI)
                         {
+                            if(m_selectFuse)
+                                m_selectFuse.SelectUIFuse(false);
                             m_selectFuse = _fuse;
-                            foreach (Fuse _uifuse in m_uiFuse)
-                                _uifuse.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
-
-                            m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.cyan);
+                            m_selectFuse.SelectUIFuse(true);
                             // マウスカーソル用の画像を選択時に変更
                             Cursor.SetCursor(m_cursorCatch, Vector2.zero, CursorMode.Auto);
                         }
@@ -232,7 +231,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     // 選択解除
                     else
                     {
-                        m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
+                        m_selectFuse.SelectUIFuse(false);
                         m_selectFuse = null;
                         // マウスカーソル用の画像をデフォルトに変更
                         Cursor.SetCursor(m_cursorDefault, Vector2.zero, CursorMode.Auto);
@@ -373,16 +372,19 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     public void BurnOutFuse(Fuse _fuse)
     {
         m_fieldFuse.Remove(_fuse);
+        m_burnCount--;
         if (_fuse.Type == Fuse.FuseType.Goal)
         {
             m_resultClear.SetActive(true);
             Camera.main.GetComponent<MainCamera>().Control = false;
             m_saveObj = Instantiate(m_fireworks, _fuse.transform.position, Quaternion.identity);
             END_FIRE_POS += _fuse.transform.position;
+            if (m_selectFuse)
+                m_selectFuse.SelectUIFuse(false);
             m_gameStep = GameClear;
+            UIFuseMgr.Instance.enabled = true;
         }
-        m_burnCount--;
-        if (m_burnCount <= 0)
+        else if (m_burnCount <= 0)
         {
             m_resultGameover.SetActive(true);
             m_gameStep = GameOver;

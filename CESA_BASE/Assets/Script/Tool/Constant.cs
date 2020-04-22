@@ -61,10 +61,8 @@ namespace StringDefine
         public const string UICamera = "UICamera";
         public const string Fuse = "Fuse"; 
         public const string UICanvas = "UICanvas";
-
-        // 「/」の後のタグ
-        public const string GameClear = "GameClear";
-        public const string GameOver = "GameOver";
+        public const string UIGameClear = "UI/GameClear";
+        public const string UIGameOver = "UI/GameOver";
     }
 
     namespace Audio

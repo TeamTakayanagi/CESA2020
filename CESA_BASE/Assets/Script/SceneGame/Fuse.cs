@@ -87,7 +87,7 @@ public class Fuse : MonoBehaviour
                 }
             case FuseType.UI:
                 {
-                    gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
+                    gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
                     m_isBurn = false;
                     break;
                 }
@@ -108,7 +108,7 @@ public class Fuse : MonoBehaviour
             {
                 // 燃え尽きた
                 m_isBurn = false;
-                m_type = FuseType.Fuse;
+                //m_type = FuseType.Fuse;
                 gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.black);
                 // ここにゲーム管理の関数呼び出し
                 GameMgr.Instance.BurnOutFuse(this);
@@ -128,7 +128,7 @@ public class Fuse : MonoBehaviour
         }
     }
 
-    private void LateUpdate()
+    private void FixedUpdate()
     {
         if (m_type == FuseType.UI)
         {
@@ -136,6 +136,17 @@ public class Fuse : MonoBehaviour
         }
     }
 
+    public void SelectUIFuse(bool isSet)
+    {
+        for(int i= 0; i < transform.childCount - 1; ++i)
+        {
+            GameObject _obj = transform.GetChild(i).gameObject;
+            if(isSet)
+                _obj.layer = 8;
+            else
+                _obj.layer = 2;
+        }
+    }
 
     // 
     private void OnTriggerStay(Collider other)
