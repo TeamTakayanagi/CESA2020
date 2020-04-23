@@ -31,8 +31,7 @@ public class StageData : MonoBehaviour
     void Start()
     {
         m_starMgr = GetComponent<MedalMgr>();
-
-        m_csvScript = GameObject.FindGameObjectWithTag(ConstDefine.TagName.SceneMgr).GetComponent<CSVScript>();
+        m_csvScript = SceneMgr.Instance.GetComponent<CSVScript>();
     }
 
     // Update is called once per frame

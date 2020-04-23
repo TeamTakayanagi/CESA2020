@@ -15,7 +15,7 @@ public class Stage : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        m_stageCanvas = GameObject.FindGameObjectWithTag(ConstDefine.TagName.UIStage).GetComponent<Canvas>();
+        m_stageCanvas = SceneMgr.Instance.GetComponent<Canvas>();
     }
 
     // Update is called once per frame

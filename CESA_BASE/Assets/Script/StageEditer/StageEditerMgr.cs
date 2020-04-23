@@ -75,7 +75,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         // UI部分 
         if (Input.mousePosition.x > Screen.width * 0.8f)
         {
-            ray = GameObject.FindGameObjectWithTag(StringDefine.TagName.UICamera).GetComponent<Camera>().
+            ray = GameObject.FindGameObjectWithTag(StringDefine.TagName.SubCamera).GetComponent<Camera>().
                     ScreenPointToRay(Input.mousePosition);
 
             // 設置場所を選択

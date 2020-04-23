@@ -34,8 +34,6 @@ namespace AdjustParameter
     {
         public const float DURATION = 1.0f;                                 // リザルトのUIのスライド時間（秒）
     }
-
-
 }
 
 //---加工済み変数---
@@ -59,7 +57,7 @@ namespace StringDefine
         public const string None = "None";
         public const string Untagged = "Untagged";
         public const string Player = "Player";
-        public const string UICamera = "UICamera";
+        public const string SubCamera = "SubCamera";
         public const string Fuse = "Fuse"; 
         public const string UICanvas = "UICanvas";
         public const string UIGameClear = "UI/GameClear";

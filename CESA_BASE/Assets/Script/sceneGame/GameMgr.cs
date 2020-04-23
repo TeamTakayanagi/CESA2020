@@ -207,7 +207,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             {
                 // サブカメラ取得
                 RaycastHit hit = new RaycastHit();
-                Ray ray = GameObject.FindGameObjectWithTag(StringDefine.TagName.UICamera).GetComponent<Camera>().
+                Ray ray = GameObject.FindGameObjectWithTag(StringDefine.TagName.SubCamera).GetComponent<Camera>().
                     ScreenPointToRay(Input.mousePosition);
 
                 // 導火線を選択
