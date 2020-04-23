@@ -137,7 +137,7 @@ public class Fuse : MonoBehaviour
     {
         if (m_type == FuseType.UI)
         {
-            transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, - m_defaultRot.y - Camera.main.transform.localEulerAngles.y, transform.localEulerAngles.z);
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, - m_defaultRot.y - Camera.main.transform.eulerAngles.y, transform.eulerAngles.z);
         }
     }
 
@@ -163,7 +163,7 @@ public class Fuse : MonoBehaviour
             return;
 
         // 導火線との判定
-        if (other.transform.tag == StringDefine.TagName.Fuse)
+        if (Utility.TagUtility.getParentTagName(other.transform.tag) == StringDefine.TagName.Fuse)
         {
             Fuse _fuse = other.gameObject.GetComponent<Fuse>();
             // 相手が燃えているもしくは燃え尽きた後なら処理を飛ばす

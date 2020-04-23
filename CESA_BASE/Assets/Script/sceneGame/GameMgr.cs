@@ -42,7 +42,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private GameObject m_saveObj = null;                                // 各GameStepごとにオブジェクトを格納（スタート：カウントダウン数字　ゲームクリア：花火）
     private GameObject m_resultClear = null;                            // ゲームクリア用のUIの親オブジェクト
     private GameObject m_resultGameover = null;                         // ゲームオーバー用のUIの親オブジェクト
-    private Fuse m_selectFuse = null;                                   // 選択しているUIの導火線          
+    private Fuse m_selectFuse = null;                                   // 選択しているUIの導火線   
+    private UIFuseCreate m_UIFuseCreate = null;                         // UIの導火線生成オブジェクト
     private LinkedList<Fuse> m_fieldFuse = new LinkedList<Fuse>();      // ゲーム画面の導火線
     private LinkedList<Fuse> m_uiFuse = new LinkedList<Fuse>();         // UI部分の導火線
     private GameStep m_gameStep = null;                                 // 現在のゲームの進行状況の関数
@@ -96,8 +97,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // ゲームクリア用のUIの親オブジェクト取得
         m_resultClear = GameObject.FindGameObjectWithTag(StringDefine.TagName.UIGameClear);
         // ゲームオーバー用のUIの親オブジェクト取得
-        m_resultGameover = GameObject.FindGameObjectWithTag(StringDefine.TagName.UIGameOver);     
-
+        m_resultGameover = GameObject.FindGameObjectWithTag(StringDefine.TagName.UIGameOver);
+        // UIの導火線生成オブジェクト取得
+        m_UIFuseCreate = FindObjectOfType<UIFuseCreate>();
         // 初期生成位置はわからないので生成不可能場所を格納
         m_createPos = OUTPOS;
 
@@ -107,20 +109,18 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         m_gameStep = GameStart;
 
         // フィールドオブジェクトの取得
-        GameObject[] _fuseList = GameObject.FindGameObjectsWithTag
-            (Utility.TagUtility.getParentTagName(StringDefine.TagName.Fuse));
-        foreach (GameObject _fuse in _fuseList)
+        Fuse[] _fuseList = FindObjectsOfType<Fuse>();
+        foreach (Fuse _fuse in _fuseList)
         {
-            Fuse _cube = _fuse.GetComponent<Fuse>();
-            if (_cube.Type == Fuse.FuseType.UI)
-                m_uiFuse.AddLast(_cube);
+            if (_fuse.Type == Fuse.FuseType.UI)
+                m_uiFuse.AddLast(_fuse);
             else
-                m_fieldFuse.AddLast(_cube);
+                m_fieldFuse.AddLast(_fuse);
 
             // スタート演出のため導火線の更新処理停止（ステージエディタ完成後修正予定）
-            _cube.enabled = false;
+            _fuse.enabled = false;
         }
-        UIFuseMgr.Instance.enabled = false;
+        m_UIFuseCreate.enabled = false;
         Camera.main.GetComponent<MainCamera>().Control = true;
         //Sound.Instance.PlayBGM(ConstDefine.Audio.BGM.GameMain);
     }
@@ -143,14 +143,12 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             Destroy(m_saveObj);
 
             // 導火線の更新処理再開
-            GameObject[] _cubes = GameObject.FindGameObjectsWithTag
-                (Utility.TagUtility.getParentTagName(StringDefine.TagName.Fuse));
-            foreach (GameObject obj in _cubes)
+            Fuse[] _fuseList = FindObjectsOfType<Fuse>();
+            foreach (Fuse _fuse in _fuseList)
             {
-                Fuse _cube = obj.GetComponent<Fuse>();
-                _cube.enabled = true;
+                _fuse.enabled = true;
             }
-            UIFuseMgr.Instance.enabled = true;
+            m_UIFuseCreate.enabled = true;
         }
     }
 
@@ -166,10 +164,12 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             Camera.main.GetComponent<MainCamera>().Control = false;
             m_saveObj = Instantiate(m_fireworks, Vector3.zero, Quaternion.identity);
             m_gameStep = GameClear;
+            return;
         }
         else if(Input.GetKeyUp(KeyCode.O))
         {
             m_gameStep = GameOver;
+            return;
         }
 #endif
 
@@ -247,7 +247,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 {
                     m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
                     m_selectFuse.Type = Fuse.FuseType.Fuse;
-                    UIFuseMgr.Instance.FuseAmount -= new Vector2(((m_selectFuse.DefaultPos.x + 1) / 2 + 1) % 2, ((m_selectFuse.DefaultPos.x + 1) / 2) % 2);
+                    m_UIFuseCreate.FuseAmount -= new Vector2(((m_selectFuse.DefaultPos.x + 1) / 2 + 1) % 2, ((m_selectFuse.DefaultPos.x + 1) / 2) % 2);
 
                     // UI部分の移動
                     foreach (Fuse _fuse in m_uiFuse)
@@ -377,18 +377,24 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         if (_fuse.Type == Fuse.FuseType.Goal)
         {
             m_resultClear.SetActive(true);
-            Camera.main.GetComponent<MainCamera>().Control = false;
+            m_gameStep = GameClear;
             m_saveObj = Instantiate(m_fireworks, _fuse.transform.position, Quaternion.identity);
             END_FIRE_POS += _fuse.transform.position;
+
             if (m_selectFuse)
                 m_selectFuse.SelectUIFuse(false);
-            m_gameStep = GameClear;
-            UIFuseMgr.Instance.enabled = true;
+            m_UIFuseCreate.enabled = true;
+           Camera.main.GetComponent<MainCamera>().Control = false;
         }
         else if (m_burnCount <= 0)
         {
             m_resultGameover.SetActive(true);
             m_gameStep = GameOver;
+
+            if (m_selectFuse)
+                m_selectFuse.SelectUIFuse(false);
+            m_UIFuseCreate.enabled = true;
+            Camera.main.GetComponent<MainCamera>().Control = false;
         }
     }
 
@@ -400,7 +406,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // 花火を移動させメインカメラに注視させる
         m_saveObj.transform.position = Vector3.Lerp(m_saveObj.transform.position, END_FIRE_POS, Time.deltaTime);
         Camera.main.transform.LookAt(m_saveObj.transform.position);
-
+        Camera.main.rect = new Rect(0.0f, 0.0f, Mathf.Lerp(Camera.main.rect.width, 1.0f, Time.deltaTime), 1.0f);
         // UIの移動
         StartCoroutine(SlideResultUI(m_resultClear));
     }
@@ -410,6 +416,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// </summary>
     public void GameOver()
     {
+        Camera.main.rect = new Rect(0.0f, 0.0f, Mathf.Lerp(Camera.main.rect.width, 1.0f, Time.deltaTime), 1.0f);
         // UIの移動
         StartCoroutine(SlideResultUI(m_resultGameover));
     }

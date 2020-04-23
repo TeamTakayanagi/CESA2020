@@ -64,6 +64,7 @@ namespace StringDefine
         public const string UICanvas = "UICanvas";
         public const string UIGameClear = "UI/GameClear";
         public const string UIGameOver = "UI/GameOver";
+        public const string TerrainBlock = "TerrainBlock";
 
         public const string FuseI = "Fuse/I";
         public const string FuseL = "Fuse/L";
@@ -92,5 +93,12 @@ namespace StringDefine
         public const string StageSelect = "Untagged";
         public const string Game = "Player";
         public const string Clear = "GameClear";
+    }
+    public readonly struct Layer
+    {
+        public const int Default = 0;
+        public const int Trans = 1;
+        public const int Ignore = 2;
+        public const int PostEffect = 8;
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 
-public class UIFuseMgr : SingletonMonoBehaviour<UIFuseMgr>
+public class UIFuseCreate : MonoBehaviour
 {
     [SerializeField]
     private int m_firstCreate = 0;
@@ -25,8 +25,15 @@ public class UIFuseMgr : SingletonMonoBehaviour<UIFuseMgr>
             m_fuseAmount = value;
         }
     }
+    public int FirstCreate
+    {
+        get
+        {
+            return m_firstCreate;
+        }
+    }
 
-    private void Awake()
+    void Awake()
     {
         if (m_firstCreate > 0)
         {
@@ -38,17 +45,19 @@ public class UIFuseMgr : SingletonMonoBehaviour<UIFuseMgr>
                 _fuse.transform.localPosition = new Vector3((i % 2) * AdjustParameter.UI_Fuse_Constant.UI_FUSE_INTERVAL_X - 1.0f,
                     1.0f + (i / 2) * AdjustParameter.UI_Fuse_Constant.UI_FUSE_INTERVAL_Y,
                     AdjustParameter.UI_Fuse_Constant.UI_FUSE_POS_Z);
+                _fuse.EndPos = _fuse.transform.localPosition;
                 _fuse.Type = Fuse.FuseType.UI;
 
                 // UI専用のコライダーを子供に
                 GameObject _colider = Instantiate(m_uiColider, _fuse.transform.position, Quaternion.identity);
                 _colider.transform.SetParent(_fuse.transform, true);
+                m_fuseAmount += new Vector2((i + 1) % 2, (i + 2) % 2);
             }
 
             // 生成数が最大値と同じなら
-            if(m_firstCreate == m_uiList.Count)
+            if (m_firstCreate == m_uiList.Count)
                 m_fuseAmount = new Vector2(AdjustParameter.UI_Fuse_Constant.UI_FUSE_MAX, AdjustParameter.UI_Fuse_Constant.UI_FUSE_MAX);
-        }     
+        }
     }
     void Start()
     {

@@ -7,36 +7,55 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 {
     [SerializeField]
     private GameObject m_feildPrefab = null;
-    [SerializeField]
-    private GameObject m_ground = null;
 
+    private bool m_isPreview = false;
     private Vector3 m_cameraPos = Vector3.zero;
-    private GameObject m_cursorTouchObj = null;
     private Quaternion m_cameraRot = Quaternion.identity;
+    private GameObject m_cursorTouchObj = null;
     private Fuse m_selectFuse = null;
+    private TerrainCreate m_terrainCreate = null;
     private CSVScript m_csvScript = null;
 
     private List<Vector3> m_stagePos = new List<Vector3>();
     private List<string> m_stageType = new List<string>();
     private List<List<string[]>> m_stageLList = new List<List<string[]>>();
 
-    private void Awake()
+    override protected void Awake()
     {
         Camera.main.GetComponent<MainCamera>().Control = true;
+        m_isPreview = false; 
+        base.Awake();
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        m_ground.SetActive(false);
+        Fuse[] _fuseList = FindObjectsOfType<Fuse>();
         // UIの導火線仮選択
-        m_selectFuse = FindObjectOfType<Fuse>();
+        m_selectFuse = _fuseList[0];
         m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.cyan);
+        // 導火線のコライダーを真四角に変更
+        foreach(Fuse _fuse in _fuseList)
+        {
+            BoxCollider[] _box = _fuse.GetComponents<BoxCollider>();
+            // 1つだけ真四角にして残し2つ目以降は削除
+            _box[0].size = Vector3.one;
+            _box[0].center = Vector3.zero;
+            for(int i = 1; i < _box.Length; ++i)
+            {
+                Destroy(_box[i]);
+            }
+
+            // UI選択用のコライダーの削除
+            Destroy(_fuse.transform.GetChild(_fuse.transform.childCount - 1).gameObject);
+        }
 
         // カメラの初期情報保存
         m_cameraPos = Camera.main.transform.position;
         m_cameraRot = Camera.main.transform.rotation;
 
+        // 地形生成オブジェクト取得
+        m_terrainCreate = FindObjectOfType<TerrainCreate>();
         // CSV保存用関数
         m_csvScript = GetComponent<CSVScript>();
 
@@ -47,6 +66,9 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
     // Update is called once per frame
     void Update()
     {
+        if (m_isPreview)
+            return;
+
         RaycastHit hit = new RaycastHit();
         Ray ray;
 
@@ -59,13 +81,13 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             // 設置場所を選択
             if (Physics.Raycast(ray, out hit))
             {
-                if (Utility.TagUtility.getParentTagName(hit.collider.transform.parent.tag) == StringDefine.TagName.Fuse)
+                if (Utility.TagUtility.getParentTagName(hit.collider.tag) == StringDefine.TagName.Fuse)
                 {
                     if (Input.GetMouseButtonDown(0))
                     {
                         if (m_selectFuse)
                             m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
-                        m_selectFuse = hit.collider.transform.parent.GetComponent<Fuse>();
+                        m_selectFuse = hit.collider.GetComponent<Fuse>();
                         m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.cyan);
                     }
                 }
@@ -144,16 +166,16 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                     }
                 }
                 // 設置済みの導火線にタッチしているなら
-                else if (Utility.TagUtility.getParentTagName(hit.collider.transform.parent.tag) == StringDefine.TagName.Fuse)
+                else if (Utility.TagUtility.getParentTagName(hit.collider.tag) == StringDefine.TagName.Fuse)
                 {
                     // 導火線設置
                     if (Input.GetMouseButtonDown(0))
                     {
                         // 削除
-                        GameObject obj = Instantiate(m_feildPrefab, hit.collider.transform.parent.position, Quaternion.identity);
+                        GameObject obj = Instantiate(m_feildPrefab, hit.collider.transform.position, Quaternion.identity);
                         obj.transform.parent = transform.GetChild(0);
                         obj.transform.tag = StringDefine.TagName.Player;
-                        Destroy(hit.collider.transform.parent.gameObject);
+                        Destroy(hit.collider.gameObject);
 
                         // 削除情報で上書き
                         Vector3 _pos = hit.transform.position;
@@ -166,17 +188,17 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                         if (m_cursorTouchObj)
                             m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
 
-                        m_cursorTouchObj = hit.collider.transform.parent.gameObject;
+                        m_cursorTouchObj = hit.collider.gameObject;
                         m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
                     }
                 }
             }
         }
-
-
     }
 
-    // 空のボックスを用いてステージの枠を生成
+    /// <summary>
+    /// 空のボックスを用いてステージの枠を生成
+    /// </summary>
     void CreateStage()
     {
         int _stageSizeX = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeX);
@@ -189,11 +211,10 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             return;
 
         GameObject[] _objList = GameObject.FindGameObjectsWithTag(StringDefine.TagName.Player);
-        int difference = _stageSizeX * _stageSizeY * _stageSizeZ - _objList.Length;
-        m_ground.transform.localPosition = new Vector3(m_ground.transform.localPosition.x, -Mathf.Ceil(_stageSizeY / 2), m_ground.transform.localPosition.z);
+        int difference = _objList.Length - _stageSizeX * _stageSizeY * _stageSizeZ;
 
         // 変更後のほうが設置可能数が多い（同数含む）なら
-        if (difference >= 0)
+        if (difference <= 0)
         {
             Vector3 half = new Vector3(Mathf.Ceil(_stageSizeX / 2), Mathf.Ceil(_stageSizeY / 2), Mathf.Ceil(_stageSizeZ / 2));
             for (int z = 0; z < _stageSizeZ; ++z)
@@ -214,13 +235,13 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                             obj = Instantiate(m_feildPrefab, new Vector3(x - half.x, y - half.y, z - half.z), Quaternion.identity);
                             obj.transform.parent = transform.GetChild(0);
                             obj.transform.tag = StringDefine.TagName.Player;
+                            obj.layer = StringDefine.Layer.Trans;
                         }
                     }
         }
         // 変更前のほうが設置可能数が多いなら
         else
         {
-            difference = Mathf.Abs(difference);
             // 差分を解放
             for (int i = 0; i < difference; ++i)
                 Destroy(_objList[i]);
@@ -240,28 +261,56 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ボタンの処理
 
-    // 実際のステージを確認
+    /// <summary>
+    /// 実際のステージを確認
+    /// </summary>
     public void ViewPlayStage()
     {
         GameObject[] _objList = GameObject.FindGameObjectsWithTag(StringDefine.TagName.Player);
-        bool isSet = _objList[0].GetComponent<MeshRenderer>().enabled ^ true;
 
         AllFuseDefault();
         foreach (GameObject _obj in _objList)
         {
-            _obj.GetComponent<MeshRenderer>().enabled = isSet;
+            _obj.GetComponent<MeshRenderer>().enabled = m_isPreview;
         }
-        m_ground.SetActive(!isSet);
+
+        // カメラをもとの位置に戻す 
         CameraDefault();
+        int _stageSizeX = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeX);
+        int _stageSizeY = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeY);
+        int _stageSizeZ = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeZ);
+        if (_stageSizeX == ProcessedtParameter.System_Constant.ERROR_INT ||
+            _stageSizeY == ProcessedtParameter.System_Constant.ERROR_INT ||
+            _stageSizeZ == ProcessedtParameter.System_Constant.ERROR_INT)
+            return;
+
+        // 地形生成
+        if (!m_isPreview)
+        {
+            m_terrainCreate.gameObject.SetActive(true);
+            m_terrainCreate.transform.GetChild((int)TerrainCreate.TerrainChild.Wall).gameObject.SetActive(true);
+            m_terrainCreate.CreateGround(_stageSizeX, _stageSizeZ, -Mathf.Ceil(_stageSizeY / 2) - 1);
+            m_terrainCreate.CreateWall();
+        }
+        else
+        {
+            m_terrainCreate.gameObject.SetActive(false);
+        }
+        m_isPreview ^= true;
     }
 
-    // カメラを初期位置に戻す
+    /// <summary>
+    /// カメラを初期位置に戻す
+    /// </summary>
     public void CameraDefault()
     {
         Camera.main.transform.position = m_cameraPos;
         Camera.main.transform.rotation = m_cameraRot;
     }
 
+    /// <summary>
+    /// 削ったステージをもとに戻す
+    /// </summary>
     public void AllFuseDefault()
     {
         GameObject _stage = transform.GetChild(0).gameObject;
@@ -269,43 +318,29 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         {
             GameObject _stageObj = _stage.transform.GetChild(i).gameObject;
             _stageObj.GetComponent<MeshRenderer>().enabled = true;
-            _stageObj.gameObject.layer = 0;
 
             Fuse _fuse = _stageObj.GetComponent<Fuse>();
-            if (_fuse)
+            if (!_fuse)
             {
-                for (int j = 0; j < _fuse.transform.childCount; ++j)
-                {
-                    GameObject child = _fuse.transform.GetChild(j).gameObject;
-                    MeshRenderer mesh = child.GetComponent<MeshRenderer>();
-                    if (mesh)
-                        mesh.enabled = true;
-                }
+                _stageObj.gameObject.layer = StringDefine.Layer.Trans;
+                continue;
+            }
+
+            _stageObj.gameObject.layer = StringDefine.Layer.Default;
+
+            for (int j = 0; j < _fuse.transform.childCount; ++j)
+            {
+                GameObject child = _fuse.transform.GetChild(j).gameObject;
+                MeshRenderer mesh = child.GetComponent<MeshRenderer>();
+                if (mesh)
+                    mesh.enabled = true;
             }
         }
-        //    GameObject[] _fuseList = GameObject.FindGameObjectsWithTag(StringDefine.TagName.Fuse);
-        //foreach (GameObject _fuse in _fuseList)
-        //{
-        //    _fuse.GetComponent<MeshRenderer>().enabled = true;
-        //    _fuse.gameObject.layer = 0;
-        //    for (int i = 0; i < _fuse.transform.childCount; ++i)
-        //    {
-        //        GameObject child = _fuse.transform.GetChild(i).gameObject;
-        //        MeshRenderer mesh = child.GetComponent<MeshRenderer>();
-        //        if (mesh)
-        //            mesh.enabled = true;
-        //    }
-        //}
-
-        //GameObject[] _boxList = GameObject.FindGameObjectsWithTag(StringDefine.TagName.Player);
-        //foreach (GameObject _box in _boxList)
-        //{
-        //    _box.GetComponent<MeshRenderer>().enabled = true;
-        //    _box.gameObject.layer = 0;
-        //}
     }
 
-    // ステージ保存
+    /// <summary>
+    /// ステージ保存
+    /// </summary>
     public void StageSave()
     {
         int _stageSizeX = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeX);
@@ -340,6 +375,9 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         m_csvScript.WriteCsv(m_stageLList, stageName, _stageSizeY);
     }
 
+    /// <summary>
+    /// ステージの表面を削除
+    /// </summary>
     public void CutBoxR()
     {
         CutBox((int)RayPoint.PointPlace.right);
@@ -357,6 +395,10 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         CutBox((int)RayPoint.PointPlace.bottm);
     }
 
+    /// <summary>
+    ///  ステージの表面を削除（上記の関数から呼び出し）
+    /// </summary>
+    /// <param name="rayPlace">rayを飛ばしている場所がカメラから見てどの向きにあるか</param>
     public void CutBox(int rayPlace)
     {
         RaycastHit hit = new RaycastHit();
@@ -369,30 +411,26 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             return;
 
         float maxValue;
-        bool[] isCheak = { false, false, false };
+        Vector3 cheak = new Vector3Int(0, 0, 0);
         Vector3 hitPos = hit.collider.transform.position;
         Vector3 difference = rayPoint.transform.position - hitPos;
+
         difference = new Vector3(Mathf.Abs(difference.x), Mathf.Abs(difference.y), Mathf.Abs(difference.z));
         maxValue = Mathf.Max(difference.x, difference.y, difference.z);
 
         // 最大値を出している方向を調査
-        if (!isCheak[0] && difference.x == maxValue)
-            isCheak[0] = true;
-        else if (!isCheak[1] && difference.y == maxValue)
-            isCheak[1] = true;
-        else if (!isCheak[2] && difference.z == maxValue)
-            isCheak[2] = true;
+        cheak = new Vector3(maxValue, maxValue, maxValue) - difference;
 
         GameObject _stage = transform.GetChild(0).gameObject;
         for (int i = 0; i < _stage.transform.childCount; ++i)
         {
             GameObject _stageObj = _stage.transform.GetChild(i).gameObject;
-            if ((isCheak[0] && _stageObj.transform.position.x == hitPos.x) ||
-                (isCheak[1] && _stageObj.transform.position.y == hitPos.y) ||
-                (isCheak[2] && _stageObj.transform.position.z == hitPos.z))
+            if ((cheak.x == 0.0f && _stageObj.transform.position.x == hitPos.x) ||
+                (cheak.y == 0.0f && _stageObj.transform.position.y == hitPos.y) ||
+                (cheak.z == 0.0f && _stageObj.transform.position.z == hitPos.z))
             {
                 _stageObj.GetComponent<MeshRenderer>().enabled = false;
-                _stageObj.gameObject.layer = 2;
+                _stageObj.gameObject.layer = StringDefine.Layer.Ignore;
                 Fuse _fuse = _stageObj.GetComponent<Fuse>();
                 if (_fuse)
                 {
@@ -410,7 +448,11 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// イベント処理
+//  イベント処理
+
+    /// <summary>
+    /// 他のオブジェクトの変数の変更毎に呼び出し
+    /// </summary>
 
     public void StageSize()
     {

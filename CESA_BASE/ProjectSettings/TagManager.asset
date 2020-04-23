@@ -20,6 +20,8 @@ TagManager:
   - Fuse/LL
   - Fuse/TT
   - Fuse/XX
+  - Button/Input
+  - TerrainBlock
   layers:
   - Default
   - TransparentFX
