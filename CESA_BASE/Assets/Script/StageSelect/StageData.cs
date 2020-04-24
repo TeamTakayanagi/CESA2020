@@ -5,9 +5,6 @@ using UnityEngine.UI;
 
 public class StageData : MonoBehaviour
 {
-    [SerializeField]
-    private PopUp m_popupPrefab = null;
-
     private PopUp m_popup = null;
     private MedalMgr m_starMgr = null;
     //private Image m_medalSprite = null;

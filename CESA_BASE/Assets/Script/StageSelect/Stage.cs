@@ -5,17 +5,15 @@ using UnityEngine.UI;
 
 public class Stage : MonoBehaviour
 {
-    [SerializeField]
-    private PopUp m_popUpPrefab = null;
-
-    private PopUp m_popUP = null;
-
     private Canvas m_stageCanvas = null;
+    private MainCamera m_camera = null;
 
     // Start is called before the first frame update
     void Start()
     {
-        m_stageCanvas = GameObject.FindGameObjectWithTag(ConstDefine.TagName.UIStage).GetComponent<Canvas>();
+        m_stageCanvas = StageMgr.Instance.GetComponent<Canvas>();
+        //m_subCamera = 
+        m_camera = Camera.main.GetComponent<MainCamera>();
     }
 
     // Update is called once per frame
@@ -23,19 +21,24 @@ public class Stage : MonoBehaviour
     {
         if (TitleMgr.Instance.Step < 7) return;
 
-        if (Input.GetMouseButtonUp(0))
+        if (m_camera.Zoom == 0)
         {
-            Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit _hit = new RaycastHit();
-            float max_distance = 500f;
-
-            bool is_hit = Physics.Raycast(_ray, out _hit, max_distance);
-
-            if (is_hit)
+            if (Input.GetMouseButtonDown(0))
             {
-                if (_hit.transform == transform)
+                Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit _hit = new RaycastHit();
+                float max_distance = 500f;
+
+                bool is_hit = Physics.Raycast(_ray, out _hit, max_distance);
+
+                if (is_hit)
                 {
-                    m_popUP = Instantiate(m_popUpPrefab, m_stageCanvas.transform.position, m_stageCanvas.transform.rotation, m_stageCanvas.transform);
+                    if (_hit.transform == transform)
+                    {
+                        m_camera.ZoomIn(transform.position);
+                        SelectMgr.Instance.ZoomObj = gameObject;
+                        //m_popUP = Instantiate(m_popUpPrefab, m_stageCanvas.transform.position, m_stageCanvas.transform.rotation, m_stageCanvas.transform);
+                    }
                 }
             }
         }

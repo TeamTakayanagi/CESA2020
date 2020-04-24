@@ -23,6 +23,7 @@ TagManager:
   - Fuse/TT
   - Fuse/XX
   - Button/Input
+  - SubCamera
   layers:
   - Default
   - TransparentFX

@@ -63,6 +63,8 @@ namespace StringDefine
         public const string UICanvas = "UICanvas";
         public const string UIGameClear = "UI/GameClear";
         public const string UIGameOver = "UI/GameOver";
+
+        public const string SubCamera = "SubCamera";
     }
 
     namespace Audio

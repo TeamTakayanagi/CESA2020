@@ -25,8 +25,6 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
 
     [SerializeField]
     private GameObject m_guidPrefab = null;
-    [SerializeField]
-    private GameObject m_stagePrefab = null;
 
     private Canvas m_logoCanvas = null;
     private GameObject m_camera = null;
@@ -170,14 +168,6 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
                 m_step++;
             }
         }
-
-        // ステージ選択画面
-        //if (m_step == TitleStep.Select)
-        //{
-        //    Instantiate(m_stagePrefab, m_stageCanvas.transform);
-
-        //    m_step++;
-        //}
 
         // タイトル演出スキップ
         if (m_step < TitleStep.Guid && Input.GetMouseButtonUp(0))

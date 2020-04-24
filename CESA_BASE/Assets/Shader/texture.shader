@@ -2,7 +2,7 @@
 {
     Properties
     {
-        _texNum("texNum", Range(1, 3)) = 0
+        _texNum("texNum", Range(0, 2)) = 0
         _Color ("Color", Color) = (1,1,1,1)
         _MainTex1 ("Albedo (RGB)", 2D) = "white" {}
         _MainTex2 ("Albedo (RGB)", 2D) = "white" {}
@@ -50,7 +50,7 @@
             fixed4 c2 = tex2D (_MainTex2, IN.uv_MainTex);
             fixed4 c3 = tex2D (_MainTex3, IN.uv_MainTex);
 
-            o.Albedo = c1.rgb * equal(1, _texNum) + c2.rgb * equal(2, _texNum) + c3.rgb * equal(3, _texNum);
+            o.Albedo = c1.rgb * equal(0, _texNum) + c2.rgb * equal(1, _texNum) + c3.rgb * equal(2, _texNum);
             o.Alpha = 1.0f;
         }
         ENDCG
