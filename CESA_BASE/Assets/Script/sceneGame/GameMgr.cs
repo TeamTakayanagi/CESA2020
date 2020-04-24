@@ -443,5 +443,22 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             yield return 0;
         }
     }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ボタンの処理
+
+    public void BackToTitle()
+    {
+        SceneManager.LoadScene("Title");
+    }
+
+    public void RePlay()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+    public void NextStsge()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
 }
 

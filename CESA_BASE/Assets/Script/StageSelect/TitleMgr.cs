@@ -24,8 +24,6 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
 
     [SerializeField]
     private GameObject m_guidPrefab = null;
-    [SerializeField]
-    private GameObject m_stagePrefab = null;
 
     private Canvas m_logoCanvas = null;
     private GameObject m_camera = null;
