@@ -29,7 +29,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     // 定数
     private Vector3 END_FIRE_POS = new Vector3(0.0f, 30.0f, 0.0f);      // 花火の終着地点との距離      
     private readonly Vector3 TEXT_POS = new Vector3(0.0f, 100, 0.0f);   // リザルトテキストの移動距離
-    private readonly Vector3 BUTTON_POS = new Vector3(0.0f, -50, 0.0f); // リザルトボタンの移動距離              
+    private readonly Vector3 BUTTON_POS = new Vector3(0.0f, 100.0f, 0.0f); // リザルトボタンの移動距離              
     private readonly Vector3 OUTPOS = new Vector3(-50, -50, -50);       // 導火線を生成できない位置
     private readonly AnimationCurve m_animCurve = AnimationCurve.Linear(0, 0, 1, 1);   // リザルトUIの移動用 
 
@@ -82,6 +82,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     // Start is called before the first frame update
     void Start()
     {
+        Camera.main.rect = new Rect(0.0f, 0.0f, 0.8f, 1.0f);
+
         // マウスカーソル用の画像をデフォルトに変更
         Cursor.SetCursor(m_cursorDefault, Vector2.zero, CursorMode.Auto);
         // ゲームクリア用のUIの親オブジェクト取得
@@ -121,7 +123,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     // Update is called once per frame
     void Update()
     {
-        m_gameStep();
+        if (m_gameStep == null)
+            return;
+
+         m_gameStep();
     }
 
     /// <summary>
@@ -172,12 +177,12 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z);
         mousePos = Camera.main.ScreenToWorldPoint(mousePos);
 
-        // 生成場所を取得
-        m_createPos = FindNearFuse(mousePos);
 
         // 導火線を選択しているなら
         if (m_selectFuse)
         {
+            // 生成場所を取得
+            m_createPos = FindNearFuse(mousePos);
             // UI画面
             if (Input.mousePosition.x > Screen.width * 0.8f)
                 m_selectFuse.transform.position = m_selectFuse.DefaultPos;
@@ -400,7 +405,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     public void GameClear()
     {
         // 花火を移動させメインカメラに注視させる
-        m_saveObj.transform.position = Vector3.Lerp(m_saveObj.transform.position, END_FIRE_POS, Time.deltaTime);
+        if(m_saveObj)
+            m_saveObj.transform.position = Vector3.Lerp(m_saveObj.transform.position, END_FIRE_POS, Time.deltaTime);
         Camera.main.transform.LookAt(m_saveObj.transform.position);
         Camera.main.rect = new Rect(0.0f, 0.0f, Mathf.Lerp(Camera.main.rect.width, 1.0f, Time.deltaTime), 1.0f);
         // UIの移動
@@ -449,16 +455,18 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     public void BackToTitle()
     {
-        SceneManager.LoadScene("Title");
+        SceneManager.LoadScene("StageSelectLatte");
     }
 
     public void RePlay()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        m_gameStep = null;
     }
     public void NextStsge()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        m_gameStep = null;
     }
 }
 

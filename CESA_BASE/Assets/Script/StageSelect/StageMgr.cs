@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class StageMgr : SingletonMonoBehaviour<StageMgr>
 {
+    const float MOVE_RESIST = 0.9f;
+
     private enum StageMgrState
     {
         LoadCsv = 0,
@@ -12,11 +14,7 @@ public class StageMgr : SingletonMonoBehaviour<StageMgr>
     }
 
     private CSVStageData m_csvStageData = null;
-
     private Renderer[] m_childRender = null;
-
-    private MainCamera m_camera = null;
-
     private Vector3 m_touchStartPos;
     private Vector3 m_touchEndPos;
     private Vector3 m_direction;
@@ -26,9 +24,8 @@ public class StageMgr : SingletonMonoBehaviour<StageMgr>
     // Start is called before the first frame update
     void Start()
     {
-        m_csvStageData = SceneMgr.Instance.GetComponent<CSVStageData>();
+        m_csvStageData = SelectMgr.Instance.GetComponent<CSVStageData>();
         m_childRender = GetComponentsInChildren<Renderer>();
-        m_camera = Camera.main.GetComponent<MainCamera>();
     }
 
     // Update is called once per frame
@@ -49,8 +46,6 @@ public class StageMgr : SingletonMonoBehaviour<StageMgr>
             for (int i = 0; i < m_childRender.Length; i++)
             {
                 m_childRender[i].material.SetFloat("_texNum", m_csvStageData.StageData[i][1]);
-                //transform.GetChild(i).GetComponent<Renderer>().material.SetFloat("texNum", m_csvStageData.StageData[i][1]);
-                //gameObject.GetComponentsInChildren<Renderer>()[m_csvStageData.StageData[i][0]].material.SetInt("TexNum", m_csvStageData.StageData[i][1]);
             }
 
             m_step++;
@@ -58,7 +53,7 @@ public class StageMgr : SingletonMonoBehaviour<StageMgr>
 
         if (TitleMgr.Instance.Step < 7) return;
 
-        if (m_camera.Zoom == 0)
+        if (Camera.main.GetComponent<MainCamera>().Zoom == 0)
         {
             Scroll();
             Camera.main.transform.position += m_direction;
@@ -67,7 +62,7 @@ public class StageMgr : SingletonMonoBehaviour<StageMgr>
 
     private void FixedUpdate()
     {
-        m_direction *= 0.9f;
+        m_direction *= MOVE_RESIST;
     }
 
     void Scroll()

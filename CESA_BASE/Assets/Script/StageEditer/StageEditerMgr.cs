@@ -354,7 +354,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             stageList[idx] = m_stageType[i];
         }
 
-        Utility.CSVFile.WriteCsv(stageList, ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + _stageNum);
+        Utility.CSVFile.WriteCsv(stageList, ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + _stageNum, _stageSizeX, _stageSizeY);
     }
 
     public void LoadStage()

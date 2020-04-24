@@ -87,7 +87,7 @@ namespace Utility
         /// </summary>
         /// <param name="dataList"></param>
         /// <param name="fileName"></param>
-        public static void WriteCsv(List<string> dataList, string fileName)
+        public static void WriteCsv(List<string> dataList, string fileName, int dataSizeX, int dataSizeY)
         {
             StreamWriter sw = new StreamWriter(Application.dataPath + CSV_PATH + fileName + ".csv", false, Encoding.GetEncoding("Shift_JIS"));
             int _stageSizeX = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeX);

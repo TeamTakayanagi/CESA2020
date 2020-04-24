@@ -70,6 +70,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
         for (int i = UIFuseCount; i < amount; ++i)
         {
             Fuse _fuse = Instantiate(m_fuseList[indexList[i - UIFuseCount]], Vector3.zero, Quaternion.identity);
+            _fuse.Type = Fuse.FuseType.UI;
             _fuse.transform.SetParent(parent, true);
             _fuse.transform.localPosition = new Vector3((i % 2) * AdjustParameter.UI_Fuse_Constant.UI_FUSE_INTERVAL_X - 1.0f,
                 1.0f + (i / 2) * AdjustParameter.UI_Fuse_Constant.UI_FUSE_INTERVAL_Y,
@@ -77,7 +78,6 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
             _fuse.EndPos = _fuse.transform.localPosition;
             if(rot != SuffixType.Zero)
                 _fuse.transform.localEulerAngles = new Vector3(90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4));
-            _fuse.Type = Fuse.FuseType.UI;
 
             // UI専用のコライダーを子供に
             GameObject _colider = Instantiate(m_uiColider, _fuse.transform.position, Quaternion.identity);
@@ -105,6 +105,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
                 place = 1;
 
             Fuse _fuse = Instantiate(m_fuseList[indexList[i]], transform.position, Quaternion.identity);
+            _fuse.Type = Fuse.FuseType.UI;
             _fuse.transform.SetParent(parent, true);
             _fuse.EndPos = new Vector3(place,
                 1.0f + ((fuseAmount - (Mathf.Abs(fuseRean.x - fuseRean.y) / 2)) / 2) * AdjustParameter.UI_Fuse_Constant.UI_FUSE_INTERVAL_Y,
@@ -112,7 +113,6 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
             _fuse.transform.localPosition = new Vector3(place, AdjustParameter.UI_Fuse_Constant.UI_FUSE_POS_Y,
                 AdjustParameter.UI_Fuse_Constant.UI_FUSE_POS_Z);
             _fuse.transform.localEulerAngles = new Vector3(90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4));
-            _fuse.Type = Fuse.FuseType.UI;
 
             if(GameMgr.Instance)
                 GameMgr.Instance.UIFuse = _fuse;    // リストの末尾に追加

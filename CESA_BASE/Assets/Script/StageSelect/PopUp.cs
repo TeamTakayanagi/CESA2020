@@ -43,7 +43,7 @@ public class PopUp : MonoBehaviour
         m_rectTrans = transform.root.GetComponent<RectTransform>();
         m_rectTrans.sizeDelta *= 0.5f;
 
-        // サイズいじいじ
+        // サイズ
         transform.GetComponent<RectTransform>().sizeDelta = m_rectTrans.sizeDelta;
 
     }

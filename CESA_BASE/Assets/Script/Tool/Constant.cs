@@ -43,15 +43,15 @@ namespace ProcessedtParameter
     public readonly struct System_Constant
     {
         public const int ERROR_INT = -999;                                 // int型エラー判別変数
-        public const int CSV_WORD_LENGHT = 5;                               // CSVに書き込む文字の長さ
+        public const int CSV_WORD_LENGHT = 5;                              // CSVに書き込む文字の長さ
     }
 
     public readonly struct CSV_Constant
     {
         public const string STAGE_DATA_PATH = "StageData";
-        public const int OBJECT_WORD_COUNT = 3;         // オブジェクトの種類の情報の文字数
-        public const int OBJECT_ROT_COUNT = 3;          // オブジェクトの角度情報の文字数
-        public const int STAGE_DATA_COUNT = OBJECT_WORD_COUNT + OBJECT_ROT_COUNT;         // ステージデータの文字数
+        public const int OBJECT_WORD_COUNT = 3;                                     // オブジェクトの種類の情報の文字数
+        public const int OBJECT_ROT_COUNT = 3;                                      // オブジェクトの角度情報の文字数
+        public const int STAGE_DATA_COUNT = OBJECT_WORD_COUNT + OBJECT_ROT_COUNT;   // ステージデータの文字数
     }
 }
 

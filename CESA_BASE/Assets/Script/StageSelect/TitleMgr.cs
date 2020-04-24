@@ -8,7 +8,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     private const float m_charmTime = 3;
     private const float m_guidTime = 1.0f;
 
-    private enum TitleStep
+    public enum TitleStep
     {
         Start = 0,
         Scroll,

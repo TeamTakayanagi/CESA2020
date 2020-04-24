@@ -63,7 +63,6 @@ public class TerrainCreate : MonoBehaviour
                     // 現状あるもの配置変更
                     _ground.GetChild(width * y + x + difference).position = new Vector3(x - half.x, underPosY, y - half.y);
                 }
-
         }
     }
 

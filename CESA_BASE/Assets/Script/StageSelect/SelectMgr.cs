@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
 {
@@ -92,5 +93,11 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                 }
             }
         }
+    }
+
+    public void GameStart()
+    {
+        //GameObject.FindGameObjectWithTag("Fade").GetComponent<FadeMgr>().StartFade("Alpha");
+        SceneManager.LoadScene("SampleSceneSugi");
     }
 }

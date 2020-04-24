@@ -18,7 +18,8 @@ public class Stage : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (TitleMgr.Instance.Step < 7) return;
+        if (TitleMgr.Instance.Step < 7) 
+            return;
 
         if (m_camera.Zoom == 0)
         {
