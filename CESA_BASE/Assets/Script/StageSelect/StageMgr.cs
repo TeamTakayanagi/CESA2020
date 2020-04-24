@@ -51,7 +51,8 @@ public class StageMgr : SingletonMonoBehaviour<StageMgr>
             m_step++;
         }
 
-        if (TitleMgr.Instance.Step < 7) return;
+        if (TitleMgr.Instance.Step < 7) 
+            return;
 
         if (Camera.main.GetComponent<MainCamera>().Zoom == 0)
         {

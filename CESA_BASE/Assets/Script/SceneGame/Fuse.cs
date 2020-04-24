@@ -62,14 +62,6 @@ public class Fuse : MonoBehaviour
 
     private void Awake()
     {
-
-    }
-
-    private void Start()
-    {
-        m_defaultRot = transform.localEulerAngles;
-        m_burnTime = AdjustParameter.Fuse_Constant.BURN_MAX_TIME;  // 燃え尽きるまでの時間
-
         switch (m_type)
         {
             case FuseType.Start:
@@ -80,7 +72,7 @@ public class Fuse : MonoBehaviour
                 }
             case FuseType.Fuse:
                 {
-                    gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
+                    gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
                     m_isBurn = false;
                     break;
                 }
@@ -103,12 +95,18 @@ public class Fuse : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        m_defaultRot = transform.localEulerAngles;
+        m_burnTime = AdjustParameter.Fuse_Constant.BURN_MAX_TIME;  // 燃え尽きるまでの時間
+    }
+
     // Update is called once per frame
     void Update()
     {
         if (m_type != FuseType.UI && m_isBurn)
         {
-            //m_burnTime -= Time.deltaTime * GameMgr.Instance.GameSpeed;
+            m_burnTime -= Time.deltaTime * GameMgr.Instance.GameSpeed;
             if (m_burnTime <= 0.0f)
             {
                 // 燃え尽きた
