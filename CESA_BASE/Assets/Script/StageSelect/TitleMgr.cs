@@ -159,14 +159,6 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
             }
         }
 
-        // ステージ選択画面
-        //if (m_step == TitleStep.Select)
-        //{
-        //    Instantiate(m_stagePrefab, m_stageCanvas.transform);
-
-        //    m_step++;
-        //}
-
         // タイトル演出スキップ
         if (m_step < TitleStep.Guid && Input.GetMouseButtonUp(0))
         {

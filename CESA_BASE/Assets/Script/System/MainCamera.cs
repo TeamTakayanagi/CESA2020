@@ -27,6 +27,22 @@ public class MainCamera : MonoBehaviour
     [SerializeField]
     private CameraState m_cameraState;
 
+    [SerializeField]
+    private float m_value = 0;
+
+    private Camera m_myCamera = null;
+    private Vector3 m_zoomPos = Vector3.zero;
+    private float m_zoomSpeed = 5.0f;
+    private float m_fov = 0;
+    private int m_zoomFlg = 0;  // ０：ズームしていない　１：ズームイン　２：ズームアウト
+
+    public int Zoom
+    {
+        get
+        {
+            return m_zoomFlg;
+        }
+    }    
     public bool Control
     {
         set
@@ -56,6 +72,7 @@ public class MainCamera : MonoBehaviour
         }
     }
 
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -66,6 +83,12 @@ public class MainCamera : MonoBehaviour
             transform.position = new Vector3(m_moveRadiuse * Mathf.Cos(m_moveRotate), m_moveRadiuse * Mathf.Sin(15), m_moveRadiuse * Mathf.Sin(m_moveRotate));
             transform.LookAt(Vector3.zero);
         }
+    }
+
+    private void Start()
+    {
+        m_myCamera = GetComponent<Camera>();
+        m_fov = m_myCamera.fieldOfView;
     }
 
     // Update is called once per frame
@@ -169,5 +192,48 @@ public class MainCamera : MonoBehaviour
                 transform.LookAt(Vector3.zero);
             }
         }
+    }
+
+    private void LateUpdate()
+    {
+        if (m_zoomFlg == 1)
+        {
+            transform.position = Vector3.Lerp(transform.position, m_zoomPos, Time.deltaTime * m_zoomSpeed);
+            m_myCamera.fieldOfView = Mathf.Lerp(m_myCamera.fieldOfView, m_value, Time.deltaTime * m_zoomSpeed);
+        }
+        else if (m_zoomFlg == 2)
+        {
+            transform.position = Vector3.Lerp(transform.position, m_zoomPos, Time.deltaTime * m_zoomSpeed);
+            m_myCamera.fieldOfView = Mathf.Lerp(m_myCamera.fieldOfView, m_fov, Time.deltaTime * m_zoomSpeed);
+            if (Mathf.RoundToInt(m_myCamera.fieldOfView) >= m_fov)
+            {
+                m_zoomFlg = 0;
+            }
+        }
+    }
+
+    public void ZoomIn(Vector3 _stagePos)
+    {
+
+        if (m_zoomFlg == 1)
+        {
+            m_zoomPos = new Vector3(_stagePos.x, transform.position.y, _stagePos.z - 90);
+            //transform.position = _setPos;
+        }
+        else if (m_zoomFlg == 0)
+        {
+            m_zoomFlg = 1;
+            m_zoomPos = new Vector3(_stagePos.x, transform.position.y - 10, _stagePos.z - 90);
+            //transform.position = _setPos;
+            //m_myCamera.fieldOfView -= m_value;
+        }
+    }
+
+    public void ZoomOut()
+    {
+        m_zoomFlg = 2;
+        m_zoomPos = new Vector3(transform.position.x, transform.position.y + 10, transform.position.z);
+        //transform.position = _setPos;
+        //m_myCamera.fieldOfView += m_value;
     }
 }

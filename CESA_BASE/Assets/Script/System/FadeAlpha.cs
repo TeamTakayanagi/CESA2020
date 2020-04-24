@@ -85,5 +85,6 @@ public class FadeAlpha : MonoBehaviour
         m_fadeStep = _FadeStep.FadeOut;
         m_canvasParent.planeDistance = 50;
         transform.GetComponent<RectTransform>().sizeDelta = GetComponentInParent<RectTransform>().sizeDelta;
+        transform.position += new Vector3(0, 0, 1);
     }
 }
