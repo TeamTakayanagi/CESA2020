@@ -63,13 +63,6 @@ public class StageMgr : SingletonMonoBehaviour<StageMgr>
             Scroll();
             Camera.main.transform.position += m_direction;
         }
-        else if (m_camera.Zoom == 1)
-        {
-            if (Input.GetMouseButtonUp(1))
-            {
-                m_camera.ZoomOut();
-            }
-        }
     }
 
     private void FixedUpdate()
