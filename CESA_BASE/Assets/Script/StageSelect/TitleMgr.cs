@@ -61,11 +61,6 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         }
     }
 
-    //private void Awake()
-    //{
-
-    //}
-
     // Start is called before the first frame update
     void Start()
     {
@@ -87,9 +82,6 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         // 
         if (m_step == TitleStep.Start)
         {
-            //m_camera.transform.position = m_initPos;
-            //m_camera.transform.position = m_cameraLastPos;
-            //m_camera.transform.rotation = m_initCameraRot;
             m_step++;
         }
 
@@ -148,7 +140,6 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         {
             if (Input.GetMouseButtonUp(0))
             {
-
                 m_step++;
             }
         }

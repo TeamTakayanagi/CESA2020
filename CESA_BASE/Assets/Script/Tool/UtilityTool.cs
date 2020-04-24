@@ -15,13 +15,9 @@ namespace Utility
             int pos = name.IndexOf("/");
 
             if (0 < pos)
-            {
                 return name.Substring(0, pos);
-            }
             else
-            {
                 return name;
-            }
         }
 
         public static string getChildTagName(string name)
@@ -29,13 +25,9 @@ namespace Utility
             int pos = name.IndexOf("/");
 
             if (0 < pos)
-            {
                 return name.Substring(pos + 1);
-            }
             else
-            {
                 return name;
-            }
         }
     }
 
@@ -44,7 +36,7 @@ namespace Utility
     /// </summary>
     public static class CSVFile
     {
-        private const string CSV_PATH = "/TextData/StageData";
+        private const string CSV_PATH = "/TextData/";
         public class CSVData
         {
             public Vector3Int size;
@@ -63,12 +55,11 @@ namespace Utility
         }
 
         // CSV読み込み
-        public static CSVData LoadCsv(int nStageNum)
+        public static CSVData LoadCsv(string stageNum)
         {
-            StreamReader reader = new StreamReader(Application.dataPath + CSV_PATH + nStageNum + ".csv");
+            StreamReader reader = new StreamReader(Application.dataPath + CSV_PATH + stageNum + ".csv");
             CSVData info = new CSVData();
             info.data = new List<string>();
-
 
             string line = reader.ReadLine();
             info.size.x = line.Split(',').Length;
@@ -96,7 +87,7 @@ namespace Utility
         /// </summary>
         /// <param name="dataList"></param>
         /// <param name="fileName"></param>
-        public static void WriteCsv(List<string> dataList, int fileName)
+        public static void WriteCsv(List<string> dataList, string fileName)
         {
             StreamWriter sw = new StreamWriter(Application.dataPath + CSV_PATH + fileName + ".csv", false, Encoding.GetEncoding("Shift_JIS"));
             int _stageSizeX = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeX);
@@ -116,10 +107,7 @@ namespace Utility
                     strData += ',';
 
                 if ((i + 1) % (_stageSizeX * _stageSizeY) == 0)
-                {
                     sw.WriteLine("!n");
-                }
-
             }
 
             sw.Close();

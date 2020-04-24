@@ -9,7 +9,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
     /// </summary>
     public enum SuffixType
     {
-        Zero,
+        Zero,               // すべてゼロ
         Turn,               // 順番
         Random,             // 完全なランダム
         Duplication,        // 重複なしランダム
@@ -24,7 +24,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
     [SerializeField]
     List<GameObject> m_fieldList = new List<GameObject>();
 
-    public void CreateStage(Utility.CSVFile.CSVData csvData)
+    public void CreateStage(Transform parent, Utility.CSVFile.CSVData csvData)
     {
         for(int i = 0; i < csvData.data.Count; ++i)
         {
@@ -44,7 +44,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
             if (prefab)
             {
                 _fuse = Instantiate(prefab, pos, Quaternion.identity);
-
+                _fuse.transform.parent = parent;
                 if (_fuse)
                     _fuse.transform.localEulerAngles = new Vector3(
                         float.Parse(csvData.data[i].Substring(2, 1)),
@@ -114,8 +114,8 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
             _fuse.transform.localEulerAngles = new Vector3(90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4));
             _fuse.Type = Fuse.FuseType.UI;
 
-
-            GameMgr.Instance.UIFuse = _fuse;    // リストの末尾に追加
+            if(GameMgr.Instance)
+                GameMgr.Instance.UIFuse = _fuse;    // リストの末尾に追加
             // UI専用のコライダーを子供に
             GameObject _colider = Instantiate(m_uiColider, _fuse.transform.position, Quaternion.identity);
             _colider.transform.SetParent(_fuse.transform, true);

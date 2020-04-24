@@ -354,14 +354,22 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             stageList[idx] = m_stageType[i];
         }
 
-        Utility.CSVFile.WriteCsv(stageList, _stageNum);
+        Utility.CSVFile.WriteCsv(stageList, ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + _stageNum);
     }
 
     public void LoadStage()
     {
+        // 現状のステージをすべて破棄
+        GameObject _stage = transform.GetChild(0).gameObject;
+        for (int i = 0; i < _stage.transform.childCount; ++i)
+        {
+            GameObject _stageObj = _stage.transform.GetChild(i).gameObject;
+            Destroy(_stageObj);
+        }
+
         int _stageNum = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageNum);
-        Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(_stageNum);
-        StageCreateMgr.Instance.CreateStage(info);
+        Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + _stageNum);
+        StageCreateMgr.Instance.CreateStage(_stage.transform, info);
     }
 
     /// <summary>
