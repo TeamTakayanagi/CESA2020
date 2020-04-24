@@ -17,12 +17,11 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 
     private List<Vector3> m_stagePos = new List<Vector3>();
     private List<string> m_stageType = new List<string>();
-    private List<List<string[]>> m_stageLList = new List<List<string[]>>();
 
     override protected void Awake()
     {
         // デバッグログを無効化
-        Debug.unityLogger.logEnabled = false;
+        //Debug.unityLogger.logEnabled = false;
         // カメラ操作を可能に
         Camera.main.GetComponent<MainCamera>().Control = true;
         m_isPreview = false; 
@@ -67,6 +66,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
     // Update is called once per frame
     void Update()
     {
+        // プレビュー中は操作不可
         if (m_isPreview)
             return;
 
@@ -192,7 +192,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         // 変更後のほうが設置可能数が多い（同数含む）なら
         if (difference <= 0)
         {
-            Vector3 half = new Vector3(Mathf.Ceil(_stageSizeX / 2), Mathf.Ceil(_stageSizeY / 2), Mathf.Ceil(_stageSizeZ / 2));
+            Vector3 half = new Vector3(_stageSizeX / 2, _stageSizeY / 2, _stageSizeZ / 2);
             for (int z = 0; z < _stageSizeZ; ++z)
                 for (int y = 0; y < _stageSizeY; ++y)
                     for (int x = 0; x < _stageSizeX; ++x)
@@ -222,7 +222,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             for (int i = 0; i < difference; ++i)
                 Destroy(_objList[i]);
 
-            Vector3 half = new Vector3(Mathf.Ceil(_stageSizeX / 2), Mathf.Ceil(_stageSizeY / 2), Mathf.Ceil(_stageSizeZ / 2));
+            Vector3 half = new Vector3(_stageSizeX / 2, _stageSizeY / 2, _stageSizeZ / 2);
             for (int z = 0; z < _stageSizeZ; ++z)
                 for (int y = 0; y < _stageSizeY; ++y)
                     for (int x = 0; x < _stageSizeX; ++x)
@@ -265,7 +265,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         {
             m_terrainCreate.gameObject.SetActive(true);
             m_terrainCreate.transform.GetChild((int)TerrainCreate.TerrainChild.Wall).gameObject.SetActive(true);
-            m_terrainCreate.CreateGround(_stageSizeX, _stageSizeZ, -Mathf.Ceil(_stageSizeY / 2) - 1);
+            m_terrainCreate.CreateGround(_stageSizeX, _stageSizeZ, -_stageSizeY / 2 - 1);
             m_terrainCreate.CreateWall();
         }
         else
@@ -289,6 +289,10 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
     /// </summary>
     public void AllFuseDefault()
     {
+        // プレビュー中は操作不可
+        if (m_isPreview)
+            return;
+
         GameObject _stage = transform.GetChild(0).gameObject;
         for (int i = 0; i < _stage.transform.childCount; ++i)
         {
@@ -342,7 +346,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             stageList.Add(letter);
         }
 
-        Vector3 half = new Vector3(Mathf.Ceil(_stageSizeX / 2), Mathf.Ceil(_stageSizeY / 2), Mathf.Ceil(_stageSizeZ / 2));
+        Vector3 half = new Vector3(_stageSizeX / 2, _stageSizeY / 2, _stageSizeZ / 2);
         for (int i = 0; i < m_stagePos.Count; i++)
         {
             Vector3 _pos = m_stagePos[i] + half;
@@ -357,6 +361,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
     {
         int _stageNum = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageNum);
         Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(_stageNum);
+        StageCreateMgr.Instance.CreateStage(info);
     }
 
     /// <summary>
@@ -385,6 +390,10 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
     /// <param name="rayPlace">rayを飛ばしている場所がカメラから見てどの向きにあるか</param>
     public void CutBox(int rayPlace)
     {
+        // プレビュー中は操作不可
+        if (m_isPreview)
+            return;
+
         RaycastHit hit = new RaycastHit();
         GameObject rayPoint = Camera.main.transform.GetChild(rayPlace).gameObject;
         Ray ray = new Ray(rayPoint.transform.position, -rayPoint.transform.position);

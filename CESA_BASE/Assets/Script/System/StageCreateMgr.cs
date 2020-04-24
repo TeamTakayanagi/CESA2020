@@ -24,9 +24,34 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
     [SerializeField]
     List<GameObject> m_fieldList = new List<GameObject>();
 
-    public void CreateStage()
+    public void CreateStage(Utility.CSVFile.CSVData csvData)
     {
+        for(int i = 0; i < csvData.data.Count; ++i)
+        {
+            Vector3 pos = Utility.CSVFile.IndexToPos(i, csvData.size.x, csvData.size.y, csvData.size.z);
+            string tagName = csvData.data[i].Substring(0, 2);
+            Fuse prefab = null;
+            Fuse _fuse = null;
+            for (int j = 0; j < m_fuseList.Count; ++j)
+            {
+                if (Utility.TagSeparate.getChildTagName(m_fuseList[j].tag) != tagName)
+                    continue;
 
+                prefab = m_fuseList[j];
+                break;
+            }
+
+            if (prefab)
+            {
+                _fuse = Instantiate(prefab, pos, Quaternion.identity);
+
+                if (_fuse)
+                    _fuse.transform.localEulerAngles = new Vector3(
+                        float.Parse(csvData.data[i].Substring(2, 1)),
+                        float.Parse(csvData.data[i].Substring(3, 1)),
+                        float.Parse(csvData.data[i].Substring(4, 1)));
+            }
+        }
     }
 
     /// <summary>
@@ -37,7 +62,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
     /// <param name="index">添え字の配列の決め方</param>
     public void CreateUIFuse(int amount, Transform parent, SuffixType index, SuffixType rot)
     {
-        int[] indexList = GetIndexList(index, amount, m_fuseList.Count, parent.GetInstanceID());
+        int[] indexList = GetSuffixList(index, amount, m_fuseList.Count, parent.GetInstanceID());
         int UIFuseCount = 0;
         if (GameMgr.Instance)
             UIFuseCount = GameMgr.Instance.UIFuseCount;
@@ -68,7 +93,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
     /// <param name="indexList">添え字の配列</param>
     public void AddCreateUIFuse(int amount, Transform parent, SuffixType index, Vector2Int fuseRean)
     {
-        int[] indexList = GetIndexList(index, amount, m_fuseList.Count, parent.GetInstanceID());
+        int[] indexList = GetSuffixList(index, amount, m_fuseList.Count, parent.GetInstanceID());
         int fuseAmount = fuseRean.x + fuseRean.y;
         for (int i = 0; i < amount; ++i)
         {
@@ -80,8 +105,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
                 place = 1;
 
             Fuse _fuse = Instantiate(m_fuseList[indexList[i]], transform.position, Quaternion.identity);
-            _fuse.transform.SetParent(transform, true);
-
+            _fuse.transform.SetParent(parent, true);
             _fuse.EndPos = new Vector3(place,
                 1.0f + ((fuseAmount - (Mathf.Abs(fuseRean.x - fuseRean.y) / 2)) / 2) * AdjustParameter.UI_Fuse_Constant.UI_FUSE_INTERVAL_Y,
                 AdjustParameter.UI_Fuse_Constant.UI_FUSE_POS_Z);
@@ -99,14 +123,14 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
     }
 
     /// <summary>
-    /// 配列の添え字のリスト生成
+    /// 添え字の配列生成
     /// </summary>
     /// <param name="type">添え字の配列の決め方</param>
     /// <param name="elementCount">戻り値の要素数</param>
     /// <param name="objListCount">戻り値の配列を使うオブジェクトの要素数</param>
     /// <param name="instanceID">一意な値(Object.instanceID)</param>
     /// <returns>オブジェクトの添え字の配列</returns>
-    private int[] GetIndexList(SuffixType type, int elementCount, int objListCount, int instanceID)
+    private int[] GetSuffixList(SuffixType type, int elementCount, int objListCount, int instanceID)
     {
         int[] indexList = new int[elementCount];
         switch(type)

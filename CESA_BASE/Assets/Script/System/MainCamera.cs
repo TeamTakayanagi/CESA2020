@@ -108,7 +108,7 @@ public class MainCamera : MonoBehaviour
         // カメラ手前移動
         else if (scroll != 0.0f)
         {
-            Vector3 _pos = transform.position + transform.forward * scroll * AdjustParameter.Camera_Constant.VALUE_CAMERA;
+            Vector3 _pos = transform.position + transform.forward * scroll * AdjustParameter.Camera_Constant.VALUE_SCROLL;
             float dis = Vector3.Distance(_pos, m_target);
             if (dis > AdjustParameter.Camera_Constant.CAMERA_NEAR &&
                 dis < AdjustParameter.Camera_Constant.CAMERA_FAR)
@@ -135,13 +135,13 @@ public class MainCamera : MonoBehaviour
         {
             Vector3 difference = Input.mousePosition - m_savePos;
 
-            m_moveRotate -= difference.x * Time.deltaTime * AdjustParameter.Camera_Constant.CAMERA_MOVE;
+            m_moveRotate -= difference.x * Time.deltaTime * AdjustParameter.Camera_Constant.ROTY_VALUE;
             m_savePos = Input.mousePosition;
             transform.position = new Vector3(m_moveRadiuse * Mathf.Cos(m_moveRotate), m_moveRadiuse * Mathf.Sin(15), m_moveRadiuse * Mathf.Sin(m_moveRotate));
             transform.LookAt(Vector3.zero);
         }
         // 左右移動
-        else if (m_isScroll && Input.GetMouseButtonDown(2))
+        else if (!m_isScroll && Input.GetMouseButtonDown(2))
         {
             m_isScroll = true;
             m_savePos = Input.mousePosition;
@@ -153,14 +153,13 @@ public class MainCamera : MonoBehaviour
         else if (m_isScroll && Input.GetMouseButton(2))
         {
             Vector3 difference = Input.mousePosition - m_savePos;
-            transform.position -= transform.rotation * new Vector3(difference.x * Time.deltaTime, 0.0f, 0.0f);
+            transform.position -= transform.rotation * new Vector3(difference.x * Time.deltaTime * AdjustParameter.Camera_Constant.ROTY_VALUE, 0.0f, 0.0f);
             m_savePos = Input.mousePosition;
         }
         // カメラ手前移動
         else if (scroll != 0.0f)
         {
-
-            float next = m_moveRadiuse - scroll * AdjustParameter.Camera_Constant.VALUE_CAMERA * 10;
+            float next = m_moveRadiuse - scroll * AdjustParameter.Camera_Constant.VALUE_SCROLL * 10;
 
             if (next > AdjustParameter.Camera_Constant.CAMERA_NEAR &&
                 next < AdjustParameter.Camera_Constant.CAMERA_FAR)

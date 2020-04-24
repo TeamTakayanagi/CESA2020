@@ -22,14 +22,11 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     [SerializeField]
     private Texture2D m_cursorCatch = null;                             // マウスカーソル（UIの導火線選択時）
     [SerializeField]
-    private Vector3 m_stageSizeMax = Vector3.zero;                      // ステージサイズ最大値
-    [SerializeField]
-    private Vector3 m_stageSizeMin = Vector3.zero;                      // ステージサイズ最小値
-
+    private Vector3Int m_stageSize = Vector3Int.zero;                   // ステージサイズ
     [SerializeField]
     private GameObject m_fireworks = null;                              // 花火のプレハブ
 
-
+    // 定数
     private Vector3 END_FIRE_POS = new Vector3(0.0f, 30.0f, 0.0f);      // 花火の終着地点との距離      
     private readonly Vector3 TEXT_POS = new Vector3(0.0f, 100, 0.0f);   // リザルトテキストの移動距離
     private readonly Vector3 BUTTON_POS = new Vector3(0.0f, -50, 0.0f); // リザルトボタンの移動距離              
@@ -66,20 +63,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             return m_gameSpeed;
         }
     }
-    public Vector3 StageSizeMax
-    {
-        get
-        {
-            return m_stageSizeMax;
-        }
-    }
-    public Vector3 StageSizeMin
-    {
-        get
-        {
-            return m_stageSizeMin;
-        }
-    }
     public Fuse UIFuse
     {
         set
@@ -109,6 +92,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         m_UIFuseCreate = FindObjectOfType<UIFuseCreate>();
         // 初期生成位置はわからないので生成不可能場所を格納
         m_createPos = OUTPOS;
+        // 地形生成オブジェクト取得
+        TerrainCreate terrainCreate = FindObjectOfType<TerrainCreate>();
+        terrainCreate.CreateGround(m_stageSize.x, m_stageSize.z, -m_stageSize.y / 2 - 1);
 
         // 開始演出準備
         GameObject canvas = GameObject.FindGameObjectWithTag(StringDefine.TagName.UICanvas);
@@ -355,8 +341,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             }
         }
 
-        Vector3 stageMax = m_stageSizeMax;
-        Vector3 stageMin = m_stageSizeMin;
+        Vector3Int half = new Vector3Int((int)Mathf.Floor((float)(m_stageSize.x / 2.0f)),
+            (int)Mathf.Floor((float)(m_stageSize.x / 2.0f)), (int)Mathf.Floor((float)(m_stageSize.z / 2.0f)));
+        Vector3Int stageMax = half;
+        Vector3Int stageMin = -half;
 
         foreach (Fuse fuse in m_fieldFuse)
         {

@@ -29,7 +29,7 @@ public class TerrainCreate : MonoBehaviour
         // 変更前のほうが少ないもしくは同数
         if (difference <= 0)
         {
-            Vector2 half = new Vector2(Mathf.Ceil(width / 2), Mathf.Ceil(height / 2));
+            Vector2 half = new Vector2(width / 2, height / 2);
             for (int y = 0; y < height; ++y)
             {
                 for (int x = 0; x < width; ++x)
@@ -56,7 +56,7 @@ public class TerrainCreate : MonoBehaviour
             for (int i = 0; i < difference; ++i)
                 Destroy(_ground.GetChild(i).gameObject);
 
-            Vector3 half = new Vector3(Mathf.Ceil(width / 2), underPosY, Mathf.Ceil(height / 2));
+            Vector3 half = new Vector3(width / 2, underPosY, height / 2);
             for (int y = 0; y < height; ++y)
                 for (int x = 0; x < width; ++x)
                 {
@@ -84,7 +84,7 @@ public class TerrainCreate : MonoBehaviour
         {
             // UIか地面の上に設置されているものなら
             if (_fuse.Type == Fuse.FuseType.UI ||
-                _fuse.transform.position.y == - Mathf.Ceil(_stageSizeY / 2))
+                _fuse.transform.position.y == - _stageSizeY / 2)
                 continue;
             // サブカメラ取得
             RaycastHit hit = new RaycastHit();

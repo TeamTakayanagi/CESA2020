@@ -443,16 +443,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_firstCreate: 4
-  m_uiColider: {fileID: 3876445250114426605, guid: 058983e8983353f439e6d8addd8289f1,
-    type: 3}
-  m_uiList:
-  - {fileID: 3412097083348357703, guid: 5fd014c7db0cc5c4a947b98d8e467d15, type: 3}
-  - {fileID: 9114426403724752180, guid: dc68d20a3c4e8b642ae7e0a283415494, type: 3}
-  - {fileID: 8650867093764866717, guid: e1c9a0479d085d94aaab99d6d0135341, type: 3}
-  - {fileID: 1110969899053069830, guid: 63df1edf97aaf744b8800a3c488ad56f, type: 3}
-  - {fileID: 1732906167570232031, guid: 27091f03c211c734a8514501d0612e15, type: 3}
-  - {fileID: 4673786657170428972, guid: d041f0b91a798d84998b15acfab4dbb5, type: 3}
-  - {fileID: 3563000543437124281, guid: 92b0f45099a2688408062258233fc3e3, type: 3}
 --- !u!1 &528158237
 GameObject:
   m_ObjectHideFlags: 0
@@ -1169,7 +1159,6 @@ GameObject:
   - component: {fileID: 1488873938}
   - component: {fileID: 1488873937}
   - component: {fileID: 1488873940}
-  - component: {fileID: 1488873941}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1255,21 +1244,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_target: {x: 0, y: 0, z: 0}
-  m_isAroundCamera: 0
---- !u!114 &1488873941
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1488873936}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c462e496b2252b409b126309e2edbff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_postprocessMaterial: {fileID: 2100000, guid: 5a889575a5422c44b83e6a6be9fce67a,
-    type: 2}
+  m_type: 1
 --- !u!1001 &1606945983
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1492,6 +1467,7 @@ GameObject:
   - component: {fileID: 1715064556}
   - component: {fileID: 1715064557}
   - component: {fileID: 1715064558}
+  - component: {fileID: 1715064555}
   m_Layer: 2
   m_Name: Stage (1)
   m_TagString: Untagged
@@ -1499,6 +1475,30 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1715064555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1715064554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec4dfb9dee5782149971387da418b475, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_uiColider: {fileID: 3876445250114426605, guid: 058983e8983353f439e6d8addd8289f1,
+    type: 3}
+  m_fuseList:
+  - {fileID: 3412097083348357703, guid: 5fd014c7db0cc5c4a947b98d8e467d15, type: 3}
+  - {fileID: 9114426403724752180, guid: dc68d20a3c4e8b642ae7e0a283415494, type: 3}
+  - {fileID: 8650867093764866717, guid: e1c9a0479d085d94aaab99d6d0135341, type: 3}
+  - {fileID: 1110969899053069830, guid: 63df1edf97aaf744b8800a3c488ad56f, type: 3}
+  - {fileID: 1732906167570232031, guid: 27091f03c211c734a8514501d0612e15, type: 3}
+  - {fileID: 4673786657170428972, guid: d041f0b91a798d84998b15acfab4dbb5, type: 3}
+  - {fileID: 3563000543437124281, guid: 92b0f45099a2688408062258233fc3e3, type: 3}
+  m_gimmkList: []
+  m_fieldList: []
 --- !u!4 &1715064556
 Transform:
   m_ObjectHideFlags: 0
@@ -1532,10 +1532,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab13068abb27543418c1e0e4e79e4c7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_cursorDefault: {fileID: 0}
-  m_cursorCatch: {fileID: 0}
-  m_stageSizeMax: {x: 2, y: 2, z: 2}
-  m_stageSizeMin: {x: -2, y: -2, z: -2}
+  m_cursorDefault: {fileID: 2800000, guid: c4a3055fb0649864ba943d0e8cb9d7e5, type: 3}
+  m_cursorCatch: {fileID: 2800000, guid: c67227cef29f0e542b014e1a763c0044, type: 3}
+  m_stageSize: {x: 5, y: 5, z: 5}
   m_fireworks: {fileID: 2195708794517587777, guid: f4c0fe2d69964ef4ea51c05f5363beec,
     type: 3}
 --- !u!114 &1715064558

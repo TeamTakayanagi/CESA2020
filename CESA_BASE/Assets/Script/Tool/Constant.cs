@@ -7,8 +7,8 @@ namespace AdjustParameter
     {
         public const float CAMERA_NEAR = 3.0f;
         public const float CAMERA_FAR = 15.0f;
-        public const float VALUE_CAMERA = 0.5f;
-        public const float CAMERA_MOVE = 1.0f;
+        public const float VALUE_SCROLL = 0.5f;
+        public const float ROTY_VALUE = 0.5f;
         public const float AROUND_MOVE = 5.0f;
         public const float PERMISSION_MOVE = 20.0f;
     }
