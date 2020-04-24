@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 2106609202041211740}
   m_Layer: 0
   m_Name: Fuse_Streat
-  m_TagString: Fuse/I
+  m_TagString: Fuse/-I
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

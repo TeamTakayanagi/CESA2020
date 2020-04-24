@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Camera))]
+
 public class MainCamera : MonoBehaviour
 {
     // デリゲート宣言
@@ -57,8 +59,8 @@ public class MainCamera : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        transform.tag = "MainCamera";
         SetState();
-
         if (m_type == CameraType.AroundY)
         {
             transform.position = new Vector3(m_moveRadiuse * Mathf.Cos(m_moveRotate), m_moveRadiuse * Mathf.Sin(15), m_moveRadiuse * Mathf.Sin(m_moveRotate));

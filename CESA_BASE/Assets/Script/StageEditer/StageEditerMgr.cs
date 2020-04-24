@@ -14,7 +14,6 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
     private GameObject m_cursorTouchObj = null;
     private Fuse m_selectFuse = null;
     private TerrainCreate m_terrainCreate = null;
-    private CSVScript m_csvScript = null;
 
     private List<Vector3> m_stagePos = new List<Vector3>();
     private List<string> m_stageType = new List<string>();
@@ -22,6 +21,9 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 
     override protected void Awake()
     {
+        // デバッグログを無効化
+        Debug.unityLogger.logEnabled = false;
+        // カメラ操作を可能に
         Camera.main.GetComponent<MainCamera>().Control = true;
         m_isPreview = false; 
         base.Awake();
@@ -30,6 +32,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
     // Start is called before the first frame update
     void Start()
     {
+
         Fuse[] _fuseList = FindObjectsOfType<Fuse>();
         // UIの導火線仮選択
         m_selectFuse = _fuseList[0];
@@ -56,8 +59,6 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 
         // 地形生成オブジェクト取得
         m_terrainCreate = FindObjectOfType<TerrainCreate>();
-        // CSV保存用関数
-        m_csvScript = GetComponent<CSVScript>();
 
         // 空ボックス生成
         CreateStage();
@@ -81,7 +82,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             // 設置場所を選択
             if (Physics.Raycast(ray, out hit))
             {
-                if (Utility.TagUtility.getParentTagName(hit.collider.tag) == StringDefine.TagName.Fuse)
+                if (Utility.TagSeparate.getParentTagName(hit.collider.tag) == StringDefine.TagName.Fuse)
                 {
                     if (Input.GetMouseButtonDown(0))
                     {
@@ -107,51 +108,27 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                     if (Input.GetMouseButtonDown(0) && m_selectFuse)
                     {
                         // その場所にまだ導火線がないなら
+                        int createRotX = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotX);
+                        int createRotY = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotY);
+                        int createRotZ = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotZ);
+                        if (createRotX == ProcessedtParameter.System_Constant.ERROR_INT ||
+                            createRotY == ProcessedtParameter.System_Constant.ERROR_INT ||
+                            createRotZ == ProcessedtParameter.System_Constant.ERROR_INT)
+                            return;
+
                         Fuse selectClone = null;
                         selectClone = Instantiate(m_selectFuse);      // 複製
                         selectClone.transform.position = hit.collider.transform.position;
                         selectClone.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
                         selectClone.Type = Fuse.FuseType.Fuse;
-                        selectClone.transform.localEulerAngles = new Vector3(
-                            inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotX),
-                            inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotY),
-                            inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotZ));
+                        selectClone.transform.localEulerAngles = new Vector3(createRotX, createRotY, createRotZ);
 
                         selectClone.transform.parent = transform.GetChild(0);
 
                         // ステージ配列に情報追加
                         m_stagePos.Add(hit.transform.position);
-                        
-                        switch (m_selectFuse.tag)
-                        {
-                            case StringDefine.TagName.FuseI:
-                                m_stageType.Add("Fuse-I000");
-                                break;
-
-                            case StringDefine.TagName.FuseL:
-                                m_stageType.Add("Fuse-L000");
-                                break;
-
-                            case StringDefine.TagName.FuseT:
-                                m_stageType.Add("Fuse-T000");
-                                break;
-
-                            case StringDefine.TagName.FuseX:
-                                m_stageType.Add("Fuse-X000");
-                                break;
-
-                            case StringDefine.TagName.FuseLL:
-                                m_stageType.Add("FuseLL000");
-                                break;
-
-                            case StringDefine.TagName.FuseTT:
-                                m_stageType.Add("FuseTT000");
-                                break;
-
-                            case StringDefine.TagName.FuseXX:
-                                m_stageType.Add("FuseXX000");
-                                break;
-                        }
+                        m_stageType.Add(Utility.TagSeparate.getChildTagName(selectClone.tag) +
+                            createRotX + createRotY + createRotZ);
 
                         Destroy(hit.collider.gameObject);
                     }
@@ -166,7 +143,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                     }
                 }
                 // 設置済みの導火線にタッチしているなら
-                else if (Utility.TagUtility.getParentTagName(hit.collider.tag) == StringDefine.TagName.Fuse)
+                else if (Utility.TagSeparate.getParentTagName(hit.collider.tag) == StringDefine.TagName.Fuse)
                 {
                     // 導火線設置
                     if (Input.GetMouseButtonDown(0))
@@ -177,10 +154,9 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                         obj.transform.tag = StringDefine.TagName.Player;
                         Destroy(hit.collider.gameObject);
 
-                        // 削除情報で上書き
-                        Vector3 _pos = hit.transform.position;
-                        m_stagePos.Add(_pos);
-                        m_stageType.Add("FuseXX000");
+                        m_stagePos.Remove(hit.transform.position);
+                        m_stageType.Remove(Utility.TagSeparate.getChildTagName(hit.transform.tag) + (int)hit.transform.localEulerAngles.x +
+                            (int)hit.transform.localEulerAngles.y + (int)hit.transform.localEulerAngles.z);
                     }
                     // 設置位置の色の変更
                     else
@@ -346,33 +322,41 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         int _stageSizeX = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeX);
         int _stageSizeY = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeY);
         int _stageSizeZ = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeZ);
+        int _stageNum = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageNum);
 
         if (_stageSizeX == ProcessedtParameter.System_Constant.ERROR_INT ||
             _stageSizeY == ProcessedtParameter.System_Constant.ERROR_INT ||
-            _stageSizeZ == ProcessedtParameter.System_Constant.ERROR_INT)
+            _stageSizeZ == ProcessedtParameter.System_Constant.ERROR_INT ||
+            _stageNum == ProcessedtParameter.System_Constant.ERROR_INT)
             return;
 
+
+        string letter = "";
+        List<string> stageList = new List<string>();
+        for (int i = 0; i < ProcessedtParameter.System_Constant.CSV_WORD_LENGHT; ++i)
+            letter += "-";
+
         // 初期化
-        for (int z = 0; z < _stageSizeZ; z++)
+        for(int i= 0; i < _stageSizeX * _stageSizeY * _stageSizeZ; ++i)
         {
-            m_stageLList.Add(new List<string[]>());
-            for (int y = 0; y < _stageSizeY; y++)
-            {
-                m_stageLList[z].Add(new string[_stageSizeY]);
-                for (int x = 0; x < _stageSizeX; x++)
-                {
-                    m_stageLList[z][y][x] = "---------";
-                }
-            }
+            stageList.Add(letter);
         }
 
+        Vector3 half = new Vector3(Mathf.Ceil(_stageSizeX / 2), Mathf.Ceil(_stageSizeY / 2), Mathf.Ceil(_stageSizeZ / 2));
         for (int i = 0; i < m_stagePos.Count; i++)
         {
-            Vector3 _pos = m_stagePos[i] + new Vector3(_stageSizeX, _stageSizeY, _stageSizeZ) / 2;
-            m_stageLList[(int)_pos.z][(int)_pos.y][(int)_pos.x] = m_stageType[i];
+            Vector3 _pos = m_stagePos[i] + half;
+            int idx = Utility.CSVFile.PosToIndex(_pos, _stageSizeX, _stageSizeY);
+            stageList[idx] = m_stageType[i];
         }
-        string stageName = "Stage";
-        m_csvScript.WriteCsv(m_stageLList, stageName, _stageSizeY);
+
+        Utility.CSVFile.WriteCsv(stageList, _stageNum);
+    }
+
+    public void LoadStage()
+    {
+        int _stageNum = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageNum);
+        Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(_stageNum);
     }
 
     /// <summary>
@@ -407,7 +391,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 
         if (!Physics.Raycast(ray, out hit) ||
             (hit.collider.transform.tag != StringDefine.TagName.Player &&
-                Utility.TagUtility.getParentTagName(hit.collider.transform.tag) != StringDefine.TagName.Fuse))
+                Utility.TagSeparate.getParentTagName(hit.collider.transform.tag) != StringDefine.TagName.Fuse))
             return;
 
         float maxValue;

@@ -4,24 +4,21 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Fade
   - SubCamera
-  - Fuse
   - UI/Logo
   - UI/Stage
-  - UICanvas
-  - Fuse/I
-  - Fuse/L
   - UI/GameClear
   - UI/GameOver
-  - SceneMgr
-  - Fuse/T
-  - Fuse/X
+  - Fuse/-I
+  - Fuse/-L
+  - Fuse/-T
+  - Fuse/-X
   - Fuse/LL
   - Fuse/TT
   - Fuse/XX
-  - Button/Input
   - TerrainBlock
+  - Fuse
+  - UICanvas
   layers:
   - Default
   - TransparentFX

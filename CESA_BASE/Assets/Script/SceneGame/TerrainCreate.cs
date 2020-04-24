@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TerrainCreate : SingletonMonoBehaviour<TerrainCreate>
+public class TerrainCreate : MonoBehaviour
 {
     public enum TerrainChild
     {

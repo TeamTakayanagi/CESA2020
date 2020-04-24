@@ -15,8 +15,6 @@ public class StageData : MonoBehaviour
 
     private int m_stageNum = 0;
 
-    private CSVScript m_csvScript = null;
-
     //private CSVStageData m_stageData = null;
     //private int m_step = 0;
     public bool PopUp
@@ -31,7 +29,6 @@ public class StageData : MonoBehaviour
     void Start()
     {
         m_starMgr = GetComponent<MedalMgr>();
-        m_csvScript = SceneMgr.Instance.GetComponent<CSVScript>();
     }
 
     // Update is called once per frame

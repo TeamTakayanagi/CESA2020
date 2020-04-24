@@ -34,7 +34,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private readonly Vector3 TEXT_POS = new Vector3(0.0f, 100, 0.0f);   // リザルトテキストの移動距離
     private readonly Vector3 BUTTON_POS = new Vector3(0.0f, -50, 0.0f); // リザルトボタンの移動距離              
     private readonly Vector3 OUTPOS = new Vector3(-50, -50, -50);       // 導火線を生成できない位置
-    private readonly　AnimationCurve m_animCurve = AnimationCurve.Linear(0, 0, 1, 1);   // リザルトUIの移動用 
+    private readonly AnimationCurve m_animCurve = AnimationCurve.Linear(0, 0, 1, 1);   // リザルトUIの移動用 
 
     private int m_burnCount = 1;                                        // 燃えている導火線の数
     private int m_gameSpeed = 1;                                        // ゲーム加速処理
@@ -85,6 +85,13 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         set
         {
             m_uiFuse.AddLast(value);
+        }
+    }
+    public int UIFuseCount
+    {
+        get
+        {
+            return m_uiFuse.Count;
         }
     }
 
@@ -247,7 +254,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 {
                     m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
                     m_selectFuse.Type = Fuse.FuseType.Fuse;
-                    m_UIFuseCreate.FuseAmount -= new Vector2(((m_selectFuse.DefaultPos.x + 1) / 2 + 1) % 2, ((m_selectFuse.DefaultPos.x + 1) / 2) % 2);
+                    m_UIFuseCreate.FuseAmount -= new Vector2Int
+                        ((int)((m_selectFuse.DefaultPos.x + 1) / 2 + 1) % 2, (int)((m_selectFuse.DefaultPos.x + 1) / 2) % 2);
 
                     // UI部分の移動
                     foreach (Fuse _fuse in m_uiFuse)

@@ -163,7 +163,7 @@ public class Fuse : MonoBehaviour
             return;
 
         // 導火線との判定
-        if (Utility.TagUtility.getParentTagName(other.transform.tag) == StringDefine.TagName.Fuse)
+        if (Utility.TagSeparate.getParentTagName(other.transform.tag) == StringDefine.TagName.Fuse)
         {
             Fuse _fuse = other.gameObject.GetComponent<Fuse>();
             // 相手が燃えているもしくは燃え尽きた後なら処理を飛ばす

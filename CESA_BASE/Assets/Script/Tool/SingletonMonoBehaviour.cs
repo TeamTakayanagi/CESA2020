@@ -17,6 +17,7 @@ public abstract class SingletonMonoBehaviour<T> : MonoBehaviour where T : MonoBe
                 if (instance == null)
                 {
                     Debug.LogError(t + " をアタッチしているGameObjectはありません");
+                    return null;
                 }
             }
             return instance;
@@ -30,18 +31,23 @@ public abstract class SingletonMonoBehaviour<T> : MonoBehaviour where T : MonoBe
         CheckInstance();
     }
 
-    protected bool CheckInstance()
+    virtual protected void OnDestroy()
+    {
+        instance = null;
+    }
+
+
+    protected void CheckInstance()
     {
         if (instance == null)
         {
             instance = this as T;
-            return true;
+            return;
         }
         else if (Instance == this)
         {
-            return true;
+            return;
         }
         Destroy(this);
-        return false;
     }
 }

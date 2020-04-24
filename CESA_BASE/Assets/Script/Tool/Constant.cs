@@ -43,6 +43,7 @@ namespace ProcessedtParameter
     public readonly struct System_Constant
     {
         public const int ERROR_INT = -999;                                 // int型エラー判別変数
+        public const int CSV_WORD_LENGHT = 5;                               // CSVに書き込む文字の長さ
     }
 
     //public readonly struct Fuse_Constant
