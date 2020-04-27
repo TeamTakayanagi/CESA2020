@@ -189,8 +189,8 @@ public class Fuse : MonoBehaviour
             if (_gimmick.Type == GameGimmick.GimmickType.Goal)
             {
                 // クリア演出開始
+                GameMgr.Instance.FireGoal(_gimmick);
             }
-
         }
     }
 }

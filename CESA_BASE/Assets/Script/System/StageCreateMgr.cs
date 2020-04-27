@@ -29,17 +29,24 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
         m_gimmkList.Sort((a, b) => b.Type - a.Type);
     }
 
+    /// <summary>
+    /// ステージのオブジェト生成
+    /// </summary>
+    /// <param name="parent">ステージの親オブジェクト</param>
+    /// <param name="csvData">CSVのデータ</param>
     public void CreateStage(Transform parent, Utility.CSVFile.CSVData csvData)
     {
         for(int i = 0; i < csvData.data.Count; ++i)
         {
             string tagName = csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT);
+           // 配置されていないなら
             if (tagName == "--")
                 continue;
 
             Fuse _fuse = null;
             for (int j = 0; j < m_fuseList.Length; ++j)
             {
+                // タグの一部が一致しているなら
                 if (Utility.TagSeparate.getChildTagName(m_fuseList[j].tag) != tagName)
                     continue;
 
@@ -60,7 +67,9 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
                 GameGimmick _gimmick = null;
                 for (int j = 0; j < m_gimmkList.Count; ++j)
                 {
+
                     string st = Utility.TagSeparate.getChildTagName(m_gimmkList[j].tag).Substring(0, 2);
+                    // タグの一部が一致しているなら
                     if (Utility.TagSeparate.getChildTagName(m_gimmkList[j].tag).Substring(0,
                         ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT)
                         != tagName)
@@ -150,7 +159,10 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
         }
     }
 
-
+    /// <summary>
+    /// ギミックのUI表示
+    /// </summary>
+    /// <param name="parent">UIオブジェクトの親</param>
     public void CreateUIGimmck(Transform parent)
     {
         int[] indexList = GetSuffixList(SuffixType.Turn, m_gimmkList.Count, m_gimmkList.Count, parent.GetInstanceID());

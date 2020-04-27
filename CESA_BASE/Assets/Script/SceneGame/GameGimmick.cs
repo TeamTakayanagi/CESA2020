@@ -15,7 +15,7 @@ public class GameGimmick : MonoBehaviour
     private GimmickType m_type = GimmickType.Goal;
     private bool m_isGimmickOn = false;
     private int m_isGimmickValue = 0;
-    private bool m_isUI;
+    private bool m_isUI = false;
 
 
     public GimmickType Type

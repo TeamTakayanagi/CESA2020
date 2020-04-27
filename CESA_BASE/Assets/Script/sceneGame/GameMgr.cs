@@ -250,6 +250,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 {
                     m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
                     m_selectFuse.Type = Fuse.FuseType.Normal;
+                    m_selectFuse.UI = false;
                     m_UIFuseCreate.FuseAmount -= new Vector2Int
                         ((int)((m_selectFuse.DefaultPos.x + 1) / 2 + 1) % 2, (int)((m_selectFuse.DefaultPos.x + 1) / 2) % 2);
 
@@ -393,11 +394,15 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
     }
 
+    /// <summary>
+    /// ゴールが燃えた時の処理
+    /// </summary>
+    /// <param name="goal">ゴールのオブジェクト</param>
     public void FireGoal(GameGimmick goal)
     {
         m_resultClear.SetActive(true);
         m_gameStep = GameClear;
-        m_saveObj = Instantiate(m_fireworks, goal.transform.position, Quaternion.identity);
+        m_saveObj = goal.gameObject;
         END_FIRE_POS += goal.transform.position;
 
         if (m_selectFuse)
