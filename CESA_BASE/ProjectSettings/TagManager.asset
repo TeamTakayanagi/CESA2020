@@ -19,6 +19,9 @@ TagManager:
   - TerrainBlock
   - Fuse
   - UICanvas
+  - Gimmick/Goal
+  - Gimmick/Water
+  - Gimmick/SubMission
   layers:
   - Default
   - TransparentFX

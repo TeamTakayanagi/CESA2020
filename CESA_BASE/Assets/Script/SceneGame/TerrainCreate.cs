@@ -44,7 +44,7 @@ public class TerrainCreate : MonoBehaviour
                     {
                         GameObject　_obj = Instantiate(m_groundPrefab, new Vector3(x - half.x, underPosY, y - half.y), Quaternion.identity);
                         _obj.transform.parent = transform.GetChild((int)TerrainChild.Ground);
-                        _obj.transform.tag = StringDefine.TagName.TerrainBlock;
+                        _obj.transform.tag = NameDefine.TagName.TerrainBlock;
                     }
                 }
             }
@@ -69,27 +69,24 @@ public class TerrainCreate : MonoBehaviour
     /// <summary>
     /// 壁生成
     /// </summary>
-    public void CreateWall()
+    public void CreateWall(int _stageSizeY)
     {
-        int _stageSizeY = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeY);
         Fuse[] _fuseList = FindObjectsOfType<Fuse>();
+        GameGimmick[] _gimmickList = FindObjectsOfType<GameGimmick>();
         Transform _wallBefore = transform.GetChild((int)TerrainChild.Wall);
         List<Vector3> _wallAfter = new List<Vector3>();
 
-        //// ゲーム画面内の導火線の数のほうが地面用のブロックの数以下なら
-        //if (_fuseList.Length - FindObjectOfType<UIFuseCreate>().FirstCreate <= _stageSizeX * _stageSizeZ)
-        //{
         foreach (Fuse _fuse in _fuseList)
         {
             // UIか地面の上に設置されているものなら
-            if (_fuse.Type == Fuse.FuseType.UI ||
+            if (_fuse.UI ||
                 _fuse.transform.position.y == - _stageSizeY / 2)
                 continue;
-            // サブカメラ取得
+
             RaycastHit hit = new RaycastHit();
             Ray ray = new Ray(_fuse.transform.position, Vector3.down);
             int layerMask = 1 << _fuse.gameObject.layer;
-            // 導火線を選択
+            // 真下にあるオブジェクトを選択
             if (Physics.Raycast(ray, out hit, _stageSizeY, layerMask))
             {
                 for (float i = hit.collider.transform.position.y + 1; i < _fuse.transform.position.y; ++i)
@@ -98,16 +95,25 @@ public class TerrainCreate : MonoBehaviour
                 }
             }
         }
-        //}
-        //// 地面用のブロックのほうが少ない
-        //else
-        //{
-        //    Transform _ground = transform.GetChild((int)TerrainChild.Ground);
-        //    for(int i = 0; i < _ground.childCount; ++i)
-        //    {
-        //        GameObject _block = _ground.GetChild(i).gameObject;
-        //    }
-        //}
+        foreach (GameGimmick _fgimmick in _gimmickList)
+        {
+            // UIか地面の上に設置されているものなら
+            if (_fgimmick.UI ||
+                _fgimmick.transform.position.y == - _stageSizeY / 2)
+                continue;
+
+            RaycastHit hit = new RaycastHit();
+            Ray ray = new Ray(_fgimmick.transform.position, Vector3.down);
+            int layerMask = 1 << _fgimmick.gameObject.layer;
+            // 真下にあるオブジェクトを選択
+            if (Physics.Raycast(ray, out hit, _stageSizeY, layerMask))
+            {
+                for (float i = hit.collider.transform.position.y + 1; i < _fgimmick.transform.position.y; ++i)
+                {
+                    _wallAfter.Add(new Vector3(_fgimmick.transform.position.x, i, _fgimmick.transform.position.z));
+                }
+            }
+        }
 
         int difference = _wallBefore.childCount - _wallAfter.Count;
         // 変更前のほうが少ないもしくは同数
@@ -124,8 +130,8 @@ public class TerrainCreate : MonoBehaviour
                 {
                     GameObject _obj = Instantiate(m_wallPrefab, _wallAfter[i], Quaternion.identity);
                     _obj.transform.parent = transform.GetChild((int)TerrainChild.Wall);
-                    _obj.transform.tag = StringDefine.TagName.TerrainBlock;
-                    _obj.layer = StringDefine.Layer.Trans;
+                    _obj.transform.tag = NameDefine.TagName.TerrainBlock;
+                    _obj.layer = NameDefine.Layer.Trans;
                 }
             }
         }
@@ -141,7 +147,6 @@ public class TerrainCreate : MonoBehaviour
                 // 現状あるもの配置変更
                 _wallBefore.GetChild(i + difference).position = _wallAfter[i];
             }
-
         }
     }
 }

@@ -26,18 +26,8 @@ public class UIFuseCreate : MonoBehaviour
     {
         if (m_firstCreate > 0)
         {
-            StageCreateMgr.SuffixType suffix;
-            if (SceneManager.GetActiveScene().name == "StageEditer")
-            {
-                m_fuseAmount = new Vector2Int(AdjustParameter.UI_Fuse_Constant.UI_FUSE_MAX, AdjustParameter.UI_Fuse_Constant.UI_FUSE_MAX);
-                suffix = StageCreateMgr.SuffixType.Turn;
-            }
-            else
-            {
-                m_fuseAmount = new Vector2Int((int)Mathf.Ceil(m_firstCreate / 2.0f), (int)Mathf.Floor(m_firstCreate / 2.0f));
-                suffix = StageCreateMgr.SuffixType.Duplication;
-            }
-            StageCreateMgr.Instance.CreateUIFuse(m_firstCreate, transform, suffix, StageCreateMgr.SuffixType.Zero);
+            m_fuseAmount = new Vector2Int((int)Mathf.Ceil(m_firstCreate / 2.0f), (int)Mathf.Floor(m_firstCreate / 2.0f));
+            StageCreateMgr.Instance.CreateUIFuse(m_firstCreate, transform, StageCreateMgr.SuffixType.Duplication, StageCreateMgr.SuffixType.Zero);
         }
     }
 

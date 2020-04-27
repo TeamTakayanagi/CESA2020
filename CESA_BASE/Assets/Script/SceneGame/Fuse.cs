@@ -6,18 +6,19 @@ public class Fuse : MonoBehaviour
 {
     public enum FuseType
     {
-        Fuse,
-        Start, 
-        Goal,
-        UI
+        Normal,
+        //UI,
+        Start,
     }
 
     [SerializeField]
-    private FuseType m_type = FuseType.Fuse;
+    private FuseType m_type = FuseType.Normal;
     private float m_burnTime = 0.0f;
 
     // 燃えているか
     private bool m_isBurn = false;
+    private bool m_isUI = false;
+
     private Vector3 m_endPos = Vector3.zero;
     private Vector3 m_defaultPos = Vector3.zero;
     private Vector3 m_defaultRot = Vector3.zero;
@@ -31,7 +32,7 @@ public class Fuse : MonoBehaviour
         set
         {
             m_endPos = value;
-            m_defaultPos =  transform.parent.position + value;
+            m_defaultPos = transform.parent.position + value;
         }
     }
     public Vector3 DefaultPos
@@ -52,6 +53,17 @@ public class Fuse : MonoBehaviour
             m_type = value;
         }
     }
+    public bool UI
+    {
+        get
+        {
+            return m_isUI;
+        }
+        set
+        {
+            m_isUI = value;
+        }
+    }
     public Vector3 DefaultRot
     {
         get
@@ -62,6 +74,12 @@ public class Fuse : MonoBehaviour
 
     private void Awake()
     {
+    }
+
+    private void Start()
+    {
+        m_defaultRot = transform.localEulerAngles;
+        m_burnTime = AdjustParameter.Fuse_Constant.BURN_MAX_TIME;  // 燃え尽きるまでの時間
         switch (m_type)
         {
             case FuseType.Start:
@@ -70,41 +88,19 @@ public class Fuse : MonoBehaviour
                     m_isBurn = true;
                     break;
                 }
-            case FuseType.Fuse:
+            case FuseType.Normal:
                 {
                     gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
                     m_isBurn = false;
-                    break;
-                }
-            case FuseType.Goal:
-                {
-                    gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
-                    m_isBurn = false;
-                    break;
-                }
-            case FuseType.UI:
-                {
-                    gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
-                    m_isBurn = false;
-                    break;
-                }
-            default:
-                {
                     break;
                 }
         }
     }
 
-    private void Start()
-    {
-        m_defaultRot = transform.localEulerAngles;
-        m_burnTime = AdjustParameter.Fuse_Constant.BURN_MAX_TIME;  // 燃え尽きるまでの時間
-    }
-
     // Update is called once per frame
     void Update()
     {
-        if (m_type != FuseType.UI && m_isBurn)
+        if (!m_isUI && m_isBurn)
         {
             m_burnTime -= Time.deltaTime * GameMgr.Instance.GameSpeed;
             if (m_burnTime <= 0.0f)
@@ -117,13 +113,13 @@ public class Fuse : MonoBehaviour
                 GameMgr.Instance.BurnOutFuse(this);
             }
         }
-        else if(m_type == FuseType.UI)
+        else if (m_isUI)
         {
 
             if (m_endPos != Vector3.zero)
             {
                 transform.localPosition -= new Vector3(0.0f, 0.2f, 0.0f);
-                if(transform.localPosition.y <= m_endPos.y)
+                if (transform.localPosition.y <= m_endPos.y)
                 {
                     transform.localPosition = m_endPos;
                     m_endPos = Vector3.zero;
@@ -134,7 +130,7 @@ public class Fuse : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (m_type == FuseType.UI)
+        if (m_isUI)
         {
             transform.localEulerAngles = new Vector3(transform.localEulerAngles.x,
                 m_defaultRot.y - Camera.main.transform.localEulerAngles.y, transform.localEulerAngles.z);
@@ -143,13 +139,13 @@ public class Fuse : MonoBehaviour
 
     public void SelectUIFuse(bool isSet)
     {
-        for(int i= 0; i < transform.childCount - 1; ++i)
+        for (int i = 0; i < transform.childCount - 1; ++i)
         {
             GameObject _obj = transform.GetChild(i).gameObject;
-            if(isSet)
-                _obj.layer = 8;
+            if (isSet)
+                _obj.layer = NameDefine.Layer.PostEffect;
             else
-                _obj.layer = 2;
+                _obj.layer = NameDefine.Layer.Ignore;
         }
     }
 
@@ -157,15 +153,15 @@ public class Fuse : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         // UIかつ燃えていないものなら
-        if (m_type == FuseType.UI || !m_isBurn)
+        if (m_isUI || !m_isBurn)
             return;
 
         // 導火線との判定
-        if (Utility.TagSeparate.getParentTagName(other.transform.tag) == StringDefine.TagName.Fuse)
+        if (Utility.TagSeparate.getParentTagName(other.transform.tag) == NameDefine.TagName.Fuse)
         {
             Fuse _fuse = other.gameObject.GetComponent<Fuse>();
             // 相手が燃えているもしくは燃え尽きた後なら処理を飛ばす
-            if (_fuse.m_isBurn || _fuse.m_burnTime <= 0.0f || _fuse.m_type == FuseType.UI)
+            if (_fuse.m_isBurn || _fuse.m_burnTime <= 0.0f || _fuse.m_isUI)
                 return;
             // 
             if (m_burnTime <= AdjustParameter.Fuse_Constant.SPREAD_TIME)
@@ -173,16 +169,28 @@ public class Fuse : MonoBehaviour
                 _fuse.m_isBurn = true;
                 _fuse.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
                 GameMgr.Instance.BurnCount += 1;
-                // 当たったものがゴールなら
-                if (_fuse.m_type == FuseType.Goal)
-                {
-                    // クリア演出開始
-                }
             }
             else
             {
                 _fuse.GetComponent<Renderer>().material.SetColor("_Color", Color.green);
             }
+        }
+        else if (Utility.TagSeparate.getParentTagName(other.transform.tag) == NameDefine.TagName.Gimmick)
+        {
+            GameGimmick _gimmick = other.gameObject.GetComponent<GameGimmick>();
+
+            // 水は燃えないので
+            if (_gimmick.Type == GameGimmick.GimmickType.Water)
+                return;
+
+            _gimmick.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+
+            // 当たったものがゴールなら
+            if (_gimmick.Type == GameGimmick.GimmickType.Goal)
+            {
+                // クリア演出開始
+            }
+
         }
     }
 }

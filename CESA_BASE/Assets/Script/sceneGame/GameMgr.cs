@@ -87,9 +87,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // マウスカーソル用の画像をデフォルトに変更
         Cursor.SetCursor(m_cursorDefault, Vector2.zero, CursorMode.Auto);
         // ゲームクリア用のUIの親オブジェクト取得
-        m_resultClear = GameObject.FindGameObjectWithTag(StringDefine.TagName.UIGameClear);
+        m_resultClear = GameObject.FindGameObjectWithTag(NameDefine.TagName.UIGameClear);
         // ゲームオーバー用のUIの親オブジェクト取得
-        m_resultGameover = GameObject.FindGameObjectWithTag(StringDefine.TagName.UIGameOver);
+        m_resultGameover = GameObject.FindGameObjectWithTag(NameDefine.TagName.UIGameOver);
         // UIの導火線生成オブジェクト取得
         m_UIFuseCreate = FindObjectOfType<UIFuseCreate>();
         // 初期生成位置はわからないので生成不可能場所を格納
@@ -99,7 +99,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         terrainCreate.CreateGround(m_stageSize.x, m_stageSize.z, -m_stageSize.y / 2 - 1);
 
         // 開始演出準備
-        GameObject canvas = GameObject.FindGameObjectWithTag(StringDefine.TagName.UICanvas);
+        GameObject canvas = GameObject.FindGameObjectWithTag(NameDefine.TagName.UICanvas);
         m_saveObj = canvas.transform.GetChild(0).gameObject;
         m_gameStep = GameStart;
 
@@ -107,7 +107,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         Fuse[] _fuseList = FindObjectsOfType<Fuse>();
         foreach (Fuse _fuse in _fuseList)
         {
-            if (_fuse.Type == Fuse.FuseType.UI)
+            if (_fuse.UI)
                 m_uiFuse.AddLast(_fuse);
             else
                 m_fieldFuse.AddLast(_fuse);
@@ -158,10 +158,15 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 #if UNITY_EDITOR
         if(Input.GetKeyUp(KeyCode.C))
         {
-            m_resultClear.SetActive(true);
-            Camera.main.GetComponent<MainCamera>().Control = false;
-            m_saveObj = Instantiate(m_fireworks, Vector3.zero, Quaternion.identity);
-            m_gameStep = GameClear;
+            GameGimmick[] gimmicks = FindObjectsOfType<GameGimmick>();
+            foreach(GameGimmick gimmick in gimmicks)
+            {
+                if (gimmick.Type != GameGimmick.GimmickType.Goal)
+                    continue;
+
+                FireGoal(gimmick);
+                break;
+            }
             return;
         }
         else if(Input.GetKeyUp(KeyCode.O))
@@ -201,11 +206,11 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         if (Input.GetMouseButtonDown(0))
         {
             // UI画面
-            if (Input.mousePosition.x > Screen.width * 0.8f)
+            if (Input.mousePosition.x > Screen.width * Camera.main.rect.width)
             {
                 // サブカメラ取得
                 RaycastHit hit = new RaycastHit();
-                Ray ray = GameObject.FindGameObjectWithTag(StringDefine.TagName.SubCamera).GetComponent<Camera>().
+                Ray ray = GameObject.FindGameObjectWithTag(NameDefine.TagName.SubCamera).GetComponent<Camera>().
                     ScreenPointToRay(Input.mousePosition);
 
                 // 導火線を選択
@@ -217,7 +222,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                         Fuse _fuse = hit.collider.transform.parent.GetComponent<Fuse>();
                         if (!_fuse || _fuse.EndPos != Vector3.zero)
                             return;
-                        if (_fuse.Type == Fuse.FuseType.UI)
+                        if (_fuse.UI)
                         {
                             if(m_selectFuse)
                                 m_selectFuse.SelectUIFuse(false);
@@ -244,7 +249,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 if (m_selectFuse)
                 {
                     m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
-                    m_selectFuse.Type = Fuse.FuseType.Fuse;
+                    m_selectFuse.Type = Fuse.FuseType.Normal;
                     m_UIFuseCreate.FuseAmount -= new Vector2Int
                         ((int)((m_selectFuse.DefaultPos.x + 1) / 2 + 1) % 2, (int)((m_selectFuse.DefaultPos.x + 1) / 2) % 2);
 
@@ -375,19 +380,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     {
         m_fieldFuse.Remove(_fuse);
         m_burnCount--;
-        if (_fuse.Type == Fuse.FuseType.Goal)
-        {
-            m_resultClear.SetActive(true);
-            m_gameStep = GameClear;
-            m_saveObj = Instantiate(m_fireworks, _fuse.transform.position, Quaternion.identity);
-            END_FIRE_POS += _fuse.transform.position;
 
-            if (m_selectFuse)
-                m_selectFuse.SelectUIFuse(false);
-            m_UIFuseCreate.enabled = true;
-           Camera.main.GetComponent<MainCamera>().Control = false;
-        }
-        else if (m_burnCount <= 0)
+        if (m_burnCount <= 0)
         {
             m_resultGameover.SetActive(true);
             m_gameStep = GameOver;
@@ -399,6 +393,19 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
     }
 
+    public void FireGoal(GameGimmick goal)
+    {
+        m_resultClear.SetActive(true);
+        m_gameStep = GameClear;
+        m_saveObj = Instantiate(m_fireworks, goal.transform.position, Quaternion.identity);
+        END_FIRE_POS += goal.transform.position;
+
+        if (m_selectFuse)
+            m_selectFuse.SelectUIFuse(false);
+        m_UIFuseCreate.enabled = true;
+        Camera.main.GetComponent<MainCamera>().Control = false;
+    }
+
     /// <summary>
     /// ゲームクリア処理
     /// </summary>
@@ -407,6 +414,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // 花火を移動させメインカメラに注視させる
         if(m_saveObj)
             m_saveObj.transform.position = Vector3.Lerp(m_saveObj.transform.position, END_FIRE_POS, Time.deltaTime);
+
         Camera.main.transform.LookAt(m_saveObj.transform.position);
         Camera.main.rect = new Rect(0.0f, 0.0f, Mathf.Lerp(Camera.main.rect.width, 1.0f, Time.deltaTime), 1.0f);
         // UIの移動

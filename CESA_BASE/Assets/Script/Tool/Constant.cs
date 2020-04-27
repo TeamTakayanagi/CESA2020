@@ -40,22 +40,26 @@ namespace AdjustParameter
 // 他のオブジェクトでも共有する定数があれば（共有しないなら各クラス内で）
 namespace ProcessedtParameter
 {
+    public readonly struct GameObject_Constant
+    {
+        public const int FUSE_TYPE = 7;                               // 導火線の種類
+    }
     public readonly struct System_Constant
     {
         public const int ERROR_INT = -999;                                 // int型エラー判別変数
-        public const int CSV_WORD_LENGHT = 5;                              // CSVに書き込む文字の長さ
     }
 
     public readonly struct CSV_Constant
     {
         public const string STAGE_DATA_PATH = "StageData";
-        public const int OBJECT_WORD_COUNT = 3;                                     // オブジェクトの種類の情報の文字数
+        public const int ADDINFO_WORD_COUNT = 1;                                     // オブジェクトの追加情報の文字数
+        public const int OBJECT_WORD_COUNT = 2;                                     // オブジェクトの種類の情報の文字数
         public const int OBJECT_ROT_COUNT = 3;                                      // オブジェクトの角度情報の文字数
-        public const int STAGE_DATA_COUNT = OBJECT_WORD_COUNT + OBJECT_ROT_COUNT;   // ステージデータの文字数
+        public const int STAGE_DATA_COUNT = ADDINFO_WORD_COUNT + OBJECT_WORD_COUNT + OBJECT_ROT_COUNT;   // ステージデータの文字数
     }
 }
 
-namespace StringDefine
+namespace NameDefine
 {
     public readonly struct TagName
     {
@@ -68,6 +72,7 @@ namespace StringDefine
         public const string UIGameClear = "UI/GameClear";
         public const string UIGameOver = "UI/GameOver";
         public const string TerrainBlock = "TerrainBlock";
+        public const string Gimmick = "Gimmick";
 
         public const string FuseI = "Fuse/I";
         public const string FuseL = "Fuse/L";
