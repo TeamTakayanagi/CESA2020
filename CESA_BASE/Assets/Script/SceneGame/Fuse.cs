@@ -103,6 +103,7 @@ public class Fuse : MonoBehaviour
         if (!m_isUI && m_isBurn)
         {
             m_burnTime -= Time.deltaTime * GameMgr.Instance.GameSpeed;
+            Debug.Log(m_burnTime);
             if (m_burnTime <= 0.0f)
             {
                 // 燃え尽きた

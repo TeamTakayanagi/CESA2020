@@ -39,7 +39,8 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
         for(int i = 0; i < csvData.data.Count; ++i)
         {
             string tagName = csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT);
-           // 配置されていないなら
+           
+            // 配置されていないなら
             if (tagName == "--")
                 continue;
 

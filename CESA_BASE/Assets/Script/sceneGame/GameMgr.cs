@@ -23,8 +23,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private Texture2D m_cursorCatch = null;                             // マウスカーソル（UIの導火線選択時）
     [SerializeField]
     private Vector3Int m_stageSize = Vector3Int.zero;                   // ステージサイズ
-    [SerializeField]
-    private GameObject m_fireworks = null;                              // 花火のプレハブ
 
     // 定数
     private Vector3 END_FIRE_POS = new Vector3(0.0f, 30.0f, 0.0f);      // 花火の終着地点との距離      
@@ -288,7 +286,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 else
                 {
                     int store = m_gameSpeed - 1;
-                    m_gameSpeed = store ^ 1 + 1;
+                    m_gameSpeed = store % 2 + 1;
                 }
             }
         }
