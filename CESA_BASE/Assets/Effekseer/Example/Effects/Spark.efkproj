@@ -576,7 +576,7 @@
         </ScalingValues>
         <RendererCommonValues>
           <ColorTexture>Texture/Smoke01.png</ColorTexture>
-          <AlphaBlend>2</AlphaBlend>
+          <AlphaBlend>3</AlphaBlend>
           <FadeInType>1</FadeInType>
           <FadeIn>
             <Frame>5</Frame>
@@ -591,13 +591,12 @@
           <Sprite>
             <Billboard>3</Billboard>
             <ColorAll_Fixed>
-              <R>112</R>
-              <G>112</G>
-              <B>112</B>
+              <R>48</R>
+              <G>48</G>
+              <B>48</B>
             </ColorAll_Fixed>
           </Sprite>
         </DrawingValues>
-        <IsRendered>False</IsRendered>
         <Name>smoke</Name>
         <Children />
       </Node>

@@ -22,8 +22,6 @@ namespace Spark
         private FASE m_fase = FASE.FASE_1;
         private bool m_faseChange = false;
 
-        float kakudo = 0.0f;
-
         // Start is called before the first frame update
         void Start()
         {
@@ -35,29 +33,33 @@ namespace Spark
 
 
             // オフセット設定
-            m_posOffset = new Vector3(m_fuseExtents.x * Mathf.Cos(Mathf.Deg2Rad * (m_fuseObject.transform.localRotation.z + 180)),
-                                      m_fuseExtents.x * Mathf.Sin(Mathf.Deg2Rad * (m_fuseObject.transform.localRotation.z + 180)),
+            m_posOffset = new Vector3(m_fuseExtents.x * Mathf.Cos(Mathf.Deg2Rad * (m_fuseObject.transform.localEulerAngles.z + 180)),
+                                      m_fuseExtents.x * Mathf.Sin(Mathf.Deg2Rad * (m_fuseObject.transform.localEulerAngles.z + 180)),
                                       -0.2f);
             
             // 初期座標
             this.gameObject.transform.position = m_fuseObject.transform.position + m_posOffset;
 
             // 初期移動量
-            m_move = new Vector3(0, 0, 0);
+            m_move = new Vector3(-m_moveSpeed * Mathf.Cos(Mathf.Deg2Rad * (m_fuseObject.transform.localEulerAngles.z + 180)),
+                                 -m_moveSpeed * Mathf.Sin(Mathf.Deg2Rad * (m_fuseObject.transform.localEulerAngles.z + 180)), 
+                                 0);
         }
 
         // Update is called once per frame
         void Update()
         {
             // フェーズチェック
-            //if (this.gameObject.transform.position.x >= m_fuseObject.transform.position.x && m_fase == FASE.FASE_1)
-            //{
-            //    m_posOffset = new Vector3(0, 0, -0.2f);
-            //    this.gameObject.transform.position = m_fuseObject.transform.position + m_posOffset;
-            //    m_fase = FASE.FASE_2;
-            //    m_move = new Vector3(0, m_moveSpeed, 0);
-            //    m_faseChange = true;
-            //}
+            if (this.gameObject.transform.position.x >= m_fuseObject.transform.position.x && m_fase == FASE.FASE_1)
+            {
+                m_posOffset = new Vector3(0, 0, -0.2f);
+                this.gameObject.transform.position = m_fuseObject.transform.position + m_posOffset;
+                m_fase = FASE.FASE_2;
+                m_move = new Vector3(-m_moveSpeed * Mathf.Cos(Mathf.Deg2Rad * (m_fuseObject.transform.localEulerAngles.z + 270)),
+                                 -m_moveSpeed * Mathf.Sin(Mathf.Deg2Rad * (m_fuseObject.transform.localEulerAngles.z + 270)),
+                                 0);
+                m_faseChange = true;
+            }
 
             // フェーズ変更
             //if (m_faseChange)
@@ -80,19 +82,7 @@ namespace Spark
             //}
 
             // 移動
-            //this.gameObject.transform.position += m_move;
-
-            
-
-            m_posOffset = new Vector3(m_fuseExtents.x * Mathf.Cos(Mathf.Deg2Rad * (kakudo + 180)),
-                                      m_fuseExtents.x * Mathf.Sin(Mathf.Deg2Rad * (kakudo + 180)),
-                                      -0.2f);
-
-            this.gameObject.transform.position = m_fuseObject.transform.position + m_posOffset;
-
-            kakudo++;
-            if (kakudo >= 360)
-                kakudo = 0.0f;
+            this.gameObject.transform.position += m_move;
         }
     }
 }
