@@ -5,7 +5,6 @@
 		[HideInInspector] _Dsitance("Distance", float) = 1.0
 		[HideInInspector]  _Target("_Target", Vector) = (0, 0, 0, 0)
 		_MainTex("Albedo (RGB)", 2D) = "white" {}
-		_FireOutColor("Near Color", Color) = (1, 1, 1, 1)
 	}
 		SubShader
 	{
@@ -49,11 +48,9 @@
 			fixed4 frag(v2f i) : SV_Target
 			{
 				fixed4 colorTex = tex2D(_MainTex, i.uv);
-				colorTex = fixed4(1, 0, 0, 1);
 				// カメラとオブジェクトの距離(長さ)を取得
-				float dist = saturate(length(i.worldPos - _Target) / _Dsitance);
-				fixed4 col = fixed4(colorTex.rgb * dist + _FireOutColor.rgb * (1 - dist), 1);
-				//fixed4 col = fixed4(lerp(colorTex.rgb, _FireOutColor.rgb,  dist / _Dsitance), 1);
+				float dist = saturate(length(_Target - i.worldPos));
+				fixed4 col = fixed4(colorTex * (1.1 - dist) + float3(0, 0, 0) * dist, 1);
 				return col;
 			}
 			ENDCG
