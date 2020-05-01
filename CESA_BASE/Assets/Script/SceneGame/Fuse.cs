@@ -7,7 +7,6 @@ public class Fuse : MonoBehaviour
     public enum FuseType
     {
         Normal,
-        //UI,
         Start,
     }
 
@@ -102,8 +101,7 @@ public class Fuse : MonoBehaviour
     {
         if (!m_isUI && m_isBurn)
         {
-            m_burnTime -= Time.deltaTime * GameMgr.Instance.GameSpeed;
-            Debug.Log(m_burnTime);
+            //m_burnTime -= Time.deltaTime * GameMgr.Instance.GameSpeed;
             if (m_burnTime <= 0.0f)
             {
                 // 燃え尽きた
@@ -164,6 +162,7 @@ public class Fuse : MonoBehaviour
             // 相手が燃えているもしくは燃え尽きた後なら処理を飛ばす
             if (_fuse.m_isBurn || _fuse.m_burnTime <= 0.0f || _fuse.m_isUI)
                 return;
+
             // 
             if (m_burnTime <= AdjustParameter.Fuse_Constant.SPREAD_TIME)
             {
