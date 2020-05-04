@@ -2,9 +2,11 @@
 {
 	Properties
 	{
-		[HideInInspector] _Dsitance("Distance", float) = 1.0
-		[HideInInspector]  _Target("_Target", Vector) = (0, 0, 0, 0)
-		_MainTex("Albedo (RGB)", 2D) = "white" {}
+		[HideInInspector] _Dsitance("_Distance", float) = 1.0
+		[HideInInspector] _Ration("_Ration", float) = 0.0
+		[HideInInspector] _Target("_Target", Vector) = (0, 0, 0, 0)
+		[HideInInspector] _Center("_Center", Vector) = (0, 0, 0, 0)
+		[HideInInspector] _MainTex("Albedo (RGB)", 2D) = "white" {}
 	}
 		SubShader
 	{
@@ -20,7 +22,9 @@
 
 			sampler2D _MainTex;
 			float _Dsitance;
+			float _Ration;
 			float3 _Target;
+			float3 _Center;
 			fixed4 _FireOutColor;
 
 			struct appdata
@@ -47,11 +51,15 @@
 
 			fixed4 frag(v2f i) : SV_Target
 			{
+				// テクスチャから対応する色を取得
 				fixed4 colorTex = tex2D(_MainTex, i.uv);
+
 				// カメラとオブジェクトの距離(長さ)を取得
-				float dist = saturate(length(_Target - i.worldPos));
-				fixed4 col = fixed4(colorTex * (1.1 - dist) + float3(0, 0, 0) * dist, 1);
-				return col;
+				float3 nearTarget = _Target + (i.worldPos - _Center) * _Ration;
+				float minLength = min(length(nearTarget - i.worldPos), length(_Target - i.worldPos));
+				float dist = saturate(minLength);
+
+				return fixed4(colorTex.rgb * dist, 1);
 			}
 			ENDCG
 		}
