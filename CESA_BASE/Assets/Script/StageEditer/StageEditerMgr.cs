@@ -292,7 +292,10 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         AllFuseDefault();
         foreach (GameObject _obj in _objList)
         {
-            _obj.GetComponent<MeshRenderer>().enabled = m_isPreview;
+            MeshRenderer _mesh = _obj.GetComponent<MeshRenderer>();
+
+            if(_mesh)
+                _mesh.enabled = m_isPreview;
         }
 
         // カメラをもとの位置に戻す 
@@ -419,6 +422,10 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 
     public void LoadStage()
     {
+        // これからプレビュー状態であれば解除
+        if (m_isPreview)
+            ViewPlayStage();
+
         // 現状のステージをすべて破棄
         GameObject _stage = transform.GetChild(0).gameObject;
         for (int i = 0; i < _stage.transform.childCount; ++i)
@@ -445,6 +452,11 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             obj.transform.tag = NameDefine.TagName.Player;
             obj.layer = NameDefine.Layer.Trans;
         }
+
+        // ステージのサイズをセット
+        inputFieldInt.SetInputFieldInt(inputFieldInt.FieldType.stageSizeX, info.size.x);
+        inputFieldInt.SetInputFieldInt(inputFieldInt.FieldType.stageSizeY, info.size.y);
+        inputFieldInt.SetInputFieldInt(inputFieldInt.FieldType.stageSizeZ, info.size.z);
     }
 
     /// <summary>

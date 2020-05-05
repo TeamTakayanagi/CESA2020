@@ -34,7 +34,6 @@ public class GameGimmick : MonoBehaviour
             m_type = value;
         }
     }
-
     public bool UI
     {
         get
@@ -68,7 +67,7 @@ public class GameGimmick : MonoBehaviour
     void Update()
     {
         if (m_type == GimmickType.Water)
-            StartCoroutine( GimmickWater());
+            StartCoroutine(GimmickWater());
     }
 
     public IEnumerator  GimmickWater()

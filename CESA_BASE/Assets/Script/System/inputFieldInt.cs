@@ -101,5 +101,17 @@ public class inputFieldInt : MonoBehaviour
                 return _obj.m_number;
         }
         return ProcessedtParameter.System_Constant.ERROR_INT;
+    } 
+    public static void SetInputFieldInt(FieldType type, int value)
+    {
+        inputFieldInt[] _list = FindObjectsOfType<inputFieldInt>();
+        foreach (inputFieldInt _obj in _list)
+        {
+            if (_obj.m_type != type)
+                continue;
+
+            _obj.m_number = value;
+            _obj.m_inputField.text = _obj.m_number.ToString();
+        }
     }
 }

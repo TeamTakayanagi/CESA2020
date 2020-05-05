@@ -10,6 +10,7 @@ namespace AdjustParameter
         public const float VALUE_SCROLL = 0.5f;
         public const float ROTY_VALUE = 0.5f;
         public const float AROUND_MOVE = 5.0f;
+        public const float AROUND_ANGLE = 15.0f;
         public const float PERMISSION_MOVE = 20.0f;
     }
 
@@ -19,6 +20,7 @@ namespace AdjustParameter
         public const float DEFAULT_SCALE = 1.0f;
         public const float WET_MAX_TIME = 5.0f;
         public const float MOVE_VALUE = 2.0f;
+        public const float ROT_VALUE = 5.0f;
     }
 
     public readonly struct UI_OBJECT_Constant

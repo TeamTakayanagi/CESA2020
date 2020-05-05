@@ -203,6 +203,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             mousePos = Camera.main.ScreenToWorldPoint(mousePos);
             // 生成場所を取得
             m_createPos = FindNearFuse(mousePos);
+            if (m_createPos == OUTPOS)
+                return;
+
             // UI画面
             if (Input.mousePosition.x > Screen.width * 0.8f)
                 m_selectFuse.transform.position = m_selectFuse.DefaultPos;
@@ -213,10 +216,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 m_selectFuse.transform.localEulerAngles = m_selectFuse.DefaultRot;
             }
 
-            if (m_selectFuse.transform.position == OUTPOS)
-                return;
         }
 
+        RaycastHit hit = new RaycastHit();
         // 設置or選択
         if (Input.GetMouseButtonDown(0))
         {
@@ -224,7 +226,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             if (Input.mousePosition.x > Screen.width * Camera.main.rect.width)
             {
                 // サブカメラ取得
-                RaycastHit hit = new RaycastHit();
                 Ray ray = GameObject.FindGameObjectWithTag(NameDefine.TagName.SubCamera).GetComponent<Camera>().
                     ScreenPointToRay(Input.mousePosition);
 
@@ -301,23 +302,23 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 // ゲーム加速
                 else
                 {
-                    int store = m_gameSpeed - 1;
-                    m_gameSpeed = store % 2 + 1;
-
                     Ray ray = new Ray();
-                    RaycastHit hit = new RaycastHit();
                     ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
                     //マウスクリックした場所からRayを飛ばし、オブジェクトがあればtrue
-                    if (Physics.Raycast(ray.origin, ray.direction, out hit, Mathf.Infinity))
+                    if (Physics.Raycast(ray, out hit))
                     {
-                        if (hit.collider.gameObject.CompareTag("Fuse"))
+                        if (Utility.TagSeparate.getParentTagName(hit.collider.gameObject.tag) == NameDefine.TagName.Fuse)
                         {
-                            // ギミック
+                            // 導火線のギミック始動
                             hit.collider.gameObject.GetComponent<Fuse>().OnGimmick();
                         }
                     }
-
+                    else
+                    {
+                        int store = m_gameSpeed - 1;
+                        m_gameSpeed = store % 2 + 1;
+                    }
                 }
             }
         }

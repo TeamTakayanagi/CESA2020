@@ -10,12 +10,12 @@ public class Fuse : MonoBehaviour
         Normal,
         Start,
         Rotate,
-        MoveX,
-        MoveNX,
-        MoveY,
-        MoveNY,
-        MoveZ,
-        MoveNZ,
+        MoveLeft,
+        MoveRight,
+        MoveDown,
+        MoveUp,
+        MoveBack,
+        MoveForward,
     }
     public enum FuseChild
     {
@@ -41,13 +41,7 @@ public class Fuse : MonoBehaviour
     private Vector3 m_defaultPos = Vector3.zero;
     private Vector3 m_defaultRot = Vector3.zero;
 
-    // 回転
-    private Vector3 m_rotatePoint = Vector3.zero;   // 回転の中心
-    private Vector3 m_rotateAxis = Vector3.zero;    // 回転軸
-    private float m_fuseAngle = 0.0f;
     private bool m_isRotate = false;
-
-    private Vector3 m_prevPos;  // 元の位置
 
     // 水
     private bool m_isWet;
@@ -101,7 +95,6 @@ public class Fuse : MonoBehaviour
             return m_defaultRot;
         }
     }
-
     public Vector3 TargetDistance
     {
         get
@@ -125,13 +118,14 @@ public class Fuse : MonoBehaviour
         // 燃焼していないことをシェーダーにセット
         Transform fuseModel = transform.GetChild((int)FuseChild.Model);
         Transform target = transform.GetChild((int)FuseChild.Target);
+
         // 導火線本体の中心座標を設定
         fuseModel.GetComponent<Renderer>().material.SetVector("_Center", fuseModel.position);
         if (m_type == FuseType.Start)
         {
             m_isBurn = true;
 
-            m_targetDistance = new Vector3(0.0f, -0.5f, 0.0f);
+            m_targetDistance = Vector3.down / 2.0f;
 
             // 導火線の燃えてきた方向にシェーダー用のオブジェクトを移動
             transform.GetChild((int)FuseChild.Target).position = transform.position + TargetDistance;
@@ -144,7 +138,6 @@ public class Fuse : MonoBehaviour
         {
             m_isBurn = false;
 
-
             // 色を変えるオブジェクトの座標
             fuseModel.GetComponent<Renderer>().material.SetVector("_Target", OUTPOS);
             // 燃やす範囲（0:その場だけ ～　1:全域）
@@ -154,7 +147,7 @@ public class Fuse : MonoBehaviour
 
         m_defaultRot = transform.localEulerAngles;
         // 元の位置を保存
-        m_prevPos = transform.position;
+        m_defaultPos = transform.position;
     }
 
     void Update()
@@ -263,8 +256,16 @@ public class Fuse : MonoBehaviour
     private void FixedUpdate()
     {
         if (m_isUI)
+        {
             transform.localEulerAngles = new Vector3(m_defaultRot.x,
                 m_defaultRot.y - Camera.main.transform.localEulerAngles.y, m_defaultRot.z);
+        }
+        //if (m_isUI)
+        //{
+        //    transform.rotation = Camera.main.transform.rotation;
+        //    transform.localEulerAngles = new Vector3(m_defaultRot.x,
+        //        transform.localEulerAngles.y, m_defaultRot.z);
+        //}
     }
 
     public void SelectUIFuse(bool isSet)
@@ -314,38 +315,36 @@ public class Fuse : MonoBehaviour
         {
             case FuseType.Rotate:
                 {
-                    m_rotatePoint = transform.position;
-                    m_rotateAxis = new Vector3(0, -1, 0);
                     if(!m_isRotate)
                         StartCoroutine(RotateFuse());
                     break;
                 }
-            case FuseType.MoveX:
+            case FuseType.MoveLeft:
                 {
                     GimmickMove(Vector3.left);
                     break;
                 }
-            case FuseType.MoveNX:
+            case FuseType.MoveRight:
                 {
                     GimmickMove(Vector3.right);
                     break;
                 }
-            case FuseType.MoveY:
+            case FuseType.MoveDown:
                 {
                     GimmickMove(Vector3.down);
                     break;
                 }
-            case FuseType.MoveNY:
+            case FuseType.MoveUp:
                 {
                     GimmickMove(Vector3.up);
                     break;
                 }
-            case FuseType.MoveZ:
+            case FuseType.MoveBack:
                 {
                     GimmickMove(Vector3.back);
                     break;
                 }
-            case FuseType.MoveNZ:
+            case FuseType.MoveForward:
                 {
                     GimmickMove(Vector3.forward);
                     break;
@@ -358,16 +357,16 @@ public class Fuse : MonoBehaviour
     private void GimmickMove(Vector3 direct)
     {
         Vector3 movePos;   // 移動位置
-        bool isMove = transform.position == m_prevPos;
+        bool isMove = transform.position == m_defaultPos;
 
-        if (isMove)
+        if (!isMove)
         {
-            movePos = m_prevPos;
+            movePos = m_defaultPos;
             StartCoroutine(MoveFuse(movePos, direct));
         }
         else
         {
-            movePos = m_prevPos - direct;
+            movePos = m_defaultPos - direct;
             StartCoroutine(MoveFuse(movePos, -Vector3.back));
         }
     }
@@ -382,15 +381,14 @@ public class Fuse : MonoBehaviour
         float sumAngle = 0.0f; //angleの合計を保存
         while (sumAngle < 90.0f)
         {
-            m_fuseAngle = 5.0f; //ここを変えると回転速度が変わる
-            sumAngle += m_fuseAngle;
+            float fuseAngle = AdjustParameter.Fuse_Constant.ROT_VALUE; //ここを変えると回転速度が変わる
+            sumAngle += fuseAngle;
 
             // 90度以上回転しないように値を制限
-            if (sumAngle > 90f)
-            {
-                m_fuseAngle -= sumAngle - 90f;
-            }
-            transform.RotateAround(m_rotatePoint, m_rotateAxis, m_fuseAngle);
+            if (sumAngle > 90.0f)
+                fuseAngle -= sumAngle - 90f;
+
+            transform.RotateAround(transform.position, new Vector3(0, -1, 0), fuseAngle);
 
             yield return null;
         }

@@ -51,7 +51,7 @@ namespace Utility
         public static Vector3 IndexToPos(int idx, int stageSizeX, int stageSizeY, int stageSizeZ)
         {
             Vector3 half = new Vector3(stageSizeX / 2, stageSizeY / 2, stageSizeZ / 2);
-            return (new Vector3(idx % stageSizeX, stageSizeY - (idx / stageSizeY) % stageSizeY - 1, Mathf.Floor(idx / (stageSizeX * stageSizeY))) - half);
+            return (new Vector3(idx % stageSizeX, stageSizeY - (idx / stageSizeX) % stageSizeY - 1, Mathf.Floor(idx / (stageSizeX * stageSizeY))) - half);
         }
 
         // CSV読み込み
