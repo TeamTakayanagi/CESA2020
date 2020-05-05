@@ -264,9 +264,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                             m_selectFuse.DefaultPos.y < _fuse.DefaultPos.y)
                         {
                             if (_fuse.EndPos == Vector3.zero)
-                                _fuse.EndPos = _fuse.transform.localPosition - new Vector3(0.0f, AdjustParameter.UI_Fuse_Constant.UI_FUSE_INTERVAL_Y, 0.0f);
+                                _fuse.EndPos = _fuse.transform.localPosition - new Vector3(0.0f, AdjustParameter.UI_OBJECT_Constant.INTERVAL_Y, 0.0f);
                             else
-                                _fuse.EndPos -= new Vector3(0.0f, AdjustParameter.UI_Fuse_Constant.UI_FUSE_INTERVAL_Y, 0.0f);
+                                _fuse.EndPos -= new Vector3(0.0f, AdjustParameter.UI_OBJECT_Constant.INTERVAL_Y, 0.0f);
                         }
                     }
 
@@ -345,25 +345,25 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             if (Mathf.Abs(disX) > Mathf.Abs(disY) && Mathf.Abs(disX) > Mathf.Abs(disZ))
             {
                 if (disX >= 0)
-                    objPos = nearObj.transform.position + new Vector3(AdjustParameter.Fuse_Constant.FUSE_SCALE, 0.0f, 0.0f);
+                    objPos = nearObj.transform.position + new Vector3(AdjustParameter.Fuse_Constant.DEFAULT_SCALE, 0.0f, 0.0f);
                 else
-                    objPos = nearObj.transform.position - new Vector3(AdjustParameter.Fuse_Constant.FUSE_SCALE, 0.0f, 0.0f);
+                    objPos = nearObj.transform.position - new Vector3(AdjustParameter.Fuse_Constant.DEFAULT_SCALE, 0.0f, 0.0f);
             }
             // Y座標のが近い
             else if (Mathf.Abs(disY) > Mathf.Abs(disZ))
             {
                 if (disY >= 0)
-                    objPos = nearObj.transform.position + new Vector3(0.0f, AdjustParameter.Fuse_Constant.FUSE_SCALE, 0.0f);
+                    objPos = nearObj.transform.position + new Vector3(0.0f, AdjustParameter.Fuse_Constant.DEFAULT_SCALE, 0.0f);
                 else
-                    objPos = nearObj.transform.position - new Vector3(0.0f, AdjustParameter.Fuse_Constant.FUSE_SCALE, 0.0f);
+                    objPos = nearObj.transform.position - new Vector3(0.0f, AdjustParameter.Fuse_Constant.DEFAULT_SCALE, 0.0f);
             }
             // Z座標のが近い
             else
             {
                 if (disZ >= 0)
-                    objPos = nearObj.transform.position + new Vector3(0.0f, 0.0f, AdjustParameter.Fuse_Constant.FUSE_SCALE);
+                    objPos = nearObj.transform.position + new Vector3(0.0f, 0.0f, AdjustParameter.Fuse_Constant.DEFAULT_SCALE);
                 else
-                    objPos = nearObj.transform.position - new Vector3(0.0f, 0.0f, AdjustParameter.Fuse_Constant.FUSE_SCALE);
+                    objPos = nearObj.transform.position - new Vector3(0.0f, 0.0f, AdjustParameter.Fuse_Constant.DEFAULT_SCALE);
             }
         }
 
@@ -394,6 +394,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// <param name="_fuse">燃え尽きた導火線</param>
     public void BurnOutFuse(Fuse _fuse)
     {
+        if (m_gameStep != GameMain)
+            return;
+
         m_fieldFuse.Remove(_fuse);
         m_burnCount--;
 
@@ -434,9 +437,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// </summary>
     public void GameClear()
     {
-        if (m_gameStep != GameMain)
-            return;
-
         // 花火を移動させメインカメラに注視させる
         if (m_saveObj)
             m_saveObj.transform.position = Vector3.Lerp(m_saveObj.transform.position, END_FIRE_POS, Time.deltaTime);

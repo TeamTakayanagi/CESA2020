@@ -13,15 +13,13 @@ public class GameGimmick : MonoBehaviour
 
     [SerializeField]
     private GimmickType m_type = GimmickType.Goal;
-    //private bool m_isGimmickOn = false;
-    private int m_isGimmickValue = 0;
     private bool m_isUI = false;
 
     // 水
     [SerializeField]
-    private Vector3 m_waterDir;     // 水の向き
+    private Vector3 m_waterDir = Vector3.zero;     // 水の向き
     [SerializeField]
-    private float m_waterDist = 0.0f;      // 水の長さ
+    private float m_gimmickValue = 0.0f;      // 水の長さ
 
 
     public GimmickType Type
@@ -47,15 +45,15 @@ public class GameGimmick : MonoBehaviour
             m_isUI = value;
         }
     }
-    public int Value
+    public float Value
     {
         get
         {
-            return m_isGimmickValue;
+            return m_gimmickValue;
         }
         set
         {
-            m_isGimmickValue = value;
+            m_gimmickValue = value;
         }
     }
 
@@ -77,7 +75,7 @@ public class GameGimmick : MonoBehaviour
         RaycastHit hit = new RaycastHit();
         Debug.DrawLine(transform.position, hit.point, Color.blue);
 
-        if (Physics.Raycast(transform.position, m_waterDir, out hit, m_waterDist))
+        if (Physics.Raycast(transform.position, m_waterDir, out hit, m_gimmickValue))
         {
             if (hit.collider.gameObject.CompareTag("Fuse"))
             {

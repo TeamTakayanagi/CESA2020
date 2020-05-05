@@ -16,19 +16,19 @@ namespace AdjustParameter
     public readonly struct Fuse_Constant
     {
         public const float BURN_MAX_TIME = 10.0f;                       // 燃えてる時間(秒)
-        public const float SPREAD_TIME = BURN_MAX_TIME * 0.01f;         // 燃え移り始める時間
-        public const float FUSE_SCALE = 1.0f;
+        public const float DEFAULT_SCALE = 1.0f;
         public const float WET_MAX_TIME = 5.0f;
+        public const float MOVE_VALUE = 2.0f;
     }
 
-    public readonly struct UI_Fuse_Constant
+    public readonly struct UI_OBJECT_Constant
     {
-        public const int UI_FUSE_MAX = 10;
+        public const int UI_AMOUNT_MAX = 10;
         public const int CREATE_COOUNT = 60 * 5;
-        public const float UI_FUSE_POS_Y = 11.0f;
-        public const float UI_FUSE_POS_Z = 5.0f;
-        public const float UI_FUSE_INTERVAL_X = 2.0f;
-        public const float UI_FUSE_INTERVAL_Y = 2.0f;
+        public const float DEFAULT_POS_Y = 11.0f;
+        public const float DEFAULT_POS_Z = 5.0f;
+        public const float INTERVAL_X = 2.0f;
+        public const float INTERVAL_Y = 2.0f;
         public const float MOVE_VALUE_Y = 0.2f;
     }
 

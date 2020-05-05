@@ -137,7 +137,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                             GameGimmick _select = m_selectObj.GetComponent<GameGimmick>();
                             _gimmick.Type = _select.Type;
                             _gimmick.transform.localEulerAngles = new Vector3(createRotX, createRotY, createRotZ);
-                            objID = _gimmick.Value % 10 + Utility.TagSeparate.getChildTagName(selectClone.tag).
+                            objID = (int)_gimmick.Value % 10 + Utility.TagSeparate.getChildTagName(selectClone.tag).
                                 Substring(0, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT);
                         }
 

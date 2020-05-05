@@ -47,18 +47,7 @@ public class Fuse : MonoBehaviour
     private float m_fuseAngle = 0.0f;
     private bool m_isRotate = false;
 
-    // 移動
-    private Vector3 m_moveX = new Vector3(1f, 0, 0);
-    private Vector3 m_moveNX = new Vector3(-1f, 0, 0);
-    private Vector3 m_moveY = new Vector3(0, 1f, 0);
-    private Vector3 m_moveNY = new Vector3(0, -1f, 0);
-    private Vector3 m_moveZ = new Vector3(0, 0, 1f);
-    private Vector3 m_moveNZ = new Vector3(0, 0, -1f);
-    private float m_speed = 2f;
-    private Vector3 m_movPos;   // 移動位置
     private Vector3 m_prevPos;  // 元の位置
-    private bool m_isMoved = false;     // 移動済み
-    private bool m_isMoving = false;    // 移動中
 
     // 水
     private bool m_isWet;
@@ -167,7 +156,6 @@ public class Fuse : MonoBehaviour
         m_prevPos = transform.position;
     }
 
-    // Update is called once per frame
     void Update()
     {
         // 燃えてるなら
@@ -244,7 +232,7 @@ public class Fuse : MonoBehaviour
             if (m_endPos != Vector3.zero)
             {
                 // 下へ落下
-                transform.localPosition -= new Vector3(0.0f, AdjustParameter.UI_Fuse_Constant.MOVE_VALUE_Y, 0.0f);
+                transform.localPosition -= new Vector3(0.0f, AdjustParameter.UI_OBJECT_Constant.MOVE_VALUE_Y, 0.0f);
                 // 範囲処理
                 if (transform.localPosition.y <= m_endPos.y)
                 {
@@ -334,147 +322,53 @@ public class Fuse : MonoBehaviour
                 }
             case FuseType.MoveX:
                 {
-                    if (transform.position == m_prevPos)
-                    {
-                        m_isMoved = false;
-                    }
-                    else
-                    {
-                        m_isMoved = true;
-                    }
-
-                    if (m_isMoved)
-                    {
-                        m_movPos = m_prevPos;
-                        StartCoroutine(MoveFuse(m_prevPos, m_moveNX));
-                    }
-                    else
-                    {
-                        m_movPos = m_prevPos + m_moveX;
-                        StartCoroutine(MoveFuse(m_movPos, m_moveX));
-                    }
+                    GimmickMove(Vector3.left);
                     break;
                 }
             case FuseType.MoveNX:
                 {
-                    if (transform.position == m_prevPos)
-                    {
-                        m_isMoved = false;
-                    }
-                    else
-                    {
-                        m_isMoved = true;
-                    }
-
-                    if (m_isMoved)
-                    {
-                        m_movPos = m_prevPos;
-                        StartCoroutine(MoveFuse(m_movPos, m_moveX));
-
-                    }
-                    else
-                    {
-                        m_movPos = m_prevPos + m_moveNX;
-                        StartCoroutine(MoveFuse(m_movPos, m_moveNX));
-                    }
+                    GimmickMove(Vector3.right);
                     break;
                 }
             case FuseType.MoveY:
                 {
-                    if (transform.position == m_prevPos)
-                    {
-                        m_isMoved = false;
-                    }
-                    else
-                    {
-                        m_isMoved = true;
-                    }
-
-                    if (m_isMoved)
-                    {
-                        m_movPos = m_prevPos;
-                        StartCoroutine(MoveFuse(m_movPos, m_moveNY));
-                    }
-                    else
-                    {
-                        m_movPos = m_prevPos + m_moveY;
-                        StartCoroutine(MoveFuse(m_movPos, m_moveY));
-                    }
+                    GimmickMove(Vector3.down);
                     break;
                 }
             case FuseType.MoveNY:
                 {
-                    if (transform.position == m_prevPos)
-                    {
-                        m_isMoved = false;
-                    }
-                    else
-                    {
-                        m_isMoved = true;
-                    }
-
-                    if (m_isMoved)
-                    {
-                        m_movPos = m_prevPos;
-                        StartCoroutine(MoveFuse(m_movPos, m_moveY));
-                    }
-                    else
-                    {
-                        m_movPos = m_prevPos + m_moveNY;
-                        StartCoroutine(MoveFuse(m_movPos, m_moveNY));
-                    }
+                    GimmickMove(Vector3.up);
                     break;
                 }
             case FuseType.MoveZ:
                 {
-                    if (transform.position == m_prevPos)
-                    {
-                        m_isMoved = false;
-                    }
-                    else
-                    {
-                        m_isMoved = true;
-                    }
-
-                    if (m_isMoved)
-                    {
-                        m_movPos = m_prevPos;
-                        StartCoroutine(MoveFuse(m_movPos, m_moveNZ));
-                    }
-                    else
-                    {
-                        m_movPos = m_prevPos + m_moveZ;
-                        StartCoroutine(MoveFuse(m_movPos, m_moveZ));
-                    }
+                    GimmickMove(Vector3.back);
                     break;
                 }
             case FuseType.MoveNZ:
                 {
-                    if (transform.position == m_prevPos)
-                    {
-                        m_isMoved = false;
-                    }
-                    else
-                    {
-                        m_isMoved = true;
-                    }
-
-                    if (m_isMoved)
-                    {
-                        m_movPos = m_prevPos;
-                        StartCoroutine(MoveFuse(m_movPos, m_moveZ));
-                    }
-                    else
-                    {
-                        m_movPos = m_prevPos + m_moveNZ;
-                        StartCoroutine(MoveFuse(m_movPos, m_moveNZ));
-                    }
+                    GimmickMove(Vector3.forward);
                     break;
                 }
             default:
-                {
                     break;
-                }
+        }
+    }
+
+    private void GimmickMove(Vector3 direct)
+    {
+        Vector3 movePos;   // 移動位置
+        bool isMove = transform.position == m_prevPos;
+
+        if (isMove)
+        {
+            movePos = m_prevPos;
+            StartCoroutine(MoveFuse(movePos, direct));
+        }
+        else
+        {
+            movePos = m_prevPos - direct;
+            StartCoroutine(MoveFuse(movePos, -Vector3.back));
         }
     }
 
@@ -508,8 +402,6 @@ public class Fuse : MonoBehaviour
     // Fuse移動
     public IEnumerator MoveFuse(Vector3 target, Vector3 direction)
     {
-        m_isMoving = true;
-
         RaycastHit hit = new RaycastHit();
         float dist = 1f;
 
@@ -519,14 +411,12 @@ public class Fuse : MonoBehaviour
 
             while (sum < 1f)
             {
-                sum += m_speed * Time.deltaTime;
+                sum += AdjustParameter.Fuse_Constant.MOVE_VALUE * Time.deltaTime;
 
-                transform.position = Vector3.MoveTowards(transform.position, target, m_speed * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, target, AdjustParameter.Fuse_Constant.MOVE_VALUE * Time.deltaTime);
                 yield return null;
             }
         }
-
-        m_isMoving = false;
 
         yield break;
     }
@@ -542,7 +432,16 @@ public class Fuse : MonoBehaviour
         if (m_isBurn)
         {
             m_isBurn = false;
-            m_burnTime = 0.0f;
+            // 燃える演出
+            Transform fuseModel = transform.GetChild((int)FuseChild.Model);
+            Transform target = transform.GetChild((int)FuseChild.Target);
+            target.localScale = Vector3.one;
+            target.position = transform.position;
+            // 色を変えるオブジェクトの座標
+            fuseModel.GetComponent<Renderer>().material.SetVector("_Target", target.position);
+            // 燃やす範囲（0:その場だけ ～　1:全域）
+            fuseModel.GetComponent<Renderer>().material.SetFloat("_Ration", (target.localScale.x + target.localScale.y + target.localScale.z) / 3);
+
             GameMgr.Instance.BurnOutFuse(this);
         }
     }

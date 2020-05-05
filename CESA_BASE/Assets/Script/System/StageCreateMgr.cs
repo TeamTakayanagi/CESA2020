@@ -109,9 +109,9 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
             _fuse.Type = Fuse.FuseType.Normal;
             _fuse.UI = true;
             _fuse.transform.SetParent(parent, true);
-            _fuse.transform.localPosition = new Vector3((i % 2) * AdjustParameter.UI_Fuse_Constant.UI_FUSE_INTERVAL_X - 1.0f,
-                1.0f + (i / 2) * AdjustParameter.UI_Fuse_Constant.UI_FUSE_INTERVAL_Y,
-                AdjustParameter.UI_Fuse_Constant.UI_FUSE_POS_Z);
+            _fuse.transform.localPosition = new Vector3((i % 2) * AdjustParameter.UI_OBJECT_Constant.INTERVAL_X - 1.0f,
+                1.0f + (i / 2) * AdjustParameter.UI_OBJECT_Constant.INTERVAL_Y,
+                AdjustParameter.UI_OBJECT_Constant.DEFAULT_POS_Z);
             _fuse.EndPos = _fuse.transform.localPosition;
             if(rot != SuffixType.Zero)
                 _fuse.transform.localEulerAngles = new Vector3(90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4));
@@ -146,10 +146,10 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
             _fuse.UI = true;
             _fuse.transform.SetParent(parent, true);
             _fuse.EndPos = new Vector3(place,
-                1.0f + ((fuseAmount - (Mathf.Abs(fuseRean.x - fuseRean.y) / 2)) / 2) * AdjustParameter.UI_Fuse_Constant.UI_FUSE_INTERVAL_Y,
-                AdjustParameter.UI_Fuse_Constant.UI_FUSE_POS_Z);
-            _fuse.transform.localPosition = new Vector3(place, AdjustParameter.UI_Fuse_Constant.UI_FUSE_POS_Y,
-                AdjustParameter.UI_Fuse_Constant.UI_FUSE_POS_Z);
+                1.0f + ((fuseAmount - (Mathf.Abs(fuseRean.x - fuseRean.y) / 2)) / 2) * AdjustParameter.UI_OBJECT_Constant.INTERVAL_Y,
+                AdjustParameter.UI_OBJECT_Constant.DEFAULT_POS_Z);
+            _fuse.transform.localPosition = new Vector3(place, AdjustParameter.UI_OBJECT_Constant.DEFAULT_POS_Y,
+                AdjustParameter.UI_OBJECT_Constant.DEFAULT_POS_Z);
             _fuse.transform.localEulerAngles = new Vector3(90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4));
 
             if(GameMgr.Instance)
@@ -172,8 +172,8 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
         {
             GameGimmick _gimmick = Instantiate(m_gimmkList[indexList[i]], Vector3.zero, Quaternion.identity);
             _gimmick.transform.SetParent(parent, true);
-            _gimmick.transform.localPosition = new Vector3((i % 2) * AdjustParameter.UI_Fuse_Constant.UI_FUSE_INTERVAL_X - 1.0f,
-                1.0f + (i / 2) * AdjustParameter.UI_Fuse_Constant.UI_FUSE_INTERVAL_Y, AdjustParameter.UI_Fuse_Constant.UI_FUSE_POS_Z);
+            _gimmick.transform.localPosition = new Vector3((i % 2) * AdjustParameter.UI_OBJECT_Constant.INTERVAL_X - 1.0f,
+                1.0f + (i / 2) * AdjustParameter.UI_OBJECT_Constant.INTERVAL_Y, AdjustParameter.UI_OBJECT_Constant.DEFAULT_POS_Z);
         }
     }
 
