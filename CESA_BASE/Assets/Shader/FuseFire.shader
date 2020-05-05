@@ -8,7 +8,7 @@
 		[HideInInspector] _Center("_Center", Vector) = (0, 0, 0, 0)
 		[HideInInspector] _MainTex("Albedo (RGB)", 2D) = "white" {}
 	}
-		SubShader
+	SubShader
 	{
 		Tags { "RenderType" = "Opaque" }
 
@@ -17,6 +17,7 @@
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
+
 
 			#include "UnityCG.cginc"
 

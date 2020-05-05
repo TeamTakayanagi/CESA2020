@@ -400,6 +400,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// <param name="goal">ゴールのオブジェクト</param>
     public void FireGoal(GameGimmick goal)
     {
+        if (m_gameStep != GameMain)
+            return;
+
         m_resultClear.SetActive(true);
         m_gameStep = GameClear;
         m_saveObj = goal.gameObject;
@@ -416,8 +419,11 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// </summary>
     public void GameClear()
     {
+        if (m_gameStep != GameMain)
+            return;
+
         // 花火を移動させメインカメラに注視させる
-        if(m_saveObj)
+        if (m_saveObj)
             m_saveObj.transform.position = Vector3.Lerp(m_saveObj.transform.position, END_FIRE_POS, Time.deltaTime);
 
         Camera.main.transform.LookAt(m_saveObj.transform.position);

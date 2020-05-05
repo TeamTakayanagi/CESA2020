@@ -18,9 +18,11 @@ public class Fuse : MonoBehaviour
 
     [SerializeField]
     private FuseType m_type = FuseType.Normal;
+    [SerializeField]
+    private Texture2D m_fuseTex = null;
 
     private readonly Vector3 OUTPOS = new Vector3(-50, -50, -50);       // 導火線を生成できない位置
-
+    
     // 燃えているか
     private bool m_isBurn = false;
     private Vector3 m_targetDistance = Vector3.zero;
@@ -123,6 +125,7 @@ public class Fuse : MonoBehaviour
             fuseModel.GetComponent<Renderer>().material.SetVector("_Target", OUTPOS);
             // 燃やす範囲（0:その場だけ ～　1:全域）
             fuseModel.GetComponent<Renderer>().material.SetFloat("_Ration", 0);
+            fuseModel.GetComponent<Renderer>().material.SetTexture("_MainTex", m_fuseTex);
         }
     }
 
@@ -149,10 +152,10 @@ public class Fuse : MonoBehaviour
                 target.localScale += new Vector3(scaleDot, scaleDot, scaleDot);
 
                 // 移動
-                target.position -= m_targetDistance * Time.deltaTime / AdjustParameter.Fuse_Constant.BURN_MAX_TIME * 0.5f
+                target.position -= m_targetDistance * Time.deltaTime / AdjustParameter.Fuse_Constant.BURN_MAX_TIME * 0.5f;
 
-                // 中心を通り過ぎたら
-                if (target.localScale.x > 1.0f)
+                // 導火線と同じ大きさになったら
+                if (target.localScale.x >= 1.0f)
                 {
                     target.localScale = Vector3.one;
                     target.position = transform.position;

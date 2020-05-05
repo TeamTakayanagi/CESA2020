@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_type: 0
+  m_fuseTex: {fileID: 2800000, guid: 987ba76842edc1946a6eaa80d2ae05a0, type: 3}
 --- !u!54 &1977199292899694684
 Rigidbody:
   m_ObjectHideFlags: 0
