@@ -8,7 +8,8 @@ public class GameGimmick : MonoBehaviour
     {
         Goal,
         Water,
-        SubMission
+        SubMission,
+        Wall
     }
 
     [SerializeField]

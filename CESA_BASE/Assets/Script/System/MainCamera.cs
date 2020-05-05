@@ -20,7 +20,7 @@ public class MainCamera : MonoBehaviour
     [SerializeField]
     private CameraType m_type = CameraType.AroundALL;
     private Vector3 m_savePos;
-    private float m_moveRotate = 90.0f;
+    private float m_moveRotate = 0.0f;
     private float m_moveRadiuse = 10.0f;
     private bool m_isScroll = false;
     private bool m_isControl = false;

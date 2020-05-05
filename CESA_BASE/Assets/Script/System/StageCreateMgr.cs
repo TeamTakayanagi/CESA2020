@@ -68,7 +68,6 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
                 GameGimmick _gimmick = null;
                 for (int j = 0; j < m_gimmkList.Count; ++j)
                 {
-
                     string st = Utility.TagSeparate.getChildTagName(m_gimmkList[j].tag).Substring(0, 2);
                     // タグの一部が一致しているなら
                     if (Utility.TagSeparate.getChildTagName(m_gimmkList[j].tag).Substring(0,

@@ -118,6 +118,10 @@ public class Fuse : MonoBehaviour
     {
         // 水が乾くまでの時間
         m_wetTime = AdjustParameter.Fuse_Constant.WET_MAX_TIME;  
+    }
+
+    private void Start()
+    {
         // 燃焼していないことをシェーダーにセット
         Transform fuseModel = transform.GetChild((int)FuseChild.Model);
         Transform target = transform.GetChild((int)FuseChild.Target);
@@ -147,10 +151,7 @@ public class Fuse : MonoBehaviour
             fuseModel.GetComponent<Renderer>().material.SetFloat("_Ration", 0);
             fuseModel.GetComponent<Renderer>().material.SetTexture("_MainTex", m_fuseTex);
         }
-    }
 
-    private void Start()
-    {
         m_defaultRot = transform.localEulerAngles;
         // 元の位置を保存
         m_prevPos = transform.position;
@@ -257,14 +258,13 @@ public class Fuse : MonoBehaviour
         {
             gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.white); // debug
         }
-
     }
 
     private void FixedUpdate()
     {
         if (m_isUI)
-            transform.localEulerAngles = new Vector3(transform.localEulerAngles.x,
-                m_defaultRot.y - Camera.main.transform.localEulerAngles.y, transform.localEulerAngles.z);
+            transform.localEulerAngles = new Vector3(m_defaultRot.x,
+                m_defaultRot.y - Camera.main.transform.localEulerAngles.y, m_defaultRot.z);
     }
 
     public void SelectUIFuse(bool isSet)
@@ -291,7 +291,7 @@ public class Fuse : MonoBehaviour
             Fuse _fuse = other.gameObject.GetComponent<Fuse>();
 
             // 相手が燃えているもしくは燃え尽きた後なら処理を飛ばす
-            if (!_fuse || _fuse.m_isBurn || _fuse.m_isUI)
+            if (!_fuse || _fuse.m_isBurn || _fuse.m_isUI || _fuse.m_isWet)
                 return;
 
             m_collisionObj.Add(_fuse.gameObject);
@@ -379,10 +379,10 @@ public class Fuse : MonoBehaviour
         m_isRotate = true;
 
         //回転処理
-        float sumAngle = 0f; //angleの合計を保存
-        while (sumAngle < 90f)
+        float sumAngle = 0.0f; //angleの合計を保存
+        while (sumAngle < 90.0f)
         {
-            m_fuseAngle = 5f; //ここを変えると回転速度が変わる
+            m_fuseAngle = 5.0f; //ここを変えると回転速度が変わる
             sumAngle += m_fuseAngle;
 
             // 90度以上回転しないように値を制限
@@ -394,6 +394,7 @@ public class Fuse : MonoBehaviour
 
             yield return null;
         }
+
         //回転中のフラグを倒す
         m_isRotate = false;
         yield return null;
@@ -427,16 +428,16 @@ public class Fuse : MonoBehaviour
         m_isWet = true;
         m_wetTime = AdjustParameter.Fuse_Constant.WET_MAX_TIME; 
 
-        gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.blue); // debug
-
         if (m_isBurn)
         {
             m_isBurn = false;
+
             // 燃える演出
             Transform fuseModel = transform.GetChild((int)FuseChild.Model);
             Transform target = transform.GetChild((int)FuseChild.Target);
             target.localScale = Vector3.one;
             target.position = transform.position;
+            
             // 色を変えるオブジェクトの座標
             fuseModel.GetComponent<Renderer>().material.SetVector("_Target", target.position);
             // 燃やす範囲（0:その場だけ ～　1:全域）
@@ -445,5 +446,4 @@ public class Fuse : MonoBehaviour
             GameMgr.Instance.BurnOutFuse(this);
         }
     }
-
 }

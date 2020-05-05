@@ -39,7 +39,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private GameObject m_resultGameover = null;                         // ゲームオーバー用のUIの親オブジェクト
     private Fuse m_selectFuse = null;                                   // 選択しているUIの導火線   
     private UIFuseCreate m_UIFuseCreate = null;                         // UIの導火線生成オブジェクト
-    private LinkedList<Fuse> m_fieldFuse = new LinkedList<Fuse>();      // ゲーム画面の導火線
+    private LinkedList<GameObject> m_fieldObject = new LinkedList<GameObject>();      // ゲーム画面の導火線
     private LinkedList<Fuse> m_uiFuse = new LinkedList<Fuse>();         // UI部分の導火線
     private GameStep m_gameStep = null;                                 // 現在のゲームの進行状況の関数
 
@@ -76,6 +76,13 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
     }
 
+    override protected void Awake()
+    {
+        Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + 0);
+        StageCreateMgr.Instance.CreateStage(transform, info);
+
+        base.Awake();
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -114,11 +121,19 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             if (_fuse.UI)
                 m_uiFuse.AddLast(_fuse);
             else
-                m_fieldFuse.AddLast(_fuse);
+                m_fieldObject.AddLast(_fuse.gameObject);
 
             // スタート演出のため導火線の更新処理停止（ステージエディタ完成後修正予定）
             _fuse.enabled = false;
         }
+        GameGimmick[] _gimmicks = FindObjectsOfType<GameGimmick>();
+        foreach (GameGimmick _gimmick in _gimmicks)
+        {
+            m_fieldObject.AddLast(_gimmick.gameObject);
+            // スタート演出のため導火線の更新処理停止（ステージエディタ完成後修正予定）
+            _gimmick.enabled = false;
+        }
+
         Camera.main.GetComponent<MainCamera>().Control = true;
         //Sound.Instance.PlayBGM(ConstDefine.Audio.BGM.GameMain);
     }
@@ -143,12 +158,11 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             m_gameStep = GameMain;
             Destroy(m_saveObj);
 
-            // 導火線の更新処理再開
-            Fuse[] _fuseList = FindObjectsOfType<Fuse>();
-            foreach (Fuse _fuse in _fuseList)
-            {
+            foreach (Fuse _fuse in m_uiFuse)
                 _fuse.enabled = true;
-            }
+            foreach (GameObject _obj in m_fieldObject)
+                _obj.GetComponent<Behaviour>().enabled = true;
+
             m_UIFuseCreate.enabled = true;
         }
     }
@@ -271,7 +285,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     }
 
                     m_uiFuse.Remove(m_selectFuse);
-                    m_fieldFuse.AddLast(m_selectFuse);
+                    m_fieldObject.AddLast(m_selectFuse.gameObject);
                     m_selectFuse.transform.localEulerAngles = m_selectFuse.DefaultRot;
                     m_selectFuse.transform.parent = transform;
 
@@ -317,32 +331,33 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private Vector3 FindNearFuse(Vector3 mousePos)
     {
         // 一番近くにあるオブジェクト探索用変数
-        Fuse nearObj = m_fieldFuse.First.Value;
+        GameObject nearObj = m_fieldObject.First.Value;
         Vector3 objPos = Vector3.zero;
 
         // マウスのワールド座標に一番近いオブジェクトを取得
-        foreach (Fuse fuse in m_fieldFuse)
+        foreach (GameObject _obj in m_fieldObject)
         {
             // 2回目以降もしくは、距離を比べて遠ければ
             if (Vector3.Distance(nearObj.transform.position, mousePos) <
-                Vector3.Distance(fuse.transform.position, mousePos))
+                Vector3.Distance(_obj.transform.position, mousePos))
                 continue;
 
-            nearObj = fuse;
+            nearObj = _obj;
         }
 
         if (nearObj == null)
             return OUTPOS;
 
-        // そのオブジェクトの上下左右どちらにあるのか
+        // そのオブジェクトの上下左右前後どちらにあるのか
         {
-            float disX, disY, disZ;
+            float disX, disY, disZ, max;
             disX = mousePos.x - nearObj.transform.position.x;
             disY = mousePos.y - nearObj.transform.position.y;
             disZ = mousePos.z - nearObj.transform.position.z;
+            max = Mathf.Max(Mathf.Abs(disX), Mathf.Abs(disY), Mathf.Abs(disZ));
 
             // X座標のが大きい
-            if (Mathf.Abs(disX) > Mathf.Abs(disY) && Mathf.Abs(disX) > Mathf.Abs(disZ))
+            if (Mathf.Abs(disX) == max)
             {
                 if (disX >= 0)
                     objPos = nearObj.transform.position + new Vector3(AdjustParameter.Fuse_Constant.DEFAULT_SCALE, 0.0f, 0.0f);
@@ -350,7 +365,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     objPos = nearObj.transform.position - new Vector3(AdjustParameter.Fuse_Constant.DEFAULT_SCALE, 0.0f, 0.0f);
             }
             // Y座標のが近い
-            else if (Mathf.Abs(disY) > Mathf.Abs(disZ))
+            else if (Mathf.Abs(disY) == max)
             {
                 if (disY >= 0)
                     objPos = nearObj.transform.position + new Vector3(0.0f, AdjustParameter.Fuse_Constant.DEFAULT_SCALE, 0.0f);
@@ -372,10 +387,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         Vector3Int stageMax = half;
         Vector3Int stageMin = -half;
 
-        foreach (Fuse fuse in m_fieldFuse)
+        foreach (GameObject _obj in m_fieldObject)
         {
             // 2回目以降もしくは、距離を比べて遠ければ
-            if (fuse.transform.position != objPos &&
+            if (_obj.transform.position != objPos &&
 
             // 画面外処理
              objPos.x <= stageMax.x && objPos.x >= stageMin.x &&
@@ -397,7 +412,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         if (m_gameStep != GameMain)
             return;
 
-        m_fieldFuse.Remove(_fuse);
+        m_fieldObject.Remove(_fuse.gameObject);
         m_burnCount--;
 
         if (m_burnCount <= 0)

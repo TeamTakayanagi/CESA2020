@@ -20,14 +20,13 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
     override protected void Awake()
     {
         // デバッグログを無効化
-        //Debug.unityLogger.logEnabled = false;
+        Debug.unityLogger.logEnabled = false;
         // カメラ操作を可能に
         Camera.main.GetComponent<MainCamera>().Control = true;
         m_isPreview = false; 
         base.Awake();
     }
 
-    // Start is called before the first frame update
     void Start()
     {
 
@@ -62,7 +61,6 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         CreateStage();
     }
 
-    // Update is called once per frame
     void Update()
     {
         // プレビュー中は操作不可
@@ -142,7 +140,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                         }
 
                         // ステージ配列に情報追加
-                        m_fuseData.Add(hit.transform.position, objID + createRotX + createRotY + createRotZ);
+                        m_fuseData.Add(hit.transform.position, objID + createRotX / 90 + createRotY / 90 + createRotZ / 90);
 
                         Destroy(hit.collider.gameObject);
                     }
@@ -186,6 +184,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                             _fuse.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
                             m_cursorTouchObj = _fuse.gameObject;
                         }
+
                         m_fuseData[_fuse.transform.position] = (int)_fuse.Type + m_fuseData[_fuse.transform.position].Substring(1, m_fuseData[_fuse.transform.position].Length - 1);
                     }
                     // 設置位置の色の変更
@@ -197,6 +196,21 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 
                         m_cursorTouchObj = hit.collider.gameObject;
                         m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", Color.green);
+                    }
+                }
+                // 設置済みのギミックにタッチしているなら
+                else if (Utility.TagSeparate.getParentTagName(hit.collider.tag) == NameDefine.TagName.Gimmick)
+                {
+                    // 導火線削除
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        // 空オブジェクト
+                        GameObject obj = Instantiate(m_feildPrefab, hit.collider.transform.position, Quaternion.identity);
+                        obj.transform.parent = transform.GetChild(0);
+                        obj.transform.tag = NameDefine.TagName.Player;
+                        // 削除
+                        Destroy(hit.collider.gameObject);
+                        m_fuseData.Remove(hit.transform.position);
                     }
                 }
             }
@@ -348,6 +362,10 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
     /// </summary>
     public void StageSave()
     {
+        // これからプレビュー状態にする
+        m_isPreview = false;
+        ViewPlayStage();
+
         int _stageSizeX = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeX);
         int _stageSizeY = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeY);
         int _stageSizeZ = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeZ);
@@ -374,9 +392,26 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         Vector3 half = new Vector3(_stageSizeX / 2, _stageSizeY / 2, _stageSizeZ / 2);
         foreach(KeyValuePair<Vector3, string> keyValue in m_fuseData)
         {
-            Vector3 _pos = keyValue.Key + half;
-            int idx = Utility.CSVFile.PosToIndex(_pos, _stageSizeX, _stageSizeY);
-            stageList[idx] = keyValue.Value;
+            stageList[Utility.CSVFile.PosToIndex(keyValue.Key + half, _stageSizeX, _stageSizeY)] = keyValue.Value;
+        }
+        Transform _wallParent =  m_terrainCreate.transform.GetChild((int)TerrainCreate.TerrainChild.Wall);
+        for (int i = 0; i < _wallParent.childCount; ++i)
+        {
+            Transform _obj = _wallParent.GetChild(i);
+            GameGimmick _gimmick = _obj.GetComponent<GameGimmick>();
+
+            if (!_gimmick)
+                continue;
+
+            _gimmick.Type = GameGimmick.GimmickType.Wall;
+            _gimmick.transform.localEulerAngles = Vector3.zero;
+
+            stageList[Utility.CSVFile.PosToIndex(_gimmick.transform.position + half, _stageSizeX, _stageSizeY)] =
+                // ギミックの値　＋　タグの名前の一部　＋　回転
+                (int)_gimmick.Value % 10 + Utility.TagSeparate.getChildTagName(_gimmick.tag).
+                Substring(0, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT) + 
+                _gimmick.transform.localEulerAngles.x / 90 + _gimmick.transform.localEulerAngles.y / 90
+                + _gimmick.transform.localEulerAngles.z / 90;
         }
 
         Utility.CSVFile.WriteCsv(stageList, ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + _stageNum, _stageSizeX, _stageSizeY);

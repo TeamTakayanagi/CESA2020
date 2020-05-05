@@ -7,16 +7,16 @@
 		_Metallic("Metallic", Range(0,1)) = 0.0
 	}
 
-		SubShader{
-			Tags {
-				"Queue" = "Transparent"
-				"RenderType" = "Transparent"
-			}
+	SubShader{
+		Tags {
+			"Queue" = "Transparent"
+			"RenderType" = "Transparent"
+		}
 
 		// 背景とのブレンド法を「乗算」に指定
 		Blend DstColor Zero
 
-		/*Pass {
+		Pass {
 			CGPROGRAM
 				#pragma vertex vert
 				#pragma fragment frag
@@ -47,29 +47,7 @@
 					return fixed4(lerp(_Color, 0, _Alpha), 1);
 				}
 			ENDCG
-		}*/
-
-		// V/FシェーダーはReflection Probeに反応しないので
-		// 反射だけを描画するSurface Shaderを追記する
-		CGPROGRAM
-			#pragma target 3.0
-			#pragma surface surf Standard alpha
-
-			half _Smoothness;
-			half _Metallic;
-
-			struct Input 
-			{
-				fixed null;
-			};
-
-			void surf(Input IN, inout SurfaceOutputStandard o) {
-				o.Smoothness = _Smoothness;
-				o.Metallic = _Metallic;
-			}
-		ENDCG
+		}
 	}
-
-		FallBack "Standard"
-
+	FallBack "Standard"
 }

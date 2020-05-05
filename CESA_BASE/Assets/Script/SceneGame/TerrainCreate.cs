@@ -130,7 +130,6 @@ public class TerrainCreate : MonoBehaviour
                 {
                     GameObject _obj = Instantiate(m_wallPrefab, _wallAfter[i], Quaternion.identity);
                     _obj.transform.parent = transform.GetChild((int)TerrainChild.Wall);
-                    _obj.transform.tag = NameDefine.TagName.TerrainBlock;
                     _obj.layer = NameDefine.Layer.Trans;
                 }
             }

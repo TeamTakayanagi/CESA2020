@@ -20,7 +20,7 @@ namespace Spark
         private float m_moveSpeed = 0.002f;                                     // 移動速度
         private Vector3 m_move = Vector3.zero;
         private FASE m_fase = FASE.FASE_1;
-        private bool m_faseChange = false;
+        //private bool m_faseChange = false;
 
         // Start is called before the first frame update
         void Start()
@@ -58,7 +58,7 @@ namespace Spark
                 m_move = new Vector3(-m_moveSpeed * Mathf.Cos(Mathf.Deg2Rad * (m_fuseObject.transform.localEulerAngles.z + 270)),
                                  -m_moveSpeed * Mathf.Sin(Mathf.Deg2Rad * (m_fuseObject.transform.localEulerAngles.z + 270)),
                                  0);
-                m_faseChange = true;
+                //m_faseChange = true;
             }
 
             // フェーズ変更
