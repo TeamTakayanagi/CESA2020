@@ -287,6 +287,21 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 {
                     int store = m_gameSpeed - 1;
                     m_gameSpeed = store % 2 + 1;
+
+                    Ray ray = new Ray();
+                    RaycastHit hit = new RaycastHit();
+                    ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+                    //マウスクリックした場所からRayを飛ばし、オブジェクトがあればtrue
+                    if (Physics.Raycast(ray.origin, ray.direction, out hit, Mathf.Infinity))
+                    {
+                        if (hit.collider.gameObject.CompareTag("Fuse"))
+                        {
+                            // ギミック
+                            hit.collider.gameObject.GetComponent<Fuse>().OnGimmick();
+                        }
+                    }
+
                 }
             }
         }

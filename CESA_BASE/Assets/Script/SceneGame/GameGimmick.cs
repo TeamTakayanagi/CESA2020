@@ -17,6 +17,12 @@ public class GameGimmick : MonoBehaviour
     private int m_isGimmickValue = 0;
     private bool m_isUI = false;
 
+    // 水
+    [SerializeField]
+    private Vector3 m_waterDir;     // 水の向き
+    [SerializeField]
+    private float m_waterDist = 0.0f;      // 水の長さ
+
 
     public GimmickType Type
     {
@@ -62,6 +68,23 @@ public class GameGimmick : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (m_type == GimmickType.Water)
+            StartCoroutine( GimmickWater());
+    }
+
+    public IEnumerator  GimmickWater()
+    {
+        RaycastHit hit = new RaycastHit();
+        Debug.DrawLine(transform.position, hit.point, Color.blue);
+
+        if (Physics.Raycast(transform.position, m_waterDir, out hit, m_waterDist))
+        {
+            if (hit.collider.gameObject.CompareTag("Fuse"))
+            {
+                hit.collider.gameObject.GetComponent<Fuse>().FuseWet();
+            }
+        }
+
+        yield break;
     }
 }
