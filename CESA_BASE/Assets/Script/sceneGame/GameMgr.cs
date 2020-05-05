@@ -84,14 +84,20 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
         // マウスカーソル用の画像をデフォルトに変更
         Cursor.SetCursor(m_cursorDefault, Vector2.zero, CursorMode.Auto);
+
         // ゲームクリア用のUIの親オブジェクト取得
         m_resultClear = GameObject.FindGameObjectWithTag(NameDefine.TagName.UIGameClear);
+
         // ゲームオーバー用のUIの親オブジェクト取得
         m_resultGameover = GameObject.FindGameObjectWithTag(NameDefine.TagName.UIGameOver);
-        // UIの導火線生成オブジェクト取得
+
+        // UIの導火線生成オブジェクト取得し、動きを止める
         m_UIFuseCreate = FindObjectOfType<UIFuseCreate>();
+        m_UIFuseCreate.enabled = false;
+
         // 初期生成位置はわからないので生成不可能場所を格納
         m_createPos = OUTPOS;
+
         // 地形生成オブジェクト取得
         TerrainCreate terrainCreate = FindObjectOfType<TerrainCreate>();
         terrainCreate.CreateGround(m_stageSize.x, m_stageSize.z, -m_stageSize.y / 2 - 1);
@@ -113,7 +119,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             // スタート演出のため導火線の更新処理停止（ステージエディタ完成後修正予定）
             _fuse.enabled = false;
         }
-        m_UIFuseCreate.enabled = false;
         Camera.main.GetComponent<MainCamera>().Control = true;
         //Sound.Instance.PlayBGM(ConstDefine.Audio.BGM.GameMain);
     }
@@ -174,16 +179,14 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
 #endif
 
-        // マウス座標をワールド座標で取得
-        Vector3 mousePos = Vector3.zero;
-        Vector3 screen = Camera.main.WorldToScreenPoint(transform.position);
-        mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z);
-        mousePos = Camera.main.ScreenToWorldPoint(mousePos);
-
-
         // 導火線を選択しているなら
         if (m_selectFuse)
         {
+            // マウス座標をワールド座標で取得
+            Vector3 mousePos = Vector3.zero;
+            Vector3 screen = Camera.main.WorldToScreenPoint(transform.position);
+            mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z);
+            mousePos = Camera.main.ScreenToWorldPoint(mousePos);
             // 生成場所を取得
             m_createPos = FindNearFuse(mousePos);
             // UI画面
@@ -246,7 +249,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 // 導火線設置
                 if (m_selectFuse)
                 {
-                    m_selectFuse.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
                     m_selectFuse.Type = Fuse.FuseType.Normal;
                     m_selectFuse.UI = false;
                     m_UIFuseCreate.FuseAmount -= new Vector2Int
@@ -262,9 +264,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                             m_selectFuse.DefaultPos.y < _fuse.DefaultPos.y)
                         {
                             if (_fuse.EndPos == Vector3.zero)
-                                _fuse.EndPos = _fuse.transform.localPosition - new Vector3(0.0f, 2.0f, 0.0f);
+                                _fuse.EndPos = _fuse.transform.localPosition - new Vector3(0.0f, AdjustParameter.UI_Fuse_Constant.UI_FUSE_INTERVAL_Y, 0.0f);
                             else
-                                _fuse.EndPos -= new Vector3(0.0f, 2.0f, 0.0f);
+                                _fuse.EndPos -= new Vector3(0.0f, AdjustParameter.UI_Fuse_Constant.UI_FUSE_INTERVAL_Y, 0.0f);
                         }
                     }
 
@@ -413,6 +415,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// <param name="goal">ゴールのオブジェクト</param>
     public void FireGoal(GameGimmick goal)
     {
+        if (m_gameStep != GameMain)
+            return;
+
         m_resultClear.SetActive(true);
         m_gameStep = GameClear;
         m_saveObj = goal.gameObject;
@@ -429,8 +434,11 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// </summary>
     public void GameClear()
     {
+        if (m_gameStep != GameMain)
+            return;
+
         // 花火を移動させメインカメラに注視させる
-        if(m_saveObj)
+        if (m_saveObj)
             m_saveObj.transform.position = Vector3.Lerp(m_saveObj.transform.position, END_FIRE_POS, Time.deltaTime);
 
         Camera.main.transform.LookAt(m_saveObj.transform.position);
