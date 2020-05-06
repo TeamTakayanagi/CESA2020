@@ -37,6 +37,7 @@ namespace Utility
     public static class CSVFile
     {
         private const string CSV_PATH = "/TextData/";
+        private const string BIN_PATH = "/TextData/Binary/";
         public class CSVData
         {
             public Vector3Int size;
@@ -112,6 +113,76 @@ namespace Utility
 
             sw.Close();
         }
+
+        /// <summary>
+        /// Binaryファイル読込
+        /// </summary>
+        /// <param name="_fileName"></param>
+        /// <returns></returns>
+        public static CSVData LoadBin(string _fileName)
+        {
+            BinaryReader _reader = new BinaryReader(new FileStream(Application.dataPath + BIN_PATH + _fileName + ".bin", FileMode.Open));
+            CSVData _csvData = new CSVData();
+            _csvData.data = new List<string>();
+
+            try
+            {
+                string[] _stageInfo = new string[2];
+                string _test;
+                
+                for (int i = 0; i < StageMgr.Instance.transform.childCount; i++)
+                {
+                    _test = _reader.ReadString();
+                    string[] _str = _test.Split(',');
+                    _csvData.data.Add(_str[1]);
+                }
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                _reader.Close();
+            }
+
+            return _csvData;
+        }
+
+        public static void Save(string _fileName)
+        {
+
+        }
+
+        /// <summary>
+        /// セーブデータの初期化
+        /// </summary>
+        /// <param name="_fileName"></param>
+        public static bool InitSaveData(string _fileName)
+        {
+            BinaryWriter _writer = null;
+            try
+            {
+                _writer = new BinaryWriter(new FileStream(Application.dataPath + BIN_PATH + _fileName + ".bin", FileMode.Create));
+
+                _writer.Write("0,1");
+                for (int i = 1; i < StageMgr.Instance.transform.childCount; i++)
+                {
+                    _writer.Write(i + ",0");
+                }
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                _writer.Close();
+            }
+
+            return true;
+        }
+        
     }
 
     /// <summary>

@@ -13,7 +13,8 @@ public class StageMgr : SingletonMonoBehaviour<StageMgr>
         Max
     }
 
-    private CSVStageData m_csvStageData = null;
+    //private CSVStageData m_csvStageData = null;
+    private Utility.CSVFile.CSVData m_SaveData = new Utility.CSVFile.CSVData();
     private Renderer[] m_childRender = null;
     private Vector3 m_touchStartPos;
     private Vector3 m_touchEndPos;
@@ -24,17 +25,19 @@ public class StageMgr : SingletonMonoBehaviour<StageMgr>
     // Start is called before the first frame update
     void Start()
     {
-        m_csvStageData = SelectMgr.Instance.GetComponent<CSVStageData>();
+        //m_csvStageData = SelectMgr.Instance.GetComponent<CSVStageData>();
         m_childRender = GetComponentsInChildren<Renderer>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        // CSV読み込み
+        // Binaryファイル読込
         if (m_step == (int)StageMgrState.LoadCsv)
         {
-            if (m_csvStageData.LoadSaveData())
+            // セーブデータを読み込む
+            m_SaveData = Utility.CSVFile.LoadBin("SaveData");
+            if (m_SaveData != null)
             {
                 m_step++;
             }
@@ -45,7 +48,7 @@ public class StageMgr : SingletonMonoBehaviour<StageMgr>
         {
             for (int i = 0; i < m_childRender.Length; i++)
             {
-                m_childRender[i].material.SetFloat("_texNum", m_csvStageData.StageData[i][1]);
+                m_childRender[i].material.SetFloat("_texNum", float.Parse(m_SaveData.data[i]));
             }
 
             m_step++;
