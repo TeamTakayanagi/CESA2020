@@ -14,7 +14,7 @@ public class StageMgr : SingletonMonoBehaviour<StageMgr>
     }
 
     //private CSVStageData m_csvStageData = null;
-    private Utility.CSVFile.CSVData m_SaveData = new Utility.CSVFile.CSVData();
+    private Utility.CSVFile.SaveData m_SaveData = new Utility.CSVFile.SaveData();
     private Renderer[] m_childRender = null;
     private Vector3 m_touchStartPos;
     private Vector3 m_touchEndPos;
@@ -32,6 +32,64 @@ public class StageMgr : SingletonMonoBehaviour<StageMgr>
     // Update is called once per frame
     void Update()
     {
+        // テスト---------------------
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            if (!Utility.CSVFile.InitSaveData("SaveData"))
+            {
+                
+            }
+
+            m_step = (int)StageMgrState.LoadCsv;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            if (!Utility.CSVFile.Save("SaveData", 0, (int.Parse(m_SaveData.data[0][1]) + 1) % 3))
+            {
+                Debug.Log("false");
+            }
+
+            m_step = (int)StageMgrState.LoadCsv;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            if (!Utility.CSVFile.Save("SaveData", 1, (int.Parse(m_SaveData.data[1][1]) + 1) % 3))
+            {
+                Debug.Log("false");
+            }
+
+            m_step = (int)StageMgrState.LoadCsv;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            if (!Utility.CSVFile.Save("SaveData", 2, (int.Parse(m_SaveData.data[2][1]) + 1) % 3))
+            {
+                Debug.Log("false");
+            }
+
+            m_step = (int)StageMgrState.LoadCsv;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            if (!Utility.CSVFile.Save("SaveData", 3, (int.Parse(m_SaveData.data[3][1]) + 1) % 3))
+            {
+                Debug.Log("false");
+            }
+
+            m_step = (int)StageMgrState.LoadCsv;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            if (!Utility.CSVFile.Save("SaveData", 4, (int.Parse(m_SaveData.data[4][1]) + 1) % 3))
+            {
+                Debug.Log("false");
+            }
+
+            m_step = (int)StageMgrState.LoadCsv;
+        }
+        //----------------------------
+        //return;
+
         // Binaryファイル読込
         if (m_step == (int)StageMgrState.LoadCsv)
         {
@@ -48,7 +106,7 @@ public class StageMgr : SingletonMonoBehaviour<StageMgr>
         {
             for (int i = 0; i < m_childRender.Length; i++)
             {
-                m_childRender[i].material.SetFloat("_texNum", float.Parse(m_SaveData.data[i]));
+                m_childRender[i].material.SetFloat("_texNum", float.Parse(m_SaveData.data[i][1]));
             }
 
             m_step++;

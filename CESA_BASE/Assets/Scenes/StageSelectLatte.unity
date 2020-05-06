@@ -134,7 +134,6 @@ GameObject:
   - component: {fileID: 26144263}
   - component: {fileID: 26144262}
   - component: {fileID: 26144261}
-  - component: {fileID: 26144266}
   m_Layer: 5
   m_Name: SelectMgr
   m_TagString: Untagged
@@ -235,18 +234,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &26144266
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 26144260}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ba5b25fe49e5ce4dbcdf892c543e81e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &67879439 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4286648635565152712, guid: b7f2ac43fc71a984ab7eb2bf93a1c655,

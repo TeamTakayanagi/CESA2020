@@ -32,22 +32,21 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     // Update is called once per frame
     void Update()
     {
-#pragma warning disable CS0618 // 型またはメンバーが古い形式です
         if (m_camera.Zoom == 1)
         {
 
-            if (!m_uiArrow.active)
-                m_uiArrow.active = true;
-            if (!m_uiStartBack.active)
-                m_uiStartBack.active = true;
+            if (!m_uiArrow.activeSelf)
+                m_uiArrow.SetActive(true);
+            if (!m_uiStartBack.activeSelf)
+                m_uiStartBack.SetActive(true);
 
         }
         else
         {
-            if (m_uiArrow.active)
-                m_uiArrow.active = false;
-            if (m_uiStartBack.active)
-                m_uiStartBack.active = false;
+            if (m_uiArrow.activeSelf)
+                m_uiArrow.SetActive(false);
+            if (m_uiStartBack.activeSelf)
+                m_uiStartBack.SetActive(false);
         }
     }
 
@@ -61,8 +60,8 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                 {
                     if (i == 0)
                     {
-                        m_camera.ZoomIn(m_stages[m_stages.Length-1].transform.position);
-                        m_zoomObj = m_stages[m_stages.Length-1].gameObject;
+                        //m_camera.ZoomIn(m_stages[m_stages.Length-1].transform.position);
+                        //m_zoomObj = m_stages[m_stages.Length-1].gameObject;
                     }
                     else
                     {
@@ -81,8 +80,8 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                 {
                     if (i == m_stages.Length - 1)
                     {
-                        m_camera.ZoomIn(m_stages[0].transform.position);
-                        m_zoomObj = m_stages[0].gameObject;
+                        //m_camera.ZoomIn(m_stages[0].transform.position);
+                        //m_zoomObj = m_stages[0].gameObject;
                     }
                     else
                     {
@@ -98,6 +97,10 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     public void GameStart()
     {
         //GameObject.FindGameObjectWithTag("Fade").GetComponent<FadeMgr>().StartFade("Alpha");
-        SceneManager.LoadScene("SampleSceneSugi");
+        if (m_zoomObj.GetComponent<Renderer>().material.GetFloat("_texNum") > 0)
+        {
+            // シーン遷移開始
+            SceneManager.LoadScene("SampleSceneSugi");
+        }
     }
 }
