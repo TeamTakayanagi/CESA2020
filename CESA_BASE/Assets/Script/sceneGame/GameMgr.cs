@@ -289,6 +289,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     m_fieldObject.AddLast(m_selectFuse.gameObject);
                     m_selectFuse.transform.localEulerAngles = m_selectFuse.DefaultRot;
                     m_selectFuse.transform.parent = transform;
+                    m_selectFuse.DefaultPos = transform.position;
 
                     // UI選択用の子供オブジェクトを削除
                     GameObject child = m_selectFuse.transform.GetChild(m_selectFuse.transform.childCount - 1).gameObject;

@@ -8,7 +8,6 @@ public class GameGimmick : MonoBehaviour
     {
         Goal,
         Water,
-        SubMission,
         Wall
     }
 
@@ -17,8 +16,6 @@ public class GameGimmick : MonoBehaviour
     private bool m_isUI = false;
 
     // 水
-    [SerializeField]
-    private Vector3 m_waterDir = Vector3.zero;     // 水の向き
     [SerializeField]
     private float m_gimmickValue = 0.0f;      // 水の長さ
 
@@ -73,9 +70,7 @@ public class GameGimmick : MonoBehaviour
     public IEnumerator  GimmickWater()
     {
         RaycastHit hit = new RaycastHit();
-        Debug.DrawLine(transform.position, hit.point, Color.blue);
-
-        if (Physics.Raycast(transform.position, m_waterDir, out hit, m_gimmickValue))
+        if (Physics.Raycast(transform.position, Vector3.forward, out hit, m_gimmickValue))
         {
             if (hit.collider.gameObject.CompareTag("Fuse"))
             {

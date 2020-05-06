@@ -18,15 +18,16 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
     [SerializeField]
     private GameObject m_uiColider = null;
     [SerializeField]
-    private Fuse[] m_fuseList = new Fuse[ProcessedtParameter.GameObject_Constant.FUSE_TYPE];
+    private List<Fuse> m_fuseList = new List<Fuse>();
     [SerializeField]
     private List<GameGimmick> m_gimmkList = new List<GameGimmick>();
-    [SerializeField]
-    private List<GameObject> m_fieldList = new List<GameObject>();
+    //[SerializeField]
+    //private List<GameObject> m_fieldList = new List<GameObject>();
 
     private void Start()
     {
         m_gimmkList.Sort((a, b) => b.Type - a.Type);
+        m_fuseList.Sort((a, b) => string.Compare(a.name, b.name));
     }
 
     /// <summary>
@@ -45,7 +46,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
                 continue;
 
             Fuse _fuse = null;
-            for (int j = 0; j < m_fuseList.Length; ++j)
+            for (int j = 0; j < m_fuseList.Count; ++j)
             {
                 // タグの一部が一致しているなら
                 if (Utility.TagSeparate.getChildTagName(m_fuseList[j].tag) != tagName)
@@ -97,7 +98,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
     /// <param name="index">添え字の配列の決め方</param>
     public void CreateUIFuse(int amount, Transform parent, SuffixType index, SuffixType rot)
     {
-        int[] indexList = GetSuffixList(index, amount, m_fuseList.Length, parent.GetInstanceID());
+        int[] indexList = GetSuffixList(index, amount, m_fuseList.Count, parent.GetInstanceID());
         int UIFuseCount = 0;
         if (GameMgr.Instance)
             UIFuseCount = GameMgr.Instance.UIFuseCount;
@@ -129,7 +130,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
     /// <param name="indexList">添え字の配列</param>
     public void AddCreateUIFuse(int amount, Transform parent, SuffixType index, Vector2Int fuseRean)
     {
-        int[] indexList = GetSuffixList(index, amount, m_fuseList.Length, parent.GetInstanceID());
+        int[] indexList = GetSuffixList(index, amount, m_fuseList.Count, parent.GetInstanceID());
         int fuseAmount = fuseRean.x + fuseRean.y;
         for (int i = 0; i < amount; ++i)
         {

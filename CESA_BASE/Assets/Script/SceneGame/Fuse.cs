@@ -65,6 +65,10 @@ public class Fuse : MonoBehaviour
         {
             return m_defaultPos;
         }
+        set
+        {
+            m_defaultPos = value;
+        }
     }
     public FuseType Type
     {
@@ -146,8 +150,10 @@ public class Fuse : MonoBehaviour
         }
 
         m_defaultRot = transform.localEulerAngles;
-        // 元の位置を保存
-        m_defaultPos = transform.position;
+
+       // 元の位置を保存
+       if(!m_isUI)
+            m_defaultPos = transform.position;
     }
 
     void Update()
@@ -260,12 +266,6 @@ public class Fuse : MonoBehaviour
             transform.localEulerAngles = new Vector3(m_defaultRot.x,
                 m_defaultRot.y - Camera.main.transform.localEulerAngles.y, m_defaultRot.z);
         }
-        //if (m_isUI)
-        //{
-        //    transform.rotation = Camera.main.transform.rotation;
-        //    transform.localEulerAngles = new Vector3(m_defaultRot.x,
-        //        transform.localEulerAngles.y, m_defaultRot.z);
-        //}
     }
 
     public void SelectUIFuse(bool isSet)
