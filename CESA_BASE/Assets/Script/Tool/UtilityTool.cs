@@ -37,11 +37,16 @@ namespace Utility
     public static class CSVFile
     {
         private const string CSV_PATH = "/TextData/";
-
-        public struct CSVData
+        private const string BIN_PATH = "/TextData/Binary/";
+        public class CSVData
         {
             public Vector3Int size;
             public List<string> data;
+        }
+
+        public class SaveData
+        {
+            public List<string[]> data;
         }
 
         public static int PosToIndex(Vector3 pos, int stageSizeX, int stageSizeY)
@@ -113,6 +118,115 @@ namespace Utility
 
             sw.Close();
         }
+
+        /// <summary>
+        /// Binaryファイル読込
+        /// </summary>
+        /// <param name="_fileName"></param>
+        /// <returns></returns>
+        public static SaveData LoadBin(string _fileName)
+        {
+            BinaryReader _reader = null;
+            SaveData _saveData = new SaveData();
+            _saveData.data = new List<string[]>();
+
+            try
+            {
+                _reader = new BinaryReader(new FileStream(Application.dataPath + BIN_PATH + _fileName + ".bin", FileMode.Open));
+
+                string[] _stageInfo = new string[2];
+                string _test;
+
+                for (int i = 0; i < StageMgr.Instance.transform.childCount; i++)
+                {
+                    _test = _reader.ReadString();
+                    string[] _str = _test.Split(',');
+                    _saveData.data.Add(_str);
+                }
+            }
+            catch
+            {
+                Debug.Log("エラー");
+                return null;
+            }
+            finally
+            {
+                _reader.Close();
+            }
+
+            return _saveData;
+        }
+
+        public static bool Save(string _fileName, int _StageNum, int _clearState)
+        {
+            SaveData _saveData = new SaveData();
+            _saveData.data = new List<string[]>();
+            
+            _saveData = LoadBin(_fileName);
+            if (_saveData == null)
+            {
+                Debug.Log("ファイルが見つかりません。");
+                return false;
+            }
+
+            BinaryWriter _writer = null;
+            try
+            {
+                _writer = new BinaryWriter(new FileStream(Application.dataPath + BIN_PATH + _fileName + ".bin", FileMode.Create));
+
+                for (int i = 0; i < StageMgr.Instance.transform.childCount; i++)
+                {
+                    if (i == _StageNum)
+                    {
+                        _writer.Write("" + i + ',' + _clearState);
+                    }
+                    else
+                    {
+                        _writer.Write("" + i + ',' + _saveData.data[i][1]);
+                    }
+                }
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                _writer.Close();
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// セーブデータの初期化
+        /// </summary>
+        /// <param name="_fileName"></param>
+        public static bool InitSaveData(string _fileName)
+        {
+            BinaryWriter _writer = null;
+            try
+            {
+                _writer = new BinaryWriter(new FileStream(Application.dataPath + BIN_PATH + _fileName + ".bin", FileMode.Create));
+
+                _writer.Write("0,1");
+                for (int i = 1; i < StageMgr.Instance.transform.childCount; i++)
+                {
+                    _writer.Write(i + ",0");
+                }
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                _writer.Close();
+            }
+
+            return true;
+        }
+        
     }
 
     /// <summary>
