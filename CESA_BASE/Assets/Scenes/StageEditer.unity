@@ -2019,9 +2019,8 @@ MonoBehaviour:
   - {fileID: 3563000543437124281, guid: 33528e98008fc0549b5cfc80980b61dd, type: 3}
   m_gimmkList:
   - {fileID: 7488070144606620390, guid: 9ded0ac000e288f4ebe8bcf53161136c, type: 3}
-  - {fileID: 4573057818427030573, guid: 85d5fbe7fc9c4dd4d86c36a394ac854e, type: 3}
-  m_fieldList:
-  - {fileID: 6090473571150526217, guid: f9f4481ec51832243a534fd0db5530a1, type: 3}
+  - {fileID: 6304553998292776801, guid: e46937b05935260438570808ce4f8a51, type: 3}
+  - {fileID: 8900747173946366920, guid: f9f4481ec51832243a534fd0db5530a1, type: 3}
 --- !u!1 &663577845
 GameObject:
   m_ObjectHideFlags: 0
@@ -7989,6 +7988,12 @@ PrefabInstance:
     - target: {fileID: 488733823435234216, guid: 05b896a659ba7e6499797701dc61bfb3,
         type: 3}
       propertyPath: m_wallPrefab
+      value: 
+      objectReference: {fileID: 6090473571150526217, guid: f9f4481ec51832243a534fd0db5530a1,
+        type: 3}
+    - target: {fileID: 488733823435234216, guid: 05b896a659ba7e6499797701dc61bfb3,
+        type: 3}
+      propertyPath: m_groundPrefab
       value: 
       objectReference: {fileID: 2902292762942507060, guid: 85d5fbe7fc9c4dd4d86c36a394ac854e,
         type: 3}

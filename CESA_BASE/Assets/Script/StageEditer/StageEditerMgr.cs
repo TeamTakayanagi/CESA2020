@@ -105,43 +105,9 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                     // 導火線設置
                     if (Input.GetMouseButtonDown(0) && m_selectObj)
                     {
-                        // その場所にまだ導火線がないなら
-                        int createRotX = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotX);
-                        int createRotY = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotY);
-                        int createRotZ = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotZ);
-                        if (createRotX == ProcessedtParameter.System_Constant.ERROR_INT ||
-                            createRotY == ProcessedtParameter.System_Constant.ERROR_INT ||
-                            createRotZ == ProcessedtParameter.System_Constant.ERROR_INT)
-                            return;
 
-                        GameObject selectClone = Instantiate(m_selectObj);      // 複製
-                        selectClone.transform.position = hit.collider.transform.position;
-                        selectClone.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
-                        selectClone.transform.parent = transform.GetChild(0);
-
-                        string objID = "";
-                        if (Utility.TagSeparate.getParentTagName(selectClone.tag) == NameDefine.TagName.Fuse)
-                        {
-                            Fuse _fuse = selectClone.GetComponent<Fuse>();
-                            Fuse _select = m_selectObj.GetComponent<Fuse>();
-                            _fuse.Type = _select.Type;
-                            _fuse.transform.localEulerAngles = new Vector3(createRotX, createRotY, createRotZ);
-                            objID = (int)_fuse.Type + Utility.TagSeparate.getChildTagName(selectClone.tag).
-                                Substring(0, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT);
-                        }
-                        else if (Utility.TagSeparate.getParentTagName(selectClone.tag) == NameDefine.TagName.Gimmick)
-                        {
-                            GameGimmick _gimmick = selectClone.GetComponent<GameGimmick>();
-                            GameGimmick _select = m_selectObj.GetComponent<GameGimmick>();
-                            _gimmick.Type = _select.Type;
-                            _gimmick.transform.localEulerAngles = new Vector3(createRotX, createRotY, createRotZ);
-                            objID = (int)_gimmick.Value % 10 + Utility.TagSeparate.getChildTagName(selectClone.tag).
-                                Substring(0, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT);
-                        }
-
-                        // ステージ配列に情報追加
-                        m_fuseData.Add(hit.transform.position, objID + createRotX / 90 + createRotY / 90 + createRotZ / 90);
-
+                        GameObject selectClone = Instantiate(m_selectObj, hit.collider.transform.position, Quaternion.identity);      // 複製
+                        SetObjData(selectClone);
                         Destroy(hit.collider.gameObject);
                     }
                     // 設置位置の色の変更
@@ -279,8 +245,52 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         }
     }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// ボタンの処理
+    void SetObjData(GameObject _createObj)
+    {
+        // その場所にまだ導火線がないなら
+        int createRotX = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotX);
+        int createRotY = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotY);
+        int createRotZ = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotZ);
+        if (createRotX == ProcessedtParameter.System_Constant.ERROR_INT ||
+            createRotY == ProcessedtParameter.System_Constant.ERROR_INT ||
+            createRotZ == ProcessedtParameter.System_Constant.ERROR_INT)
+            return;
+
+        _createObj.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+        _createObj.transform.parent = transform.GetChild(0);
+        string objID = "";
+        if (Utility.TagSeparate.getParentTagName(_createObj.tag) == NameDefine.TagName.Fuse)
+        {
+            Fuse _fuse = _createObj.GetComponent<Fuse>();
+            if (m_selectObj)
+            {
+                Fuse _select = m_selectObj.GetComponent<Fuse>();
+                _fuse.Type = _select.Type;
+                _fuse.transform.localEulerAngles = new Vector3(createRotX, createRotY, createRotZ);
+            }
+            objID = (int)_fuse.Type + Utility.TagSeparate.getChildTagName(_createObj.tag).
+                Substring(0, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT);
+        }
+        else if (Utility.TagSeparate.getParentTagName(_createObj.tag) == NameDefine.TagName.Gimmick)
+        {
+            GameGimmick _gimmick = _createObj.GetComponent<GameGimmick>();
+            if (m_selectObj)
+            {
+                GameGimmick _select = m_selectObj.GetComponent<GameGimmick>();
+                _gimmick.Type = _select.Type;
+                _gimmick.transform.localEulerAngles = new Vector3(createRotX, createRotY, createRotZ);
+            }
+            objID = (int)_gimmick.Value % 10 + Utility.TagSeparate.getChildTagName(_createObj.tag).
+                Substring(0, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT);
+        }
+
+        // ステージ配列に情報追加
+        m_fuseData.Add(_createObj.transform.position, objID + 
+            _createObj.transform.localEulerAngles.x / 90 + _createObj.transform.localEulerAngles.y / 90 + _createObj.transform.localEulerAngles.z / 90);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ボタンの処理
 
     /// <summary>
     /// 実際のステージを確認
@@ -392,11 +402,14 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             stageList.Add(letter);
         }
 
+        // ステージの導火線やギミックの追加
         Vector3 half = new Vector3(_stageSizeX / 2, _stageSizeY / 2, _stageSizeZ / 2);
         foreach(KeyValuePair<Vector3, string> keyValue in m_fuseData)
         {
             stageList[Utility.CSVFile.PosToIndex(keyValue.Key + half, _stageSizeX, _stageSizeY)] = keyValue.Value;
         }
+
+        // プレビューで追加された壁の追加
         Transform _wallParent =  m_terrainCreate.transform.GetChild((int)TerrainCreate.TerrainChild.Wall);
         for (int i = 0; i < _wallParent.childCount; ++i)
         {
@@ -409,7 +422,8 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             _gimmick.Type = GameGimmick.GimmickType.Wall;
             _gimmick.transform.localEulerAngles = Vector3.zero;
 
-            stageList[Utility.CSVFile.PosToIndex(_gimmick.transform.position + half, _stageSizeX, _stageSizeY)] =
+            int nIdx = Utility.CSVFile.PosToIndex(_gimmick.transform.position + half, _stageSizeX, _stageSizeY);
+            stageList[nIdx] =
                 // ギミックの値　＋　タグの名前の一部　＋　回転
                 (int)_gimmick.Value % 10 + Utility.TagSeparate.getChildTagName(_gimmick.tag).
                 Substring(0, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT) + 
@@ -422,15 +436,20 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 
     public void LoadStage()
     {
+        // 現在のステージ情報をすべてクリア
+        m_fuseData.Clear();
+        GameObject store = m_selectObj;
+        m_selectObj = null;
+
         // これからプレビュー状態であれば解除
         if (m_isPreview)
             ViewPlayStage();
 
         // 現状のステージをすべて破棄
-        GameObject _stage = transform.GetChild(0).gameObject;
-        for (int i = 0; i < _stage.transform.childCount; ++i)
+        Transform _stage = transform.GetChild(0);
+        for (int i = 0; i < _stage.childCount; ++i)
         {
-            GameObject _stageObj = _stage.transform.GetChild(i).gameObject;
+            GameObject _stageObj = _stage.GetChild(i).gameObject;
             Destroy(_stageObj);
         }
         string letter = "";
@@ -439,9 +458,12 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 
         int _stageNum = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageNum);
         Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + _stageNum);
-        StageCreateMgr.Instance.CreateStage(_stage.transform, info);
+        List<GameObject> _createList =  StageCreateMgr.Instance.CreateStage(_stage, info);
 
-        for(int i = 0; i < info.data.Count; ++i)
+        foreach (GameObject _obj in _createList)
+            SetObjData(_obj);
+
+        for (int i = 0; i < info.data.Count; ++i)
         {
             if (info.data[i] != letter)
                 continue;
@@ -457,6 +479,8 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         inputFieldInt.SetInputFieldInt(inputFieldInt.FieldType.stageSizeX, info.size.x);
         inputFieldInt.SetInputFieldInt(inputFieldInt.FieldType.stageSizeY, info.size.y);
         inputFieldInt.SetInputFieldInt(inputFieldInt.FieldType.stageSizeZ, info.size.z);
+        m_selectObj =  store;
+
     }
 
     /// <summary>
@@ -544,7 +568,8 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         for(int i = 0; i < transform.GetChild(0).childCount; ++i)
         {
             Fuse _fuse = transform.GetChild(0).GetChild(i).gameObject.GetComponent<Fuse>();
-            if (!_fuse.UI)
+
+            if (!_fuse || _fuse.State != Fuse.FuseState.UI)
                 continue;
 
             _fuse.transform.localEulerAngles = new Vector3(
@@ -556,7 +581,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         for(int i = 0; i < transform.GetChild(1).childCount; ++i)
         {
             GameGimmick _gimmick = transform.GetChild(1).GetChild(i).gameObject.GetComponent<GameGimmick>();
-            if (!_gimmick.UI)
+            if (!_gimmick || !_gimmick.UI)
                 continue;
 
             _gimmick.transform.localEulerAngles = new Vector3(

@@ -37,7 +37,8 @@ namespace Utility
     public static class CSVFile
     {
         private const string CSV_PATH = "/TextData/";
-        public class CSVData
+
+        public struct CSVData
         {
             public Vector3Int size;
             public List<string> data;

@@ -25,7 +25,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private Vector3Int m_stageSize = Vector3Int.zero;                   // ステージサイズ
 
     // 定数
-    private Vector3 END_FIRE_POS = new Vector3(0.0f, 30.0f, 0.0f);      // 花火の終着地点との距離      
     private readonly Vector3 TEXT_POS = new Vector3(0.0f, 100, 0.0f);   // リザルトテキストの移動距離
     private readonly Vector3 BUTTON_POS = new Vector3(0.0f, 100.0f, 0.0f); // リザルトボタンの移動距離              
     private readonly Vector3 OUTPOS = new Vector3(-50, -50, -50);       // 導火線を生成できない位置
@@ -34,11 +33,11 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private int m_burnCount = 1;                                        // 燃えている導火線の数
     private int m_gameSpeed = 1;                                        // ゲーム加速処理
     private Vector3 m_createPos = Vector3.zero;                         // 導火線の生成位置
-    private GameObject m_saveObj = null;                                // 各GameStepごとにオブジェクトを格納（スタート：カウントダウン数字　ゲームクリア：花火）
     private GameObject m_resultClear = null;                            // ゲームクリア用のUIの親オブジェクト
     private GameObject m_resultGameover = null;                         // ゲームオーバー用のUIの親オブジェクト
     private Fuse m_selectFuse = null;                                   // 選択しているUIの導火線   
     private UIFuseCreate m_UIFuseCreate = null;                         // UIの導火線生成オブジェクト
+    private HashSet<GameObject> m_saveObj = new HashSet<GameObject>();  // 各GameStepごとにオブジェクトを格納（スタート：カウントダウン数字　ゲームクリア：花火）
     private LinkedList<GameObject> m_fieldObject = new LinkedList<GameObject>();      // ゲーム画面の導火線
     private LinkedList<Fuse> m_uiFuse = new LinkedList<Fuse>();         // UI部分の導火線
     private GameStep m_gameStep = null;                                 // 現在のゲームの進行状況の関数
@@ -111,14 +110,14 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
         // 開始演出準備
         GameObject canvas = GameObject.FindGameObjectWithTag(NameDefine.TagName.UICanvas);
-        m_saveObj = canvas.transform.GetChild(0).gameObject;
+        m_saveObj.Add(canvas.transform.GetChild(0).gameObject);
         m_gameStep = GameStart;
 
         // フィールドオブジェクトの取得
         Fuse[] _fuseList = FindObjectsOfType<Fuse>();
         foreach (Fuse _fuse in _fuseList)
         {
-            if (_fuse.UI)
+            if (_fuse.State == Fuse.FuseState.UI)
                 m_uiFuse.AddLast(_fuse);
             else
                 m_fieldObject.AddLast(_fuse.gameObject);
@@ -152,18 +151,24 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// </summary>
     void GameStart()
     {
-        Number number = m_saveObj.GetComponent<Number>();
-        if (number.TexCount < 0)
+        foreach (GameObject _saveNum in m_saveObj)
         {
-            m_gameStep = GameMain;
-            Destroy(m_saveObj);
+            Number number = _saveNum.GetComponent<Number>();
 
-            foreach (Fuse _fuse in m_uiFuse)
-                _fuse.enabled = true;
-            foreach (GameObject _obj in m_fieldObject)
-                _obj.GetComponent<Behaviour>().enabled = true;
+            if (number.TexCount < 0)
+            {
+                m_gameStep = GameMain;
+                Destroy(_saveNum);
 
-            m_UIFuseCreate.enabled = true;
+                foreach (Fuse _fuse in m_uiFuse)
+                    _fuse.enabled = true;
+                foreach (GameObject _obj in m_fieldObject)
+                    _obj.GetComponent<Behaviour>().enabled = true;
+
+                m_UIFuseCreate.enabled = true;
+                m_saveObj.Clear();
+                return;
+            }
         }
     }
 
@@ -215,7 +220,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 m_selectFuse.transform.position = m_createPos;
                 m_selectFuse.transform.localEulerAngles = m_selectFuse.DefaultRot;
             }
-
         }
 
         RaycastHit hit = new RaycastHit();
@@ -238,7 +242,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                         Fuse _fuse = hit.collider.transform.parent.GetComponent<Fuse>();
                         if (!_fuse || _fuse.EndPos != Vector3.zero)
                             return;
-                        if (_fuse.UI)
+
+                        if (_fuse.State == Fuse.FuseState.UI)
                         {
                             if(m_selectFuse)
                                 m_selectFuse.SelectUIFuse(false);
@@ -265,7 +270,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 if (m_selectFuse)
                 {
                     m_selectFuse.Type = Fuse.FuseType.Normal;
-                    m_selectFuse.UI = false;
+                    m_selectFuse.State = Fuse.FuseState.None;
                     m_UIFuseCreate.FuseAmount -= new Vector2Int
                         ((int)((m_selectFuse.DefaultPos.x + 1) / 2 + 1) % 2, (int)((m_selectFuse.DefaultPos.x + 1) / 2) % 2);
 
@@ -339,8 +344,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // マウスのワールド座標に一番近いオブジェクトを取得
         foreach (GameObject _obj in m_fieldObject)
         {
-            // 2回目以降もしくは、距離を比べて遠ければ
-            if (Vector3.Distance(nearObj.transform.position, mousePos) <
+            // 導火線以外は対象にしないかつ、2回目以降もしくは、距離を比べて遠ければ
+            if (Utility.TagSeparate.getParentTagName(_obj.tag) != NameDefine.TagName.Fuse ||
+                Vector3.Distance(nearObj.transform.position, mousePos) <
                 Vector3.Distance(_obj.transform.position, mousePos))
                 continue;
 
@@ -411,26 +417,39 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// <param name="_fuse">燃え尽きた導火線</param>
     public void BurnOutFuse(Fuse _fuse)
     {
+        // ゲーム中以外はこの関数には入らない
         if (m_gameStep != GameMain)
             return;
 
         m_fieldObject.Remove(_fuse.gameObject);
         m_burnCount--;
 
+        // 燃えてる導火線がなくなったなら
         if (m_burnCount <= 0)
         {
-            m_resultGameover.SetActive(true);
-            m_gameStep = GameOver;
+            // ゲームオーバー
+            if (m_saveObj.Count == 0)
+            {
+                m_resultGameover.SetActive(true);
+                m_gameStep = GameOver;
+            }
+            // ゲームクリア
+            else
+            {
+                m_resultClear.SetActive(true);
+                m_gameStep = GameClear;
+            }
 
+            // ゲーム部分の事後処理
             if (m_selectFuse)
                 m_selectFuse.SelectUIFuse(false);
-            m_UIFuseCreate.enabled = true;
+            m_UIFuseCreate.enabled = false;
             Camera.main.GetComponent<MainCamera>().Control = false;
         }
     }
 
     /// <summary>
-    /// ゴールが燃えた時の処理
+    /// ゴールが燃えた時、燃え尽きた時の処理
     /// </summary>
     /// <param name="goal">ゴールのオブジェクト</param>
     public void FireGoal(GameGimmick goal)
@@ -438,15 +457,18 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         if (m_gameStep != GameMain)
             return;
 
-        m_resultClear.SetActive(true);
-        m_gameStep = GameClear;
-        m_saveObj = goal.gameObject;
-        END_FIRE_POS += goal.transform.position;
+        if(!m_saveObj.Add(goal.gameObject))
+        {
+            // 燃え尽きた場合
+            m_resultClear.SetActive(true);
+            m_gameStep = GameClear;
 
-        if (m_selectFuse)
-            m_selectFuse.SelectUIFuse(false);
-        m_UIFuseCreate.enabled = true;
-        Camera.main.GetComponent<MainCamera>().Control = false;
+            // ゲーム部分の事後処理
+            if (m_selectFuse)
+                m_selectFuse.SelectUIFuse(false);
+            m_UIFuseCreate.enabled = false;
+            Camera.main.GetComponent<MainCamera>().Control = false;
+        }
     }
 
     /// <summary>
@@ -454,11 +476,20 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// </summary>
     public void GameClear()
     {
-        // 花火を移動させメインカメラに注視させる
-        if (m_saveObj)
-            m_saveObj.transform.position = Vector3.Lerp(m_saveObj.transform.position, END_FIRE_POS, Time.deltaTime);
+        Vector3 centerPos = Vector3.zero;
 
-        Camera.main.transform.LookAt(m_saveObj.transform.position);
+        // 花火を移動させメインカメラに注視させる
+        if (m_saveObj.Count > 0)
+        {
+            foreach (GameObject _goal in m_saveObj)
+            {
+                _goal.transform.position = Vector3.Lerp(_goal.transform.position, new Vector3(
+                    _goal.transform.position.x, AdjustParameter.Result_Constant.END_FIRE_POS_Y, _goal.transform.position.z), Time.deltaTime);
+                centerPos += _goal.transform.position;
+            }
+        }
+
+        Camera.main.transform.LookAt(centerPos);
         Camera.main.rect = new Rect(0.0f, 0.0f, Mathf.Lerp(Camera.main.rect.width, 1.0f, Time.deltaTime), 1.0f);
         // UIの移動
         StartCoroutine(SlideResultUI(m_resultClear));

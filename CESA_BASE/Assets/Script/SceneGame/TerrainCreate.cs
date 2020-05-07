@@ -79,7 +79,7 @@ public class TerrainCreate : MonoBehaviour
         foreach (Fuse _fuse in _fuseList)
         {
             // UIか地面の上に設置されているものなら
-            if (_fuse.UI ||
+            if (_fuse.State == Fuse.FuseState.UI ||
                 _fuse.transform.position.y == - _stageSizeY / 2)
                 continue;
 
