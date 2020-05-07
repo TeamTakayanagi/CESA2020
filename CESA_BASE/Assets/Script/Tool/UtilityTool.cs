@@ -36,8 +36,8 @@ namespace Utility
     /// </summary>
     public static class CSVFile
     {
-        private const string CSV_PATH = "/TextData/";
-        private const string BIN_PATH = "/TextData/Binary/";
+        private const string CSV_PATH = "/ExternalFile/TextData/";
+        private const string BIN_PATH = "/ExternalFile/Binary/";
         public class CSVData
         {
             public Vector3Int size;
@@ -60,7 +60,11 @@ namespace Utility
             return (new Vector3(idx % stageSizeX, stageSizeY - (idx / stageSizeX) % stageSizeY - 1, Mathf.Floor(idx / (stageSizeX * stageSizeY))) - half);
         }
 
-        // CSV読み込み
+        /// <summary>
+        /// CSV読み込み
+        /// </summary>
+        /// <param name="stageNum"></param>
+        /// <returns></returns>
         public static CSVData LoadCsv(string stageNum)
         {
             StreamReader reader = new StreamReader(Application.dataPath + CSV_PATH + stageNum + ".csv");
@@ -93,7 +97,7 @@ namespace Utility
         /// </summary>
         /// <param name="dataList"></param>
         /// <param name="fileName"></param>
-        public static void WriteCsv(List<string> dataList, string fileName, int dataSizeX, int dataSizeY)
+        public static void WriteCsv(List<string> dataList, string fileName)
         {
             StreamWriter sw = new StreamWriter(Application.dataPath + CSV_PATH + fileName + ".csv", false, Encoding.GetEncoding("Shift_JIS"));
             int _stageSizeX = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeX);
@@ -134,19 +138,16 @@ namespace Utility
             {
                 _reader = new BinaryReader(new FileStream(Application.dataPath + BIN_PATH + _fileName + ".bin", FileMode.Open));
 
-                string[] _stageInfo = new string[2];
-                string _test;
-
                 for (int i = 0; i < StageMgr.Instance.transform.childCount; i++)
                 {
-                    _test = _reader.ReadString();
+                    string _test = _reader.ReadString();
                     string[] _str = _test.Split(',');
                     _saveData.data.Add(_str);
                 }
             }
             catch
             {
-                Debug.Log("エラー");
+                Debug.LogWarning("エラー");
                 return null;
             }
             finally
@@ -165,7 +166,7 @@ namespace Utility
             _saveData = LoadBin(_fileName);
             if (_saveData == null)
             {
-                Debug.Log("ファイルが見つかりません。");
+                Debug.LogWarning("ファイルが見つかりません。");
                 return false;
             }
 

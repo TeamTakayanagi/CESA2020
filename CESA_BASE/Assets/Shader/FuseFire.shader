@@ -8,7 +8,7 @@
 		[HideInInspector] _Center("_Center", Vector) = (0, 0, 0, 0)
 		[HideInInspector] _MainTex("Albedo (RGB)", 2D) = "white" {}
 	}
-	SubShader
+		SubShader
 	{
 		Tags { "RenderType" = "Opaque" }
 
@@ -55,14 +55,14 @@
 				// テクスチャから対応する色を取得
 				fixed4 colorTex = tex2D(_MainTex, i.uv);
 
-				// カメラとオブジェクトの距離(長さ)を取得
-				float3 nearTarget = _Target + (i.worldPos - _Center) * _Ration;
-				float minLength = min(length(nearTarget - i.worldPos), length(_Target - i.worldPos));
-				float dist = saturate(minLength);
+			// カメラとオブジェクトの距離(長さ)を取得
+			float3 nearTarget = _Target + (i.worldPos - _Center) * _Ration;
+			float minLength = min(length(nearTarget - i.worldPos), length(_Target - i.worldPos));
+			float dist = saturate(minLength);
 
-				return fixed4(colorTex.rgb * dist, 1);
-			}
-			ENDCG
+			return fixed4(colorTex.rgb * dist, 1);
 		}
+		ENDCG
+	}
 	}
 }

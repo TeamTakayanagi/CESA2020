@@ -431,7 +431,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                 + _gimmick.transform.localEulerAngles.z / 90;
         }
 
-        Utility.CSVFile.WriteCsv(stageList, ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + _stageNum, _stageSizeX, _stageSizeY);
+        Utility.CSVFile.WriteCsv(stageList, ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + _stageNum);
     }
 
     public void LoadStage()
