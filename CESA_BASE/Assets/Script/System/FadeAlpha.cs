@@ -44,7 +44,8 @@ public class FadeAlpha : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (m_fadeStep == _FadeStep.None) return;
+        if (m_fadeStep == _FadeStep.None)
+            return;
 
         // フェードアウト
         if (m_fadeStep == _FadeStep.FadeOut)
@@ -75,7 +76,6 @@ public class FadeAlpha : MonoBehaviour
                 m_image.color = Color.clear;
                 Destroy(gameObject);
             }
-
         }
 
     }

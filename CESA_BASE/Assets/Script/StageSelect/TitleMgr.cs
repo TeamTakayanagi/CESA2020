@@ -1,179 +1,141 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
 {
     // 後からコンスト定数に持っていく
-    private const float m_charmTime = 3;
-    private const float m_guidTime = 1.0f;
+    private const float CHARM_TIME = 1.5f;
+    private const float GUID_TIME = 1.0f;
+    private const float UP_SPEED = 0.5f;
+
+    private readonly Vector3 InitCameraPos = new Vector3(0.0f, 80.0f, -10.0f);
+    private readonly Vector3 InitLogoPos = new Vector3(0.0f, -20.0f, 0.0f);
+    private readonly Vector3 m_initGuidPos = new Vector3(0.0f, -50.0f, -20.0f);
+    private readonly Vector3 LogoUpPos = Vector3.zero;
+
+    private readonly Quaternion InitCameraRot = Quaternion.Euler(new Vector3(-60, 0, 0));
+    private readonly Quaternion InitObjRot = Quaternion.Euler(new Vector3(30, 0, 0));
+    private readonly Quaternion LastCameraRot = Quaternion.Euler(new Vector3(30, 0, 0)); 
 
     public enum TitleStep
     {
-        Start = 0,
-        Scroll,
+        Scroll = 0,
         Charm,
         LogoUp,
-        Guid,
         Wite,
         Retreat,
         Select,
         Max
     }
-    private TitleStep m_step;
+
 
     [SerializeField]
     private GameObject m_guidPrefab = null;
+    private TitleStep m_step = TitleStep.Scroll;
 
-    private Canvas m_logoCanvas = null;
+    private float m_delayCounter = 0;
     private GameObject m_camera = null;
     private GameObject m_logo = null;
     private GameObject m_guid = null;
-    private GameObject m_stageCanvas = null;
+    private Canvas m_logoCanvas = null;
 
-    private Vector3 m_initCameraPos = new Vector3(0, 80, -10);
-    private Vector3 m_initLogoPos = new Vector3(0, -20, 0);
-    private Quaternion m_initCameraRot = Quaternion.Euler(new Vector3(-60, 0, 0));
-    private Quaternion m_initLogoRot = Quaternion.Euler(new Vector3(30, 0, 0));
-    private Vector3 m_initGuidPos = new Vector3(0, -50, -20);
-    private Quaternion m_initGuidRot = Quaternion.Euler(new Vector3(30, 0, 0));
-
-    private Quaternion m_lastCameraRot = Quaternion.Euler(30, 0, 0);
-    
-    private Vector3 m_logoupPos = new Vector3(0, 0, 0);
-
-    //---その打ち消す-------------------
-    private Vector3 m_initPos = new Vector3(0, 200, -10);
-    private Vector3 m_charmPos = new Vector3(0, 0, 0);
-    private Vector3 m_cameraLastPos = new Vector3(0, 80, -10);
-    private Vector3 m_guidPos = new Vector3(0, -25, 85);
-    //----------------------------------
-
-    private float m_upSpeed = 0.5f;
-    //private float m_downSpeed = 1.0f;
-    private float m_delay = 0;
-
-    public int Step
+    public TitleStep Step
     {
         get
         {
-            return (int)m_step;
+            return m_step;
         }
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        m_logo = GameObject.FindGameObjectWithTag("UI/Logo");
-        m_logoCanvas = m_logo.transform.root.GetComponent<Canvas>();
-        m_camera = GameObject.FindGameObjectWithTag("MainCamera");
-        m_stageCanvas = GameObject.FindGameObjectWithTag("UI/Stage");
+        m_logo = transform.GetChild(0).gameObject;
+        m_logoCanvas = transform.GetComponent<Canvas>();
+        m_camera = Camera.main.gameObject;
 
-        m_camera.transform.position = m_initCameraPos;
-        m_camera.transform.rotation = m_initCameraRot;
-        m_logo.transform.rotation = m_initLogoRot;
-        m_logo.transform.position = m_logoCanvas.transform.position + m_logo.transform.rotation * m_initLogoPos;
-        
+        m_camera.transform.position = InitCameraPos;
+        m_camera.transform.rotation = InitCameraRot;
+        m_logo.transform.rotation = InitObjRot;
+        m_logo.transform.position = m_logoCanvas.transform.position + m_logo.transform.rotation * InitLogoPos;    
     }
 
     // Update is called once per frame
     void Update()
     {
-        // 
-        if (m_step == TitleStep.Start)
-        {
-            m_step++;
-        }
-
         // カメラが回転してくる
         if (m_step == TitleStep.Scroll)
         {
-            m_camera.transform.Rotate(m_initCameraRot * Vector3.right * 0.3f * Time.deltaTime * 60);
+            m_camera.transform.Rotate(InitCameraRot * Vector3.right * 0.3f);
 
-            if (m_camera.transform.rotation.x >= m_lastCameraRot.x)
+            if (m_camera.transform.rotation.x >= LastCameraRot.x)
             {
-                m_camera.transform.rotation = m_lastCameraRot;
-                m_step++;
+                m_camera.transform.rotation = LastCameraRot;
+                m_step = TitleStep.Charm;
             }
         }
 
         // タイトルロゴを魅せる
-        if (m_step == TitleStep.Charm)
+        else if (m_step == TitleStep.Charm)
         {
-            m_delay += Time.deltaTime;
-
-            if (m_delay > m_charmTime)
+            m_delayCounter += Time.deltaTime;
+            if (m_delayCounter > CHARM_TIME)
             {
-                m_delay = 0;
-                m_step++;
+                m_delayCounter = 0;
+                m_step = TitleStep.LogoUp;
             }
         }
 
         // タイトルロゴを少し上にずらす
-        if (m_step == TitleStep.LogoUp)
+        else if (m_step == TitleStep.LogoUp)
         {
-            m_logo.transform.Translate(Vector3.up * m_upSpeed * Time.deltaTime * 60);
+            m_logo.transform.Translate(Vector3.up * UP_SPEED);
 
-            if (m_logo.transform.position.y >= (m_logoCanvas.transform.position + m_logo.transform.rotation * m_logoupPos).y)
+            if (m_logo.transform.position.y >= (m_logoCanvas.transform.position + m_logo.transform.rotation * LogoUpPos).y)
             {
-                m_logo.transform.position = m_logoCanvas.transform.position + m_logo.transform.rotation * m_logoupPos;
-                m_delay += Time.deltaTime;
+                m_logo.transform.position = m_logoCanvas.transform.position + m_logo.transform.rotation * LogoUpPos;
+                m_delayCounter += Time.deltaTime;
 
-                if (m_delay >= m_guidTime)
+                if (m_delayCounter >= GUID_TIME)
                 {
-                    m_step++;
+                    m_guid = Instantiate(m_guidPrefab, m_logoCanvas.transform.transform.position + InitObjRot * m_initGuidPos,
+                        InitObjRot, transform);
+                    m_step = TitleStep.Wite;
                 }
             }
         }
 
-        // 
-        if (m_step == TitleStep.Guid)
-        {
-            m_guid = Instantiate(m_guidPrefab, m_logoCanvas.transform.transform.position + m_initGuidRot * m_initGuidPos, Quaternion.Euler(30, 0, 0), transform);
-            //m_guid.transform.rotation = m_initGuidRot;
-
-            m_step++;
-        }
-
         // クリック待機
-        if (m_step == TitleStep.Wite)
+        else if (m_step == TitleStep.Wite)
         {
             if (Input.GetMouseButtonUp(0))
             {
-                m_step++;
+                m_step = TitleStep.Retreat;
             }
         }
 
         // クリック時
-        if (m_step == TitleStep.Retreat)
+        else if (m_step == TitleStep.Retreat)
         {
-            m_logo.transform.Translate(Vector3.up * m_upSpeed * Time.deltaTime*60);
-            m_guid.transform.Translate(Vector3.back * m_upSpeed * Time.deltaTime*60);
+            m_logo.transform.Translate(Vector3.up * UP_SPEED);
+            m_guid.transform.Translate(Vector3.back * UP_SPEED);
 
-            if (!m_logo.GetComponent<OutsideCanvas>().isVisible && !m_guid.GetComponent<OutsideCanvas>().isVisible)
+            if (!m_logo.GetComponent<OutsideCanvas>().isVisible &&
+                !m_guid.GetComponent<OutsideCanvas>().isVisible)
             {
                 Destroy(m_logo.gameObject);
                 Destroy(m_guid.gameObject);
 
-                m_step++;
+                m_step = TitleStep.Select;
             }
         }
 
         // タイトル演出スキップ
-        if (m_step < TitleStep.Guid && Input.GetMouseButtonUp(0))
+        if (m_step < TitleStep.Wite && Input.GetMouseButtonUp(0))
         {
             m_step = TitleStep.Wite;
-            m_camera.transform.rotation = m_lastCameraRot;
-            m_logo.transform.position = m_logoCanvas.transform.position + m_logo.transform.rotation * m_logoupPos;
-            m_guid = Instantiate(m_guidPrefab, m_logoCanvas.transform.transform.position + m_initGuidRot * m_initGuidPos, m_initGuidRot, transform);
-
+            m_camera.transform.rotation = LastCameraRot;
+            m_logo.transform.position = transform.position + m_logo.transform.rotation * LogoUpPos;
+            m_guid = Instantiate(m_guidPrefab, transform.position + InitObjRot * m_initGuidPos, InitObjRot, transform);
         }
-
-    }
-
-    private void LateUpdate()
-    {
-
-
     }
 }

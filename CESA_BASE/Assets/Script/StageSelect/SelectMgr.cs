@@ -9,10 +9,10 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     private GameObject m_uiArrow = null;
     private GameObject m_uiStartBack = null;
 
-    private Stage[] m_stages = null;
-    private GameObject m_zoomObj = null;
+    private List<Stage> m_stages = new List<Stage>();
+    private Stage m_zoomObj = null;
 
-    public GameObject ZoomObj
+    public Stage ZoomObj
     {
         set
         {
@@ -26,20 +26,24 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         m_uiArrow = transform.GetChild(0).gameObject;
         m_uiStartBack = transform.GetChild(1).gameObject;
         m_camera = Camera.main.GetComponent<MainCamera>();
-        m_stages = StageMgr.Instance.GetComponentsInChildren<Stage>();
+        m_camera.Type = MainCamera.CameraType.SwipeMove;
+        m_camera.Control = true;
+
+        m_stages.AddRange(StageMgr.Instance.GetComponentsInChildren<Stage>());
+
+        // ステージ番号順にソート
+        m_stages.Sort((a, b) => a.StageNum - b.StageNum);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (m_camera.Zoom == 1)
+        if (m_camera.Type == MainCamera.CameraType.ZoomIn)
         {
-
             if (!m_uiArrow.activeSelf)
                 m_uiArrow.SetActive(true);
             if (!m_uiStartBack.activeSelf)
                 m_uiStartBack.SetActive(true);
-
         }
         else
         {
@@ -50,53 +54,14 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         }
     }
 
-    public void ClickArrow(bool _leftArrow)
+    public void ClickArrow(int direct)
     {
-        if (_leftArrow)
-        {
-            for (int i = 0; i < m_stages.Length; i++)
-            {
-                if (m_stages[i].name == m_zoomObj.name)
-                {
-                    if (i == 0)
-                    {
-                        //m_camera.ZoomIn(m_stages[m_stages.Length-1].transform.position);
-                        //m_zoomObj = m_stages[m_stages.Length-1].gameObject;
-                    }
-                    else
-                    {
-                        m_camera.ZoomIn(m_stages[i - 1].transform.position);
-                        m_zoomObj = m_stages[i - 1].gameObject;
-                    }
-                    break;
-                }
-            }
-        }
-        else
-        {
-            for (int i = 0; i < m_stages.Length; i++)
-            {
-                if (m_stages[i].name == m_zoomObj.name)
-                {
-                    if (i == m_stages.Length - 1)
-                    {
-                        //m_camera.ZoomIn(m_stages[0].transform.position);
-                        //m_zoomObj = m_stages[0].gameObject;
-                    }
-                    else
-                    {
-                        m_camera.ZoomIn(m_stages[i + 1].transform.position);
-                        m_zoomObj = m_stages[i + 1].gameObject;
-                    }
-                    break;
-                }
-            }
-        }
+        m_zoomObj = m_stages[Mathf.Clamp(m_zoomObj.StageNum + direct, 0, m_stages.Count - 1)];
+        m_camera.ZoomIn(m_zoomObj.transform.position);
     }
 
     public void GameStart()
     {
-        //GameObject.FindGameObjectWithTag("Fade").GetComponent<FadeMgr>().StartFade("Alpha");
         if (m_zoomObj.GetComponent<Renderer>().material.GetFloat("_texNum") > 0)
         {
             // シーン遷移開始

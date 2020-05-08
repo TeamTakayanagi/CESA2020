@@ -18,7 +18,6 @@ public class OutsideCanvas : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         m_camera = Camera.main;

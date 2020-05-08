@@ -26,7 +26,8 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
 
     private void Start()
     {
-        m_gimmkList.Sort((a, b) => b.Type - a.Type);
+        // 昇順に並び替え
+        m_gimmkList.Sort((a, b) => a.Type - b.Type);
         m_fuseList.Sort((a, b) => string.Compare(a.name, b.name));
     }
 

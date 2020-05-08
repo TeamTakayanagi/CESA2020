@@ -44,7 +44,7 @@ namespace Utility
             public List<string> data;
         }
 
-        public class SaveData
+        public class BinData
         {
             public List<string[]> data;
         }
@@ -128,10 +128,10 @@ namespace Utility
         /// </summary>
         /// <param name="_fileName"></param>
         /// <returns></returns>
-        public static SaveData LoadBin(string _fileName)
+        public static BinData LoadBin(string _fileName)
         {
             BinaryReader _reader = null;
-            SaveData _saveData = new SaveData();
+            BinData _saveData = new BinData();
             _saveData.data = new List<string[]>();
 
             try
@@ -158,9 +158,9 @@ namespace Utility
             return _saveData;
         }
 
-        public static bool Save(string _fileName, int _StageNum, int _clearState)
+        public static bool SaveBin(string _fileName, int _StageNum, int _clearState)
         {
-            SaveData _saveData = new SaveData();
+            BinData _saveData = new BinData();
             _saveData.data = new List<string[]>();
             
             _saveData = LoadBin(_fileName);
@@ -218,6 +218,7 @@ namespace Utility
             }
             catch
             {
+                Debug.LogWarning("ファイルが見つかりません。");
                 return false;
             }
             finally
@@ -226,8 +227,7 @@ namespace Utility
             }
 
             return true;
-        }
-        
+        }   
     }
 
     /// <summary>

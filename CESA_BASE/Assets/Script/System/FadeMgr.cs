@@ -14,7 +14,6 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
     void Start()
     {
         m_fade = Instantiate(FadePrefab, transform);
-
         DontDestroyOnLoad(gameObject);
     }
 
