@@ -45,7 +45,7 @@ public class Stage : MonoBehaviour
                 {
                     if (_hit.transform == transform)
                     {
-                        m_camera.ZoomIn(transform.position);
+                        m_camera.StartZoomIn(transform.position);
                         SelectMgr.Instance.ZoomObj = this;
                     }
                 }

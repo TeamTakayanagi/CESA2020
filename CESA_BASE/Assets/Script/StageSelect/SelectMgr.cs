@@ -57,7 +57,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     public void ClickArrow(int direct)
     {
         m_zoomObj = m_stages[Mathf.Clamp(m_zoomObj.StageNum + direct, 0, m_stages.Count - 1)];
-        m_camera.ZoomIn(m_zoomObj.transform.position);
+        m_camera.StartZoomIn(m_zoomObj.transform.position);
     }
 
     public void GameStart()

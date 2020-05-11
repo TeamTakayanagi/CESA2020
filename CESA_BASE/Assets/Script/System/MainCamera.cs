@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 [RequireComponent(typeof(Camera))]
-
 public class MainCamera : MonoBehaviour
 {
     // デリゲート宣言
@@ -11,7 +11,7 @@ public class MainCamera : MonoBehaviour
 
     private const float ZOOM_NEAR = 30.0f;
     private const float ZOOM_FAR = 60.0f;
-    const float MOVE_RESIST = 0.9f;
+    private const float ZOOM_DISTANCE_Z = 100.0f;
 
     public enum CameraType
     {
@@ -24,19 +24,21 @@ public class MainCamera : MonoBehaviour
 
     private Vector3 m_target = Vector3.zero;
     [SerializeField]
+    private CameraState m_cameraState;
+    [SerializeField]
     private CameraType m_type = CameraType.AroundALL;
     private Vector3 m_savePos = Vector3.zero;
+    private Vector3 m_move = Vector3.zero;
+
     private float m_moveRotate = 0.0f;
-    private float m_moveRadiuse = 10.0f;
+    private float m_moveRadiuse = 0.0f;
     private bool m_isScroll = false;
     private bool m_isControl = false;
-    [SerializeField]
-    private CameraState m_cameraState;
+    private bool m_isMove = false;
 
 
     private Camera m_myCamera = null;
     private Vector3 m_zoomPos = Vector3.zero;
-    private float m_fov = 0;
     
     public bool Control
     {
@@ -91,6 +93,7 @@ public class MainCamera : MonoBehaviour
 
         if (m_type == CameraType.AroundY)
         {
+            m_moveRadiuse = transform.position.magnitude;
             transform.position = new Vector3(m_moveRadiuse * Mathf.Cos(m_moveRotate), m_moveRadiuse * Mathf.Sin(AdjustParameter.Camera_Constant.AROUND_ANGLE), m_moveRadiuse * Mathf.Sin(m_moveRotate));
             transform.LookAt(Vector3.zero);
         }
@@ -223,50 +226,67 @@ public class MainCamera : MonoBehaviour
         else if (m_isScroll && Input.GetMouseButtonUp(1))
         {
             m_isScroll = false;
+            m_isMove = true;
+            Vector3 difference = Input.mousePosition - m_savePos;
+            m_move = transform.position - new Vector3(
+                difference.x * Time.deltaTime * AdjustParameter.Camera_Constant.SWIPE_VALUE, 0.0f,
+                difference.y * Time.deltaTime * AdjustParameter.Camera_Constant.SWIPE_VALUE);
         }
         else if (m_isScroll && Input.GetMouseButton(1))
         {
             Vector3 difference = Input.mousePosition - m_savePos;
-            transform.position -= new Vector3(
-                difference.x * Time.deltaTime * AdjustParameter.Camera_Constant.SWIPE_VALUE, 0.0f,
-                difference.y * Time.deltaTime * AdjustParameter.Camera_Constant.SWIPE_VALUE);
-            m_savePos = Input.mousePosition;
+            //transform.position -= new Vector3(
+            //    difference.x * Time.deltaTime * AdjustParameter.Camera_Constant.SWIPE_VALUE, 0.0f,
+            //    difference.y * Time.deltaTime * AdjustParameter.Camera_Constant.SWIPE_VALUE);
+            //m_savePos = Input.mousePosition;
+        }
+
+        if (m_isMove)
+        {
+            transform.DOMove(m_move, 0.5f);
+            if (transform.position == m_move)
+                m_isMove = false;
         }
     }
+
     void CameraZoomIn()
     {
-        transform.position = Vector3.Lerp(transform.position, m_zoomPos, Time.deltaTime * AdjustParameter.Camera_Constant.ZOOM_SPEED);
-        m_myCamera.fieldOfView = Mathf.Lerp(ZOOM_FAR, ZOOM_NEAR, Time.deltaTime * AdjustParameter.Camera_Constant.ZOOM_SPEED);
+        transform.DOLocalMove(m_zoomPos, AdjustParameter.Camera_Constant.ZOOM_SPEED);
+        m_myCamera.DOFieldOfView(ZOOM_NEAR, AdjustParameter.Camera_Constant.ZOOM_SPEED);
     }
+
     void CameraZoomOut()
     {
-        transform.position = Vector3.Lerp(transform.position, m_zoomPos, Time.deltaTime * AdjustParameter.Camera_Constant.ZOOM_SPEED);
-
-        m_myCamera.fieldOfView = Mathf.Lerp(ZOOM_NEAR, ZOOM_FAR, Time.deltaTime * AdjustParameter.Camera_Constant.ZOOM_SPEED);
-
-        if (Mathf.RoundToInt(m_myCamera.fieldOfView) >= m_fov)
+        transform.DOLocalMove(m_zoomPos, AdjustParameter.Camera_Constant.ZOOM_SPEED);
+        m_myCamera.DOFieldOfView(ZOOM_FAR, AdjustParameter.Camera_Constant.ZOOM_SPEED);
+        if(m_myCamera.fieldOfView >= ZOOM_FAR - 1.0f)
         {
+            m_myCamera.fieldOfView = ZOOM_FAR;
             m_type = CameraType.SwipeMove;
+            SetState();
         }
     }
 
 
-    public void ZoomIn(Vector3 _zoomObj)
+    public void StartZoomIn(Vector3 _zoomObj)
     {
+        m_savePos = transform.position;
         if (m_type == CameraType.ZoomIn)
         {
-            m_zoomPos = new Vector3(_zoomObj.x, transform.position.y, _zoomObj.z);
+            m_zoomPos = new Vector3(_zoomObj.x, transform.position.y, _zoomObj.z - transform.position.y * 1.5f);
         }
         else if (m_type != CameraType.ZoomIn && m_type != CameraType.ZoomOut)
         {
             m_type = CameraType.ZoomIn;
-            m_zoomPos = new Vector3(_zoomObj.x, transform.position.y - 10, _zoomObj.z);
+            SetState();
+            m_zoomPos = new Vector3(_zoomObj.x, transform.position.y, _zoomObj.z - transform.position.y * 1.5f);
         }
     }
 
-    public void ZoomOut()
+    public void StartZoomOut()
     {
         m_type = CameraType.ZoomOut;
-        m_zoomPos = new Vector3(transform.position.x, transform.position.y + 10, transform.position.z);
+        SetState();
+        m_zoomPos = m_savePos;
     }
 }

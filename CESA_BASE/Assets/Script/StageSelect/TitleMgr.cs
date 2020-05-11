@@ -124,7 +124,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
             {
                 Destroy(m_logo.gameObject);
                 Destroy(m_guid.gameObject);
-
+                //Destroy(m_logoCanvas.gameObject);
                 m_step = TitleStep.Select;
             }
         }
