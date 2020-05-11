@@ -16,7 +16,7 @@
 		// 背景とのブレンド法を「乗算」に指定
 		Blend DstColor Zero
 
-		Pass {
+		/*Pass {
 			CGPROGRAM
 				#pragma vertex vert
 				#pragma fragment frag
@@ -47,7 +47,7 @@
 					return fixed4(lerp(_Color, 0, _Alpha), 1);
 				}
 			ENDCG
-		}
+		}*/
 
 		// V/FシェーダーはReflection Probeに反応しないので
 		// 反射だけを描画するSurface Shaderを追記する

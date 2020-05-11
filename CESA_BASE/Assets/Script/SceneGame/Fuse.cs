@@ -23,6 +23,9 @@ public class Fuse : MonoBehaviour
     private Vector3 m_defaultPos = Vector3.zero;
     private Vector3 m_defaultRot = Vector3.zero;
 
+    private EffectManager m_effectMgrClass = null;
+    private List<Fuse> m_hitFuse = new List<Fuse>();
+
     public Vector3 EndPos
     {
         get
@@ -71,6 +74,18 @@ public class Fuse : MonoBehaviour
             return m_defaultRot;
         }
     }
+    public bool Burn
+    {
+        get {
+            return m_isBurn;
+        }
+    }
+    public float BurnTime
+    {
+        get {
+            return m_burnTime;
+        }
+    }
 
     private void Awake()
     {
@@ -95,6 +110,8 @@ public class Fuse : MonoBehaviour
                     break;
                 }
         }
+
+        m_effectMgrClass = GameObject.FindObjectOfType<EffectManager>();
     }
 
     // Update is called once per frame
@@ -161,8 +178,38 @@ public class Fuse : MonoBehaviour
         {
             Fuse _fuse = other.gameObject.GetComponent<Fuse>();
             // 相手が燃えているもしくは燃え尽きた後なら処理を飛ばす
-            if (_fuse.m_isBurn || _fuse.m_burnTime <= 0.0f || _fuse.m_isUI)
+            if (_fuse.m_burnTime <= 0.0f || _fuse.m_isUI)
                 return;
+
+            // ここから下の処理は少し強引かもしれない
+            // 相手が燃えていてもいなくても行う
+            bool _sparkProcess = true;
+            // 当たったことのある導火線なら火花の処理を飛ばす
+            for (int _hitFuseCount = 0; _hitFuseCount < m_hitFuse.Count; _hitFuseCount++)
+            {
+                if (_fuse == m_hitFuse[_hitFuseCount])
+                    _sparkProcess = false;
+            }
+            // 相手が半分以上燃えていないなら
+            if (m_burnTime <= AdjustParameter.Fuse_Constant.SPREAD_TIME &&
+                _fuse.m_burnTime > AdjustParameter.Fuse_Constant.BURN_MAX_TIME / 2 && _sparkProcess)
+            {
+                BoxCollider[] _boxCollider = other.GetComponents<BoxCollider>();
+                for (int _boxColliderCnt = 0; _boxColliderCnt < _boxCollider.Length; _boxColliderCnt++)
+                {
+                    if (other.bounds.size == _boxCollider[_boxColliderCnt].bounds.size)
+                    {
+                        m_effectMgrClass.ChangeFuseClass(this.gameObject.GetComponent<Fuse>(), _fuse, _boxCollider[_boxColliderCnt]);
+                        break;
+                    }
+                }
+                m_hitFuse.Add(_fuse);
+            }
+
+            // 相手が燃えているときは処理を飛ばす
+            if (_fuse.m_isBurn)
+                return;
+
             // 
             if (m_burnTime <= AdjustParameter.Fuse_Constant.SPREAD_TIME)
             {
