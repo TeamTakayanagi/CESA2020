@@ -49,6 +49,8 @@ public class Fuse : MonoBehaviour
     private Vector3 m_defaultRot = Vector3.zero;
 
     private bool m_isRotate = false;
+    private EffectManager m_effectMgrClass = null;
+    private List<Fuse> m_hitFuse = new List<Fuse>();
 
     public Vector3 EndPos
     {
@@ -311,6 +313,49 @@ public class Fuse : MonoBehaviour
                 return;
 
             m_collisionObj.Add(_fuse.gameObject);
+            if (_fuse.m_burnTime <= 0.0f || _fuse.m_isUI)
+                return;
+
+            // ここから下の処理は少し強引かもしれない
+            // 相手が燃えていてもいなくても行う
+            bool _sparkProcess = true;
+            // 当たったことのある導火線なら火花の処理を飛ばす
+            for (int _hitFuseCount = 0; _hitFuseCount < m_hitFuse.Count; _hitFuseCount++)
+            {
+                if (_fuse == m_hitFuse[_hitFuseCount])
+                    _sparkProcess = false;
+            }
+            // 相手が半分以上燃えていないなら
+            if (m_burnTime <= AdjustParameter.Fuse_Constant.SPREAD_TIME &&
+                _fuse.m_burnTime > AdjustParameter.Fuse_Constant.BURN_MAX_TIME / 2 && _sparkProcess)
+            {
+                BoxCollider[] _boxCollider = other.GetComponents<BoxCollider>();
+                for (int _boxColliderCnt = 0; _boxColliderCnt < _boxCollider.Length; _boxColliderCnt++)
+                {
+                    if (other.bounds.size == _boxCollider[_boxColliderCnt].bounds.size)
+                    {
+                        m_effectMgrClass.ChangeFuseClass(this.gameObject.GetComponent<Fuse>(), _fuse, _boxCollider[_boxColliderCnt]);
+                        break;
+                    }
+                }
+                m_hitFuse.Add(_fuse);
+            }
+
+            // 相手が燃えているときは処理を飛ばす
+            if (_fuse.m_isBurn)
+                return;
+
+            // 
+            if (m_burnTime <= AdjustParameter.Fuse_Constant.SPREAD_TIME)
+            {
+                _fuse.m_isBurn = true;
+                _fuse.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+                GameMgr.Instance.BurnCount += 1;
+            }
+            else
+            {
+                _fuse.GetComponent<Renderer>().material.SetColor("_Color", Color.green);
+            }
         }
         else if (Utility.TagSeparate.getParentTagName(other.transform.tag) == NameDefine.TagName.Gimmick)
         {
