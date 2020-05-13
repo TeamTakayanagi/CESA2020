@@ -21,8 +21,6 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
     private List<Fuse> m_fuseList = new List<Fuse>();
     [SerializeField]
     private List<GameGimmick> m_gimmkList = new List<GameGimmick>();
-    //[SerializeField]
-    //private List<GameObject> m_fieldList = new List<GameObject>();
 
     private void Start()
     {

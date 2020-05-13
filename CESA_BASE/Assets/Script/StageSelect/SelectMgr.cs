@@ -38,6 +38,28 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     // Update is called once per frame
     void Update()
     {
+        if (m_camera.Type == MainCamera.CameraType.SwipeMove)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit _hit = new RaycastHit();
+                float max_distance = 500f;
+
+                if (Physics.Raycast(_ray, out _hit, max_distance))
+                {
+                    for (int i = 0; i < m_stages.Count; ++i)
+                    {
+                        Stage _stage = m_stages[i];
+                        if (_hit.transform != _stage.transform)
+                            continue;
+
+                        m_camera.StartZoomIn(_stage.transform.position);
+                    }
+                }
+            }
+        }
+
         if (m_camera.Type == MainCamera.CameraType.ZoomIn)
         {
             if (!m_uiArrow.activeSelf)

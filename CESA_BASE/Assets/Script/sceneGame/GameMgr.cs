@@ -415,13 +415,12 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// 導火線が燃え尽きた処理
     /// </summary>
     /// <param name="_fuse">燃え尽きた導火線</param>
-    public void BurnOutFuse(Fuse _fuse)
+    public void BurnOutFuse()
     {
         // ゲーム中以外はこの関数には入らない
         if (m_gameStep != GameMain)
             return;
 
-        m_fieldObject.Remove(_fuse.gameObject);
         m_burnCount--;
 
         // 燃えてる導火線がなくなったなら
@@ -446,6 +445,18 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             m_UIFuseCreate.enabled = false;
             Camera.main.GetComponent<MainCamera>().Control = false;
         }
+    }
+    /// <summary>
+    /// 導火線が消えるときの
+    /// </summary>
+    /// <param name="_fuse">燃え尽きた導火線</param>
+    public void DestroyFuse(Fuse _fuse)
+    {
+        // ゲーム中以外はこの関数には入らない
+        if (m_gameStep != GameMain)
+            return;
+
+        m_fieldObject.Remove(_fuse.gameObject);
     }
 
     /// <summary>

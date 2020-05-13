@@ -33,23 +33,5 @@ public class Stage : MonoBehaviour
         if (TitleMgr.Instance.Step != TitleMgr.TitleStep.Select) 
             return;
 
-        if (m_camera.Type == MainCamera.CameraType.SwipeMove)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit _hit = new RaycastHit();
-                float max_distance = 500f;
-
-                if (Physics.Raycast(_ray, out _hit, max_distance))
-                {
-                    if (_hit.transform == transform)
-                    {
-                        m_camera.StartZoomIn(transform.position);
-                        SelectMgr.Instance.ZoomObj = this;
-                    }
-                }
-            }
-        }
     }
 }

@@ -237,7 +237,7 @@ public class Fuse : MonoBehaviour
                             }
 
                             // 燃え尽きたことをマネージャーに通知
-                            GameMgr.Instance.BurnOutFuse(this);
+                            GameMgr.Instance.BurnOutFuse();
                             m_state = FuseState.Out;
                             m_countTime = AdjustParameter.Fuse_Constant.OUT_MAX_TIME;
                         }
@@ -264,6 +264,7 @@ public class Fuse : MonoBehaviour
                     // 一定時間たったら消す
                     if(m_countTime <= 0)
                     {
+                        GameMgr.Instance.DestroyFuse(this);
                         Destroy(gameObject);
                     }
                     break;
@@ -464,7 +465,7 @@ public class Fuse : MonoBehaviour
             // 燃やす範囲（0:その場だけ ～　1:全域）
             fuseModel.GetComponent<Renderer>().material.SetFloat("_Ration", (target.localScale.x + target.localScale.y + target.localScale.z) / 3);
 
-            GameMgr.Instance.BurnOutFuse(this);
+            GameMgr.Instance.BurnOutFuse();
         }
     }
 }
