@@ -30,6 +30,8 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         m_camera.Control = true;
 
         m_stages.AddRange(StageMgr.Instance.GetComponentsInChildren<Stage>());
+        m_uiArrow.SetActive(false);
+        m_uiStartBack.SetActive(false);
 
         // ステージ番号順にソート
         m_stages.Sort((a, b) => a.StageNum - b.StageNum);
@@ -42,11 +44,10 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         {
             if (Input.GetMouseButtonDown(0))
             {
-                Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit _hit = new RaycastHit();
-                float max_distance = 500f;
+                Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-                if (Physics.Raycast(_ray, out _hit, max_distance))
+                if (Physics.Raycast(_ray, out _hit))
                 {
                     for (int i = 0; i < m_stages.Count; ++i)
                     {
@@ -55,6 +56,9 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                             continue;
 
                         m_camera.StartZoomIn(_stage.transform.position);
+
+                        m_uiArrow.SetActive(true);
+                        m_uiStartBack.SetActive(true);
                     }
                 }
             }
@@ -62,24 +66,27 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
 
         if (m_camera.Type == MainCamera.CameraType.ZoomIn)
         {
-            if (!m_uiArrow.activeSelf)
-                m_uiArrow.SetActive(true);
-            if (!m_uiStartBack.activeSelf)
-                m_uiStartBack.SetActive(true);
         }
         else
         {
-            if (m_uiArrow.activeSelf)
-                m_uiArrow.SetActive(false);
-            if (m_uiStartBack.activeSelf)
-                m_uiStartBack.SetActive(false);
         }
     }
 
+    /// <summary>
+    /// 矢印をクリック
+    /// </summary>
+    /// <param name="direct">右（1）左（-1）</param>
     public void ClickArrow(int direct)
     {
         m_zoomObj = m_stages[Mathf.Clamp(m_zoomObj.StageNum + direct, 0, m_stages.Count - 1)];
         m_camera.StartZoomIn(m_zoomObj.transform.position);
+    }
+
+    public void ZoomOut()
+    {
+        m_uiArrow.SetActive(false);
+        m_uiStartBack.SetActive(false);
+        m_camera.StartZoomOut();
     }
 
     public void GameStart()

@@ -85,6 +85,7 @@ public class MainCamera : MonoBehaviour
     void Awake()
     {
         DOTween.SetTweensCapacity(500, 500);
+
         transform.tag = "MainCamera";
         m_default = m_type;
         m_target = transform.position;
@@ -130,6 +131,7 @@ public class MainCamera : MonoBehaviour
         SetState();
         m_target = new Vector3(_zoomObj.x, transform.position.y, _zoomObj.z - transform.position.y * 1.5f);
     }
+
     // ズームアウト準備
     public void StartZoomOut()
     {
@@ -138,8 +140,8 @@ public class MainCamera : MonoBehaviour
         m_target = m_savePos;
     }
 
-    ///////////////////////////////////////////////////////////////////////
-    //カメラのモードごとの動き
+///////////////////////////////////////////////////////////////////////
+//カメラのモードごとの動き
 
     // 全方向見渡す
     void CameraAroundAll()
@@ -268,9 +270,8 @@ public class MainCamera : MonoBehaviour
         if(transform.position != m_target)
             transform.DOMove(m_target, AdjustParameter.Camera_Constant.SWIPE_DERAY);
     }
-
     // ズームインの動き
-    public void CameraZoomIn()
+    void CameraZoomIn()
     {
         if (m_myCamera.fieldOfView == ZOOM_NEAR)
             return;
@@ -279,7 +280,7 @@ public class MainCamera : MonoBehaviour
         m_myCamera.DOFieldOfView(ZOOM_NEAR, AdjustParameter.Camera_Constant.ZOOM_SPEED);
     }
     // ズームアウトの動き
-    public void CameraZoomOut()
+    void CameraZoomOut()
     {
         transform.DOLocalMove(m_target, AdjustParameter.Camera_Constant.ZOOM_SPEED);
         m_myCamera.DOFieldOfView(ZOOM_FAR, AdjustParameter.Camera_Constant.ZOOM_SPEED);
