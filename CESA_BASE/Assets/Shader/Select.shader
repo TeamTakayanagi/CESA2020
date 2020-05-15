@@ -16,7 +16,7 @@
 		// 背景とのブレンド法を「乗算」に指定
 		Blend DstColor Zero
 
-		/*Pass {
+		Pass {
 			CGPROGRAM
 				#pragma vertex vert
 				#pragma fragment frag

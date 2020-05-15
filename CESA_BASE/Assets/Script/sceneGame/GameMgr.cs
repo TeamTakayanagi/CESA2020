@@ -31,7 +31,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private readonly AnimationCurve m_animCurve = AnimationCurve.Linear(0, 0, 1, 1);   // リザルトUIの移動用 
 
     private int m_burnCount = 1;                                        // 燃えている導火線の数
-    private int m_gameSpeed = 1;                                        // ゲーム加速処理
+    //private int m_gameSpeed = 1;                                        // ゲーム加速処理
     private Vector3 m_createPos = Vector3.zero;                         // 導火線の生成位置
     private GameObject m_resultClear = null;                            // ゲームクリア用のUIの親オブジェクト
     private GameObject m_resultGameover = null;                         // ゲームオーバー用のUIの親オブジェクト
@@ -53,13 +53,13 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             m_burnCount = value;
         }
     }
-    public int GameSpeed
-    {
-        get
-        {
-            return m_gameSpeed;
-        }
-    }
+    //public int GameSpeed
+    //{
+    //    get
+    //    {
+    //        return m_gameSpeed;
+    //    }
+    //}
     public Fuse UIFuse
     {
         set
@@ -320,11 +320,11 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                             hit.collider.gameObject.GetComponent<Fuse>().OnGimmick();
                         }
                     }
-                    else
-                    {
-                        int store = m_gameSpeed - 1;
-                        m_gameSpeed = store % 2 + 1;
-                    }
+                    //else
+                    //{
+                    //    int store = m_gameSpeed - 1;
+                    //    m_gameSpeed = store % 2 + 1;
+                    //}
                 }
             }
         }

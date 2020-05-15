@@ -79,7 +79,7 @@ public class Spark : MonoBehaviour
     void Start()
     {
         // マネージャ
-        m_effectMgrClass = GameObject.FindObjectOfType<EffectManager>();
+        m_effectMgrClass = FindObjectOfType<EffectManager>();
 
         // 参照する導火線
         m_fuseClass = m_nextFuseClass;
@@ -100,11 +100,11 @@ public class Spark : MonoBehaviour
                                       m_fuseExtents.x * Mathf.Sin(Mathf.Deg2Rad * (m_fuseClass.transform.localEulerAngles.z + 270)),
                                       0);
             // 初期座標
-            this.gameObject.transform.position = m_fuseClass.transform.position + m_posOffset;
+            gameObject.transform.position = m_fuseClass.transform.position + m_posOffset;
 
-            m_moveVector = new Vector3(SignZero(m_fuseClass.transform.position.x - this.transform.position.x),
-                                       SignZero(m_fuseClass.transform.position.y - this.transform.position.y),
-                                       SignZero(m_fuseClass.transform.position.z - this.transform.position.z));
+            m_moveVector = new Vector3(SignZero(m_fuseClass.transform.position.x - transform.position.x),
+                                       SignZero(m_fuseClass.transform.position.y - transform.position.y),
+                                       SignZero(m_fuseClass.transform.position.z - transform.position.z));
 
             // 仮
             m_enterCollider = m_fuseCollider[0];  
@@ -112,7 +112,7 @@ public class Spark : MonoBehaviour
         }
         else
         {
-            this.gameObject.transform.position = m_startPos;
+            gameObject.transform.position = m_startPos;
             // m_moveVectorはCreate時に入れる
         }
 
@@ -125,10 +125,9 @@ public class Spark : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Transform fuseTarget = m_fuseClass.ChildTarget;
         if (m_nextFuseClass != null)
         {// 次の導火線へ行く時
-            // ※処理が足りない可能性あり
-
             m_fuseClass = m_nextFuseClass;
             
             m_fuseBounds = m_fuseClass.GetComponent<MeshFilter>().mesh.bounds;
@@ -140,25 +139,24 @@ public class Spark : MonoBehaviour
             m_nextFuseClass = null;
         }
 
-        if (m_checkEnterCol && m_fuseClass.BurnTime < AdjustParameter.Fuse_Constant.BURN_MAX_TIME * 0.7f)
+        if (m_checkEnterCol && fuseTarget.localScale.x < 0.7f)
         {
             m_effectMgrClass.CheckEnterCollider(m_fuseClass, m_othersEnterCol);
             m_checkEnterCol = false;
         }
 
         // 燃え尽き削除
-        if (m_fuseClass.BurnTime <= 0.0f)
-            m_effectMgrClass.RemoveSpark(this.gameObject);
+        if (fuseTarget.localScale.x <= 0.0f)
+            m_effectMgrClass.RemoveSpark(gameObject);
             
 
         // 移動量計算
-        m_moveSpeed = m_fuseBounds.size.z * (Time.deltaTime *
-                                             GameMgr.Instance.GameSpeed / (AdjustParameter.Fuse_Constant.BURN_MAX_TIME - AdjustParameter.Fuse_Constant.SPREAD_TIME));
+        m_moveSpeed = m_fuseBounds.size.z * (Time.deltaTime  / AdjustParameter.Fuse_Constant.BURN_MAX_TIME);
         m_move = m_moveSpeed * m_moveVector;
 
         // 移動
-        if (m_fuseClass.Burn == true && m_fuseClass.BurnTime != AdjustParameter.Fuse_Constant.BURN_MAX_TIME)
-            this.gameObject.transform.position += m_move;
+        if (m_fuseClass.State == Fuse.FuseState.Burn && fuseTarget.localScale.x != AdjustParameter.Fuse_Constant.BURN_MAX_TIME)
+            transform.position += m_move;
 
         // 中心に来た時
         if (m_lastPos != Vector3.zero)
@@ -166,13 +164,13 @@ public class Spark : MonoBehaviour
             if ((Vector3.Dot(m_lastPos - m_fuseClass.transform.position, this.transform.position - m_fuseClass.transform.position) * 
                 Vector3.Dot(m_move, m_moveVector)) < 0)
             {
-                this.gameObject.transform.position = m_fuseClass.transform.position;
+                transform.position = m_fuseClass.transform.position;
                 SparkBranch();
             }
         }
 
         // 過去座標格納
-        m_lastPos = this.gameObject.transform.position;
+        m_lastPos = transform.position;
     }
 
     // 入れた値が＋なら１、０なら０、－なら－１を返す
@@ -220,18 +218,18 @@ public class Spark : MonoBehaviour
                     
                     if (_mostLong == m_fuseCollider[_colliderNum].bounds.size.x)
                     {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, this.gameObject.transform.position, new Vector3(1.0f, 0.0f, 0.0f));
-                        m_effectMgrClass.CreateSpark(m_fuseClass, this.gameObject.transform.position, new Vector3(-1.0f, 0.0f, 0.0f));
+                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, Vector3.right);
+                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, Vector3.left);
                     }
                     else if (_mostLong == m_fuseCollider[_colliderNum].bounds.size.y)
                     {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, this.gameObject.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
-                        m_effectMgrClass.CreateSpark(m_fuseClass, this.gameObject.transform.position, new Vector3(0.0f, -1.0f, 0.0f));
+                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, Vector3.up);
+                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, Vector3.down);
                     }
                     else if (_mostLong == m_fuseCollider[_colliderNum].bounds.size.z)
                     {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, this.gameObject.transform.position, new Vector3(0.0f, 0.0f, 1.0f));
-                        m_effectMgrClass.CreateSpark(m_fuseClass, this.gameObject.transform.position, new Vector3(0.0f, 0.0f, -1.0f));
+                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, Vector3.forward);
+                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, Vector3.back);
                     }
                 }
                 else
@@ -241,15 +239,15 @@ public class Spark : MonoBehaviour
 
                     if (_judgeVector == Mathf.Abs(_moveVector.x))
                     {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, this.gameObject.transform.position, new Vector3(SignZero(-_moveVector.x), 0.0f, 0.0f));
+                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(SignZero(-_moveVector.x), 0.0f, 0.0f));
                     }
                     else if (_judgeVector == Mathf.Abs(_moveVector.y))
                     {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, this.gameObject.transform.position, new Vector3(0.0f, SignZero(-_moveVector.y), 0.0f));
+                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(0.0f, SignZero(-_moveVector.y), 0.0f));
                     }
                     else if (_judgeVector == Mathf.Abs(_moveVector.z))
                     {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, this.gameObject.transform.position, new Vector3(0.0f, 0.0f, SignZero(-_moveVector.z)));
+                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(0.0f, 0.0f, SignZero(-_moveVector.z)));
                     }
                 }
             }
@@ -285,18 +283,18 @@ public class Spark : MonoBehaviour
 
                     if (_mostLong == m_fuseCollider[_colliderNum].bounds.size.x)
                     {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, this.gameObject.transform.position, new Vector3(1.0f, 0.0f, 0.0f));
-                        m_effectMgrClass.CreateSpark(m_fuseClass, this.gameObject.transform.position, new Vector3(-1.0f, 0.0f, 0.0f));
+                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(1.0f, 0.0f, 0.0f));
+                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(-1.0f, 0.0f, 0.0f));
                     }
                     else if (_mostLong == m_fuseCollider[_colliderNum].bounds.size.y)
                     {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, this.gameObject.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
-                        m_effectMgrClass.CreateSpark(m_fuseClass, this.gameObject.transform.position, new Vector3(0.0f, -1.0f, 0.0f));
+                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(0.0f, 1.0f, 0.0f));
+                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(0.0f, -1.0f, 0.0f));
                     }
                     else if (_mostLong == m_fuseCollider[_colliderNum].bounds.size.z)
                     {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, this.gameObject.transform.position, new Vector3(0.0f, 0.0f, 1.0f));
-                        m_effectMgrClass.CreateSpark(m_fuseClass, this.gameObject.transform.position, new Vector3(0.0f, 0.0f, -1.0f));
+                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(0.0f, 0.0f, 1.0f));
+                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(0.0f, 0.0f, -1.0f));
                     }
                 }
                 else
@@ -306,21 +304,21 @@ public class Spark : MonoBehaviour
 
                     if (_judgeVector == Mathf.Abs(_moveVector.x))
                     {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, this.gameObject.transform.position, new Vector3(SignZero(-_moveVector.x), 0.0f, 0.0f));
+                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(SignZero(-_moveVector.x), 0.0f, 0.0f));
                     }
                     else if (_judgeVector == Mathf.Abs(_moveVector.y))
                     {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, this.gameObject.transform.position, new Vector3(0.0f, SignZero(-_moveVector.y), 0.0f));
+                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(0.0f, SignZero(-_moveVector.y), 0.0f));
                     }
                     else if (_judgeVector == Mathf.Abs(_moveVector.z))
                     {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, this.gameObject.transform.position, new Vector3(0.0f, 0.0f, SignZero(-_moveVector.z)));
+                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(0.0f, 0.0f, SignZero(-_moveVector.z)));
                     }
                 }
             }
 
             // 分岐削除
-            m_effectMgrClass.RemoveSpark(this.gameObject);
+            m_effectMgrClass.RemoveSpark(gameObject);
         }
     }
 }

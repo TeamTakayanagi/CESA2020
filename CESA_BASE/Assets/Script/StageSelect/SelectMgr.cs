@@ -64,12 +64,6 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
             }
         }
 
-        if (m_camera.Type == MainCamera.CameraType.ZoomIn)
-        {
-        }
-        else
-        {
-        }
     }
 
     /// <summary>

@@ -60,7 +60,7 @@
 					appdata v = input[i];
 					g2f o;
 					// 法線ベクトルに沿って頂点を移動
-					v.vertex.xyz += normal * (_SinTime.w * 0.5 + 0.5) * _ScaleFactor;
+					v.vertex.xyz += normal * _ScaleFactor;
 					o.vertex = UnityObjectToClipPos(v.vertex);
 					o.uv = v.uv;
 					stream.Append(o);
@@ -73,7 +73,7 @@
 				fixed4 col = _Color;
 				return col;
 			}
-				ENDCG
+			ENDCG
         }
     }
 }

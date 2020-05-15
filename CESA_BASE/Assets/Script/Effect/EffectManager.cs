@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EffectManager : MonoBehaviour
+public class EffectManager : SingletonMonoBehaviour<EffectManager>
 {
     [SerializeField]
     private GameObject m_spark = null;                                  // 火花プレハブ
@@ -29,16 +29,11 @@ public class EffectManager : MonoBehaviour
         }
     }
 
-    private void Awake()
-    {
-        
-    }
-
     // Start is called before the first frame update
     void Start()
     {
         // スタート導火線検索
-        Fuse[] m_allFuseClass = GameObject.FindObjectsOfType<Fuse>();
+        Fuse[] m_allFuseClass = FindObjectsOfType<Fuse>();
         int _fuseClassCnt = 0; // ループ用
         while (true)
         {
@@ -70,7 +65,7 @@ public class EffectManager : MonoBehaviour
 
         int _sparkCount = m_sparkObject.Count;
 
-        m_sparkObject[_sparkCount - 1].transform.parent = this.gameObject.transform;
+        m_sparkObject[_sparkCount - 1].transform.parent = transform;
         Spark _sparkScript = m_sparkObject[_sparkCount - 1].GetComponent<Spark>();
         _sparkScript.NextFuseClass = _nextFuseClass;
         _sparkScript.StartPos = _startPos;
