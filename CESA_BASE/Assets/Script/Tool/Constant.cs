@@ -39,7 +39,7 @@ namespace AdjustParameter
 
     public readonly struct Fade_Constant
     {
-        public const float FADE_DURATION = 2.0f;                            // フェードのスライド時間
+        public const float FADE_DURATION = 3.0f;                            // フェードのスライド時間
     }
 }
 
