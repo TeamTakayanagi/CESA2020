@@ -71,15 +71,10 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                         }
                     }
 
-                        m_zoomObj = _stage;
-                        m_camera.StartZoomIn(_stage.transform.position);
-
-                        m_uiArrow.SetActive(true);
-                        m_uiStartBack.SetActive(true);
                     // 背景オブジェクトとの判定
-                    var _bgObjects = BGObjs.Instance.GetComponent<BGObjs>();
-                    if (_hit.transform.root.GetComponent<BGObjs>() == _bgObjects)
+                    if (_hit.transform.root.GetComponent<BGObjs>())
                     {
+                        BGObjs _bgObjects = BGObjs.Instance.GetComponent<BGObjs>();
                         for (int i = 0; i < _bgObjects.transform.childCount; i++)
                         {
                             if (_hit.transform == _bgObjects.transform.GetChild(i))
