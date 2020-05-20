@@ -81,6 +81,7 @@ namespace NameDefine
         public const string UIGameOver = "UI/GameOver";
         public const string TerrainBlock = "TerrainBlock";
         public const string Gimmick = "Gimmick";
+        public const string Stage = "Stage";
 
         public const string FuseI = "Fuse/I";
         public const string FuseL = "Fuse/L";
