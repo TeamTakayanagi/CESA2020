@@ -19,6 +19,10 @@ public class Stage : MonoBehaviour
         {
             return m_stageNum;
         }
+        set
+        {
+            m_stageNum = value;
+        }
     }
 
     // Start is called before the first frame update

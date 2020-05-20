@@ -7,7 +7,7 @@ using System;
 public class GameMgr : SingletonMonoBehaviour<GameMgr>
 {
     // デリゲート宣言
-    delegate void GameStep();
+    private delegate void GameStep();
 
     private enum ResultPlacement
     {
@@ -29,7 +29,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private readonly Vector3 BUTTON_POS = new Vector3(0.0f, 100.0f, 0.0f); // リザルトボタンの移動距離              
     private readonly Vector3 OUTPOS = new Vector3(-50, -50, -50);       // 導火線を生成できない位置
     private readonly AnimationCurve m_animCurve = AnimationCurve.Linear(0, 0, 1, 1);   // リザルトUIの移動用 
-
+    
     private int m_burnCount = 1;                                        // 燃えている導火線の数
     private int m_gameSpeed = 1;                                        // ゲーム加速処理
     private Vector3 m_createPos = Vector3.zero;                         // 導火線の生成位置
@@ -41,6 +41,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private LinkedList<GameObject> m_fieldObject = new LinkedList<GameObject>();      // ゲーム画面の導火線
     private LinkedList<Fuse> m_uiFuse = new LinkedList<Fuse>();         // UI部分の導火線
     private GameStep m_gameStep = null;                                 // 現在のゲームの進行状況の関数
+
+    private float m_tutorialTIme = 0;
+    private int m_tutorialState = 0;
 
     public int BurnCount
     {
@@ -79,6 +82,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     {
         Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + 0);
         StageCreateMgr.Instance.CreateStage(transform, info);
+        m_gameStep = GameStart;
 
         base.Awake();
     }
@@ -111,7 +115,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // 開始演出準備
         GameObject canvas = GameObject.FindGameObjectWithTag(NameDefine.TagName.UICanvas);
         m_saveObj.Add(canvas.transform.GetChild(0).gameObject);
-        m_gameStep = GameStart;
 
         // フィールドオブジェクトの取得
         Fuse[] _fuseList = FindObjectsOfType<Fuse>();
@@ -157,8 +160,14 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
             if (number.TexCount < 0)
             {
-                m_gameStep = GameMain;
-                Destroy(_saveNum);
+                if (0 == 0)
+                {
+                    m_gameStep = GameTutorial;
+                }
+                else
+                {
+                    m_gameStep = GameMain;
+                }
 
                 foreach (Fuse _fuse in m_uiFuse)
                     _fuse.enabled = true;
@@ -166,7 +175,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     _obj.GetComponent<Behaviour>().enabled = true;
 
                 m_UIFuseCreate.enabled = true;
+                Destroy(_saveNum);
                 m_saveObj.Clear();
+
                 return;
             }
         }
@@ -329,6 +340,236 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             }
         }
     }
+
+    /// <summary>
+    /// チュートリアルステージ処理
+    /// </summary>
+    private void GameTutorial()
+    {
+        //if (m_tutorialTIme <= 3 * 60)
+        //return;
+
+        // 開始後数秒何もできない
+
+        // UIの導火線をクリックさせる
+        // この時、ほかの動作は停止
+        RaycastHit hit = new RaycastHit();
+        switch (m_tutorialState)
+        {
+            // 開始後数秒何もできない
+            case 0:
+                {
+                    m_tutorialTIme += Time.deltaTime;
+                    if (m_tutorialTIme >= 2)
+                    {
+                        foreach (Fuse _fuse in m_uiFuse)
+                            _fuse.enabled = false;
+                        foreach (GameObject _obj in m_fieldObject)
+                            _obj.GetComponent<Behaviour>().enabled = false;
+
+                        m_UIFuseCreate.enabled = false;
+                        m_tutorialState++;
+                    }
+                }
+                break;
+
+            // UIの導火線をクリックさせる
+            // この時、ほかの動作は停止
+            case 1:
+                {
+                    // ガイドを出す
+                    {
+
+                    }
+
+                    // 設置or選択
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        // UI画面
+                        if (Input.mousePosition.x > Screen.width * Camera.main.rect.width)
+                        {
+                            // サブカメラ取得
+                            Ray ray = GameObject.FindGameObjectWithTag(NameDefine.TagName.SubCamera).GetComponent<Camera>().
+                                ScreenPointToRay(Input.mousePosition);
+
+                            // 導火線を選択
+                            if (Physics.Raycast(ray, out hit))
+                            {
+                                // 新規選択
+                                if (!m_selectFuse || m_selectFuse.gameObject != hit.collider.transform.parent.gameObject)
+                                {
+                                    Fuse _fuse = hit.collider.transform.parent.GetComponent<Fuse>();
+                                    if (!_fuse || _fuse.EndPos != Vector3.zero)
+                                        return;
+
+                                    if (_fuse.State == Fuse.FuseState.UI)
+                                    {
+                                        if (m_selectFuse)
+                                            m_selectFuse.SelectUIFuse(false);
+                                        m_selectFuse = _fuse;
+                                        m_selectFuse.SelectUIFuse(true);
+                                        // マウスカーソル用の画像を選択時に変更
+                                        Cursor.SetCursor(m_cursorCatch, Vector2.zero, CursorMode.Auto);
+
+                                        m_tutorialState = 2;
+                                    }
+                                }
+                                // 選択解除
+                                else
+                                {
+                                    m_selectFuse.SelectUIFuse(false);
+                                    m_selectFuse = null;
+                                    // マウスカーソル用の画像をデフォルトに変更
+                                    Cursor.SetCursor(m_cursorDefault, Vector2.zero, CursorMode.Auto);
+
+                                    m_tutorialState = 1;
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+
+            // 選んだ導火線を配置させる
+            // この時も、ほかの動作は停止
+            case 2:
+                {
+                    // ガイドを出す
+                    {
+
+                    }
+
+                    // 導火線を選択しているなら
+                    if (m_selectFuse)
+                    {
+                        // マウス座標をワールド座標で取得
+                        Vector3 mousePos = Vector3.zero;
+                        Vector3 screen = Camera.main.WorldToScreenPoint(transform.position);
+                        mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z);
+                        mousePos = Camera.main.ScreenToWorldPoint(mousePos);
+                        // 生成場所を取得
+                        m_createPos = FindNearFuse(mousePos);
+                        if (m_createPos == OUTPOS)
+                            return;
+
+                        // UI画面
+                        if (Input.mousePosition.x > Screen.width * 0.8f)
+                            m_selectFuse.transform.position = m_selectFuse.DefaultPos;
+                        // ゲーム画面
+                        else
+                        {
+                            m_selectFuse.transform.position = m_createPos;
+                            m_selectFuse.transform.localEulerAngles = m_selectFuse.DefaultRot;
+                        }
+                    }
+
+                    // 設置or選択
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        // UI画面
+                        if (Input.mousePosition.x > Screen.width * Camera.main.rect.width)
+                        {
+                        }
+                        // ゲーム画面
+                        else
+                        {
+                            // 導火線設置
+                            if (m_selectFuse)
+                            {
+                                m_selectFuse.Type = Fuse.FuseType.Normal;
+                                m_selectFuse.State = Fuse.FuseState.None;
+                                m_UIFuseCreate.FuseAmount -= new Vector2Int
+                                    ((int)((m_selectFuse.DefaultPos.x + 1) / 2 + 1) % 2, (int)((m_selectFuse.DefaultPos.x + 1) / 2) % 2);
+
+                                // UI部分の移動
+                                foreach (Fuse _fuse in m_uiFuse)
+                                {
+                                    if (_fuse == m_selectFuse)
+                                        continue;
+
+                                    if (m_selectFuse.DefaultPos.x == _fuse.DefaultPos.x &&
+                                        m_selectFuse.DefaultPos.y < _fuse.DefaultPos.y)
+                                    {
+                                        if (_fuse.EndPos == Vector3.zero)
+                                            _fuse.EndPos = _fuse.transform.localPosition - new Vector3(0.0f, AdjustParameter.UI_OBJECT_Constant.INTERVAL_Y, 0.0f);
+                                        else
+                                            _fuse.EndPos -= new Vector3(0.0f, AdjustParameter.UI_OBJECT_Constant.INTERVAL_Y, 0.0f);
+                                    }
+                                }
+
+                                m_uiFuse.Remove(m_selectFuse);
+                                m_fieldObject.AddLast(m_selectFuse.gameObject);
+                                m_selectFuse.transform.localEulerAngles = m_selectFuse.DefaultRot;
+                                m_selectFuse.transform.parent = transform;
+                                m_selectFuse.DefaultPos = transform.position;
+
+                                // UI選択用の子供オブジェクトを削除
+                                GameObject child = m_selectFuse.transform.GetChild(m_selectFuse.transform.childCount - 1).gameObject;
+                                Destroy(child);
+
+                                m_selectFuse = null;
+                                m_createPos = OUTPOS;
+                                // マウスカーソル用の画像をデフォルトに変更
+                                Cursor.SetCursor(m_cursorDefault, Vector2.zero, CursorMode.Auto);
+
+                                foreach (Fuse _fuse in m_uiFuse)
+                                    _fuse.enabled = true;
+                                foreach (GameObject _obj in m_fieldObject)
+                                    _obj.GetComponent<Behaviour>().enabled = true;
+                                m_UIFuseCreate.enabled = true;
+
+                                m_tutorialState = 3;
+                            }
+                        }
+
+                    }
+                }
+                break;
+
+            // 燃え広がるまで待機
+            case 3:
+                {
+                    m_tutorialTIme += Time.deltaTime;
+                    if (m_tutorialTIme >= 10)
+                    {
+                        foreach (Fuse _fuse in m_uiFuse)
+                            _fuse.enabled = false;
+                        foreach (GameObject _obj in m_fieldObject)
+                            _obj.GetComponent<Behaviour>().enabled = false;
+                        m_UIFuseCreate.enabled = false;
+
+                        m_tutorialState = 4;
+                    }
+                }
+                break;
+
+            // 通常プレイ
+            case 4:
+                {
+                    if (Input.GetMouseButtonUp(0))
+                    {
+                        m_gameStep = GameMain;
+
+                        m_tutorialState = 5;
+                    }
+                }
+                break;
+        }
+    }
+
+
+
+    private void RunToGamemain(bool _flg)
+    {
+        foreach (Fuse _fuse in m_uiFuse)
+            _fuse.enabled = _flg;
+        foreach (GameObject _obj in m_fieldObject)
+            _obj.GetComponent<Behaviour>().enabled = _flg;
+
+        m_UIFuseCreate.enabled = _flg;
+    }
+
+
 
     /// <summary>
     /// 一番近い導火線の座標から生成位置を決定

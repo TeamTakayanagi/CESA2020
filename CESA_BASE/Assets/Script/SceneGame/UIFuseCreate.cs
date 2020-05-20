@@ -46,7 +46,7 @@ public class UIFuseCreate : MonoBehaviour
             m_createCount--;
             if (m_createCount <= 0)
             {
-                StageCreateMgr.Instance.AddCreateUIFuse(1, transform,
+                StageCreateMgr.Instance.AddCreateUIFuse(transform,
                     StageCreateMgr.SuffixType.Duplication, m_fuseAmount);
 
                 // 生成後処理

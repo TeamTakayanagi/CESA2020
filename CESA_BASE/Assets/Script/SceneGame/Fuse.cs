@@ -161,7 +161,7 @@ public class Fuse : MonoBehaviour
         {
             case FuseState.UI:
                 {
-                    // 移動官僚していないなら
+                    // 移動完了していないなら
                     if (m_endPos != Vector3.zero)
                     {
                         // 下へ落下

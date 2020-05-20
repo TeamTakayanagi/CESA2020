@@ -30,6 +30,13 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         m_camera.Control = true;
 
         m_stages.AddRange(StageMgr.Instance.GetComponentsInChildren<Stage>());
+        for (int i = 0; i < m_stages.Count; i++)
+        {
+            m_stages[i].StageNum = i;
+        }
+
+        m_uiArrow.SetActive(false);
+        m_uiStartBack.SetActive(false);
 
         // ステージ番号順にソート
         m_stages.Sort((a, b) => a.StageNum - b.StageNum);
@@ -48,13 +55,34 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
 
                 if (Physics.Raycast(_ray, out _hit, max_distance))
                 {
-                    for (int i = 0; i < m_stages.Count; ++i)
+                    // ステージとの判定
+                    if (_hit.transform.tag == NameDefine.TagName.Stage)
                     {
-                        Stage _stage = m_stages[i];
-                        if (_hit.transform != _stage.transform)
-                            continue;
+                        for (int i = 0; i < m_stages.Count; ++i)
+                        {
+                            Stage _stage = m_stages[i];
+                            if (_hit.transform != _stage.transform)
+                                continue;
 
-                        m_camera.StartZoomIn(_stage.transform.position);
+                            m_zoomObj = _stage;
+                            m_camera.StartZoomIn(_stage.transform.position);
+
+                            m_uiArrow.SetActive(true);
+                            m_uiStartBack.SetActive(true);
+                        }
+                    }
+
+                    // 背景オブジェクトとの判定
+                    var _bgObjects = BGObjs.Instance.GetComponent<BGObjs>();
+                    if (_hit.transform.root.GetComponent<BGObjs>() == _bgObjects)
+                    {
+                        for (int i = 0; i < _bgObjects.transform.childCount; i++)
+                        {
+                            if (_hit.transform == _bgObjects.transform.GetChild(i))
+                            {
+                                _hit.transform.GetComponent<ClickedObject>().OnClick();
+                            }
+                        }
                     }
                 }
             }
@@ -80,6 +108,13 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     {
         m_zoomObj = m_stages[Mathf.Clamp(m_zoomObj.StageNum + direct, 0, m_stages.Count - 1)];
         m_camera.StartZoomIn(m_zoomObj.transform.position);
+    }
+
+    public void ZoomOut()
+    {
+        m_uiArrow.SetActive(false);
+        m_uiStartBack.SetActive(false);
+        m_camera.StartZoomOut();
     }
 
     public void GameStart()

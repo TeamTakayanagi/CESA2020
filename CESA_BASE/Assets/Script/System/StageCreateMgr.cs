@@ -119,7 +119,9 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
                 1.0f + (i / 2) * AdjustParameter.UI_OBJECT_Constant.INTERVAL_Y,
                 AdjustParameter.UI_OBJECT_Constant.DEFAULT_POS_Z);
             _fuse.EndPos = _fuse.transform.localPosition;
-            if(rot != SuffixType.Zero)
+            _fuse.EndPos = Vector3.zero;
+            _fuse.DefaultPos = _fuse.transform.localPosition;
+            if (rot != SuffixType.Zero)
                 _fuse.transform.localEulerAngles = new Vector3(90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4));
 
             // UI専用のコライダーを子供に
@@ -134,36 +136,43 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
     /// <param name="amout">生成量</param>
     /// <param name="parent">導火線の親オブジェクト</param>
     /// <param name="indexList">添え字の配列</param>
-    public void AddCreateUIFuse(int amount, Transform parent, SuffixType index, Vector2Int fuseRean)
+    public void AddCreateUIFuse(Transform parent, SuffixType index, Vector2Int fuseRean, int indexNum = -1)
     {
-        int[] indexList = GetSuffixList(index, amount, m_fuseList.Count, parent.GetInstanceID());
-        int fuseAmount = fuseRean.x + fuseRean.y;
-        for (int i = 0; i < amount; ++i)
+        int[] indexList;
+        if (indexNum < 0)
         {
-            // 出す場所
-            int place;
-            if (fuseRean.x <= fuseRean.y)
-                place = -1;
-            else
-                place = 1;
-
-            Fuse _fuse = Instantiate(m_fuseList[indexList[i]], transform.position, Quaternion.identity);
-            _fuse.Type = Fuse.FuseType.Normal;
-            _fuse.State = Fuse.FuseState.UI;
-            _fuse.transform.SetParent(parent, true);
-            _fuse.EndPos = new Vector3(place,
-                1.0f + ((fuseAmount - (Mathf.Abs(fuseRean.x - fuseRean.y) / 2)) / 2) * AdjustParameter.UI_OBJECT_Constant.INTERVAL_Y,
-                AdjustParameter.UI_OBJECT_Constant.DEFAULT_POS_Z);
-            _fuse.transform.localPosition = new Vector3(place, AdjustParameter.UI_OBJECT_Constant.DEFAULT_POS_Y,
-                AdjustParameter.UI_OBJECT_Constant.DEFAULT_POS_Z);
-            _fuse.transform.localEulerAngles = new Vector3(90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4));
-
-            if(GameMgr.Instance)
-                GameMgr.Instance.UIFuse = _fuse;    // リストの末尾に追加
-            // UI専用のコライダーを子供に
-            GameObject _colider = Instantiate(m_uiColider, _fuse.transform.position, Quaternion.identity);
-            _colider.transform.SetParent(_fuse.transform, true);
+            indexList = GetSuffixList(index, 1, m_fuseList.Count, parent.GetInstanceID());
         }
+        else
+        {
+            indexList = new int[1] { indexNum };
+        }
+        int fuseAmount = fuseRean.x + fuseRean.y;
+
+        // 出す場所
+        int place;
+        if (fuseRean.x <= fuseRean.y)
+            place = -1;
+        else
+            place = 1;
+
+        Fuse _fuse = Instantiate(m_fuseList[indexList[0]], transform.position, Quaternion.identity);
+        _fuse.Type = Fuse.FuseType.Normal;
+        _fuse.State = Fuse.FuseState.UI;
+        _fuse.transform.SetParent(parent, true);
+        _fuse.EndPos = new Vector3(place,
+            1.0f + ((fuseAmount - (Mathf.Abs(fuseRean.x - fuseRean.y) / 2)) / 2) * AdjustParameter.UI_OBJECT_Constant.INTERVAL_Y,
+            AdjustParameter.UI_OBJECT_Constant.DEFAULT_POS_Z);
+        _fuse.transform.localPosition = new Vector3(place, AdjustParameter.UI_OBJECT_Constant.DEFAULT_POS_Y,
+            AdjustParameter.UI_OBJECT_Constant.DEFAULT_POS_Z);
+        _fuse.transform.localEulerAngles = new Vector3(90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4));
+
+        if (GameMgr.Instance)
+            GameMgr.Instance.UIFuse = _fuse;    // リストの末尾に追加
+                                                // UI専用のコライダーを子供に
+        GameObject _colider = Instantiate(m_uiColider, _fuse.transform.position, Quaternion.identity);
+        _colider.transform.SetParent(_fuse.transform, true);
+
     }
 
     /// <summary>
