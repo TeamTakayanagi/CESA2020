@@ -153,6 +153,11 @@ public class Fuse : MonoBehaviour
         }
         return collList;
     }
+    public void GameStart()
+    {
+        m_state = FuseState.Burn;
+        m_haveEffect[0].Play();
+    }
 
     private void Awake()
     {
@@ -174,10 +179,11 @@ public class Fuse : MonoBehaviour
         modelRender.material.SetVector("_Center", m_childModel.position);
         if (m_type == FuseType.Start)
         {
-            m_state = FuseState.Burn;
+            m_state = FuseState.None;
             m_targetDistance = Vector3.down / 2.0f;
 
             Spark spark = Spark.Instantiate(transform.position + m_targetDistance, m_targetDistance * -2.0f, this, m_haveEffect.Count);
+            spark.Stop();
             m_haveEffect.Add(spark);
 
             // 導火線の燃えてきた方向にシェーダー用のオブジェクトを移動

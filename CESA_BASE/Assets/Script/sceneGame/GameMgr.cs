@@ -167,7 +167,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 _obj.GetComponent<Behaviour>().enabled = true;
 
             Fuse _start = m_saveObj[1].GetComponent<Fuse>();
-            _start.State = Fuse.FuseState.Burn;
+            _start.GameStart();
 
             m_UIFuseCreate.enabled = true;
             m_saveObj.Clear();
@@ -560,8 +560,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
     }
 
-
-
     private void RunToGamemain(bool _flg)
     {
         foreach (Fuse _fuse in m_uiFuse)
@@ -571,8 +569,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
         m_UIFuseCreate.enabled = _flg;
     }
-
-
 
     /// <summary>
     /// 一番近い導火線の座標から生成位置を決定

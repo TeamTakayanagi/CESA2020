@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8124352932440033782}
-  - component: {fileID: 8124352932440033781}
   - component: {fileID: 4600494309444145923}
   m_Layer: 0
   m_Name: Spark
@@ -32,21 +31,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8124352932440033781
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8124352932440033779}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35d396bcb8480c24eb784eebe6096a99, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  effectAsset: {fileID: 11400000, guid: c3b1563808679b847831a6ec81b5cfdd, type: 2}
-  playOnStart: 1
-  isLooping: 1
 --- !u!114 &4600494309444145923
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59,6 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0280d2a04a2305943b2c2ce02fc93169, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectAsset: {fileID: 11400000, guid: 0844763930d4e594da5cf1bed64d3af3, type: 2}
+  effectType: 0
+  effectAsset: {fileID: 11400000, guid: c3b1563808679b847831a6ec81b5cfdd, type: 2}
   playOnStart: 1
   isLooping: 1

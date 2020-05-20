@@ -1981,7 +1981,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_effectList:
-  - {fileID: 8124352932440033781, guid: 417738154430e284bb52a0835af2a8c5, type: 3}
+  - {fileID: 4600494309444145923, guid: 417738154430e284bb52a0835af2a8c5, type: 3}
 --- !u!4 &1825438585
 Transform:
   m_ObjectHideFlags: 0
