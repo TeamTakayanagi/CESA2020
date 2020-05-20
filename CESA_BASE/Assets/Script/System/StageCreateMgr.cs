@@ -113,9 +113,13 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
                 1.0f + (i / 2) * AdjustParameter.UI_Fuse_Constant.UI_FUSE_INTERVAL_Y,
                 AdjustParameter.UI_Fuse_Constant.UI_FUSE_POS_Z);
             _fuse.EndPos = _fuse.transform.localPosition;
-            if(rot != SuffixType.Zero)
-                _fuse.transform.localEulerAngles = new Vector3(90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4));
-
+            if (rot != SuffixType.Zero)
+            {
+                //_fuse.transform.localEulerAngles = new Vector3(90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4));
+                _fuse.transform.localRotation = Quaternion.AngleAxis(90.0f * Random.Range(0, 4), Vector3.right)
+                                              * Quaternion.AngleAxis(90.0f * Random.Range(0, 4), Vector3.up)
+                                              * Quaternion.AngleAxis(90.0f * Random.Range(0, 4), Vector3.forward);
+            }
             // UI専用のコライダーを子供に
             GameObject _colider = Instantiate(m_uiColider, _fuse.transform.position, Quaternion.identity);
             _colider.transform.SetParent(_fuse.transform, true);

@@ -110,7 +110,7 @@ public class Fuse : MonoBehaviour
                     break;
                 }
         }
-
+        
         m_effectMgrClass = GameObject.FindObjectOfType<EffectManager>();
     }
 
@@ -119,7 +119,7 @@ public class Fuse : MonoBehaviour
     {
         if (!m_isUI && m_isBurn)
         {
-            m_burnTime -= Time.deltaTime * GameMgr.Instance.GameSpeed;
+            //m_burnTime -= Time.deltaTime * GameMgr.Instance.GameSpeed;
             if (m_burnTime <= 0.0f)
             {
                 // 燃え尽きた
@@ -149,8 +149,11 @@ public class Fuse : MonoBehaviour
     {
         if (m_isUI)
         {
-            transform.localEulerAngles = new Vector3(transform.localEulerAngles.x,
-                m_defaultRot.y - Camera.main.transform.localEulerAngles.y, transform.localEulerAngles.z);
+            transform.localRotation = Quaternion.AngleAxis(-30.0f, new Vector3(Mathf.Sin(m_defaultRot.z) * Mathf.Sin(m_defaultRot.y), 0.0f, 0.0f))
+                                    * Quaternion.AngleAxis(m_defaultRot.y - Camera.main.transform.localEulerAngles.y,
+                                                           new Vector3(0.0f, Mathf.Cos(m_defaultRot.z) * Mathf.Cos(m_defaultRot.x) * Mathf.Cos(m_defaultRot.y), 0.0f))
+                                    * Quaternion.AngleAxis(0, Vector3.forward);
+
         }
     }
 

@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35d396bcb8480c24eb784eebe6096a99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectAsset: {fileID: 11400000, guid: 0844763930d4e594da5cf1bed64d3af3, type: 2}
+  effectAsset: {fileID: 11400000, guid: c3b1563808679b847831a6ec81b5cfdd, type: 2}
   playOnStart: 1
   isLooping: 1
 --- !u!114 &8124352932440033780
