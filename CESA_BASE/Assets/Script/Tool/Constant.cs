@@ -36,6 +36,11 @@ namespace AdjustParameter
     {
         public const float DURATION = 1.0f;                                 // リザルトのUIのスライド時間（秒）
     }
+
+    public readonly struct Fade_Constant
+    {
+        public const float FADE_DURATION = 2.0f;                            // フェードのスライド時間
+    }
 }
 
 //---加工済み変数---
