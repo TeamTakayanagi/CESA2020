@@ -27,7 +27,7 @@ public class UIFuseCreate : MonoBehaviour
         if (m_firstCreate > 0)
         {
             m_fuseAmount = new Vector2Int((int)Mathf.Ceil(m_firstCreate / 2.0f), (int)Mathf.Floor(m_firstCreate / 2.0f));
-            StageCreateMgr.Instance.CreateUIFuse(m_firstCreate, transform, StageCreateMgr.SuffixType.Duplication, StageCreateMgr.SuffixType.Zero);
+            StageCreateMgr.Instance.CreateUIFuse(m_firstCreate, transform, StageCreateMgr.SuffixType.Duplication, StageCreateMgr.SuffixType.Random);
         }
     }
 
