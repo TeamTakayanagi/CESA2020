@@ -7,14 +7,12 @@ using System;
 public class GameMgr : SingletonMonoBehaviour<GameMgr>
 {
     // デリゲート宣言
-    delegate void GameStep();
+    private delegate void GameStep();
 
     private enum ResultPlacement
     {
         Text = 0,
         Button,
-        //RePlay,
-        //Bask
     }
 
     [SerializeField]
@@ -37,7 +35,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private GameObject m_resultGameover = null;                         // ゲームオーバー用のUIの親オブジェクト
     private Fuse m_selectFuse = null;                                   // 選択しているUIの導火線   
     private UIFuseCreate m_UIFuseCreate = null;                         // UIの導火線生成オブジェクト
-    private HashSet<GameObject> m_saveObj = new HashSet<GameObject>();  // 各GameStepごとにオブジェクトを格納（スタート：カウントダウン数字　ゲームクリア：花火）
+    private List<GameObject> m_saveObj = new List<GameObject>();  // 各GameStepごとにオブジェクトを格納（スタート：カウントダウン数字　ゲームクリア：花火）
     private LinkedList<GameObject> m_fieldObject = new LinkedList<GameObject>();      // ゲーム画面の導火線
     private LinkedList<Fuse> m_uiFuse = new LinkedList<Fuse>();         // UI部分の導火線
     private GameStep m_gameStep = null;                                 // 現在のゲームの進行状況の関数
@@ -106,7 +104,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
         // 地形生成オブジェクト取得
         TerrainCreate terrainCreate = FindObjectOfType<TerrainCreate>();
-        terrainCreate.CreateGround(m_stageSize.x, m_stageSize.z, -m_stageSize.y / 2 - 1);
+        terrainCreate.CreateGround(m_stageSize.x, m_stageSize.z, - m_stageSize.y / 2 - 1);
 
         // 開始演出準備
         GameObject canvas = GameObject.FindGameObjectWithTag(NameDefine.TagName.UICanvas);
@@ -120,10 +118,12 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             if (_fuse.State == Fuse.FuseState.UI)
                 m_uiFuse.AddLast(_fuse);
             else
-                m_fieldObject.AddLast(_fuse.gameObject);
+            {
+                if(_fuse.Type == Fuse.FuseType.Start)
+                    m_saveObj.Add(_fuse.gameObject);
 
-            // スタート演出のため導火線の更新処理停止（ステージエディタ完成後修正予定）
-            _fuse.enabled = false;
+                m_fieldObject.AddLast(_fuse.gameObject);
+            }
         }
         GameGimmick[] _gimmicks = FindObjectsOfType<GameGimmick>();
         foreach (GameGimmick _gimmick in _gimmicks)
@@ -151,24 +151,23 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// </summary>
     void GameStart()
     {
-        foreach (GameObject _saveNum in m_saveObj)
+        Number number = m_saveObj[0].GetComponent<Number>();
+
+        if (number && number.TexCount < 0)
         {
-            Number number = _saveNum.GetComponent<Number>();
+            m_gameStep = GameMain;
+            Destroy(m_saveObj[0]);
 
-            if (number.TexCount < 0)
-            {
-                m_gameStep = GameMain;
-                Destroy(_saveNum);
+            foreach (Fuse _fuse in m_uiFuse)
+                _fuse.enabled = true;
+            foreach (GameObject _obj in m_fieldObject)
+                _obj.GetComponent<Behaviour>().enabled = true;
 
-                foreach (Fuse _fuse in m_uiFuse)
-                    _fuse.enabled = true;
-                foreach (GameObject _obj in m_fieldObject)
-                    _obj.GetComponent<Behaviour>().enabled = true;
+            Fuse _start = m_saveObj[1].GetComponent<Fuse>();
+            _start.State = Fuse.FuseState.Burn;
 
-                m_UIFuseCreate.enabled = true;
-                m_saveObj.Clear();
-                return;
-            }
+            m_UIFuseCreate.enabled = true;
+            m_saveObj.Clear();
         }
     }
 
@@ -177,27 +176,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// </summary>
     void GameMain()
     {
-#if UNITY_EDITOR
-        if(Input.GetKeyUp(KeyCode.C))
-        {
-            GameGimmick[] gimmicks = FindObjectsOfType<GameGimmick>();
-            foreach(GameGimmick gimmick in gimmicks)
-            {
-                if (gimmick.Type != GameGimmick.GimmickType.Goal)
-                    continue;
-
-                FireGoal(gimmick);
-                break;
-            }
-            return;
-        }
-        else if(Input.GetKeyUp(KeyCode.O))
-        {
-            m_gameStep = GameOver;
-            return;
-        }
-#endif
-
         // 導火線を選択しているなら
         if (m_selectFuse)
         {
@@ -331,6 +309,40 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     }
 
     /// <summary>
+    /// ゲームクリア処理
+    /// </summary>
+    public void GameClear()
+    {
+        Vector3 centerPos = Vector3.zero;
+
+        // 花火を移動させメインカメラに注視させる
+        if (m_saveObj.Count > 0)
+        {
+            foreach (GameObject _goal in m_saveObj)
+            {
+                _goal.transform.position = Vector3.Lerp(_goal.transform.position, new Vector3(
+                    _goal.transform.position.x, AdjustParameter.Result_Constant.END_FIRE_POS_Y, _goal.transform.position.z), Time.deltaTime);
+                centerPos += _goal.transform.position;
+            }
+        }
+
+        Camera.main.transform.LookAt(centerPos);
+        Camera.main.rect = new Rect(0.0f, 0.0f, Mathf.Lerp(Camera.main.rect.width, 1.0f, Time.deltaTime), 1.0f);
+        // UIの移動
+        StartCoroutine(SlideResultUI(m_resultClear));
+    }
+
+    /// <summary>
+    /// ゲームオーバー処理
+    /// </summary>
+    public void GameOver()
+    {
+        Camera.main.rect = new Rect(0.0f, 0.0f, Mathf.Lerp(Camera.main.rect.width, 1.0f, Time.deltaTime), 1.0f);
+        // UIの移動
+        StartCoroutine(SlideResultUI(m_resultGameover));
+    }
+
+    /// <summary>
     /// 一番近い導火線の座標から生成位置を決定
     /// </summary>
     /// <param name="mousePos">マウスのワールド座標</param>
@@ -354,44 +366,59 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
 
         if (nearObj == null)
-            return OUTPOS;
+            return m_createPos;
 
         // そのオブジェクトの上下左右前後どちらにあるのか
         {
-            float disX, disY, disZ, max;
-            disX = mousePos.x - nearObj.transform.position.x;
-            disY = mousePos.y - nearObj.transform.position.y;
-            disZ = mousePos.z - nearObj.transform.position.z;
-            max = Mathf.Max(Mathf.Abs(disX), Mathf.Abs(disY), Mathf.Abs(disZ));
+            //float disX, disY, disZ, max;
+            //disX = mousePos.x - nearObj.transform.position.x;
+            //disY = mousePos.y - nearObj.transform.position.y;
+            //disZ = mousePos.z - nearObj.transform.position.z;
+            //max = Mathf.Max(Mathf.Abs(disX), Mathf.Abs(disY), Mathf.Abs(disZ));
+            //
+            //// X座標のが大きい
+            //if (Mathf.Abs(disX) == max)
+            //{
+            //    if (disX >= 0)
+            //        objPos = nearObj.transform.position + new Vector3(AdjustParameter.Fuse_Constant.DEFAULT_SCALE, 0.0f, 0.0f);
+            //    else
+            //        objPos = nearObj.transform.position - new Vector3(AdjustParameter.Fuse_Constant.DEFAULT_SCALE, 0.0f, 0.0f);
+            //}
+            //// Y座標のが近い
+            //else if (Mathf.Abs(disY) == max)
+            //{
+            //    if (disY >= 0)
+            //        objPos = nearObj.transform.position + new Vector3(0.0f, AdjustParameter.Fuse_Constant.DEFAULT_SCALE, 0.0f);
+            //    else
+            //        objPos = nearObj.transform.position - new Vector3(0.0f, AdjustParameter.Fuse_Constant.DEFAULT_SCALE, 0.0f);
+            //}
+            //// Z座標のが近い
+            //else
+            //{
+            //    if (disZ >= 0)
+            //        objPos = nearObj.transform.position + new Vector3(0.0f, 0.0f, AdjustParameter.Fuse_Constant.DEFAULT_SCALE);
+            //    else
+            //        objPos = nearObj.transform.position - new Vector3(0.0f, 0.0f, AdjustParameter.Fuse_Constant.DEFAULT_SCALE);
+            //}
 
-            // X座標のが大きい
-            if (Mathf.Abs(disX) == max)
-            {
-                if (disX >= 0)
-                    objPos = nearObj.transform.position + new Vector3(AdjustParameter.Fuse_Constant.DEFAULT_SCALE, 0.0f, 0.0f);
-                else
-                    objPos = nearObj.transform.position - new Vector3(AdjustParameter.Fuse_Constant.DEFAULT_SCALE, 0.0f, 0.0f);
-            }
-            // Y座標のが近い
-            else if (Mathf.Abs(disY) == max)
-            {
-                if (disY >= 0)
-                    objPos = nearObj.transform.position + new Vector3(0.0f, AdjustParameter.Fuse_Constant.DEFAULT_SCALE, 0.0f);
-                else
-                    objPos = nearObj.transform.position - new Vector3(0.0f, AdjustParameter.Fuse_Constant.DEFAULT_SCALE, 0.0f);
-            }
-            // Z座標のが近い
-            else
-            {
-                if (disZ >= 0)
-                    objPos = nearObj.transform.position + new Vector3(0.0f, 0.0f, AdjustParameter.Fuse_Constant.DEFAULT_SCALE);
-                else
-                    objPos = nearObj.transform.position - new Vector3(0.0f, 0.0f, AdjustParameter.Fuse_Constant.DEFAULT_SCALE);
-            }
+            Vector3 distance, absolute;
+            // 距離を求める
+            distance = mousePos - nearObj.transform.position;
+            // 絶対値にしたものを入れる
+            absolute = new Vector3(Mathf.Abs(distance.x), Mathf.Abs(distance.y), Mathf.Abs(distance.z));
+            // XYZの絶対値の最大値を求める
+            float max = Mathf.Max(absolute.x, absolute.y, absolute.z);
+            // 一番大きい要素は１、そのほか2つは0を入れる
+            absolute -= new Vector3(max, max, max);
+            absolute = new Vector3(Mathf.Clamp01(Mathf.Floor(absolute.x + 1)),
+                Mathf.Clamp01(Mathf.Floor(absolute.y + 1)), Mathf.Clamp01(Mathf.Floor(absolute.z + 1)));
+
+            objPos = nearObj.transform.position +
+                    absolute * AdjustParameter.Fuse_Constant.DEFAULT_SCALE * Mathf.Sign(Vector3.Dot(distance, absolute));
         }
 
-        Vector3Int half = new Vector3Int((int)Mathf.Floor((float)(m_stageSize.x / 2.0f)),
-            (int)Mathf.Floor((float)(m_stageSize.x / 2.0f)), (int)Mathf.Floor((float)(m_stageSize.z / 2.0f)));
+        Vector3Int half = new Vector3Int((int)Mathf.Floor(m_stageSize.x / 2.0f),
+            (int)Mathf.Floor(m_stageSize.x / 2.0f), (int)Mathf.Floor(m_stageSize.z / 2.0f));
         Vector3Int stageMax = half;
         Vector3Int stageMin = -half;
 
@@ -408,6 +435,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
             return m_createPos;
         }
+
         return objPos;
     }
 
@@ -463,12 +491,13 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// ゴールが燃えた時、燃え尽きた時の処理
     /// </summary>
     /// <param name="goal">ゴールのオブジェクト</param>
-    public void FireGoal(GameGimmick goal)
+    public void FireGoal(GameGimmick goal, bool isBurnOut)
     {
         if (m_gameStep != GameMain)
             return;
 
-        if(!m_saveObj.Add(goal.gameObject))
+        // 燃え尽きたのなら
+        if (isBurnOut)
         {
             // 燃え尽きた場合
             m_resultClear.SetActive(true);
@@ -480,40 +509,11 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             m_UIFuseCreate.enabled = false;
             Camera.main.GetComponent<MainCamera>().Control = false;
         }
-    }
-
-    /// <summary>
-    /// ゲームクリア処理
-    /// </summary>
-    public void GameClear()
-    {
-        Vector3 centerPos = Vector3.zero;
-
-        // 花火を移動させメインカメラに注視させる
-        if (m_saveObj.Count > 0)
+        // 花火に着火
+        else
         {
-            foreach (GameObject _goal in m_saveObj)
-            {
-                _goal.transform.position = Vector3.Lerp(_goal.transform.position, new Vector3(
-                    _goal.transform.position.x, AdjustParameter.Result_Constant.END_FIRE_POS_Y, _goal.transform.position.z), Time.deltaTime);
-                centerPos += _goal.transform.position;
-            }
+            m_saveObj.Add(goal.gameObject);
         }
-
-        Camera.main.transform.LookAt(centerPos);
-        Camera.main.rect = new Rect(0.0f, 0.0f, Mathf.Lerp(Camera.main.rect.width, 1.0f, Time.deltaTime), 1.0f);
-        // UIの移動
-        StartCoroutine(SlideResultUI(m_resultClear));
-    }
-
-    /// <summary>
-    /// ゲームオーバー処理
-    /// </summary>
-    public void GameOver()
-    {
-        Camera.main.rect = new Rect(0.0f, 0.0f, Mathf.Lerp(Camera.main.rect.width, 1.0f, Time.deltaTime), 1.0f);
-        // UIの移動
-        StartCoroutine(SlideResultUI(m_resultGameover));
     }
 
     /// <summary>

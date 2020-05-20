@@ -17,11 +17,7 @@ public class Fuse : MonoBehaviour
         MoveBack,
         MoveForward,
     }
-    //public enum FuseChild
-    //{
-    //    Model,
-    //    Target,
-    //}
+
     public enum FuseState
     {
         None,       // 場に置かれている
@@ -31,20 +27,21 @@ public class Fuse : MonoBehaviour
         Wet         // 濡れている
     }
 
-    private Transform m_childModel = null;
-    private Transform m_childTarget = null;
+    private readonly Vector3 OUTPOS = new Vector3(-50, -50, -50);           // 導火線を生成できない位置
 
     [SerializeField]
     private FuseType m_type = FuseType.Normal;
     [SerializeField]
     private Texture2D m_fuseTex = null;
 
-    private readonly Vector3 OUTPOS = new Vector3(-50, -50, -50);       // 導火線を生成できない位置
     private FuseState m_state = FuseState.None;
-    // 燃えているか
+    private Transform m_childModel = null;
+    private Transform m_childTarget = null;
+
     private Vector3 m_targetDistance = Vector3.zero;
-    private HashSet<GameObject> m_collisionObj = new HashSet<GameObject>();
-    private float m_countTime = 0.0f;
+    private HashSet<GameObject> m_collObj = new HashSet<GameObject>();
+    private float m_countTime = 0.0f;                                       // 汎用カウント変数
+    private List<Spark> m_haveEffect = new List<Spark>();                   // この導火線についているエフェクト   
 
     // UI用
     private Vector3 m_endPos = Vector3.zero;
@@ -53,6 +50,17 @@ public class Fuse : MonoBehaviour
 
     private bool m_isRotate = false;
 
+    public float CountTime
+    {
+        get
+        {
+            return m_countTime;
+        }
+        set
+        {
+            m_countTime = value;
+        }
+    }
     public Vector3 EndPos
     {
         get
@@ -74,6 +82,24 @@ public class Fuse : MonoBehaviour
         set
         {
             m_defaultPos = value;
+        }
+    }
+    public Vector3 DefaultRot
+    {
+        get
+        {
+            return m_defaultRot;
+        }
+    }
+    public Vector3 TargetDistance
+    {
+        get
+        {
+            return m_targetDistance;
+        }       
+        set
+        {
+            m_targetDistance = value;
         }
     }
     public FuseType Type
@@ -98,24 +124,6 @@ public class Fuse : MonoBehaviour
             m_state = value;
         }
     }
-    public Vector3 DefaultRot
-    {
-        get
-        {
-            return m_defaultRot;
-        }
-    }
-    public Vector3 TargetDistance
-    {
-        get
-        {
-            return m_targetDistance;
-        }       
-        set
-        {
-            m_targetDistance = value;
-        }
-    }
     public Transform ChildModel
     {
         get
@@ -134,45 +142,59 @@ public class Fuse : MonoBehaviour
             m_childTarget = value;
         }
     }
-
-
+    public List<BoxCollider> HaveEffect(Spark spark)
+    {
+        List<Spark> sparkList = m_haveEffect;
+        sparkList.Remove(spark);
+        List<BoxCollider> collList = new List<BoxCollider>();
+        for(int i = 0; i < sparkList.Count; ++i)
+        {
+            collList.AddRange(sparkList[i].GetComponents<BoxCollider>());
+        }
+        return collList;
+    }
 
     private void Awake()
     {
         // 水が乾くまでの時間
         m_countTime = AdjustParameter.Fuse_Constant.WET_MAX_TIME;
+
+        // 燃焼していないことをシェーダーにセット
+        m_childModel = transform.GetChild(0);
+        m_childTarget = transform.GetChild(1);
+        m_childModel.GetComponent<Renderer>().material.SetTexture("_MainTex", m_fuseTex);
     }
 
     private void Start()
     {
-        // 燃焼していないことをシェーダーにセット
-        m_childModel = transform.GetChild(0);
-        m_childTarget = transform.GetChild(1);
+        m_defaultRot = transform.localEulerAngles;
 
+        Renderer modelRender = m_childModel.GetComponent<Renderer>();
         // 導火線本体の中心座標を設定
-        m_childModel.GetComponent<Renderer>().material.SetVector("_Center", m_childModel.position);
+        modelRender.material.SetVector("_Center", m_childModel.position);
         if (m_type == FuseType.Start)
         {
             m_state = FuseState.Burn;
             m_targetDistance = Vector3.down / 2.0f;
 
+            Spark spark = Spark.Instantiate(transform.position + m_targetDistance, m_targetDistance * -2.0f, this, m_haveEffect.Count);
+            m_haveEffect.Add(spark);
+
             // 導火線の燃えてきた方向にシェーダー用のオブジェクトを移動
             m_childTarget.position = transform.position + TargetDistance;
-            m_childModel.GetComponent<Renderer>().material.SetVector("_Center", m_childModel.position);
+            modelRender.material.SetVector("_Target", m_childTarget.position);
+            modelRender.material.SetVector("_Center", m_childModel.position);
         }
         else
         {
             // 色を変えるオブジェクトの座標
-            m_childModel.GetComponent<Renderer>().material.SetVector("_Target", OUTPOS);
+            modelRender.material.SetVector("_Target", OUTPOS);
             // 燃やす範囲（0:その場だけ ～　1:全域）
-            m_childModel.GetComponent<Renderer>().material.SetFloat("_Ration", 0);
-            m_childModel.GetComponent<Renderer>().material.SetTexture("_MainTex", m_fuseTex);
+            modelRender.material.SetFloat("_Ration", 0);
         }
 
-        m_defaultRot = transform.localEulerAngles;
-
-       // 元の位置を保存
-       if(m_state != FuseState.UI)
+        // 元の位置を保存
+        if (m_state != FuseState.UI)
             m_defaultPos = transform.position;
     }
 
@@ -182,7 +204,7 @@ public class Fuse : MonoBehaviour
         {
             case FuseState.UI:
                 {
-                    // 移動官僚していないなら
+                    // 移動完了していないなら
                     if (m_endPos != Vector3.zero)
                     {
                         // 下へ落下
@@ -215,7 +237,7 @@ public class Fuse : MonoBehaviour
                             m_childTarget.position = transform.position;
 
                             // 当たっている導火線に引火
-                            foreach (GameObject _obj in m_collisionObj)
+                            foreach (GameObject _obj in m_collObj)
                             {
                                 if (Utility.TagSeparate.getParentTagName(_obj.transform.tag) == NameDefine.TagName.Fuse)
                                 {
@@ -224,13 +246,18 @@ public class Fuse : MonoBehaviour
                                     GameMgr.Instance.BurnCount += 1;
 
                                     _fuse.TargetDistance = new Vector3(
-                                        (transform.position.x - _fuse.transform.position.x) * 0.5f,
-                                        (transform.position.y - _fuse.transform.position.y) * 0.5f,
-                                        (transform.position.z - _fuse.transform.position.z) * 0.5f);
+                                        transform.position.x - _fuse.transform.position.x,
+                                        transform.position.y - _fuse.transform.position.y,
+                                        transform.position.z - _fuse.transform.position.z) * 0.5f;
 
                                     // 導火線の燃えてきた方向にシェーダー用のオブジェクトを移動
                                     _fuse.ChildTarget.position =
                                         _fuse.transform.position + _fuse.TargetDistance;
+
+                                    // エフェクトも同じ場所に生成
+                                    Spark spark = Spark.Instantiate(_fuse.transform.position + _fuse.TargetDistance,
+                                        _fuse.TargetDistance * - 2.0f, _fuse, _fuse.m_haveEffect.Count);
+                                    _fuse.m_haveEffect.Add(spark);
 
                                     // 導火線本体の中心座標を設定
                                     Transform childModel = _fuse.ChildModel;
@@ -239,13 +266,15 @@ public class Fuse : MonoBehaviour
                                 else if (Utility.TagSeparate.getParentTagName(_obj.transform.tag) == NameDefine.TagName.Gimmick)
                                 {
                                     GameGimmick _gimmick = _obj.gameObject.GetComponent<GameGimmick>();
+
+                                    // 当たった
                                     _gimmick.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
 
                                     // 当たったものがゴールなら
                                     if (_gimmick.Type == GameGimmick.GimmickType.Goal && !_gimmick.GimmickStart)
                                     {
                                         // 燃えたゴールを登録
-                                        GameMgr.Instance.FireGoal(_gimmick);
+                                        GameMgr.Instance.FireGoal(_gimmick, false);
                                         // 燃えているオブジェクトを加算
                                         GameMgr.Instance.BurnCount += 1;
                                         _gimmick.GimmickStart = true;
@@ -278,8 +307,9 @@ public class Fuse : MonoBehaviour
             case FuseState.Out:
                 {
                     m_countTime -= Time.deltaTime;
+                    m_childModel.GetComponent<Renderer>().material.SetFloat("_OutTime", m_countTime / AdjustParameter.Fuse_Constant.OUT_MAX_TIME);
                     // 一定時間たったら消す
-                    if(m_countTime <= 0)
+                    if (m_countTime <= 0)
                     {
                         GameMgr.Instance.DestroyFuse(this);
                         Destroy(gameObject);
@@ -300,22 +330,6 @@ public class Fuse : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// ポストエフェクトをかけるためのレイヤーの制御
-    /// </summary>
-    /// <param name="isSet">ポストエフェクトを開始か終わりか</param>
-    public void SelectUIFuse(bool isSet)
-    {
-        for (int i = 0; i < transform.childCount - 1; ++i)
-        {
-            GameObject _obj = transform.GetChild(i).gameObject;
-            if (isSet)
-                _obj.layer = NameDefine.Layer.PostEffect;
-            else
-                _obj.layer = NameDefine.Layer.Ignore;
-        }
-    }
-
     private void OnTriggerStay(Collider other)
     {
         // 燃えていない導火線のみ判定をとる
@@ -331,7 +345,7 @@ public class Fuse : MonoBehaviour
             if (!_fuse || _fuse.State != FuseState.None)
                 return;
 
-            m_collisionObj.Add(_fuse.gameObject);
+            m_collObj.Add(_fuse.gameObject);
         }
         else if (Utility.TagSeparate.getParentTagName(other.transform.tag) == NameDefine.TagName.Gimmick)
         {
@@ -341,7 +355,23 @@ public class Fuse : MonoBehaviour
             if (_gimmick.Type == GameGimmick.GimmickType.Water)
                 return;
 
-            m_collisionObj.Add(_gimmick.gameObject);
+            m_collObj.Add(_gimmick.gameObject);
+        }
+    }
+
+    /// <summary>
+    /// ポストエフェクトをかけるためのレイヤーの制御
+    /// </summary>
+    /// <param name="isSet">ポストエフェクトを開始か終わりか</param>
+    public void SelectUIFuse(bool isSet)
+    {
+        for (int i = 0; i < transform.childCount - 1; ++i)
+        {
+            GameObject _obj = transform.GetChild(i).gameObject;
+            if (isSet)
+                _obj.layer = NameDefine.Layer.PostEffect;
+            else
+                _obj.layer = NameDefine.Layer.Ignore;
         }
     }
 

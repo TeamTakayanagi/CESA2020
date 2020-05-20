@@ -88,13 +88,13 @@ public class GameGimmick : MonoBehaviour
             {
                 m_gimmickValue = AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
                 GameMgr.Instance.BurnCount -= 1;
-                GameMgr.Instance.FireGoal(this);
+                GameMgr.Instance.FireGoal(this, true);
                 m_isGimmickStart = false;
             }
         }
     }
 
-    public IEnumerator  GimmickWater()
+    public IEnumerator GimmickWater()
     {
         RaycastHit hit = new RaycastHit();
         if (Physics.Raycast(transform.position, Vector3.forward, out hit, m_gimmickValue))

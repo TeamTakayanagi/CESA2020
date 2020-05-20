@@ -24,9 +24,9 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _DepthBias: 5
-    - _DepthMult: 10
-    - _NormalBias: 5
-    - _NormalMult: 5
+    - _DepthBias: 3.03
+    - _DepthMult: 9.93
+    - _NormalBias: 4.64
+    - _NormalMult: 2.55
     m_Colors:
-    - _OutlineColor: {r: 0, g: 1, b: 0.1436193, a: 1}
+    - _OutlineColor: {r: 1, g: 0.08203957, b: 0, a: 1}

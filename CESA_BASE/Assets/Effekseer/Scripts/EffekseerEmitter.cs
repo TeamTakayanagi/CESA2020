@@ -12,14 +12,20 @@ namespace Effekseer
 	[AddComponentMenu("Effekseer/Effekseer Emitter")]
 	public class EffekseerEmitter : MonoBehaviour
 	{
+		public enum EffectType
+		{
+			Spark = 0,
+			Max
+		}
+
 		/// <summary xml:lang="en">
-		/// Effect name
+		/// Effect Type
 		/// </summary>
 		/// <summary xml:lang="ja">
-		/// エフェクト名
+		/// エフェクトの種類
 		/// </summary>
-		//public string effectName;
-		
+		public EffectType effectType;
+
 		/// <summary xml:lang="en">
 		/// Effect name
 		/// </summary>
@@ -276,7 +282,7 @@ namespace Effekseer
 			}
 		}
 
-		void Start()
+		protected void Start()
 		{
 			if (effectAsset && playOnStart) {
 				Play();

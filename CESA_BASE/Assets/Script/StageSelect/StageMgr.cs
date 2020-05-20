@@ -14,8 +14,6 @@ public class StageMgr : SingletonMonoBehaviour<StageMgr>
     //private CSVStageData m_csvStageData = null;
     private Utility.CSVFile.BinData m_SaveData = new Utility.CSVFile.BinData();
     private Renderer[] m_childRender = null;
-    private Vector3 m_direction;
-
     private StageMgrState m_step = 0;
 
     void Start()

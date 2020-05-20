@@ -30,6 +30,11 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         m_camera.Control = true;
 
         m_stages.AddRange(StageMgr.Instance.GetComponentsInChildren<Stage>());
+        for(int i = 0; i < m_stages.Count; ++i)
+        {
+            m_stages[i].StageNum = i;
+        }
+
         m_uiArrow.SetActive(false);
         m_uiStartBack.SetActive(false);
 
@@ -55,6 +60,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                         if (_hit.transform != _stage.transform)
                             continue;
 
+                        m_zoomObj = _stage;
                         m_camera.StartZoomIn(_stage.transform.position);
 
                         m_uiArrow.SetActive(true);

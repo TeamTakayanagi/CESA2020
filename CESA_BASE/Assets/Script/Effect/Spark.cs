@@ -1,74 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Effekseer;
 
-public class Spark : MonoBehaviour
+public class Spark : EffekseerEmitter
 {
-    // フェーズ
-    private enum FASE {
-        FASE_1,
-        FASE_2,
-        FASE_MAX,
-    }
-
-    private EffectManager m_effectMgrClass = null;                          // エフェクトマネージャ
-    private Fuse m_fuseClass = null;                                        // 導火線キューブ取得用
-    private Bounds m_fuseBounds = new Bounds(Vector3.zero, Vector3.zero);   // 導火線キューブのBounds取得用
-    private Vector3 m_fuseExtents = Vector3.zero;                           // 導火線キューブのサイズ(1/2)
-    private Fuse m_nextFuseClass = null;                                    // 次の導火線キューブ
-    private Vector3 m_startPos = Vector3.zero;                              // 初期座標
-    private Vector3 m_posOffset = new Vector3(0, 0, -0.2f);                 // 座標オフセット
-    private float m_moveSpeed = 0.0f;                                       // 移動速度
+    private int m_effectNum = 0;                                            // 導火線から見てこのエフェクトが何個目か
     private Vector3 m_moveVector = Vector3.zero;                            // 移動方向
-    private Vector3 m_move = Vector3.zero;                                  // 移動用
-    private Vector3 m_lastPos = Vector3.zero;                               // 過去座標
+    private Fuse m_fuseClass = null;                                        // 導火線キューブ取得用
     private BoxCollider m_enterCollider = null;                             // 進入方向の導火線コライダ
-    private BoxCollider[] m_fuseCollider = null;                            // 導火線のコライダ
-    private List<BoxCollider> m_othersEnterCol = new List<BoxCollider>();   // 自分の導火線の中の他人のenterCollider
-    private bool m_checkEnterCol = false;                                   // enterCol検索をしたかどうかのフラグ
-
-    public Fuse FuseClass
-    {
-        get {
-            return m_fuseClass;
-        }
-    }
-    public Fuse NextFuseClass
-    {
-        get {
-            return m_nextFuseClass;
-        }
-        set {
-            m_nextFuseClass = value;
-        }
-    }
-    public BoxCollider EnterCollider
-    {
-        get {
-            return m_enterCollider;
-        }
-        set {
-            m_enterCollider = value;
-        }
-    }
-    public Vector3 StartPos
-    {
-        get {
-            return m_startPos;
-        }
-        set {
-            m_startPos = value;
-        }
-    }
-    public Vector3 MoveVector
-    {
-        get {
-            return m_moveVector;
-        }
-        set {
-            m_moveVector = value;
-        }
-    }
+    private List<BoxCollider> m_fuseCollider = new List<BoxCollider>();     // 進入方向以外導火線のコライダ
 
     private void Awake()
     {
@@ -76,249 +17,145 @@ public class Spark : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    new void Start()
     {
-        // マネージャ
-        m_effectMgrClass = FindObjectOfType<EffectManager>();
-
-        // 参照する導火線
-        m_fuseClass = m_nextFuseClass;
-
+        base.Start();
         // コライダ取得
-        m_fuseCollider = m_fuseClass.GetComponents<BoxCollider>();
+        m_fuseCollider.AddRange(m_fuseClass.GetComponents<BoxCollider>());
 
-        // サイズ取得
-        m_fuseBounds = m_fuseClass.GetComponent<MeshFilter>().mesh.bounds;
-        m_fuseExtents = new Vector3(m_fuseBounds.extents.x * m_fuseClass.transform.localScale.x,
-                                    m_fuseBounds.extents.y * m_fuseClass.transform.localScale.y,
-                                    m_fuseBounds.extents.z * m_fuseClass.transform.localScale.z);
-
-        if (m_fuseClass.Type == Fuse.FuseType.Start)
+        // その導火線の進行方向のコライダーを取得
+        for (int i = 0; i < m_fuseCollider.Count; ++i)
         {
-            // オフセット設定
-            m_posOffset = new Vector3(m_fuseExtents.x * Mathf.Cos(Mathf.Deg2Rad * (m_fuseClass.transform.localEulerAngles.z + 270)),
-                                      m_fuseExtents.x * Mathf.Sin(Mathf.Deg2Rad * (m_fuseClass.transform.localEulerAngles.z + 270)),
-                                      0);
-            // 初期座標
-            gameObject.transform.position = m_fuseClass.transform.position + m_posOffset;
+            if (Vector3.Dot(m_moveVector, m_fuseCollider[i].size) < 1.0f)
+                continue;
 
-            m_moveVector = new Vector3(SignZero(m_fuseClass.transform.position.x - transform.position.x),
-                                       SignZero(m_fuseClass.transform.position.y - transform.position.y),
-                                       SignZero(m_fuseClass.transform.position.z - transform.position.z));
-
-            // 仮
-            m_enterCollider = m_fuseCollider[0];  
-
+            m_enterCollider = m_fuseCollider[i];
+            m_fuseCollider.Remove(m_enterCollider);
+            break;
         }
-        else
-        {
-            gameObject.transform.position = m_startPos;
-            // m_moveVectorはCreate時に入れる
-        }
-
-        m_checkEnterCol = true;
-
-        // 終了
-        m_nextFuseClass = null;
     }
 
     // Update is called once per frame
-    void Update()
+    new void Update()
     {
+        // エフェクシアの更新処理
+        base.Update();
+
+        if (m_fuseClass == null)
+            return;
+
         Transform fuseTarget = m_fuseClass.ChildTarget;
-        if (m_nextFuseClass != null)
-        {// 次の導火線へ行く時
-            m_fuseClass = m_nextFuseClass;
-            
-            m_fuseBounds = m_fuseClass.GetComponent<MeshFilter>().mesh.bounds;
 
-            m_fuseCollider = m_fuseClass.GetComponents<BoxCollider>();
-
-            m_checkEnterCol = true;
-
-            m_nextFuseClass = null;
-        }
-
-        if (m_checkEnterCol && fuseTarget.localScale.x < 0.7f)
+        // 導火線が燃え立つ来たのを確認して自信を即削除
+        if (m_fuseClass.State == Fuse.FuseState.Out && fuseTarget.localScale.x >= 1.0f)
         {
-            m_effectMgrClass.CheckEnterCollider(m_fuseClass, m_othersEnterCol);
-            m_checkEnterCol = false;
+            DestroyImmediate(gameObject);
+            return;
         }
-
-        // 燃え尽き削除
-        if (fuseTarget.localScale.x <= 0.0f)
-            m_effectMgrClass.RemoveSpark(gameObject);
-            
 
         // 移動量計算
-        m_moveSpeed = m_fuseBounds.size.z * (Time.deltaTime  / AdjustParameter.Fuse_Constant.BURN_MAX_TIME);
-        m_move = m_moveSpeed * m_moveVector;
+        Vector3 move = m_moveVector * Time.deltaTime / AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
+        Vector3 afterPos = transform.position;
 
         // 移動
         if (m_fuseClass.State == Fuse.FuseState.Burn && fuseTarget.localScale.x != AdjustParameter.Fuse_Constant.BURN_MAX_TIME)
-            transform.position += m_move;
+            afterPos += move;
 
         // 中心に来た時
-        if (m_lastPos != Vector3.zero)
+        if (m_effectNum == 0 && afterPos != Vector3.zero &&
+            (Vector3.Dot(afterPos - m_fuseClass.transform.position, transform.position - m_fuseClass.transform.position) *
+                Vector3.Dot(move, m_moveVector)) < 0)
         {
-            if ((Vector3.Dot(m_lastPos - m_fuseClass.transform.position, this.transform.position - m_fuseClass.transform.position) * 
-                Vector3.Dot(m_move, m_moveVector)) < 0)
-            {
-                transform.position = m_fuseClass.transform.position;
-                SparkBranch();
-            }
+            // 導火線の
+            SparkBranch(m_fuseClass.HaveEffect(this));
         }
 
-        // 過去座標格納
-        m_lastPos = transform.position;
+        transform.position = afterPos;
     }
 
-    // 入れた値が＋なら１、０なら０、－なら－１を返す
-    private float SignZero(float value)
+    private void SparkBranch(List<BoxCollider> coliderList)
     {
-        if (value > 0)
-            return 1.0f;
-        else if (value == 0)
-            return 0.0f;
-        else if (value < 0)
-            return -1.0f;
-        else
-            return 0.0f;
-    }
-    
-    private void SparkBranch()
-    {
-        if (m_enterCollider.center == Vector3.zero)
-        {// 進入方向が長いコライダの場合
-            for (int _colliderNum = 0; _colliderNum < m_fuseCollider.Length; _colliderNum++)
+        for (int i = 0; i < m_fuseCollider.Count; i++)
+        {
+            bool _skip = false;
+            for (int j = 0; j < coliderList.Count; j++)
             {
-                // 進入方向のコライダは弾く
-                if (m_enterCollider.size == m_fuseCollider[_colliderNum].size)
+                if (Vector3.Cross(m_fuseCollider[i].size, coliderList[j].size) != Vector3.zero)
                     continue;
 
-                // 判定するコライダが誰かのenterCollidrなら飛ばす
-                bool _skip = false;
-                for (int _listCount = 0; _listCount < m_othersEnterCol.Count; _listCount++)
-                {
+                _skip = true;
+            }
+            if (_skip)
+                continue;
 
-                    if (m_fuseCollider[_colliderNum] == m_othersEnterCol[_listCount])
-                    {
-                        _skip = true;
-                        break;
-                    }
-                }
-                if (_skip)
-                    continue;
+            CreateBranchEffect(m_fuseCollider[i]);
 
-                if (m_fuseCollider[_colliderNum].center == new Vector3(0.0f, 0.0f, 0.0f))
-                {// 長いコライダ
-                    float _mostLong = Mathf.Max(m_fuseCollider[_colliderNum].bounds.size.x,
-                                                m_fuseCollider[_colliderNum].bounds.size.y,
-                                                m_fuseCollider[_colliderNum].bounds.size.z);
-                    
-                    if (_mostLong == m_fuseCollider[_colliderNum].bounds.size.x)
-                    {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, Vector3.right);
-                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, Vector3.left);
-                    }
-                    else if (_mostLong == m_fuseCollider[_colliderNum].bounds.size.y)
-                    {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, Vector3.up);
-                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, Vector3.down);
-                    }
-                    else if (_mostLong == m_fuseCollider[_colliderNum].bounds.size.z)
-                    {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, Vector3.forward);
-                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, Vector3.back);
-                    }
-                }
-                else
-                {// 短いコライダ
-                    Vector3 _moveVector = m_fuseClass.transform.position - m_fuseCollider[_colliderNum].bounds.center;
-                    float _judgeVector = Mathf.Max(Mathf.Abs(_moveVector.x), Mathf.Abs(_moveVector.y), Mathf.Abs(_moveVector.z));
+            // 進入方向が短いコライダの場合
+            if (m_enterCollider.center != Vector3.zero)
+                DestroyImmediate(gameObject);           // 進行中のエフェクトを削除
+        }
+    }
 
-                    if (_judgeVector == Mathf.Abs(_moveVector.x))
-                    {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(SignZero(-_moveVector.x), 0.0f, 0.0f));
-                    }
-                    else if (_judgeVector == Mathf.Abs(_moveVector.y))
-                    {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(0.0f, SignZero(-_moveVector.y), 0.0f));
-                    }
-                    else if (_judgeVector == Mathf.Abs(_moveVector.z))
-                    {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(0.0f, 0.0f, SignZero(-_moveVector.z)));
-                    }
-                }
+    private void CreateBranchEffect(BoxCollider _collider)
+    {
+        if (_collider.center == Vector3.zero)
+        {// 長いコライダ
+            float _mostLong = Mathf.Max(_collider.bounds.size.x,
+                                        _collider.bounds.size.y,
+                                        _collider.bounds.size.z);
+
+            if (_mostLong == _collider.bounds.size.x)
+            {
+                Instantiate(transform.position, Vector3.right, m_fuseClass, -1);
+                Instantiate(transform.position, Vector3.left, m_fuseClass, -1);
+            }
+            else if (_mostLong == _collider.bounds.size.y)
+            {
+                Instantiate(transform.position, Vector3.up, m_fuseClass, -1);
+                Instantiate(transform.position, Vector3.down, m_fuseClass, -1);
+            }
+            else if (_mostLong == _collider.bounds.size.z)
+            {
+                Instantiate(transform.position, Vector3.forward, m_fuseClass, -1);
+                Instantiate(transform.position, Vector3.back, m_fuseClass, -1);
             }
         }
         else
-        {// 進入方向が短いコライダの場合
+        {// 短いコライダ
+            Vector3 _moveVector = m_fuseClass.transform.position - _collider.bounds.center;
+            float _judgeVector = Mathf.Max(Mathf.Abs(_moveVector.x), Mathf.Abs(_moveVector.y), Mathf.Abs(_moveVector.z));
 
-            for (int _colliderNum = 0; _colliderNum < m_fuseCollider.Length; _colliderNum++)
+            if (_judgeVector == Mathf.Abs(_moveVector.x))
             {
-                // 進入方向のコライダは弾く
-                if (m_enterCollider.size == m_fuseCollider[_colliderNum].size)
-                    continue;
-
-                // 判定するコライダが誰かのenterCollidrなら飛ばす
-                bool _skip = false;
-                for (int _listCount = 0; _listCount < m_othersEnterCol.Count; _listCount++)
-                {
-
-                    if (m_fuseCollider[_colliderNum] == m_othersEnterCol[_listCount])
-                    {
-                        _skip = true;
-                        break;
-                    }
-                }
-                if (_skip)
-                    continue;
-
-                if (m_fuseCollider[_colliderNum].center == new Vector3(0.0f, 0.0f, 0.0f))
-                {// 長いコライダ
-                    float _mostLong = Mathf.Max(m_fuseCollider[_colliderNum].bounds.size.x,
-                                                m_fuseCollider[_colliderNum].bounds.size.y,
-                                                m_fuseCollider[_colliderNum].bounds.size.z);
-
-                    if (_mostLong == m_fuseCollider[_colliderNum].bounds.size.x)
-                    {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(1.0f, 0.0f, 0.0f));
-                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(-1.0f, 0.0f, 0.0f));
-                    }
-                    else if (_mostLong == m_fuseCollider[_colliderNum].bounds.size.y)
-                    {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(0.0f, 1.0f, 0.0f));
-                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(0.0f, -1.0f, 0.0f));
-                    }
-                    else if (_mostLong == m_fuseCollider[_colliderNum].bounds.size.z)
-                    {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(0.0f, 0.0f, 1.0f));
-                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(0.0f, 0.0f, -1.0f));
-                    }
-                }
-                else
-                {// 短いコライダ
-                    Vector3 _moveVector = m_fuseClass.transform.position - m_fuseCollider[_colliderNum].bounds.center;
-                    float _judgeVector = Mathf.Max(Mathf.Abs(_moveVector.x), Mathf.Abs(_moveVector.y), Mathf.Abs(_moveVector.z));
-
-                    if (_judgeVector == Mathf.Abs(_moveVector.x))
-                    {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(SignZero(-_moveVector.x), 0.0f, 0.0f));
-                    }
-                    else if (_judgeVector == Mathf.Abs(_moveVector.y))
-                    {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(0.0f, SignZero(-_moveVector.y), 0.0f));
-                    }
-                    else if (_judgeVector == Mathf.Abs(_moveVector.z))
-                    {
-                        m_effectMgrClass.CreateSpark(m_fuseClass, transform.position, new Vector3(0.0f, 0.0f, SignZero(-_moveVector.z)));
-                    }
-                }
+                Instantiate(transform.position, new Vector3(-_moveVector.x, 0.0f, 0.0f), m_fuseClass, -1);
             }
-
-            // 分岐削除
-            m_effectMgrClass.RemoveSpark(gameObject);
+            else if (_judgeVector == Mathf.Abs(_moveVector.y))
+            {
+                Instantiate(transform.position, new Vector3(0.0f, -_moveVector.y, 0.0f), m_fuseClass, -1);
+            }
+            else if (_judgeVector == Mathf.Abs(_moveVector.z))
+            {
+                Instantiate(transform.position, new Vector3(0.0f, 0.0f, -_moveVector.z), m_fuseClass, -1);
+            }
         }
+
+    }
+
+    /// <summary>
+    /// 火花のエフェクト作成
+    /// </summary>
+    /// <param name="pos">座標</param>
+    /// <param name="move">移動量</param>
+    /// <param name="fuse">エフェクトのある導火線</param>
+    /// <param name="haveEffect">導火線の何個目のエフェクトか（追加生成はー１）</param>
+    /// <returns></returns>
+    static public Spark Instantiate(Vector3 pos, Vector3 move, Fuse fuse, int haveEffect)
+    {
+        Spark spark = EffectManager.Instance.EffectCreate(EffectType.Spark, pos, Quaternion.identity).GetComponent<Spark>();
+        spark.m_moveVector = move;
+        spark.m_fuseClass = fuse;
+        spark.m_effectNum = haveEffect;
+
+        return spark;
     }
 }

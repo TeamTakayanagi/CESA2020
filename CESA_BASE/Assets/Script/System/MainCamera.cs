@@ -126,8 +126,11 @@ public class MainCamera : MonoBehaviour
     {
         m_savePos = transform.position;
 
-        m_default = m_type;
-        m_type = CameraType.ZoomIn;
+        if (m_type != CameraType.ZoomIn)
+        {
+            m_default = m_type;
+            m_type = CameraType.ZoomIn;
+        }
         SetState();
         m_target = new Vector3(_zoomObj.x, transform.position.y, _zoomObj.z - transform.position.y * 1.5f);
     }

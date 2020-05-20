@@ -57,7 +57,6 @@ namespace ProcessedtParameter
     {
         public const int ERROR_INT = -999;                                 // int型エラー判別変数
     }
-
     public readonly struct CSV_Constant
     {
         public const string STAGE_DATA_PATH = "StageData";

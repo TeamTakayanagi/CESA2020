@@ -1925,8 +1925,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1859110576}
-        m_MethodName: StartZoomOut
+      - m_Target: {fileID: 26144261}
+        m_MethodName: ZoomOut
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

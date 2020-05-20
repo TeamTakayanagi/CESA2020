@@ -20,7 +20,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: a9392001741235c43b5d1a108c015d5c, type: 3}
+        m_Texture: {fileID: 2800000, guid: dbf7cb37b267ffd4eb8d461c49b1c0d0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 113685dcfbfb4cf4fbe8a406dcd01be6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalTex:
@@ -29,10 +33,17 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _Dsitance: 1
+    - _Gravity: 1
+    - _OutTime: 1
     - _Ration: 0
+    - _ScaleFactor: 0
+    - _Start: 0
+    - _Time: 0.5
     m_Colors:
     - _Center: {r: 0, g: 0, b: 0, a: 0}
+    - _Color: {r: 0, g: 1, b: 0.18528485, a: 0.3764706}
     - _FarColor: {r: 0, g: 0, b: 0, a: 1}
     - _FireOutColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Move: {r: 0.5, g: 1, b: 0.5, a: 0}
     - _NearColor: {r: 1, g: 1, b: 1, a: 1}
     - _Target: {r: 0, g: 0, b: 0, a: 0}

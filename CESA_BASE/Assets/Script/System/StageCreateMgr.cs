@@ -1,6 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
 {
@@ -26,7 +26,34 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
     {
         // 昇順に並び替え
         m_gimmkList.Sort((a, b) => a.Type - b.Type);
-        m_fuseList.Sort((a, b) => string.Compare(a.name, b.name));
+        var comp = new Comparison<Fuse>(CompColider);
+        m_fuseList.Sort(comp);
+    }
+
+    /// <summary>
+    /// 比較用
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    /// <returns></returns>
+    private int CompColider(Fuse a, Fuse b)
+    {
+        BoxCollider[] boxA, boxB;
+        boxA = a.GetComponents<BoxCollider>();
+        boxB = b.GetComponents<BoxCollider>();
+
+        if (boxA.Length != boxB.Length)
+            return boxB.Length - boxA.Length;
+
+        float sumA = 0, sumB = 0, difference;
+        for(int i = 0; i < boxA.Length; ++i)
+        {
+            sumA += Vector3.Dot(boxA[i].size, Vector3.one);
+            sumB += Vector3.Dot(boxB[i].size, Vector3.one);
+        }
+
+        difference = sumB - sumA;
+        return (int)(difference / Mathf.Abs(sumB - sumA));
     }
 
     /// <summary>
@@ -118,9 +145,11 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
             _fuse.transform.localPosition = new Vector3((i % 2) * AdjustParameter.UI_OBJECT_Constant.INTERVAL_X - 1.0f,
                 1.0f + (i / 2) * AdjustParameter.UI_OBJECT_Constant.INTERVAL_Y,
                 AdjustParameter.UI_OBJECT_Constant.DEFAULT_POS_Z);
-            _fuse.EndPos = _fuse.transform.localPosition;
-            if(rot != SuffixType.Zero)
-                _fuse.transform.localEulerAngles = new Vector3(90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4));
+            _fuse.EndPos = Vector3.zero;
+            _fuse.DefaultPos = _fuse.transform.parent.position +_fuse.transform.localPosition;
+
+            if (rot != SuffixType.Zero)
+                _fuse.transform.localEulerAngles = new Vector3(90.0f * UnityEngine.Random.Range(0, 4), 90.0f * UnityEngine.Random.Range(0, 4), 90.0f * UnityEngine.Random.Range(0, 4));
 
             // UI専用のコライダーを子供に
             GameObject _colider = Instantiate(m_uiColider, _fuse.transform.position, Quaternion.identity);
@@ -129,45 +158,49 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
     }
 
     /// <summary>
-    /// UI部分の導火線追加生成
+    /// UI部分の導火線追加生成（1個）
     /// </summary>
-    /// <param name="amout">生成量</param>
     /// <param name="parent">導火線の親オブジェクト</param>
-    /// <param name="indexList">添え字の配列</param>
-    public void AddCreateUIFuse(int amount, Transform parent, SuffixType index, Vector2Int fuseRean)
+    /// <param name="index">添え字の配列の決め方</param>
+    /// <param name="fuseRean">UIの導火線の総数（X：右　Y：左）</param>
+    /// <param name="indexNum">添え字指定（デフォルト引数：-1）</param>
+    public void AddCreateUIFuse(Transform parent, SuffixType index, Vector2Int fuseRean, int indexNum = -1)
     {
-        int[] indexList = GetSuffixList(index, amount, m_fuseList.Count, parent.GetInstanceID());
+        int[] indexList;
+        if(indexNum < 0 || indexNum >= m_fuseList.Count)
+            indexList = GetSuffixList(index, 1, m_fuseList.Count, parent.GetInstanceID());
+        else
+            indexList = new int[1] { indexNum };
+
         int fuseAmount = fuseRean.x + fuseRean.y;
-        for (int i = 0; i < amount; ++i)
-        {
-            // 出す場所
-            int place;
-            if (fuseRean.x <= fuseRean.y)
-                place = -1;
-            else
-                place = 1;
+        // 出す場所
+        int place;
+        if (fuseRean.x <= fuseRean.y)
+            place = -1;
+        else
+            place = 1;
 
-            Fuse _fuse = Instantiate(m_fuseList[indexList[i]], transform.position, Quaternion.identity);
-            _fuse.Type = Fuse.FuseType.Normal;
-            _fuse.State = Fuse.FuseState.UI;
-            _fuse.transform.SetParent(parent, true);
-            _fuse.EndPos = new Vector3(place,
-                1.0f + ((fuseAmount - (Mathf.Abs(fuseRean.x - fuseRean.y) / 2)) / 2) * AdjustParameter.UI_OBJECT_Constant.INTERVAL_Y,
-                AdjustParameter.UI_OBJECT_Constant.DEFAULT_POS_Z);
-            _fuse.transform.localPosition = new Vector3(place, AdjustParameter.UI_OBJECT_Constant.DEFAULT_POS_Y,
-                AdjustParameter.UI_OBJECT_Constant.DEFAULT_POS_Z);
-            _fuse.transform.localEulerAngles = new Vector3(90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4), 90.0f * Random.Range(0, 4));
+        Fuse _fuse = Instantiate(m_fuseList[indexList[0]], transform.position, Quaternion.identity);
+        _fuse.Type = Fuse.FuseType.Normal;
+        _fuse.State = Fuse.FuseState.UI;
+        _fuse.transform.SetParent(parent, true);
+        _fuse.EndPos = new Vector3(place,
+            1.0f + ((fuseAmount - (Mathf.Abs(fuseRean.x - fuseRean.y) / 2)) / 2) * AdjustParameter.UI_OBJECT_Constant.INTERVAL_Y,
+            AdjustParameter.UI_OBJECT_Constant.DEFAULT_POS_Z);
+        _fuse.transform.localPosition = new Vector3(place, AdjustParameter.UI_OBJECT_Constant.DEFAULT_POS_Y,
+            AdjustParameter.UI_OBJECT_Constant.DEFAULT_POS_Z);
+        _fuse.transform.localEulerAngles = new Vector3(90.0f * UnityEngine.Random.Range(0, 4), 90.0f * UnityEngine.Random.Range(0, 4), 90.0f * UnityEngine.Random.Range(0, 4));
 
-            if(GameMgr.Instance)
-                GameMgr.Instance.UIFuse = _fuse;    // リストの末尾に追加
-            // UI専用のコライダーを子供に
-            GameObject _colider = Instantiate(m_uiColider, _fuse.transform.position, Quaternion.identity);
-            _colider.transform.SetParent(_fuse.transform, true);
-        }
+        if (GameMgr.Instance)
+            GameMgr.Instance.UIFuse = _fuse;    // リストの末尾に追加
+
+        // UI専用のコライダーを子供に
+        GameObject _colider = Instantiate(m_uiColider, _fuse.transform.position, Quaternion.identity);
+        _colider.transform.SetParent(_fuse.transform, true);
     }
 
     /// <summary>
-    /// ギミックのUI表示
+    /// ギミックのUI表示（エディタ用）
     /// </summary>
     /// <param name="parent">UIオブジェクトの親</param>
     public void CreateUIGimmck(Transform parent)
@@ -207,7 +240,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
                 break;
             case SuffixType.Random:
                 for (int i = 0; i < elementCount; ++i)
-                    indexList[i] = Random.Range(0, objListCount);
+                    indexList[i] = UnityEngine.Random.Range(0, objListCount);
                 break;
             case SuffixType.Duplication:
                 for (int i = 0; i < elementCount; ++i)
