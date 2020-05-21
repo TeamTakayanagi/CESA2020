@@ -49,6 +49,9 @@ public class Spark : EffekseerEmitter
     // Update is called once per frame
     new void Update()
     {
+        // エフェクシアの更新処理
+        base.Update();
+
         if (m_fuseClass == null)
             return;
 
@@ -85,8 +88,6 @@ public class Spark : EffekseerEmitter
         }
 
         transform.position = afterPos;
-        // エフェクシアの更新処理
-        base.Update();
     }
 
     private void SparkBranch(List<BoxCollider> coliderList)
