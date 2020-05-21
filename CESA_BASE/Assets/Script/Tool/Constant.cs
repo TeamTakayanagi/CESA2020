@@ -43,6 +43,11 @@ namespace AdjustParameter
         public const float DURATION = 1.0f;                                 // リザルトのUIのスライド時間（秒）
         public const float END_FIRE_POS_Y = 30.0f;                          // 花火の終着地点の座標   
     }
+
+    public readonly struct Fade_Constant
+    {
+        public const float FADE_DURATION = 3.0f;                            // フェードのスライド時間
+    }
 }
 
 //---加工済み変数---

@@ -4,6 +4,16 @@ using UnityEngine;
 
 public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
 {
+    public enum FadeType
+    {
+        Alpha,
+        Start,
+        End
+    }
+
+    [SerializeField]
+    private FadeType m_type = FadeType.Start;
+
     [SerializeField]
     private GameObject FadePrefab = null;
     private GameObject m_fade;
@@ -30,6 +40,11 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
             case "Alpha":
                 m_fade.GetComponent<FadeAlpha>().StartFade();
                 break;
+
+            //case "Start":
+            //    m_fade.GetComponent<FadeGameStart>().StartFade();
+            //    break;
+
 
             default:
                 m_fade.GetComponent<FadeAlpha>().StartFade();
