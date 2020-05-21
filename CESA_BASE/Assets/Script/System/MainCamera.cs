@@ -84,7 +84,7 @@ public class MainCamera : MonoBehaviour
 
     void Awake()
     {
-        DOTween.SetTweensCapacity(500, 500);
+        DOTween.SetTweensCapacity(1250, 3125);
 
         transform.tag = "MainCamera";
         m_default = m_type;

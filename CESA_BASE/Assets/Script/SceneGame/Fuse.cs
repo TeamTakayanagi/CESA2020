@@ -145,7 +145,7 @@ public class Fuse : MonoBehaviour
     public List<BoxCollider> HaveEffect(Spark spark)
     {
         List<Spark> sparkList = m_haveEffect;
-        sparkList.Remove(spark);
+        //sparkList.Remove(spark);
         List<BoxCollider> collList = new List<BoxCollider>();
         for(int i = 0; i < sparkList.Count; ++i)
         {

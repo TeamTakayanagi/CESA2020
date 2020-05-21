@@ -26,7 +26,18 @@ public class Spark : EffekseerEmitter
         // その導火線の進行方向のコライダーを取得
         for (int i = 0; i < m_fuseCollider.Count; ++i)
         {
-            if (Vector3.Dot(m_moveVector, m_fuseCollider[i].size) < 1.0f)
+            if (Mathf.Abs(Vector3.Dot(m_moveVector, m_fuseClass.transform.rotation * m_fuseCollider[i].size)) < 0.5f)
+                continue;
+
+            m_enterCollider = m_fuseCollider[i];
+            m_fuseCollider.Remove(m_enterCollider);
+            break;
+        }
+        if (!m_enterCollider)
+            m_enterCollider = null;
+        for (int i = 0; i < m_fuseCollider.Count; ++i)
+        {
+            if (Mathf.Abs(Vector3.Dot(m_moveVector, m_fuseClass.transform.rotation * m_fuseCollider[i].size)) < 0.5f)
                 continue;
 
             m_enterCollider = m_fuseCollider[i];
@@ -38,9 +49,6 @@ public class Spark : EffekseerEmitter
     // Update is called once per frame
     new void Update()
     {
-        // エフェクシアの更新処理
-        base.Update();
-
         if (m_fuseClass == null)
             return;
 
@@ -58,7 +66,7 @@ public class Spark : EffekseerEmitter
         Vector3 afterPos = transform.position;
 
         // 移動
-        if (m_fuseClass.State == Fuse.FuseState.Burn && fuseTarget.localScale.x != AdjustParameter.Fuse_Constant.BURN_MAX_TIME)
+        if (m_fuseClass.State == Fuse.FuseState.Burn)
             afterPos += move;
 
         // 中心に来た時
@@ -68,9 +76,17 @@ public class Spark : EffekseerEmitter
         {
             // 導火線の
             SparkBranch(m_fuseClass.HaveEffect(this));
+            // 進入方向が短いコライダの場合
+            if (m_enterCollider.center != Vector3.zero)
+            {
+                DestroyImmediate(gameObject);           // 進行中のエフェクトを削除
+                return;
+            }
         }
 
         transform.position = afterPos;
+        // エフェクシアの更新処理
+        base.Update();
     }
 
     private void SparkBranch(List<BoxCollider> coliderList)
@@ -89,10 +105,6 @@ public class Spark : EffekseerEmitter
                 continue;
 
             CreateBranchEffect(m_fuseCollider[i]);
-
-            // 進入方向が短いコライダの場合
-            if (m_enterCollider.center != Vector3.zero)
-                DestroyImmediate(gameObject);           // 進行中のエフェクトを削除
         }
     }
 
@@ -127,15 +139,15 @@ public class Spark : EffekseerEmitter
 
             if (_judgeVector == Mathf.Abs(_moveVector.x))
             {
-                Instantiate(transform.position, new Vector3(-_moveVector.x, 0.0f, 0.0f), m_fuseClass, -1);
+                Instantiate(transform.position, new Vector3(-Mathf.Sign(_moveVector.x), 0.0f, 0.0f), m_fuseClass, -1);
             }
             else if (_judgeVector == Mathf.Abs(_moveVector.y))
             {
-                Instantiate(transform.position, new Vector3(0.0f, -_moveVector.y, 0.0f), m_fuseClass, -1);
+                Instantiate(transform.position, new Vector3(0.0f, -Mathf.Sign(_moveVector.y), 0.0f), m_fuseClass, -1);
             }
             else if (_judgeVector == Mathf.Abs(_moveVector.z))
             {
-                Instantiate(transform.position, new Vector3(0.0f, 0.0f, -_moveVector.z), m_fuseClass, -1);
+                Instantiate(transform.position, new Vector3(0.0f, 0.0f, -Mathf.Sign(_moveVector.z)), m_fuseClass, -1);
             }
         }
 

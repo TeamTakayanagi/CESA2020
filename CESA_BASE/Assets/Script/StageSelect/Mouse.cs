@@ -7,7 +7,6 @@ public class Mouse : MonoBehaviour
     private float m_speed;
     private float m_radius;         // 半径
     private float m_radian;
-    private bool m_runFlg = false;
 
     private void Awake()
     {

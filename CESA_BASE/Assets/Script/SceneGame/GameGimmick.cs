@@ -19,6 +19,7 @@ public class GameGimmick : MonoBehaviour
     [SerializeField]
     private float m_gimmickValue = 0.0f;      // 水の長さ
     private bool m_isGimmickStart = false;
+
     public GimmickType Type
     {
         get

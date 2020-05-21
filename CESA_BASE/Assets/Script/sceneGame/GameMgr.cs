@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
+using DG.Tweening;
 
 public class GameMgr : SingletonMonoBehaviour<GameMgr>
 {
@@ -161,13 +162,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             m_gameStep = GameMain;
             Destroy(m_saveObj[0]);
 
-            foreach (Fuse _fuse in m_uiFuse)
-                _fuse.enabled = true;
-            foreach (GameObject _obj in m_fieldObject)
-                _obj.GetComponent<Behaviour>().enabled = true;
-
             Fuse _start = m_saveObj[1].GetComponent<Fuse>();
             _start.GameStart();
+            foreach (GameObject _obj in m_fieldObject)
+                _obj.GetComponent<Behaviour>().enabled = true;
 
             m_UIFuseCreate.enabled = true;
             m_saveObj.Clear();
@@ -189,17 +187,17 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             mousePos = Camera.main.ScreenToWorldPoint(mousePos);
             // 生成場所を取得
             m_createPos = FindNearFuse(mousePos);
-            if (m_createPos == OUTPOS)
-                return;
-
-            // UI画面
-            if (Input.mousePosition.x > Screen.width * 0.8f)
-                m_selectFuse.transform.position = m_selectFuse.DefaultPos;
-            // ゲーム画面
-            else
+            if (m_createPos != OUTPOS)
             {
-                m_selectFuse.transform.position = m_createPos;
-                m_selectFuse.transform.localEulerAngles = m_selectFuse.DefaultRot;
+                // UI画面
+                if (Input.mousePosition.x > Screen.width * 0.8f)
+                    m_selectFuse.transform.position = m_selectFuse.DefaultPos;
+                // ゲーム画面
+                else
+                {
+                    m_selectFuse.transform.position = m_createPos;
+                    m_selectFuse.transform.localEulerAngles = m_selectFuse.DefaultRot;
+                }
             }
         }
 
@@ -319,19 +317,30 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         Vector3 centerPos = Vector3.zero;
 
         // 花火を移動させメインカメラに注視させる
+        for(int i = 0; i < m_saveObj.Count; ++i)
+        {
+            GameObject _goal = m_saveObj[i];
+            if (!_goal)
+                continue;
+
+            _goal.transform.position = Vector3.Lerp(_goal.transform.position, new Vector3(
+                _goal.transform.position.x, AdjustParameter.Result_Constant.END_FIRE_POS_Y, _goal.transform.position.z), Time.deltaTime);
+            centerPos += _goal.transform.position;
+            if (Mathf.Ceil(_goal.transform.position.y) == AdjustParameter.Result_Constant.END_FIRE_POS_Y)
+            {
+                EffectManager.Instance.EffectCreate(Effekseer.EffekseerEmitter.EffectType.fireworks, _goal.transform.position, Quaternion.identity);
+                m_saveObj.Remove(_goal);
+                DestroyImmediate(_goal.gameObject);
+            }
+         }
+
         if (m_saveObj.Count > 0)
         {
-            foreach (GameObject _goal in m_saveObj)
-            {
-                _goal.transform.position = Vector3.Lerp(_goal.transform.position, new Vector3(
-                    _goal.transform.position.x, AdjustParameter.Result_Constant.END_FIRE_POS_Y, _goal.transform.position.z), Time.deltaTime);
-                centerPos += _goal.transform.position;
-            }
+            Camera.main.transform.LookAt(centerPos);
         }
 
-        Camera.main.transform.LookAt(centerPos);
         Camera.main.rect = new Rect(0.0f, 0.0f, Mathf.Lerp(Camera.main.rect.width, 1.0f, Time.deltaTime), 1.0f);
-        // UIの移動
+       // UIの移動
         StartCoroutine(SlideResultUI(m_resultClear));
     }
 
@@ -409,6 +418,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                                     {
                                         if (m_selectFuse)
                                             m_selectFuse.SelectUIFuse(false);
+
                                         m_selectFuse = _fuse;
                                         m_selectFuse.SelectUIFuse(true);
                                         // マウスカーソル用の画像を選択時に変更
@@ -416,16 +426,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
                                         m_tutorialState = 2;
                                     }
-                                }
-                                // 選択解除
-                                else
-                                {
-                                    m_selectFuse.SelectUIFuse(false);
-                                    m_selectFuse = null;
-                                    // マウスカーソル用の画像をデフォルトに変更
-                                    Cursor.SetCursor(m_cursorDefault, Vector2.zero, CursorMode.Auto);
-
-                                    m_tutorialState = 1;
                                 }
                             }
                         }
@@ -598,37 +598,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
         // そのオブジェクトの上下左右前後どちらにあるのか
         {
-            //float disX, disY, disZ, max;
-            //disX = mousePos.x - nearObj.transform.position.x;
-            //disY = mousePos.y - nearObj.transform.position.y;
-            //disZ = mousePos.z - nearObj.transform.position.z;
-            //max = Mathf.Max(Mathf.Abs(disX), Mathf.Abs(disY), Mathf.Abs(disZ));
-            //
-            //// X座標のが大きい
-            //if (Mathf.Abs(disX) == max)
-            //{
-            //    if (disX >= 0)
-            //        objPos = nearObj.transform.position + new Vector3(AdjustParameter.Fuse_Constant.DEFAULT_SCALE, 0.0f, 0.0f);
-            //    else
-            //        objPos = nearObj.transform.position - new Vector3(AdjustParameter.Fuse_Constant.DEFAULT_SCALE, 0.0f, 0.0f);
-            //}
-            //// Y座標のが近い
-            //else if (Mathf.Abs(disY) == max)
-            //{
-            //    if (disY >= 0)
-            //        objPos = nearObj.transform.position + new Vector3(0.0f, AdjustParameter.Fuse_Constant.DEFAULT_SCALE, 0.0f);
-            //    else
-            //        objPos = nearObj.transform.position - new Vector3(0.0f, AdjustParameter.Fuse_Constant.DEFAULT_SCALE, 0.0f);
-            //}
-            //// Z座標のが近い
-            //else
-            //{
-            //    if (disZ >= 0)
-            //        objPos = nearObj.transform.position + new Vector3(0.0f, 0.0f, AdjustParameter.Fuse_Constant.DEFAULT_SCALE);
-            //    else
-            //        objPos = nearObj.transform.position - new Vector3(0.0f, 0.0f, AdjustParameter.Fuse_Constant.DEFAULT_SCALE);
-            //}
-
             Vector3 distance, absolute;
             // 距離を求める
             distance = mousePos - nearObj.transform.position;

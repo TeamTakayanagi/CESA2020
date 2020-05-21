@@ -15,6 +15,7 @@ namespace Effekseer
 		public enum EffectType
 		{
 			Spark = 0,
+			fireworks,
 			Max
 		}
 
