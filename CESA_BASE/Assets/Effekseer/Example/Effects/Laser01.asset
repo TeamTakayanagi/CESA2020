@@ -17,9 +17,9 @@ MonoBehaviour:
   - path: Texture/LaserMain01.png
     texture: {fileID: 2800000, guid: 5498c00410c23424382158a670368b77, type: 3}
   - path: Texture/Particle01.png
-    texture: {fileID: 2800000, guid: 6297da1e7a8eece41bf1ea544e2310b0, type: 3}
+    texture: {fileID: 2800000, guid: ce2c664f7c05ed346b203b25a6addb22, type: 3}
   - path: Texture/Particle02.png
-    texture: {fileID: 2800000, guid: 7c313ff9549ecc24f940a024ac2567a6, type: 3}
+    texture: {fileID: 2800000, guid: 18021f5f7ef7ce14a86511cc279b0ca5, type: 3}
   soundResources:
   - path: Sound/Laser.wav
     clip: {fileID: 8300000, guid: c686b01b94fa30c499fe459f72030512, type: 3}

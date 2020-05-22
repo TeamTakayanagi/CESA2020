@@ -5,8 +5,7 @@ using Effekseer;
 
 public class Spark : EffekseerEmitter
 {
-    private int m_effectNum = 0;                                            // 導火線から見てこのエフェクトが何個目か
-    private Vector3 m_moveVector = Vector3.zero;                            // 移動方向
+    private int m_instanceID = 0;                                            // 導火線から見てこのエフェクトが何個目か
     private Fuse m_fuseClass = null;                                        // 導火線キューブ取得用
     private BoxCollider m_enterCollider = null;                             // 進入方向の導火線コライダ
     private List<BoxCollider> m_fuseCollider = new List<BoxCollider>();     // 進入方向以外導火線のコライダ
@@ -73,7 +72,7 @@ public class Spark : EffekseerEmitter
             afterPos += move;
 
         // 中心に来た時
-        if (m_effectNum == 0 && afterPos != Vector3.zero &&
+        if (m_instanceID == 0 && afterPos != Vector3.zero &&
             (Vector3.Dot(afterPos - m_fuseClass.transform.position, transform.position - m_fuseClass.transform.position) *
                 Vector3.Dot(move, m_moveVector)) < 0)
         {
@@ -167,7 +166,7 @@ public class Spark : EffekseerEmitter
         Spark spark = EffectManager.Instance.EffectCreate(EffectType.Spark, pos, Quaternion.identity).GetComponent<Spark>();
         spark.m_moveVector = move;
         spark.m_fuseClass = fuse;
-        spark.m_effectNum = haveEffect;
+        spark.m_instanceID = haveEffect;
 
         return spark;
     }

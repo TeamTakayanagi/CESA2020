@@ -107,7 +107,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         // クリック待機
         else if (m_step == TitleStep.Wite)
         {
-            if (Input.GetMouseButtonUp(0))
+            if (InputMouse.MouseClickUp(InputMouse.Mouse_Place.Left))
             {
                 m_step = TitleStep.Retreat;
             }
@@ -130,7 +130,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         }
 
         // タイトル演出スキップ
-        if (m_step < TitleStep.Wite && Input.GetMouseButtonUp(0))
+        if (m_step < TitleStep.Wite && InputMouse.MouseClickUp(InputMouse.Mouse_Place.Left))
         {
             m_step = TitleStep.Wite;
             m_camera.transform.rotation = LastCameraRot;

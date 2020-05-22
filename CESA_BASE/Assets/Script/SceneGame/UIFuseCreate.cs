@@ -8,7 +8,7 @@ public class UIFuseCreate : MonoBehaviour
     [SerializeField]
     private int m_firstCreate = 0;
     private Vector2Int m_fuseAmount = Vector2Int.zero;        // 導火線の生成数（X：左レーン、　Y：右レーン）
-    private int m_createCount = AdjustParameter.UI_OBJECT_Constant.CREATE_COOUNT;
+    private int m_createCount = AdjustParameter.UI_Object_Constant.CREATE_COOUNT;
   
     public Vector2Int FuseAmount
     {
@@ -41,7 +41,7 @@ public class UIFuseCreate : MonoBehaviour
         int fuseAmount = m_fuseAmount.x + m_fuseAmount.y;
 
         // 生成数が一定数より少ないなら生成処理へ
-        if (fuseAmount < AdjustParameter.UI_OBJECT_Constant.UI_AMOUNT_MAX)
+        if (fuseAmount < AdjustParameter.UI_Object_Constant.UI_AMOUNT_MAX)
         {
             m_createCount--;
             if (m_createCount <= 0)
@@ -55,7 +55,7 @@ public class UIFuseCreate : MonoBehaviour
                 else
                     m_fuseAmount += new Vector2Int(0, 1);
 
-                m_createCount = AdjustParameter.UI_OBJECT_Constant.CREATE_COOUNT;
+                m_createCount = AdjustParameter.UI_Object_Constant.CREATE_COOUNT;
             }
         }
     }

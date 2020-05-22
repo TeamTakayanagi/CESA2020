@@ -28,7 +28,6 @@ public class FadeGameStart : MonoBehaviour
 
     private Vector3 m_StartPos = Vector3.zero;
     private Vector3 m_EndPos = Vector3.zero;
-    private float m_duration = 1.0f;
 
     private int m_fadeCnt;
     private bool m_fadeFlag;

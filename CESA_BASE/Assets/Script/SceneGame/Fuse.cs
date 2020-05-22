@@ -214,7 +214,7 @@ public class Fuse : MonoBehaviour
                     if (m_endPos != Vector3.zero)
                     {
                         // 下へ落下
-                        transform.localPosition -= new Vector3(0.0f, AdjustParameter.UI_OBJECT_Constant.MOVE_VALUE_Y, 0.0f);
+                        transform.localPosition -= new Vector3(0.0f, AdjustParameter.UI_Object_Constant.MOVE_VALUE_Y, 0.0f);
                         // 範囲処理
                         if (transform.localPosition.y <= m_endPos.y)
                         {

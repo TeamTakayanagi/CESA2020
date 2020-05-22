@@ -16,7 +16,8 @@ namespace Effekseer
 		{
 			Spark = 0,
 			fireworks,
-			Max
+			launchFire,
+			Click
 		}
 
 		/// <summary xml:lang="en">
@@ -26,6 +27,14 @@ namespace Effekseer
 		/// エフェクトの種類
 		/// </summary>
 		public EffectType effectType;
+
+		/// <summary xml:lang="en">
+		/// Effect move
+		/// </summary>
+		/// <summary xml:lang="ja">
+		/// エフェクトの速度
+		/// </summary>
+		protected Vector3 m_moveVector = Vector3.zero;                            // 移動方向
 
 		/// <summary xml:lang="en">
 		/// Effect name
@@ -307,7 +316,8 @@ namespace Effekseer
 					handle.SetRotation(transform.rotation);
 					handle.SetScale(transform.localScale);
 					i++;
-				} else if(isLooping && handles.Count == 1)
+				} 
+				else if(isLooping && handles.Count == 1)
 				{
 					handles.RemoveAt(i);
 					var newHandle = Play();
@@ -318,8 +328,10 @@ namespace Effekseer
 						break;
 					}
 				}
-				else {
+				else 
+				{
 					handles.RemoveAt(i);
+					DestroyImmediate(gameObject);
 				}
 			}
 		}

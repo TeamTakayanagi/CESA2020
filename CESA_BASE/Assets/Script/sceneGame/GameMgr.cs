@@ -89,7 +89,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     // Start is called before the first frame update
     void Start()
     {
-        Camera.main.rect = new Rect(0.0f, 0.0f, 0.8f, 1.0f);
+        Camera.main.rect = new Rect(0.0f, 0.0f, ProcessedtParameter.Camera_Constant.RECT_WIDTH, 1.0f);
+
+        // マウス制御クラスにカメラの情報を渡す
+        InputMouse.RoadCamera();
 
         // マウスカーソル用の画像をデフォルトに変更
         Cursor.SetCursor(m_cursorDefault, Vector2.zero, CursorMode.Auto);
@@ -203,13 +206,13 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
         RaycastHit hit = new RaycastHit();
         // 設置or選択
-        if (Input.GetMouseButtonDown(0))
+        if (InputMouse.MouseClickDown(InputMouse.Mouse_Place.Left))
         {
             // UI画面
-            if (Input.mousePosition.x > Screen.width * Camera.main.rect.width)
+            if (InputMouse.MouseEria())
             {
                 // サブカメラ取得
-                Ray ray = GameObject.FindGameObjectWithTag(NameDefine.TagName.SubCamera).GetComponent<Camera>().
+                Ray ray = InputMouse.GetScreenCamera().GetComponent<Camera>().
                     ScreenPointToRay(Input.mousePosition);
 
                 // 導火線を選択
@@ -263,9 +266,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                             m_selectFuse.DefaultPos.y < _fuse.DefaultPos.y)
                         {
                             if (_fuse.EndPos == Vector3.zero)
-                                _fuse.EndPos = _fuse.transform.localPosition - new Vector3(0.0f, AdjustParameter.UI_OBJECT_Constant.INTERVAL_Y, 0.0f);
+                                _fuse.EndPos = _fuse.transform.localPosition - new Vector3(0.0f, AdjustParameter.UI_Object_Constant.INTERVAL_Y, 0.0f);
                             else
-                                _fuse.EndPos -= new Vector3(0.0f, AdjustParameter.UI_OBJECT_Constant.INTERVAL_Y, 0.0f);
+                                _fuse.EndPos -= new Vector3(0.0f, AdjustParameter.UI_Object_Constant.INTERVAL_Y, 0.0f);
                         }
                     }
 
@@ -315,6 +318,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     public void GameClear()
     {
         Vector3 centerPos = Vector3.zero;
+        int fireworksNum = m_saveObj.Count;
 
         // 花火を移動させメインカメラに注視させる
         for(int i = 0; i < m_saveObj.Count; ++i)
@@ -336,6 +340,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
         if (m_saveObj.Count > 0)
         {
+            centerPos /= fireworksNum;
+            centerPos.y = AdjustParameter.Result_Constant.END_FIRE_POS_Y;
             Camera.main.transform.LookAt(centerPos);
         }
 
@@ -395,7 +401,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     }
 
                     // 設置or選択
-                    if (Input.GetMouseButtonDown(0))
+                    if (InputMouse.MouseClickDown(InputMouse.Mouse_Place.Left))
                     {
                         // UI画面
                         if (Input.mousePosition.x > Screen.width * Camera.main.rect.width)
@@ -467,7 +473,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     }
 
                     // 設置or選択
-                    if (Input.GetMouseButtonDown(0))
+                    if (InputMouse.MouseClickDown(InputMouse.Mouse_Place.Left))
                     {
                         // UI画面
                         if (Input.mousePosition.x > Screen.width * Camera.main.rect.width)
@@ -494,9 +500,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                                         m_selectFuse.DefaultPos.y < _fuse.DefaultPos.y)
                                     {
                                         if (_fuse.EndPos == Vector3.zero)
-                                            _fuse.EndPos = _fuse.transform.localPosition - new Vector3(0.0f, AdjustParameter.UI_OBJECT_Constant.INTERVAL_Y, 0.0f);
+                                            _fuse.EndPos = _fuse.transform.localPosition - new Vector3(0.0f, AdjustParameter.UI_Object_Constant.INTERVAL_Y, 0.0f);
                                         else
-                                            _fuse.EndPos -= new Vector3(0.0f, AdjustParameter.UI_OBJECT_Constant.INTERVAL_Y, 0.0f);
+                                            _fuse.EndPos -= new Vector3(0.0f, AdjustParameter.UI_Object_Constant.INTERVAL_Y, 0.0f);
                                     }
                                 }
 
@@ -549,7 +555,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             // 通常プレイ
             case 4:
                 {
-                    if (Input.GetMouseButtonUp(0))
+                    if (InputMouse.MouseClickUp(InputMouse.Mouse_Place.Left))
                     {
                         m_gameStep = GameMain;
 

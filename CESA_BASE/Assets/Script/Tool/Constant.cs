@@ -15,6 +15,7 @@ namespace AdjustParameter
         public const float AROUND_ANGLE = 15.0f;
         public const float PERMISSION_MOVE = 20.0f;
         public const float ZOOM_SPEED = 1.0f;
+        public const float EFFECT_POS_Z = 2.0f;
     }
 
     public readonly struct Fuse_Constant
@@ -27,7 +28,7 @@ namespace AdjustParameter
         public const float ROT_VALUE = 5.0f;
     }
 
-    public readonly struct UI_OBJECT_Constant
+    public readonly struct UI_Object_Constant
     {
         public const int UI_AMOUNT_MAX = 10;
         public const int CREATE_COOUNT = 60 * 5;
@@ -40,8 +41,10 @@ namespace AdjustParameter
 
     public readonly struct Result_Constant
     {
+        public const float WAIT_TIME = 0.2f;                                     // 目標地点に到着してから花火が出るまでの待ち時間（秒）
         public const float DURATION = 1.0f;                                 // リザルトのUIのスライド時間（秒）
         public const float END_FIRE_POS_Y = 30.0f;                          // 花火の終着地点の座標   
+        public const float LAUNCH_TIME = 5.0f;                              // 花火の打ち上げ時間   
     }
 
     public readonly struct Fade_Constant
@@ -54,6 +57,10 @@ namespace AdjustParameter
 // 他のオブジェクトでも共有する定数があれば（共有しないなら各クラス内で）
 namespace ProcessedtParameter
 {
+    public readonly struct Camera_Constant
+    {
+        public const float RECT_WIDTH = 0.8f;                          // メインカメラの映す幅
+    }
     public readonly struct GameObject_Constant
     {
         public const int FUSE_TYPE = 7;                               // 導火線の種類
