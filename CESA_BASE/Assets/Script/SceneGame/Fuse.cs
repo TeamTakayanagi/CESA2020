@@ -13,8 +13,8 @@ public class Fuse : MonoBehaviour
         Rotate,
         MoveLeft,
         MoveRight,
-        MoveDown,
         MoveUp,
+        MoveDown,
         MoveBack,
         MoveForward,
     }
@@ -202,9 +202,18 @@ public class Fuse : MonoBehaviour
             modelRender.material.SetFloat("_Ration", 0);
         }
 
+        if(m_type == FuseType.Rotate)
+        {
+
+        }
+        else if(m_type >= FuseType.MoveLeft && m_type <= FuseType.MoveForward)
+        {
+
+        }
+
         // 元の位置を保存
         if (m_state != FuseState.UI)
-            m_defaultPos = transform.position;
+        m_defaultPos = transform.position;
     }
 
     void Update()
@@ -442,7 +451,7 @@ public class Fuse : MonoBehaviour
         else
         {
             movePos = m_defaultPos - direct;
-            StartCoroutine(MoveFuse(movePos, -Vector3.back));
+            StartCoroutine(MoveFuse(movePos, -direct));
         }
     }
 
@@ -483,13 +492,13 @@ public class Fuse : MonoBehaviour
     public IEnumerator MoveFuse(Vector3 target, Vector3 direction)
     {
         RaycastHit hit = new RaycastHit();
-        float dist = 1f;
+        float dist = 0.5f;
 
-        if (!(Physics.Raycast(transform.position, direction, out hit, dist)))
+        Debug.DrawRay(transform.position, direction, Color.red, dist);
+        if (!Physics.Raycast(transform.position + direction / 2, direction, out hit, dist))
         {
-            float sum = 0f;
-
-            while (sum < 1f)
+            float sum = 0.0f;
+            while (sum < 1.0f)
             {
                 sum += AdjustParameter.Fuse_Constant.MOVE_VALUE * Time.deltaTime;
 

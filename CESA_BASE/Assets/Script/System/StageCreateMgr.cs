@@ -18,6 +18,10 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
     [SerializeField]
     private GameObject m_uiColider = null;
     [SerializeField]
+    private GameObject m_rotMark = null;
+    [SerializeField]
+    private GameObject m_moveMark = null;
+    [SerializeField]
     private List<Fuse> m_fuseList = new List<Fuse>();
     [SerializeField]
     private List<GameGimmick> m_gimmkList = new List<GameGimmick>();
@@ -145,6 +149,42 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
                             float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT, 1)),
                             float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT + 1, 1)),
                             float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT + 2, 1))) * 90.0f;
+                        
+                        switch (_fuse.Type)
+                        {
+                            case Fuse.FuseType.MoveLeft:
+                                // UI専用のコライダーを子供に
+                                GameObject _colider = Instantiate(m_moveMark, _fuse.transform.position, Quaternion.identity);
+                                _colider.transform.SetParent(_fuse.transform, true);
+                                break;
+                            case Fuse.FuseType.MoveRight:
+                                // UI専用のコライダーを子供に
+                                _colider = Instantiate(m_moveMark, _fuse.transform.position, Quaternion.Euler(0.0f, 180.0f, 0.0f));
+                                _colider.transform.SetParent(_fuse.transform, true);
+                                break;
+                            case Fuse.FuseType.MoveUp:
+                                // UI専用のコライダーを子供に
+                                _colider = Instantiate(m_moveMark, _fuse.transform.position, Quaternion.Euler(0.0f, 0.0f, 90.0f));
+                                _colider.transform.SetParent(_fuse.transform, true);
+                                break;
+                            case Fuse.FuseType.MoveDown:
+                                // UI専用のコライダーを子供に
+                                _colider = Instantiate(m_moveMark, _fuse.transform.position, Quaternion.Euler(180.0f, 0.0f, 90.0f));
+                                _colider.transform.SetParent(_fuse.transform, true);
+                                break;
+                            case Fuse.FuseType.MoveForward:
+                                // UI専用のコライダーを子供に
+                                _colider = Instantiate(m_moveMark, _fuse.transform.position, Quaternion.Euler(0.0f, 90.0f, 0.0f));
+                                _colider.transform.SetParent(_fuse.transform, true);
+                                break;
+                            case Fuse.FuseType.MoveBack:
+                                // UI専用のコライダーを子供に
+                                _colider = Instantiate(m_moveMark, _fuse.transform.position, Quaternion.Euler(0.0f, 270.0f, 0.0f));
+                                _colider.transform.SetParent(_fuse.transform, true);
+                                break;
+                            default:
+                                break;
+                        }
 
                         _createList.Add(_fuse.gameObject);
                         break;

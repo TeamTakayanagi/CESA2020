@@ -304,10 +304,15 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
                     if (Physics.Raycast(ray, out hit))
                     {
-                        if (Utility.TagSeparate.getParentTagName(hit.collider.gameObject.tag) == NameDefine.TagName.Fuse)
+                        if (Utility.TagSeparate.getParentTagName(hit.collider.tag) == NameDefine.TagName.Fuse)
                         {
                             // 導火線のギミック始動
                             hit.collider.gameObject.GetComponent<Fuse>().OnGimmick();
+                        }
+                        else if(Utility.TagSeparate.getParentTagName(hit.collider.transform.parent.tag) == NameDefine.TagName.Fuse)
+                        {
+                            // 導火線のギミック始動
+                            hit.collider.transform.parent.GetComponent<Fuse>().OnGimmick();
                         }
                     }
                 }
