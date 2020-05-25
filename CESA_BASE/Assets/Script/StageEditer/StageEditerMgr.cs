@@ -440,7 +440,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             int nIdx = Utility.CSVFile.PosToIndex(_gimmick.transform.position + half, _stageSizeX, _stageSizeY);
             stageList[nIdx] =
                 // ギミックの値　＋　タグの名前の一部　＋　回転
-                (int)_gimmick.Value % 10 + Utility.TagSeparate.getChildTagName(_gimmick.tag).
+                "g" + (int)_gimmick.Value % 10 + Utility.TagSeparate.getChildTagName(_gimmick.tag).
                 Substring(0, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT) + 
                 _gimmick.transform.localEulerAngles.x / 90 + _gimmick.transform.localEulerAngles.y / 90
                 + _gimmick.transform.localEulerAngles.z / 90;

@@ -34,11 +34,13 @@ public class Sound : SingletonMonoBehaviour<Sound>
         m_seSources = new List<AudioSource>();
         m_bgmDict = new Dictionary<string, AudioClip>();
         m_seDict = new Dictionary<string, AudioClip>();
+
         void AddClipDict(Dictionary<string, AudioClip> dict, AudioClip clip)
         {
             if (!dict.ContainsKey(clip.name))
                 dict.Add(clip.name, clip);
         }
+
         m_bgmList.ForEach(bgm => AddClipDict(m_bgmDict, bgm));
         m_seList.ForEach(se => AddClipDict(m_seDict, se));
     }
