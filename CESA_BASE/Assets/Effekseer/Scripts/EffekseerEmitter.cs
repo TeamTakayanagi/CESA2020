@@ -21,6 +21,14 @@ namespace Effekseer
 		}
 
 		/// <summary xml:lang="en">
+		/// Effect DefaultSpeed
+		/// </summary>
+		/// <summary xml:lang="ja">
+		/// エフェクトの初期速度
+		/// </summary>
+		public const float DEFAULT_SPEED = 1.0f; 
+
+		/// <summary xml:lang="en">
 		/// Effect Type
 		/// </summary>
 		/// <summary xml:lang="ja">
@@ -241,7 +249,7 @@ namespace Effekseer
 				return _speed;
 			}
 		}
-		private float _speed = 1.0f;
+		private float _speed = DEFAULT_SPEED;
 
 		/// <summary xml:lang="en">
 		/// Existing state

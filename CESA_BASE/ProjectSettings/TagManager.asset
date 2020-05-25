@@ -22,6 +22,11 @@ TagManager:
   - Gimmick/Goal
   - Gimmick/Water
   - Gimmick/SubMission
+  - Gimmick/Wall
+  - Stage
+  - Fade
+  - UI/Retire
+  - UI/GameSpeed
   layers:
   - Default
   - TransparentFX

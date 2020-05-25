@@ -20,7 +20,7 @@ namespace AdjustParameter
 
     public readonly struct Fuse_Constant
     {
-        public const float BURN_MAX_TIME = 2000.0f;                       // 燃えてる時間(秒)
+        public const float BURN_MAX_TIME = 20.0f;                       // 燃えてる時間(秒)
         public const float OUT_MAX_TIME = 5.0f;                         // 燃え尽きた後消える時間(秒)
         public const float DEFAULT_SCALE = 1.0f;
         public const float WET_MAX_TIME = 5.0f;
@@ -31,7 +31,7 @@ namespace AdjustParameter
     public readonly struct UI_Object_Constant
     {
         public const int UI_AMOUNT_MAX = 10;
-        public const int CREATE_COOUNT = 60 * 5;
+        public const int CREATE_COOUNT = 5;
         public const float DEFAULT_POS_Y = 11.0f;
         public const float DEFAULT_POS_Z = 5.0f;
         public const float INTERVAL_X = 2.0f;
@@ -41,7 +41,7 @@ namespace AdjustParameter
 
     public readonly struct Result_Constant
     {
-        public const float WAIT_TIME = 0.2f;                                     // 目標地点に到着してから花火が出るまでの待ち時間（秒）
+        public const float WAIT_TIME = 0.2f;                                // 目標地点に到着してから花火が出るまでの待ち時間（秒）
         public const float DURATION = 1.0f;                                 // リザルトのUIのスライド時間（秒）
         public const float END_FIRE_POS_Y = 30.0f;                          // 花火の終着地点の座標   
         public const float LAUNCH_TIME = 5.0f;                              // 花火の打ち上げ時間   

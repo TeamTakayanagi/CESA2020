@@ -230,11 +230,11 @@ public class Fuse : MonoBehaviour
                     // 色変更用オブジェクトが中心にいないなら
                     if (m_childTarget.localPosition != Vector3.zero)
                     {
-                        float scaleDot = Time.deltaTime / AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
-                        m_childTarget.localScale += new Vector3(scaleDot, scaleDot, scaleDot);
+                        float burnRate = Time.deltaTime * GameMgr.Instance.GameSpeed / AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
+                        m_childTarget.localScale += new Vector3(burnRate, burnRate, burnRate);
 
                         // 移動
-                        m_childTarget.position -= (m_targetDistance / Mathf.Abs(Vector3.Dot(Vector3.one, m_targetDistance))) * Time.deltaTime / AdjustParameter.Fuse_Constant.BURN_MAX_TIME * 0.5f;
+                        m_childTarget.position -= (m_targetDistance / Mathf.Abs(Vector3.Dot(Vector3.one, m_targetDistance))) * burnRate * 0.5f;
 
                         // 導火線と同じ大きさになったら
                         if (m_childTarget.localScale.x >= 1.0f)

@@ -30,19 +30,20 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private readonly AnimationCurve m_animCurve = AnimationCurve.Linear(0, 0, 1, 1);   // リザルトUIの移動用 
     
     private int m_burnCount = 1;                                        // 燃えている導火線の数
-    //private int m_gameSpeed = 1;                                        // ゲーム加速処理
+    private int m_gameSpeed = 1;                                        // ゲーム加速処理
     private Vector3 m_createPos = Vector3.zero;                         // 導火線の生成位置
     private GameObject m_resultClear = null;                            // ゲームクリア用のUIの親オブジェクト
     private GameObject m_resultGameover = null;                         // ゲームオーバー用のUIの親オブジェクト
     private Fuse m_selectFuse = null;                                   // 選択しているUIの導火線   
     private UIFuseCreate m_UIFuseCreate = null;                         // UIの導火線生成オブジェクト
     private List<GameObject> m_saveObj = new List<GameObject>();  // 各GameStepごとにオブジェクトを格納（スタート：カウントダウン数字　ゲームクリア：花火）
-    private LinkedList<GameObject> m_fieldObject = new LinkedList<GameObject>();      // ゲーム画面の導火線
+    private LinkedList<GameObject> m_fieldObject = new LinkedList<GameObject>();      // ゲーム画面のオブジェクト
+    private LinkedList<GameObject> m_gameButton = new LinkedList<GameObject>();      // ゲーム画面の導火線
     private LinkedList<Fuse> m_uiFuse = new LinkedList<Fuse>();         // UI部分の導火線
     private GameStep m_gameStep = null;                                 // 現在のゲームの進行状況の関数
 
-    private float m_tutorialTIme = 0;
     private int m_tutorialState = 0;
+    private float m_tutorialTIme = 0;
 
     public int BurnCount
     {
@@ -55,13 +56,13 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             m_burnCount = value;
         }
     }
-    //public int GameSpeed
-    //{
-    //    get
-    //    {
-    //        return m_gameSpeed;
-    //    }
-    //}
+    public int GameSpeed
+    {
+        get
+        {
+            return m_gameSpeed;
+        }
+    }
     public Fuse UIFuse
     {
         set
@@ -106,6 +107,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // UIの導火線生成オブジェクト取得し、動きを止める
         m_UIFuseCreate = FindObjectOfType<UIFuseCreate>();
         m_UIFuseCreate.enabled = false;
+
+        // ゲーム中に動作するボタンを取得
+        m_gameButton.AddLast(GameObject.FindGameObjectWithTag("UI/Retire"));
+        m_gameButton.AddLast(GameObject.FindGameObjectWithTag("UI/GameSpeed"));
 
         // 初期生成位置はわからないので生成不可能場所を格納
         m_createPos = OUTPOS;
@@ -180,6 +185,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// </summary>
     void GameMain()
     {
+        Ray ray = new Ray();
+
         // 導火線を選択しているなら
         if (m_selectFuse)
         {
@@ -206,13 +213,13 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
         RaycastHit hit = new RaycastHit();
         // 設置or選択
-        if (InputMouse.MouseClickDown(InputMouse.Mouse_Place.Left))
+        if (Input.GetMouseButtonDown(0))
         {
             // UI画面
             if (InputMouse.MouseEria())
             {
                 // サブカメラ取得
-                Ray ray = InputMouse.GetScreenCamera().GetComponent<Camera>().
+                ray = InputMouse.GetScreenCamera().GetComponent<Camera>().
                     ScreenPointToRay(Input.mousePosition);
 
                 // 導火線を選択
@@ -287,13 +294,11 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     // マウスカーソル用の画像をデフォルトに変更
                     Cursor.SetCursor(m_cursorDefault, Vector2.zero, CursorMode.Auto);
                 }
-                // ゲーム加速
+                // ギミック動作
                 else
                 {
-                    Ray ray = new Ray();
                     ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-                    //マウスクリックした場所からRayを飛ばし、オブジェクトがあればtrue
                     if (Physics.Raycast(ray, out hit))
                     {
                         if (Utility.TagSeparate.getParentTagName(hit.collider.gameObject.tag) == NameDefine.TagName.Fuse)
@@ -302,11 +307,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                             hit.collider.gameObject.GetComponent<Fuse>().OnGimmick();
                         }
                     }
-                    //else
-                    //{
-                    //    int store = m_gameSpeed - 1;
-                    //    m_gameSpeed = store % 2 + 1;
-                    //}
                 }
             }
         }
@@ -401,7 +401,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     }
 
                     // 設置or選択
-                    if (InputMouse.MouseClickDown(InputMouse.Mouse_Place.Left))
+                    if (Input.GetMouseButtonDown(0))
                     {
                         // UI画面
                         if (Input.mousePosition.x > Screen.width * Camera.main.rect.width)
@@ -473,7 +473,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     }
 
                     // 設置or選択
-                    if (InputMouse.MouseClickDown(InputMouse.Mouse_Place.Left))
+                    if (Input.GetMouseButtonDown(0))
                     {
                         // UI画面
                         if (Input.mousePosition.x > Screen.width * Camera.main.rect.width)
@@ -555,7 +555,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             // 通常プレイ
             case 4:
                 {
-                    if (InputMouse.MouseClickUp(InputMouse.Mouse_Place.Left))
+                    if (Input.GetMouseButtonUp(0))
                     {
                         m_gameStep = GameMain;
 
@@ -670,6 +670,11 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 m_gameStep = GameClear;
             }
 
+            foreach(GameObject _obj in m_gameButton)
+            {
+                DestroyImmediate(_obj);
+            }
+
             // ゲーム部分の事後処理
             if (m_selectFuse)
                 m_selectFuse.SelectUIFuse(false);
@@ -751,18 +756,33 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     public void BackToTitle()
     {
+        EffectManager.Instance.DestoryEffects();
         SceneManager.LoadScene("StageSelectLatte");
     }
-
-    public void RePlay()
+    public void Retry()
     {
+        EffectManager.Instance.DestoryEffects();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         m_gameStep = null;
     }
     public void NextStsge()
     {
+        EffectManager.Instance.DestoryEffects();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         m_gameStep = null;
+    }
+    public void Retire()
+    {
+        if (m_gameStep != GameMain)
+            return;
+
+        EffectManager.Instance.DestoryEffects();
+        SceneManager.LoadScene("StageSelectLatte");
+    }
+    public void ChangeGameSpeed()
+    {
+        int store = m_gameSpeed - 1;
+        m_gameSpeed = store % 2 + 1;
     }
 }
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mouse : MonoBehaviour
+public class Rat : MonoBehaviour
 {
     private float m_speed;
     private float m_radius;         // 半径

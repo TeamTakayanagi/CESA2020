@@ -14,46 +14,36 @@ public class InputMouse : MonoBehaviour
         Center,
     }
 
+
+    void Start()
+    {
+        RoadCamera();
+    }
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Camera screenCamera = GetScreenCamera();
+            Vector3 screen = Input.mousePosition + screenCamera.transform.rotation * screenCamera.transform.forward;
+
+            screen.z = AdjustParameter.Camera_Constant.EFFECT_POS_Z;
+
+            Vector3 mousePos = screenCamera.ScreenToWorldPoint(screen);
+            Effekseer.EffekseerEmitter effect = EffectManager.Instance.EffectCreate(Effekseer.EffekseerEmitter.EffectType.Click,
+                mousePos, Quaternion.identity, Camera.main.transform);
+            effect.transform.localScale *= screenCamera.orthographicSize;
+        }
+    }
+
     public static void RoadCamera()
     {
         m_main = Camera.main;
-        m_sub = GameObject.FindGameObjectWithTag(NameDefine.TagName.SubCamera).GetComponent<Camera>();
-    }
-
-    public static bool MouseClick(Mouse_Place place)
-    {
-        if (Input.GetMouseButton((int)place))
+        GameObject obj = GameObject.FindGameObjectWithTag(NameDefine.TagName.SubCamera);
+        if (obj)
         {
-            //Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition + Camera.main.transform.forward);
-            //EffectManager.Instance.EffectCreate(Effekseer.EffekseerEmitter.EffectType.Click, mousePos, Quaternion.identity);
-            return true;
+            m_sub = obj.GetComponent<Camera>();
         }
-
-        return false;
-    }
-    public static bool MouseClickDown(Mouse_Place place)
-    {
-        if (Input.GetMouseButtonDown((int)place))
-        {
-            if (place == Mouse_Place.Left)
-            {
-                Camera screenCamera = GetScreenCamera();
-                Vector3 screen = Input.mousePosition + screenCamera.transform.rotation * screenCamera.transform.forward;
-
-                screen.z = AdjustParameter.Camera_Constant.EFFECT_POS_Z;
-
-                Vector3 mousePos = screenCamera.ScreenToWorldPoint(screen);
-                Effekseer.EffekseerEmitter effect = EffectManager.Instance.EffectCreate(Effekseer.EffekseerEmitter.EffectType.Click, mousePos, Quaternion.identity);
-                effect.transform.localScale *= screenCamera.orthographicSize;
-            }
-            return true;
-        }
-
-        return false;
-    }
-    public static bool MouseClickUp(Mouse_Place place)
-    {
-        return Input.GetMouseButtonUp((int)place);
     }
 
     /// <summary>
@@ -69,7 +59,11 @@ public class InputMouse : MonoBehaviour
     {
         if (MouseEria())
         {
-            return m_sub;
+            // サブカメラがないなら
+            if(!m_sub)
+                return m_main;
+            else
+                return m_sub;
         }
         else
         {

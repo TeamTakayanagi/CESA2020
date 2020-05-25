@@ -52,6 +52,8 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         m_logo = transform.GetChild(0).gameObject;
         m_logoCanvas = transform.GetComponent<Canvas>();
         m_camera = Camera.main.gameObject;
+        // マウス制御クラスにカメラの情報を渡す
+        InputMouse.RoadCamera();
 
         m_camera.transform.position = InitCameraPos;
         m_camera.transform.rotation = InitCameraRot;
@@ -107,7 +109,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         // クリック待機
         else if (m_step == TitleStep.Wite)
         {
-            if (InputMouse.MouseClickUp(InputMouse.Mouse_Place.Left))
+            if (Input.GetMouseButtonUp(0))
             {
                 m_step = TitleStep.Retreat;
             }
@@ -130,7 +132,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         }
 
         // タイトル演出スキップ
-        if (m_step < TitleStep.Wite && InputMouse.MouseClickUp(InputMouse.Mouse_Place.Left))
+        if (m_step < TitleStep.Wite && Input.GetMouseButtonUp(0))
         {
             m_step = TitleStep.Wite;
             m_camera.transform.rotation = LastCameraRot;

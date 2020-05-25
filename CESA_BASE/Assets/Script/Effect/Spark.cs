@@ -12,15 +12,17 @@ public class Spark : EffekseerEmitter
 
     private void Awake()
     {
-        
+
     }
 
     // Start is called before the first frame update
     new void Start()
     {
         base.Start();
+
         // コライダ取得
         m_fuseCollider.AddRange(m_fuseClass.GetComponents<BoxCollider>());
+        speed = DEFAULT_SPEED * GameMgr.Instance.GameSpeed;
 
         // その導火線の進行方向のコライダーを取得
         for (int i = 0; i < m_fuseCollider.Count; ++i)
@@ -64,7 +66,7 @@ public class Spark : EffekseerEmitter
         }
 
         // 移動量計算
-        Vector3 move = m_moveVector * Time.deltaTime / AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
+        Vector3 move = m_moveVector * Time.deltaTime * GameMgr.Instance.GameSpeed / AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
         Vector3 afterPos = transform.position;
 
         // 移動

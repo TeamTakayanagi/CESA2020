@@ -12,6 +12,7 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager>
     void Start()
     {
         m_effectList.Sort((a, b) => a.effectType - b.effectType);
+        DontDestroyOnLoad(gameObject);
     }
 
     // Update is called once per frame
@@ -28,5 +29,26 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager>
         effect.transform.localRotation = rot;
 
         return effect;
+    }
+    public EffekseerEmitter EffectCreate(EffekseerEmitter.EffectType type, Vector3 pos, Quaternion rot, Transform parent)
+    {
+        EffekseerEmitter effect = Instantiate(m_effectList[(int)type]) as EffekseerEmitter;
+        effect.transform.SetParent(parent, true);
+        effect.transform.position = pos;
+        effect.transform.localRotation = rot;
+
+        return effect;
+    }
+    public void DestoryEffects()
+    {
+        EffekseerEmitter[] effectList = FindObjectsOfType<EffekseerEmitter>();
+        for(int i = 0; i < effectList.Length; ++i)
+        {
+            EffekseerEmitter effect = effectList[i];
+            //if (effect.effectType == EffekseerEmitter.EffectType.Click)
+            //    continue;
+
+            DestroyImmediate(effect.gameObject);
+        }
     }
 }

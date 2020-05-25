@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3176612873586448369}
   - component: {fileID: 3194242274607523113}
-  m_Layer: 0
+  m_Layer: 1
   m_Name: MouseClick
   m_TagString: Untagged
   m_Icon: {fileID: 0}

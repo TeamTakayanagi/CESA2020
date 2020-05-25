@@ -47,7 +47,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     {
         if (m_camera.Type == MainCamera.CameraType.SwipeMove)
         {
-            if (InputMouse.MouseClickDown(InputMouse.Mouse_Place.Left))
+            if (Input.GetMouseButtonDown(0))
             {
                 RaycastHit _hit = new RaycastHit();
                 Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);

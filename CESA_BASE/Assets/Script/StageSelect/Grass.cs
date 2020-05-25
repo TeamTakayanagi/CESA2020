@@ -25,7 +25,7 @@ public class Grass : ClickedObject
 
         if (transform.childCount > 0)
         {
-            transform.GetChild(0).GetComponent<Mouse>().Run();
+            transform.GetChild(0).GetComponent<Rat>().Run();
         }
     }
 

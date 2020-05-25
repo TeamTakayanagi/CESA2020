@@ -152,16 +152,16 @@ public class MainCamera : MonoBehaviour
         float scroll = Input.GetAxis("Mouse ScrollWheel");
 
         // 周り移動
-        if (!m_isScroll && InputMouse.MouseClickDown(InputMouse.Mouse_Place.Right))
+        if (!m_isScroll && Input.GetMouseButtonDown(1))
         {
             m_isScroll = true;
             m_savePos = Input.mousePosition;
         }
-        else if (m_isScroll && InputMouse.MouseClickUp(InputMouse.Mouse_Place.Right))
+        else if (m_isScroll && Input.GetMouseButtonUp(1))
         {
             m_isScroll = false;
         }
-        else if (m_isScroll && InputMouse.MouseClick(InputMouse.Mouse_Place.Right))
+        else if (m_isScroll && Input.GetMouseButton(1))
         {
             Vector3 difference = Input.mousePosition - m_savePos;
             if (Mathf.Abs(difference.x) > AdjustParameter.Camera_Constant.PERMISSION_MOVE)
@@ -193,16 +193,16 @@ public class MainCamera : MonoBehaviour
         float scroll = Input.GetAxis("Mouse ScrollWheel");
 
         // 周り移動
-        if (!m_isScroll && InputMouse.MouseClickDown(InputMouse.Mouse_Place.Right))
+        if (!m_isScroll && Input.GetMouseButtonDown(1))
         {
             m_isScroll = true;
             m_savePos = Input.mousePosition;
         }
-        else if (m_isScroll && InputMouse.MouseClickUp(InputMouse.Mouse_Place.Right))
+        else if (m_isScroll && Input.GetMouseButtonUp(1))
         {
             m_isScroll = false;
         }
-        else if (m_isScroll && InputMouse.MouseClick(InputMouse.Mouse_Place.Right))
+        else if (m_isScroll && Input.GetMouseButton(1))
         {
             Vector3 difference = Input.mousePosition - m_savePos;
 
@@ -213,16 +213,16 @@ public class MainCamera : MonoBehaviour
         }
 
         // 上下左右移動
-        else if (!m_isScroll && InputMouse.MouseClickDown(InputMouse.Mouse_Place.Center))
+        else if (!m_isScroll && Input.GetMouseButtonDown(2))
         {
             m_isScroll = true;
             m_savePos = Input.mousePosition;
         }
-        else if (m_isScroll && InputMouse.MouseClickUp(InputMouse.Mouse_Place.Center))
+        else if (m_isScroll && Input.GetMouseButtonUp(2))
         {
             m_isScroll = false;
         }
-        else if (m_isScroll && InputMouse.MouseClick(InputMouse.Mouse_Place.Center))
+        else if (m_isScroll && Input.GetMouseButton(2))
         {
             Vector3 difference = Input.mousePosition - m_savePos;
             if (Mathf.Abs(difference.x) >= Mathf.Abs(difference.y))
@@ -251,17 +251,17 @@ public class MainCamera : MonoBehaviour
     // フリック移動
     void CameraSwipeMove()
     {
-        if (!m_isScroll && InputMouse.MouseClickDown(InputMouse.Mouse_Place.Right))
+        if (!m_isScroll && Input.GetMouseButtonDown(1))
         {
             m_isScroll = true;
             m_savePos = Input.mousePosition;
             m_storePos = transform.position;
         }
-        else if (m_isScroll && InputMouse.MouseClickUp(InputMouse.Mouse_Place.Right))
+        else if (m_isScroll && Input.GetMouseButtonUp(1))
         {
             m_isScroll = false;
         }
-        else if (m_isScroll && InputMouse.MouseClick(InputMouse.Mouse_Place.Right))
+        else if (m_isScroll && Input.GetMouseButton(1))
         {
             Vector3 difference = Input.mousePosition - m_savePos;
 
