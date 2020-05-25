@@ -100,6 +100,10 @@ public class MainCamera : MonoBehaviour
             transform.position = new Vector3(m_moveRadiuse * Mathf.Cos(m_moveRotate), m_moveRadiuse * Mathf.Sin(AdjustParameter.Camera_Constant.AROUND_ANGLE), m_moveRadiuse * Mathf.Sin(m_moveRotate));
             transform.LookAt(Vector3.zero);
         }
+        else if(m_type == CameraType.AroundALL)
+        {
+            m_target = Vector3.zero;
+        }
     }
 
     void Update()

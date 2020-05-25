@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Fuse : MonoBehaviour
 {
+    const float childScale = 0.01f;
     public enum FuseType
     {
         Normal,
@@ -153,10 +154,19 @@ public class Fuse : MonoBehaviour
         }
         return collList;
     }
+    /// <summary>
+    /// 導火線に着火
+    /// </summary>
     public void GameStart()
     {
         m_state = FuseState.Burn;
-        m_haveEffect[0].Play();
+        Spark spark = Spark.Instantiate(transform.position + m_targetDistance, m_targetDistance * -2.0f, this, m_haveEffect.Count);
+        Renderer modelRender = m_childModel.GetComponent<Renderer>();
+        // 導火線の燃えてきた方向にシェーダー用のオブジェクトを移動
+        m_childTarget.position = transform.position + TargetDistance;
+        modelRender.material.SetVector("_Target", m_childTarget.position);
+        modelRender.material.SetVector("_Center", m_childModel.position);
+        m_haveEffect.Add(spark);
     }
 
     private void Awake()
@@ -177,19 +187,12 @@ public class Fuse : MonoBehaviour
         Renderer modelRender = m_childModel.GetComponent<Renderer>();
         // 導火線本体の中心座標を設定
         modelRender.material.SetVector("_Center", m_childModel.position);
+        m_childTarget.localScale = new Vector3(childScale, childScale, childScale);
+
         if (m_type == FuseType.Start)
         {
             m_state = FuseState.None;
             m_targetDistance = Vector3.down / 2.0f;
-
-            Spark spark = Spark.Instantiate(transform.position + m_targetDistance, m_targetDistance * -2.0f, this, m_haveEffect.Count);
-            spark.Stop();
-            m_haveEffect.Add(spark);
-
-            // 導火線の燃えてきた方向にシェーダー用のオブジェクトを移動
-            m_childTarget.position = transform.position + TargetDistance;
-            modelRender.material.SetVector("_Target", m_childTarget.position);
-            modelRender.material.SetVector("_Center", m_childModel.position);
         }
         else
         {
@@ -297,7 +300,7 @@ public class Fuse : MonoBehaviour
                         // 色を変えるオブジェクトの座標
                         m_childModel.GetComponent<Renderer>().material.SetVector("_Target", m_childTarget.position);
                         // 燃やす範囲（0:その場だけ ～　1:全域）
-                        m_childModel.GetComponent<Renderer>().material.SetFloat("_Ration", (m_childTarget.localScale.x + m_childTarget.localScale.y + m_childTarget.localScale.z) / 3);
+                        m_childModel.GetComponent<Renderer>().material.SetFloat("_Ration", Vector3.Dot(m_childTarget.localScale, Vector3.one) / 3 * childScale * AdjustParameter.Fuse_Constant.BURN_MAX_TIME);
                     }
                     break;
                 }

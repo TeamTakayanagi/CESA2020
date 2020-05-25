@@ -60,7 +60,7 @@
 				// テクスチャから対応する色を取得
 				fixed4 colorTex = tex2D(_MainTex, i.uv);
 				fixed4 maskTex = tex2D(_MaskTex, i.uv);
-				float rate = (maskTex.r - _OutTime) * 1.0f;
+				float rate = _OutTime - maskTex.r * (1 - _OutTime);
 				rate = saturate(rate);
 
 				// カメラとオブジェクトの距離(長さ)を取得
@@ -68,7 +68,7 @@
 				float minLength = min(length(nearTarget - i.worldPos), length(_Target - i.worldPos));
 				float dist = saturate(minLength);
 
-				return fixed4(colorTex.rgb * dist, _OutTime);
+				return fixed4(colorTex.rgb * dist, rate);
 			}
 			ENDCG
 	}

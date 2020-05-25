@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 {
+    private const float ALPHA_VALUE = 0.40f;
     [SerializeField]
     private GameObject m_feildPrefab = null;
 
@@ -33,7 +34,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         Fuse[] _fuseList = FindObjectsOfType<Fuse>();
         // UIの導火線仮選択
         m_selectObj = _fuseList[0].gameObject;
-        m_selectObj.GetComponent<Renderer>().material.SetColor("_Color", Color.cyan);
+        m_selectObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.cyan));
         // 導火線のコライダーを真四角に変更
         foreach(Fuse _fuse in _fuseList)
         {
@@ -85,9 +86,9 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                     if (Input.GetMouseButtonDown(0))
                     {
                         if (m_selectObj)
-                            m_selectObj.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+                            m_selectObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.white));
                         m_selectObj = hit.collider.gameObject;
-                        m_selectObj.GetComponent<Renderer>().material.SetColor("_Color", Color.cyan);
+                        m_selectObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.cyan));
                     }
                 }
             }
@@ -114,10 +115,10 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                     else
                     {
                         if (m_cursorTouchObj)
-                            m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+                            m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.white));
 
                         m_cursorTouchObj = hit.collider.gameObject;
-                        m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
+                        m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.yellow));
                     }
                 }
                 // 設置済みの導火線にタッチしているなら
@@ -141,13 +142,13 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                         if (_fuse.Type != Fuse.FuseType.Start)
                         {
                             _fuse.Type = Fuse.FuseType.Start;
-                            _fuse.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+                            _fuse.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.red));
                             m_cursorTouchObj = null;
                         }
                         else
                         {
                             _fuse.Type = Fuse.FuseType.Normal;
-                            _fuse.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+                            _fuse.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.white));
                             m_cursorTouchObj = _fuse.gameObject;
                         }
 
@@ -158,10 +159,10 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                     {
 
                         if (m_cursorTouchObj)
-                            m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+                            m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.white));
 
                         m_cursorTouchObj = hit.collider.gameObject;
-                        m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", Color.green);
+                        m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.green));
                     }
                 }
                 // 設置済みのギミックにタッチしているなら
@@ -287,6 +288,11 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         // ステージ配列に情報追加
         m_fuseData.Add(_createObj.transform.position, objID + 
             _createObj.transform.localEulerAngles.x / 90 + _createObj.transform.localEulerAngles.y / 90 + _createObj.transform.localEulerAngles.z / 90);
+    }
+
+    Color ColorAlpha(Color color)
+    {
+        return new Color(color.r, color.g, color.b, ALPHA_VALUE);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

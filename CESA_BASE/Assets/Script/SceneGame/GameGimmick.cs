@@ -84,7 +84,7 @@ public class GameGimmick : MonoBehaviour
 
         else if(m_type == GimmickType.Goal)
         {
-            m_gimmickValue += Time.deltaTime;
+            m_gimmickValue += Time.deltaTime * GameMgr.Instance.GameSpeed;
             if(m_gimmickValue >= AdjustParameter.Fuse_Constant.BURN_MAX_TIME)
             {
                 m_gimmickValue = AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
