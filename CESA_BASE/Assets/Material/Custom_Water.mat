@@ -32,11 +32,11 @@ Material:
         m_Scale: {x: 0.5, y: 1.5}
         m_Offset: {x: 0, y: 0}
     - _WaveTex2:
-        m_Texture: {fileID: 2800000, guid: b7342463c25697346be84f3e2f73ea3e, type: 3}
+        m_Texture: {fileID: 2800000, guid: c390fc5a879db5b468d887c57fec4a63, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _WaveTex2H:
-        m_Texture: {fileID: 2800000, guid: b1d9871142927214da2fe2159e0a59ab, type: 3}
+        m_Texture: {fileID: 2800000, guid: f1d5a954c29532d43a38bdcbe5e66801, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:

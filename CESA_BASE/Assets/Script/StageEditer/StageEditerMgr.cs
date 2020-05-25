@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 {
-    private const float ALPHA_VALUE = 0.40f;
+    private const float ALPHA_VALUE = 0.15f;
+
     [SerializeField]
     private GameObject m_feildPrefab = null;
 
@@ -34,7 +35,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         Fuse[] _fuseList = FindObjectsOfType<Fuse>();
         // UIの導火線仮選択
         m_selectObj = _fuseList[0].gameObject;
-        m_selectObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.cyan));
+        m_selectObj.GetComponent<Renderer>().material.color = ColorAlpha(Color.cyan);
         // 導火線のコライダーを真四角に変更
         foreach(Fuse _fuse in _fuseList)
         {
@@ -118,7 +119,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                             m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.white));
 
                         m_cursorTouchObj = hit.collider.gameObject;
-                        m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.yellow));
+                        m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
                     }
                 }
                 // 設置済みの導火線にタッチしているなら
@@ -139,6 +140,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                     // 導火線モデルのオブジェクトに追加情報を付与・剥奪
                     else if (Input.GetMouseButtonDown(2))
                     {
+                        string objName = "f";
                         if (_fuse.Type != Fuse.FuseType.Start)
                         {
                             _fuse.Type = Fuse.FuseType.Start;
@@ -152,7 +154,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                             m_cursorTouchObj = _fuse.gameObject;
                         }
 
-                        m_fuseData[_fuse.transform.position] = (int)_fuse.Type + m_fuseData[_fuse.transform.position].Substring(1, m_fuseData[_fuse.transform.position].Length - 1);
+                        m_fuseData[_fuse.transform.position] = objName + (int)_fuse.Type + m_fuseData[_fuse.transform.position].Substring(1, m_fuseData[_fuse.transform.position].Length - 1);
                     }
                     // 設置位置の色の変更
                     else if (_fuse.Type != Fuse.FuseType.Start)
@@ -223,6 +225,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                             obj = Instantiate(m_feildPrefab, new Vector3(x - half.x, y - half.y, z - half.z), Quaternion.identity);
                             obj.transform.parent = transform.GetChild(0);
                             obj.transform.tag = NameDefine.TagName.Player;
+                            obj.GetComponent<Renderer>().material.color = ColorAlpha(Color.white);
                             obj.layer = NameDefine.Layer.Trans;
                         }
                     }
@@ -257,11 +260,14 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             createRotZ == ProcessedtParameter.System_Constant.ERROR_INT)
             return;
 
-        _createObj.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+        _createObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.white));
         _createObj.transform.parent = transform.GetChild(0);
         string objID = "";
+        string objName = "";
+        
         if (Utility.TagSeparate.getParentTagName(_createObj.tag) == NameDefine.TagName.Fuse)
         {
+            objName = "f";
             Fuse _fuse = _createObj.GetComponent<Fuse>();
             if (m_selectObj)
             {
@@ -274,6 +280,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         }
         else if (Utility.TagSeparate.getParentTagName(_createObj.tag) == NameDefine.TagName.Gimmick)
         {
+            objName = "g";
             GameGimmick _gimmick = _createObj.GetComponent<GameGimmick>();
             if (m_selectObj)
             {
@@ -286,7 +293,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         }
 
         // ステージ配列に情報追加
-        m_fuseData.Add(_createObj.transform.position, objID + 
+        m_fuseData.Add(_createObj.transform.position, objName + objID + 
             _createObj.transform.localEulerAngles.x / 90 + _createObj.transform.localEulerAngles.y / 90 + _createObj.transform.localEulerAngles.z / 90);
     }
 
@@ -319,6 +326,8 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         int _stageSizeX = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeX);
         int _stageSizeY = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeY);
         int _stageSizeZ = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.stageSizeZ);
+        
+        // 
         if (_stageSizeX == ProcessedtParameter.System_Constant.ERROR_INT ||
             _stageSizeY == ProcessedtParameter.System_Constant.ERROR_INT ||
             _stageSizeZ == ProcessedtParameter.System_Constant.ERROR_INT)
@@ -468,6 +477,10 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 
         foreach (GameObject _obj in _createList)
             SetObjData(_obj);
+        if(info.data[0].Length != letter.Length)
+        {
+            letter = letter.Substring(0, info.data[0].Length);
+        }
 
         for (int i = 0; i < info.data.Count; ++i)
         {

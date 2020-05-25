@@ -27,7 +27,6 @@
 			#pragma surface surf Standard vertex:disp tessellate:tessEdge
 			#include "Tessellation.cginc"
 
-			sampler2D _GrabTexture;
 			sampler2D _WaveTex1;
 			sampler2D _WaveTex2;
 			sampler2D _WaveTex1H;
@@ -82,12 +81,8 @@
 				fixed2 distortion = BlendNormals(distortion1, distortion2).rg;
 
 
-				half2 grabUV = (IN.screenPos.xy / IN.screenPos.w) * float2(1, -1) + float2(0, 1);
-				half3 grab = _Color;
-
-
-				o.Albedo = fixed3(0, 0, 0);
-				o.Emission = grab;
+				o.Albedo = float3(0, 0, 0);
+				o.Emission = _Color;
 				o.Metallic = 0;
 				o.Smoothness = _Glossiness;
 				o.Normal = normal;

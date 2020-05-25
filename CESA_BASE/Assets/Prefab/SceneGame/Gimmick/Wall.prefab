@@ -192,11 +192,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: cedd53f290344f1449e4316a80b237fd, type: 2}
+      objectReference: {fileID: 2100000, guid: 2489d686dc1181b4a9b95bb8dcc0508b, type: 2}
     - target: {fileID: -927199367670048503, guid: dce9481705db3cd4d854a0f18e9073e0,
         type: 3}
       propertyPath: m_Name
       value: SM_Box_01
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: dce9481705db3cd4d854a0f18e9073e0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dce9481705db3cd4d854a0f18e9073e0, type: 3}

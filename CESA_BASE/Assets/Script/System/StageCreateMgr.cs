@@ -67,59 +67,115 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
 
         for(int i = 0; i < csvData.data.Count; ++i)
         {
-            string tagName = csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT);
-           
-            // 配置されていないなら
-            if (tagName == "--")
-                continue;
-
-            Fuse _fuse = null;
-            for (int j = 0; j < m_fuseList.Count; ++j)
+            if (csvData.data[i].Length != ProcessedtParameter.CSV_Constant.STAGE_DATA_COUNT)
             {
-                // タグの一部が一致しているなら
-                if (Utility.TagSeparate.getChildTagName(m_fuseList[j].tag) != tagName)
+                string tagName = csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT);
+
+                // 配置されていないなら
+                if (tagName == "--")
                     continue;
 
-                Vector3 pos = Utility.CSVFile.IndexToPos(i, csvData.size.x, csvData.size.y, csvData.size.z);
-                _fuse = Instantiate(m_fuseList[j], pos, Quaternion.identity);
-                _fuse.transform.parent = parent;
-                _fuse.Type = (Fuse.FuseType)int.Parse(csvData.data[i].Substring(0, ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT));
-                _fuse.transform.localEulerAngles = new Vector3(
-                    float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.OBJECT_ROT_COUNT, 1)),
-                    float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.OBJECT_ROT_COUNT + 1, 1)),
-                    float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.OBJECT_ROT_COUNT + 2, 1))) * 90.0f;
-
-                _createList.Add(_fuse.gameObject);
-                break;
-            }
-
-            // 導火線を生成していないなら
-            if (!_fuse)
-            {
-                GameGimmick _gimmick = null;
-                for (int j = 0; j < m_gimmkList.Count; ++j)
+                Fuse _fuse = null;
+                for (int j = 0; j < m_fuseList.Count; ++j)
                 {
-                    string st = Utility.TagSeparate.getChildTagName(m_gimmkList[j].tag).Substring(0, 2);
                     // タグの一部が一致しているなら
-                    if (Utility.TagSeparate.getChildTagName(m_gimmkList[j].tag).Substring(0,
-                        ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT)
-                        != tagName)
+                    if (Utility.TagSeparate.getChildTagName(m_fuseList[j].tag) != tagName)
                         continue;
 
                     Vector3 pos = Utility.CSVFile.IndexToPos(i, csvData.size.x, csvData.size.y, csvData.size.z);
-                    _gimmick = Instantiate(m_gimmkList[j], pos, Quaternion.identity);
-                    _gimmick.transform.parent = parent;
-                    _gimmick.Type = (GameGimmick.GimmickType)j;
-                    _gimmick.transform.localEulerAngles = new Vector3(
-                            float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.OBJECT_ROT_COUNT, 1)),
-                            float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.OBJECT_ROT_COUNT + 1, 1)),
-                            float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.OBJECT_ROT_COUNT + 2, 1))) * 90.0f;
+                    _fuse = Instantiate(m_fuseList[j], pos, Quaternion.identity);
+                    _fuse.transform.parent = parent;
+                    _fuse.Type = (Fuse.FuseType)int.Parse(csvData.data[i].Substring(0, ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT));
+                    _fuse.transform.localEulerAngles = new Vector3(
+                        float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.OBJECT_ROT_COUNT, 1)),
+                        float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.OBJECT_ROT_COUNT + 1, 1)),
+                        float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.OBJECT_ROT_COUNT + 2, 1))) * 90.0f;
 
-                    _createList.Add(_gimmick.gameObject);
+                    _createList.Add(_fuse.gameObject);
                     break;
+                }
+
+                // 導火線を生成していないなら
+                if (!_fuse)
+                {
+                    GameGimmick _gimmick = null;
+                    for (int j = 0; j < m_gimmkList.Count; ++j)
+                    {
+                        string st = Utility.TagSeparate.getChildTagName(m_gimmkList[j].tag).Substring(0, 2);
+                        // タグの一部が一致しているなら
+                        if (Utility.TagSeparate.getChildTagName(m_gimmkList[j].tag).Substring(0,
+                            ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT)
+                            != tagName)
+                            continue;
+
+                        Vector3 pos = Utility.CSVFile.IndexToPos(i, csvData.size.x, csvData.size.y, csvData.size.z);
+                        _gimmick = Instantiate(m_gimmkList[j], pos, Quaternion.identity);
+                        _gimmick.transform.parent = parent;
+                        _gimmick.Type = (GameGimmick.GimmickType)j;
+                        _gimmick.transform.localEulerAngles = new Vector3(
+                                float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.OBJECT_ROT_COUNT, 1)),
+                                float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.OBJECT_ROT_COUNT + 1, 1)),
+                                float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.OBJECT_ROT_COUNT + 2, 1))) * 90.0f;
+
+                        _createList.Add(_gimmick.gameObject);
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                string objName = csvData.data[i].Substring(0, ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT);
+                string tagName = csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT);
+
+                // 配置されていないなら
+                if (objName == "f")
+                {
+                    Fuse _fuse = null;
+                    for (int j = 0; j < m_fuseList.Count; ++j)
+                    {
+                        // タグの一部が一致しているなら
+                        if (Utility.TagSeparate.getChildTagName(m_fuseList[j].tag) != tagName)
+                            continue;
+
+                        Vector3 pos = Utility.CSVFile.IndexToPos(i, csvData.size.x, csvData.size.y, csvData.size.z);
+                        _fuse = Instantiate(m_fuseList[j], pos, Quaternion.identity);
+                        _fuse.transform.parent = parent;
+                        _fuse.Type = (Fuse.FuseType)int.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT, ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT));
+                        _fuse.transform.localEulerAngles = new Vector3(
+                            float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT, 1)),
+                            float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT + 1, 1)),
+                            float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT + 2, 1))) * 90.0f;
+
+                        _createList.Add(_fuse.gameObject);
+                        break;
+                    }
+                }
+                else if (objName == "g")
+                {
+                    GameGimmick _gimmick = null;
+                    for (int j = 0; j < m_gimmkList.Count; ++j)
+                    {
+                        // タグの一部が一致しているなら
+                        if (Utility.TagSeparate.getChildTagName(m_gimmkList[j].tag).Substring(0, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT)
+                            != tagName)
+                            continue;
+
+                        Vector3 pos = Utility.CSVFile.IndexToPos(i, csvData.size.x, csvData.size.y, csvData.size.z);
+                        _gimmick = Instantiate(m_gimmkList[j], pos, Quaternion.identity);
+                        _gimmick.transform.parent = parent;
+                        _gimmick.Type = (GameGimmick.GimmickType)j;
+                        _gimmick.transform.localEulerAngles = new Vector3(
+                            float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT, 1)),
+                            float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT + 1, 1)),
+                            float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT + 2, 1))) * 90.0f;
+
+                        _createList.Add(_gimmick.gameObject);
+                        break;
+                    }
                 }
             }
         }
+
         return _createList;
     }
 
