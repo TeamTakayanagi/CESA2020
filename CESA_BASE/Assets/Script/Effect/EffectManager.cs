@@ -15,12 +15,6 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager>
         DontDestroyOnLoad(gameObject);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public EffekseerEmitter EffectCreate(EffekseerEmitter.EffectType type, Vector3 pos, Quaternion rot)
     {
         EffekseerEmitter effect = Instantiate(m_effectList[(int)type]) as EffekseerEmitter;
@@ -50,5 +44,10 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager>
 
             DestroyImmediate(effect.gameObject);
         }
+    }
+    public EffekseerEmitter.EffectType GetFireworks()
+    {
+        return (EffekseerEmitter.EffectType)Random.Range(
+            (int)EffekseerEmitter.EffectType.fireworks_blue, (int)EffekseerEmitter.EffectType.fireworks_orange + 1);
     }
 }

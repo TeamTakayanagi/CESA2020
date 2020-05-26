@@ -39,6 +39,7 @@ public class Number : MonoBehaviour
             if (m_texCount >= 0)
             {
                 m_image.sprite = texture2D[m_texCount];
+                DestroyImmediate(this);
             }
             m_countDown = COUNT;
         }

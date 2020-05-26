@@ -37,7 +37,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private GameObject m_slide = null;                         // ゲームオーバー用のUIの親オブジェクト
     private Fuse m_selectFuse = null;                                   // 選択しているUIの導火線   
     private UIFuseCreate m_UIFuseCreate = null;                         // UIの導火線生成オブジェクト
-    private List<GameObject> m_saveObj = new List<GameObject>();  // 各GameStepごとにオブジェクトを格納（スタート：カウントダウン数字　ゲームクリア：花火）
+    private GameObject m_saveObj = null;                                // 各GameStepごとにオブジェクトを格納（スタート：カウントダウン数字　ゲームクリア：花火）
     private LinkedList<GameObject> m_fieldObject = new LinkedList<GameObject>();      // ゲーム画面のオブジェクト
     private LinkedList<Fuse> m_uiFuse = new LinkedList<Fuse>();         // UI部分の導火線
     private GameStep m_gameStep = null;                                 // 現在のゲームの進行状況の関数
@@ -80,7 +80,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     override protected void Awake()
     {
-        Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + 0);
+        Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + 1);
         StageCreateMgr.Instance.CreateStage(transform, info);
         m_stageSize = info.size;
         m_gameStep = GameStart;
@@ -96,7 +96,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // マウス制御クラスにカメラの情報を渡す
         InputMouse.RoadCamera();
 
-        // マウスカーソル用の画像をデフォルトに変更
+        // マウスカーソル用の画像を変更
         Cursor.SetCursor(m_cursorDefault, Vector2.zero, CursorMode.Auto);
 
         // ゲームクリア用のUIの親オブジェクト取得
@@ -104,7 +104,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
         // ゲームオーバー用のUIの親オブジェクト取得
         m_resultGameover = GameObject.FindGameObjectWithTag(NameDefine.TagName.UIGameOver);
-        // 
+        // ゲームのポーズ処理の親オブジェクト取得
         m_slide = FindObjectOfType<GameButton>().gameObject;
         // UIの導火線生成オブジェクト取得し、動きを止める
         m_UIFuseCreate = FindObjectOfType<UIFuseCreate>();
@@ -117,9 +117,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         TerrainCreate terrainCreate = FindObjectOfType<TerrainCreate>();
         terrainCreate.CreateGround(m_stageSize.x, m_stageSize.z, - m_stageSize.y / 2 - 1);
 
-        // 開始演出準備
-        GameObject canvas = GameObject.FindGameObjectWithTag(NameDefine.TagName.UICanvas);
-        m_saveObj.Add(canvas.transform.GetChild(0).gameObject);
 
         // フィールドオブジェクトの取得
         Fuse[] _fuseList = FindObjectsOfType<Fuse>();
@@ -130,7 +127,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             else
             {
                 if(_fuse.Type == Fuse.FuseType.Start)
-                    m_saveObj.Add(_fuse.gameObject);
+                    m_saveObj =_fuse.gameObject;
 
                 m_fieldObject.AddLast(_fuse.gameObject);
             }
@@ -161,21 +158,16 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// </summary>
     void GameStart()
     {
-        Number number = m_saveObj[0].GetComponent<Number>();
+        m_gameStep = GameMain;
 
-        if (number && number.TexCount < 0)
-        {
-            m_gameStep = GameMain;
-            Destroy(m_saveObj[0]);
+        Fuse _start = m_saveObj.GetComponent<Fuse>();
+        _start.GameStart();
 
-            Fuse _start = m_saveObj[1].GetComponent<Fuse>();
-            _start.GameStart();
-            foreach (GameObject _obj in m_fieldObject)
-                _obj.GetComponent<Behaviour>().enabled = true;
+        foreach (GameObject _obj in m_fieldObject)
+            _obj.GetComponent<Behaviour>().enabled = true;
 
-            m_UIFuseCreate.enabled = true;
-            m_saveObj.Clear();
-        }
+        m_UIFuseCreate.enabled = true;
+        m_saveObj = null;
     }
 
     /// <summary>
@@ -321,36 +313,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// </summary>
     public void GameClear()
     {
-        Vector3 centerPos = Vector3.zero;
-        int fireworksNum = m_saveObj.Count;
+        if (m_saveObj)
+            Camera.main.transform.LookAt(m_saveObj.transform.position);
 
-        // 花火を移動させメインカメラに注視させる
-        for(int i = 0; i < m_saveObj.Count; ++i)
-        {
-            GameObject _goal = m_saveObj[i];
-            if (!_goal)
-                continue;
-
-            _goal.transform.position = Vector3.Lerp(_goal.transform.position, new Vector3(
-                _goal.transform.position.x, AdjustParameter.Result_Constant.END_FIRE_POS_Y, _goal.transform.position.z), Time.deltaTime);
-            centerPos += _goal.transform.position;
-            if (Mathf.Ceil(_goal.transform.position.y) == AdjustParameter.Result_Constant.END_FIRE_POS_Y)
-            {
-                EffectManager.Instance.EffectCreate(Effekseer.EffekseerEmitter.EffectType.fireworks, _goal.transform.position, Quaternion.identity);
-                m_saveObj.Remove(_goal);
-                DestroyImmediate(_goal.gameObject);
-            }
-         }
-
-        if (m_saveObj.Count > 0)
-        {
-            centerPos /= fireworksNum;
-            centerPos.y = AdjustParameter.Result_Constant.END_FIRE_POS_Y;
-            Camera.main.transform.LookAt(centerPos);
-        }
-
-        Camera.main.rect = new Rect(0.0f, 0.0f, Mathf.Lerp(Camera.main.rect.width, 1.0f, Time.deltaTime), 1.0f);
-       // UIの移動
+        // UIの移動
         StartCoroutine(SlideResultUI(m_resultClear));
     }
 
@@ -359,7 +325,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// </summary>
     public void GameOver()
     {
-        Camera.main.rect = new Rect(0.0f, 0.0f, Mathf.Lerp(Camera.main.rect.width, 1.0f, Time.deltaTime), 1.0f);
         // UIの移動
         StartCoroutine(SlideResultUI(m_resultGameover));
     }
@@ -665,12 +630,12 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             GameMainEnd();
 
             // ゲームオーバー
-            if (m_saveObj.Count == 0)
+            if (!m_saveObj)
             {
                 m_resultGameover.SetActive(true);
                 m_gameStep = GameOver;
                 Sound.Instance.PlayBGM("bgm_gameover");
-                Sound.Instance.PlaySE("se_gameover");
+                Sound.Instance.PlaySE("se_gameover", gameObject.GetInstanceID());
             }
             // ゲームクリア
             else
@@ -678,7 +643,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 m_resultClear.SetActive(true);
                 m_gameStep = GameClear;
                 Sound.Instance.PlayBGM("bgm_clear");
-                Sound.Instance.PlaySE("se_clear");
+                Sound.Instance.PlaySE("se_clear", gameObject.GetInstanceID());
             }
         }
     }
@@ -699,7 +664,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// ゴールが燃えた時、燃え尽きた時の処理
     /// </summary>
     /// <param name="goal">ゴールのオブジェクト</param>
-    public void FireGoal(GameGimmick goal, bool isBurnOut)
+    public void FireGoal(bool isBurnOut, GameObject fireworks = null)
     {
         if (m_gameStep != GameMain)
             return;
@@ -715,22 +680,22 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             m_gameStep = GameClear;
 
             Sound.Instance.PlayBGM("bgm_clear");
-            Sound.Instance.PlaySE("se_clear");
+            Sound.Instance.PlaySE("se_clear", gameObject.GetInstanceID());
         }
+
         // 花火に着火
-        else
-        {
-            m_saveObj.Add(goal.gameObject);
-        }
+        if(!m_saveObj)
+            m_saveObj = fireworks;
     }
 
     void GameMainEnd()
     {
-        Sound.Instance.StopSE();
+        Sound.Instance.StopAllSE();
 
         // ライトの親を外す
         Camera.main.transform.GetChild(0).parent = null;
         Camera.main.GetComponent<MainCamera>().Control = false;
+        Camera.main.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
 
         // ポーズバーの消去
         DestroyImmediate(m_slide);

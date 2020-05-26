@@ -15,9 +15,15 @@ namespace Effekseer
 		public enum EffectType
 		{
 			Spark = 0,
-			fireworks,
-			launchFire,
-			Click
+			Click,
+			Dust,
+			Leafe,
+			fireworks_core,
+			fireworks_blue,
+			fireworks_red,
+			fireworks_green,
+			fireworks_lightblue,
+			fireworks_orange,
 		}
 
 		/// <summary xml:lang="en">

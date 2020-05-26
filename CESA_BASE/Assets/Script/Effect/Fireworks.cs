@@ -15,27 +15,22 @@ public class Fireworks : EffekseerEmitter
     float m_createWait;
     State m_staet;
 
-    // Start is called before the first frame update
     new void Start()
     {
-        m_moveVector = Vector3.up;
+        m_moveVector = new Vector3(0.0f, AdjustParameter.Result_Constant.END_FIRE_POS_Y - transform.position.y, 0.0f);
         m_createWait = AdjustParameter.Result_Constant.WAIT_TIME;
         m_staet = State.launch;
         base.Start();
     }
 
-    // Update is called once per frame
     new void Update()
     {
-        base.Update();
         switch (m_staet)
         {
             // 打ち上げた際の処理
             case State.launch:
-                //transform.DOMoveY(AdjustParameter.Result_Constant.END_FIRE_POS_Y, AdjustParameter.Result_Constant.LAUNCH_TIME);
-                transform.position = Vector3.Lerp(transform.position, new Vector3(
-                    transform.position.x, AdjustParameter.Result_Constant.END_FIRE_POS_Y, transform.position.z), Time.deltaTime);
-                if (Mathf.Ceil(transform.position.y) == AdjustParameter.Result_Constant.END_FIRE_POS_Y)
+                transform.position += m_moveVector * Time.deltaTime;
+                if (transform.position.y >= AdjustParameter.Result_Constant.END_FIRE_POS_Y)
                 {
                     m_staet = State.create;
                 }
@@ -46,11 +41,11 @@ public class Fireworks : EffekseerEmitter
                 m_createWait -= Time.deltaTime;
                 if(m_createWait <= 0.0f)
                 {
-                    EffectManager.Instance.EffectCreate(EffectType.fireworks, transform.position, Quaternion.identity);
+                    EffectManager.Instance.EffectCreate(EffectManager.Instance.GetFireworks(), transform.position, Quaternion.identity);
                     DestroyImmediate(gameObject);
                 }
                 break;
         }
-
+        base.Update();
     }
 }

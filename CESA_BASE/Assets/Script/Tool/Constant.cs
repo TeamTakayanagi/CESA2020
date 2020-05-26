@@ -1,5 +1,4 @@
-﻿
-//---調整用変数---
+﻿//---調整用変数---
 // レベルデザインなどで後で数値変更を行うべき変数をここに記載
 namespace AdjustParameter
 {
@@ -20,7 +19,7 @@ namespace AdjustParameter
 
     public readonly struct Fuse_Constant
     {
-        public const float BURN_MAX_TIME = 5.0f;                       // 燃えてる時間(秒)
+        public const float BURN_MAX_TIME = 500.0f;                        // 燃えてる時間(秒)
         public const float OUT_MAX_TIME = 5.0f;                         // 燃え尽きた後消える時間(秒)
         public const float DEFAULT_SCALE = 1.0f;
         public const float WET_MAX_TIME = 5.0f;

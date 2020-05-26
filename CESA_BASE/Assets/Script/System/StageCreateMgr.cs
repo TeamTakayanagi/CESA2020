@@ -152,33 +152,38 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
                         
                         switch (_fuse.Type)
                         {
+                            case Fuse.FuseType.Rotate:
+                                // 回転用テクスチャを子供に
+                                GameObject _colider = Instantiate(m_rotMark, _fuse.transform.position, Quaternion.identity);
+                                _colider.transform.SetParent(_fuse.transform, true);
+                                break;
                             case Fuse.FuseType.MoveLeft:
-                                // UI専用のコライダーを子供に
-                                GameObject _colider = Instantiate(m_moveMark, _fuse.transform.position, Quaternion.identity);
+                                // 移動用テクスチャを子供に
+                                _colider = Instantiate(m_moveMark, _fuse.transform.position, Quaternion.identity);
                                 _colider.transform.SetParent(_fuse.transform, true);
                                 break;
                             case Fuse.FuseType.MoveRight:
-                                // UI専用のコライダーを子供に
+                                // 移動用テクスチャを子供に
                                 _colider = Instantiate(m_moveMark, _fuse.transform.position, Quaternion.Euler(0.0f, 180.0f, 0.0f));
                                 _colider.transform.SetParent(_fuse.transform, true);
                                 break;
                             case Fuse.FuseType.MoveUp:
-                                // UI専用のコライダーを子供に
+                                // 移動用テクスチャを子供に
                                 _colider = Instantiate(m_moveMark, _fuse.transform.position, Quaternion.Euler(0.0f, 0.0f, 90.0f));
                                 _colider.transform.SetParent(_fuse.transform, true);
                                 break;
                             case Fuse.FuseType.MoveDown:
-                                // UI専用のコライダーを子供に
+                                // 移動用テクスチャを子供に
                                 _colider = Instantiate(m_moveMark, _fuse.transform.position, Quaternion.Euler(180.0f, 0.0f, 90.0f));
                                 _colider.transform.SetParent(_fuse.transform, true);
                                 break;
                             case Fuse.FuseType.MoveForward:
-                                // UI専用のコライダーを子供に
+                                // 移動用テクスチャを子供に
                                 _colider = Instantiate(m_moveMark, _fuse.transform.position, Quaternion.Euler(0.0f, 90.0f, 0.0f));
                                 _colider.transform.SetParent(_fuse.transform, true);
                                 break;
                             case Fuse.FuseType.MoveBack:
-                                // UI専用のコライダーを子供に
+                                // 移動用テクスチャを子供に
                                 _colider = Instantiate(m_moveMark, _fuse.transform.position, Quaternion.Euler(0.0f, 270.0f, 0.0f));
                                 _colider.transform.SetParent(_fuse.transform, true);
                                 break;

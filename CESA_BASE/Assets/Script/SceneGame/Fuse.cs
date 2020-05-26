@@ -283,7 +283,7 @@ public class Fuse : MonoBehaviour
                                     if (_gimmick.Type == GameGimmick.GimmickType.Goal && !_gimmick.GimmickStart)
                                     {
                                         // 燃えたゴールを登録
-                                        GameMgr.Instance.FireGoal(_gimmick, false);
+                                        GameMgr.Instance.FireGoal(false);
                                         // 燃えているオブジェクトを加算
                                         GameMgr.Instance.BurnCount += 1;
                                         _gimmick.GimmickStart = true;
