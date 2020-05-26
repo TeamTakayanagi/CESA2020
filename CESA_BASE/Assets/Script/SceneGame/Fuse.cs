@@ -202,15 +202,6 @@ public class Fuse : MonoBehaviour
             modelRender.material.SetFloat("_Ration", 0);
         }
 
-        if(m_type == FuseType.Rotate)
-        {
-
-        }
-        else if(m_type >= FuseType.MoveLeft && m_type <= FuseType.MoveForward)
-        {
-
-        }
-
         // 元の位置を保存
         if (m_state != FuseState.UI)
         m_defaultPos = transform.position;

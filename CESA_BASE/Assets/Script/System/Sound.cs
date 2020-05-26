@@ -9,6 +9,7 @@ using System.Linq;
 /// </summary>
 public class Sound : SingletonMonoBehaviour<Sound>
 {
+    public bool sound = false;
     [SerializeField]
     private List<AudioClip> m_bgmList = new List<AudioClip>();
     [SerializeField] 
@@ -51,7 +52,7 @@ public class Sound : SingletonMonoBehaviour<Sound>
     /// <param name="seName">ハンドル名</param>
     public void PlaySE(string seName)
     {
-        if (!m_seDict.ContainsKey(seName)) return;
+        if (!sound || !m_seDict.ContainsKey(seName)) return;
 
         AudioSource _source = m_seSources.FirstOrDefault(s => !s.isPlaying);
         if (_source == null)
@@ -70,6 +71,19 @@ public class Sound : SingletonMonoBehaviour<Sound>
     /// <summary>
     /// SEを全て停止
     /// </summary>
+    public void StopSE(string seName)
+    {
+        if (!sound || !m_seDict.ContainsKey(seName)) 
+            return;
+
+        AudioSource _source = m_seSources.FirstOrDefault(s => s.isPlaying);
+        if(_source)
+            _source.Stop();
+    }
+
+    /// <summary>
+    /// SEを全て停止
+    /// </summary>
     public void StopSE()
     {
         m_seSources.ForEach(SE => SE.Stop());
@@ -81,7 +95,7 @@ public class Sound : SingletonMonoBehaviour<Sound>
     /// <param name="bgmName">ハンドル名</param>
     public void PlayBGM(string bgmName)
     {
-        if (!m_bgmDict.ContainsKey(bgmName) || m_bgmSource.clip == m_bgmDict[bgmName])
+        if (!sound || !m_bgmDict.ContainsKey(bgmName) || m_bgmSource.clip == m_bgmDict[bgmName])
             return;
 
         m_bgmSource.Stop();

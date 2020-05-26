@@ -19,32 +19,25 @@
 
             Pass{
                 CGPROGRAM
-                //include useful shader functions
                 #include "UnityCG.cginc"
 
-                //define vertex and fragment shader
                 #pragma vertex vert
                 #pragma fragment frag
 
-                //the rendered screen so far
                 sampler2D _MainTex;
-        //the depth normals texture
-        sampler2D _CameraDepthNormalsTexture;
-        //texelsize of the depthnormals texture
-        float4 _CameraDepthNormalsTexture_TexelSize;
+                sampler2D _CameraDepthNormalsTexture;
+                float4 _CameraDepthNormalsTexture_TexelSize;
 
-        //variables for customising the effect
-        float4 _OutlineColor;
-        float _NormalMult;
-        float _NormalBias;
-        float _DepthMult;
-        float _DepthBias;
+                float4 _OutlineColor;
+                float _NormalMult;
+                float _NormalBias;
+                float _DepthMult;
+                float _DepthBias;
 
-        //the object data that's put into the vertex shader
-        struct appdata {
-            float4 vertex : POSITION;
-            float2 uv : TEXCOORD0;
-        };
+                struct appdata {
+                    float4 vertex : POSITION;
+                    float2 uv : TEXCOORD0;
+                };
 
         //the data that's used to generate fragments and can be read by the fragment shader
         struct v2f {
@@ -90,7 +83,7 @@
             DecodeDepthNormal(depthnormal, depth, normal);
 
             //get depth as distance from camera in units 
-            depth = depth * _ProjectionParams.z;
+            //depth = depth * _ProjectionParams.z;
 
             float depthDifference = 0;
             float normalDifference = 0;

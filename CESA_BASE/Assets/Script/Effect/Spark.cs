@@ -23,6 +23,8 @@ public class Spark : EffekseerEmitter
         // コライダ取得
         m_fuseCollider.AddRange(m_fuseClass.GetComponents<BoxCollider>());
         speed = DEFAULT_SPEED * GameMgr.Instance.GameSpeed;
+        Sound.Instance.PlaySE("se_fuse");
+
 
         // その導火線の進行方向のコライダーを取得
         for (int i = 0; i < m_fuseCollider.Count; ++i)
@@ -62,6 +64,7 @@ public class Spark : EffekseerEmitter
         if (m_fuseClass.State == Fuse.FuseState.Out && fuseTarget.localScale.x >= 1.0f)
         {
             DestroyImmediate(gameObject);
+            Sound.Instance.StopSE("se_fuse");
             return;
         }
 
@@ -84,6 +87,7 @@ public class Spark : EffekseerEmitter
             if (m_enterCollider.center != Vector3.zero)
             {
                 DestroyImmediate(gameObject);           // 進行中のエフェクトを削除
+                Sound.Instance.StopSE("se_fuse");
                 return;
             }
         }

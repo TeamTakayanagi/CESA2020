@@ -58,7 +58,6 @@ public class MainCamera : MonoBehaviour
             SetState();
         }
     }
-
     void SetState()
     {
         switch (m_type)

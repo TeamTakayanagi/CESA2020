@@ -39,7 +39,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private UIFuseCreate m_UIFuseCreate = null;                         // UIの導火線生成オブジェクト
     private List<GameObject> m_saveObj = new List<GameObject>();  // 各GameStepごとにオブジェクトを格納（スタート：カウントダウン数字　ゲームクリア：花火）
     private LinkedList<GameObject> m_fieldObject = new LinkedList<GameObject>();      // ゲーム画面のオブジェクト
-    private LinkedList<GameObject> m_gameButton = new LinkedList<GameObject>();      // ゲーム画面の導火線
     private LinkedList<Fuse> m_uiFuse = new LinkedList<Fuse>();         // UI部分の導火線
     private GameStep m_gameStep = null;                                 // 現在のゲームの進行状況の関数
 
@@ -81,7 +80,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     override protected void Awake()
     {
-        Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + 1);
+        Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + 0);
         StageCreateMgr.Instance.CreateStage(transform, info);
         m_stageSize = info.size;
         m_gameStep = GameStart;
@@ -110,10 +109,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // UIの導火線生成オブジェクト取得し、動きを止める
         m_UIFuseCreate = FindObjectOfType<UIFuseCreate>();
         m_UIFuseCreate.enabled = false;
-
-        // ゲーム中に動作するボタンを取得
-        m_gameButton.AddLast(GameObject.FindGameObjectWithTag("UI/Retire"));
-        m_gameButton.AddLast(GameObject.FindGameObjectWithTag("UI/GameSpeed"));
 
         // 初期生成位置はわからないので生成不可能場所を格納
         m_createPos = OUTPOS;
@@ -149,7 +144,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
 
         Camera.main.GetComponent<MainCamera>().Control = true;
-        //Sound.Instance.PlayBGM(ConstDefine.Audio.BGM.GameMain);
+        Sound.Instance.PlayBGM("bgm_game");
     }
 
     // Update is called once per frame
@@ -304,12 +299,13 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
                     if (Physics.Raycast(ray, out hit))
                     {
+                        Transform parent = hit.collider.transform.parent;
                         if (Utility.TagSeparate.getParentTagName(hit.collider.tag) == NameDefine.TagName.Fuse)
                         {
                             // 導火線のギミック始動
                             hit.collider.gameObject.GetComponent<Fuse>().OnGimmick();
                         }
-                        else if(Utility.TagSeparate.getParentTagName(hit.collider.transform.parent.tag) == NameDefine.TagName.Fuse)
+                        else if(parent && Utility.TagSeparate.getParentTagName(parent.tag) == NameDefine.TagName.Fuse)
                         {
                             // 導火線のギミック始動
                             hit.collider.transform.parent.GetComponent<Fuse>().OnGimmick();
@@ -665,32 +661,25 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // 燃えてる導火線がなくなったなら
         if (m_burnCount <= 0)
         {
+            // ゲームメインの終了処理
+            GameMainEnd();
+
             // ゲームオーバー
             if (m_saveObj.Count == 0)
             {
                 m_resultGameover.SetActive(true);
                 m_gameStep = GameOver;
+                Sound.Instance.PlayBGM("bgm_gameover");
+                Sound.Instance.PlaySE("se_gameover");
             }
             // ゲームクリア
             else
             {
                 m_resultClear.SetActive(true);
                 m_gameStep = GameClear;
+                Sound.Instance.PlayBGM("bgm_clear");
+                Sound.Instance.PlaySE("se_clear");
             }
-
-            foreach(GameObject _obj in m_gameButton)
-                DestroyImmediate(_obj);
-
-            // ポーズバーの消去
-            DestroyImmediate(m_slide);
-            if(m_selectFuse)
-                m_selectFuse.State = Fuse.FuseState.None;
-
-            // ゲーム部分の事後処理
-            if (m_selectFuse)
-                m_selectFuse.SelectUIFuse(false);
-            m_UIFuseCreate.enabled = false;
-            Camera.main.GetComponent<MainCamera>().Control = false;
         }
     }
     /// <summary>
@@ -718,21 +707,40 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // 燃え尽きたのなら
         if (isBurnOut)
         {
+            // ゲームメインの終了処理
+            GameMainEnd();
+
             // 燃え尽きた場合
             m_resultClear.SetActive(true);
             m_gameStep = GameClear;
 
-            // ゲーム部分の事後処理
-            if (m_selectFuse)
-                m_selectFuse.SelectUIFuse(false);
-            m_UIFuseCreate.enabled = false;
-            Camera.main.GetComponent<MainCamera>().Control = false;
+            Sound.Instance.PlayBGM("bgm_clear");
+            Sound.Instance.PlaySE("se_clear");
         }
         // 花火に着火
         else
         {
             m_saveObj.Add(goal.gameObject);
         }
+    }
+
+    void GameMainEnd()
+    {
+        Sound.Instance.StopSE();
+
+        // ライトの親を外す
+        Camera.main.transform.GetChild(0).parent = null;
+        Camera.main.GetComponent<MainCamera>().Control = false;
+
+        // ポーズバーの消去
+        DestroyImmediate(m_slide);
+        if (m_selectFuse)
+            m_selectFuse.State = Fuse.FuseState.None;
+
+        // ゲーム部分の事後処理
+        if (m_selectFuse)
+            m_selectFuse.SelectUIFuse(false);
+        m_UIFuseCreate.enabled = false;
     }
 
     /// <summary>

@@ -48,7 +48,6 @@ public class Fireworks : EffekseerEmitter
                 {
                     EffectManager.Instance.EffectCreate(EffectType.fireworks, transform.position, Quaternion.identity);
                     DestroyImmediate(gameObject);
-
                 }
                 break;
         }
