@@ -15,6 +15,7 @@ namespace AdjustParameter
         public const float AROUND_ANGLE = 15.0f;
         public const float PERMISSION_MOVE = 20.0f;
         public const float ZOOM_SPEED = 1.0f;
+        public const float FADE_DURATION = 2.0f;
         public const float EFFECT_POS_Z = 2.0f;
     }
 
