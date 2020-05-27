@@ -154,12 +154,11 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                             m_cursorTouchObj = _fuse.gameObject;
                         }
 
-                        m_fuseData[_fuse.transform.position] = objName + (int)_fuse.Type + m_fuseData[_fuse.transform.position].Substring(1, m_fuseData[_fuse.transform.position].Length - 1);
+                        m_fuseData[_fuse.transform.position] = objName + (int)_fuse.Type + m_fuseData[_fuse.transform.position].Substring(2, m_fuseData[_fuse.transform.position].Length - 2);
                     }
                     // 設置位置の色の変更
                     else if (_fuse.Type != Fuse.FuseType.Start)
                     {
-
                         if (m_cursorTouchObj)
                             m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.white));
 

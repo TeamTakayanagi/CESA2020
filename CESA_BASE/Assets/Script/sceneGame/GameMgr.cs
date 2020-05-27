@@ -391,8 +391,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     // ガイドを出す
                     {
                         attention(m_uiFuse.Last.Value.gameObject);
-                        
-
                     }
 
                     // 設置or選択
