@@ -77,9 +77,12 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                         BGObjs _bgObjects = BGObjs.Instance.GetComponent<BGObjs>();
                         for (int i = 0; i < _bgObjects.transform.childCount; i++)
                         {
-                            if (_hit.transform == _bgObjects.transform.GetChild(i))
+                            for (int j = 0; j < _bgObjects.transform.GetChild(i).childCount; j++)
                             {
-                                _hit.transform.GetComponent<ClickedObject>().OnClick();
+                                if (_hit.transform == _bgObjects.transform.GetChild(i).GetChild(j))
+                                {
+                                    _hit.transform.GetComponent<ClickedObject>().OnClick();
+                                }
                             }
                         }
                     }

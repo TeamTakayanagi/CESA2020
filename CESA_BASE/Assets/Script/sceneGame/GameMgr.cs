@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class GameMgr : SingletonMonoBehaviour<GameMgr>
 {
@@ -16,12 +17,18 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         Button,
     }
 
+    // シリアライズ化
     [SerializeField]
     private Texture2D m_cursorDefault = null;                           // マウスカーソル（通常時）
     [SerializeField]
     private Texture2D m_cursorCatch = null;                             // マウスカーソル（UIの導火線選択時）
     [SerializeField]
     private Vector3Int m_stageSize = Vector3Int.zero;                   // ステージサイズ
+
+    [SerializeField]
+    private Image m_attentionPrefab = null;
+    [SerializeField]
+    private Sprite[] m_attentionSprite = null;
 
     // 定数
     private readonly Vector3 TEXT_POS = new Vector3(0.0f, 100, 0.0f);   // リザルトテキストの移動距離
@@ -44,6 +51,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private LinkedList<Fuse> m_uiFuse = new LinkedList<Fuse>();         // UI部分の導火線
     private GameStep m_gameStep = null;                                 // 現在のゲームの進行状況の関数
 
+    private Image m_attentionMain = null;
+    private Image m_attentionSub = null;
+
+    private float m_tutorialTIme = 0;
     private int m_tutorialState = 0;
     private float m_tutorialTIme = 0;
 
@@ -120,6 +131,13 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         TerrainCreate terrainCreate = FindObjectOfType<TerrainCreate>();
         terrainCreate.CreateGround(m_stageSize.x, m_stageSize.z, - m_stageSize.y / 2 - 1);
 
+        // 開始演出準備
+        if (false)
+        {
+            m_gameStep = GameTutorial;
+            GameObject canvas = GameObject.FindGameObjectWithTag(NameDefine.TagName.UICanvas);
+            m_saveObj.Add(canvas.transform.GetChild(0).gameObject);
+        }
 
         // フィールドオブジェクトの取得
         Fuse[] _fuseList = FindObjectsOfType<Fuse>();
@@ -373,6 +391,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 {
                     // ガイドを出す
                     {
+                        attention(m_uiFuse.Last.Value.gameObject);
+                        
 
                     }
 
@@ -739,6 +759,25 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             _text.localPosition = startPos_text + moveDistance_text * m_animCurve.Evaluate((Time.time - startTime) / AdjustParameter.Production_Constant.DURATION);
             _button.localPosition = startPos_rePlay + moveDistance_button * m_animCurve.Evaluate((Time.time - startTime) / AdjustParameter.Production_Constant.DURATION);
             yield return 0;
+        }
+    }
+
+    private void attention(GameObject _target)
+    {
+
+        if (m_attentionMain == null)
+        {
+            if (m_attentionMain == null)
+            {
+                m_attentionMain = Instantiate(m_attentionPrefab, _target.transform.root.GetChild(0));
+                m_attentionMain.sprite = m_attentionSprite[0];
+                m_attentionMain.transform.position = _target.transform.position;
+            }
+            if (m_attentionSub == null)
+            {
+                m_attentionSub = Instantiate(m_attentionPrefab);
+                m_attentionSub.sprite = m_attentionSprite[1];
+            }
         }
     }
 

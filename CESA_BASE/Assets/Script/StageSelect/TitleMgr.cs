@@ -58,7 +58,9 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         m_camera.transform.position = InitCameraPos;
         m_camera.transform.rotation = InitCameraRot;
         m_logo.transform.rotation = InitObjRot;
-        m_logo.transform.position = m_logoCanvas.transform.position + m_logo.transform.rotation * InitLogoPos;    
+        m_logo.transform.position = m_logoCanvas.transform.position + m_logo.transform.rotation * InitLogoPos;
+
+        InputMouse.RoadCamera();
     }
 
     // Update is called once per frame

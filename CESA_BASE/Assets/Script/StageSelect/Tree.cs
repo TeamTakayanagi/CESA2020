@@ -25,10 +25,10 @@ public class Tree : ClickedObject
 
     private IEnumerator SwaysTree()
     {
-        while (m_redian < 9)
+        while (m_redian < ProcessedtParameter.ClickObj.Tree.MAX_REDIAN)
         {
-            m_redian += Time.deltaTime * 10;
-            transform.localEulerAngles = Vector3.forward * 3 * Mathf.Sin(m_redian);
+            m_redian += Time.deltaTime * ProcessedtParameter.ClickObj.Tree.SWAYS_SPEED;
+            transform.localEulerAngles = Vector3.forward * ProcessedtParameter.ClickObj.Tree.SWAYS_ANGLE * Mathf.Sin(m_redian);
 
             yield return null;
         }

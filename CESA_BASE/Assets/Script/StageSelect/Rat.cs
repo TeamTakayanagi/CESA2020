@@ -12,7 +12,7 @@ public class Rat : MonoBehaviour
     {
         m_radian = -90 * Mathf.Deg2Rad;
         m_speed = 3.0f;
-        m_radius = 4.0f;
+        m_radius = 0.2f;
     }
 
     // Start is called before the first frame update

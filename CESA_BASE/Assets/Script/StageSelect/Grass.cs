@@ -31,10 +31,10 @@ public class Grass : ClickedObject
 
     private IEnumerator SwaysTree()
     {
-        while (m_redian < 12)
+        while (m_redian < ProcessedtParameter.ClickObj.Grass.MAX_REDIAN)
         {
-            m_redian += Time.deltaTime * 10;
-            transform.position += Vector3.right * 0.03f * Mathf.Sin(m_redian);
+            m_redian += Time.deltaTime * ProcessedtParameter.ClickObj.Grass.SWAYS_SPEED;
+            transform.position += Vector3.right * ProcessedtParameter.ClickObj.Grass.SWAYS_POS * Mathf.Sin(m_redian);
 
             yield return null;
         }
