@@ -27,7 +27,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private readonly Vector3 TEXT_POS = new Vector3(0.0f, 100, 0.0f);   // リザルトテキストの移動距離
     private readonly Vector3 BUTTON_POS = new Vector3(0.0f, 100.0f, 0.0f); // リザルトボタンの移動距離              
     private readonly Vector3 OUTPOS = new Vector3(-50, -50, -50);       // 導火線を生成できない位置
-    private readonly AnimationCurve m_animCurve = AnimationCurve.Linear(0, 0, 1, 1);   // リザルトUIの移動用 
+    private readonly AnimationCurve m_animCurve = AnimationCurve.Linear(0, 0, 1, 1);   // リザルトUIの移動用
+    private readonly Vector2 CURSOR_POS = new Vector2(142.0f, 25.0f);  // マウスカーソルの位置
     
     private int m_burnCount = 1;                                        // 燃えている導火線の数
     private int m_gameSpeed = 1;                                        // ゲーム加速処理
@@ -98,7 +99,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         InputMouse.RoadCamera();
 
         // マウスカーソル用の画像を変更
-        Cursor.SetCursor(m_cursorDefault, Vector2.zero, CursorMode.Auto);
+        Cursor.SetCursor(m_cursorDefault, CURSOR_POS, CursorMode.Auto);
 
         // ゲームクリア用のUIの親オブジェクト取得
         m_resultClear = GameObject.FindGameObjectWithTag(NameDefine.TagName.UIGameClear);
@@ -235,7 +236,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                             m_selectFuse = _fuse;
                             m_selectFuse.SelectUIFuse(true);
                             // マウスカーソル用の画像を選択時に変更
-                            Cursor.SetCursor(m_cursorCatch, Vector2.zero, CursorMode.Auto);
+                            Cursor.SetCursor(m_cursorCatch, CURSOR_POS, CursorMode.Auto);
                         }
                     }
                     // 選択解除
@@ -244,7 +245,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                         m_selectFuse.SelectUIFuse(false);
                         m_selectFuse = null;
                         // マウスカーソル用の画像をデフォルトに変更
-                        Cursor.SetCursor(m_cursorDefault, Vector2.zero, CursorMode.Auto);
+                        Cursor.SetCursor(m_cursorDefault, CURSOR_POS, CursorMode.Auto);
                     }
                 }
             }
@@ -288,7 +289,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     m_selectFuse = null;
                     m_createPos = OUTPOS;
                     // マウスカーソル用の画像をデフォルトに変更
-                    Cursor.SetCursor(m_cursorDefault, Vector2.zero, CursorMode.Auto);
+                    Cursor.SetCursor(m_cursorDefault, CURSOR_POS, CursorMode.Auto);
                 }
                 // ギミック動作
                 else
@@ -403,7 +404,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                                         m_selectFuse = _fuse;
                                         m_selectFuse.SelectUIFuse(true);
                                         // マウスカーソル用の画像を選択時に変更
-                                        Cursor.SetCursor(m_cursorCatch, Vector2.zero, CursorMode.Auto);
+                                        Cursor.SetCursor(m_cursorCatch, CURSOR_POS, CursorMode.Auto);
 
                                         m_tutorialState = 2;
                                     }
@@ -494,7 +495,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                                 m_selectFuse = null;
                                 m_createPos = OUTPOS;
                                 // マウスカーソル用の画像をデフォルトに変更
-                                Cursor.SetCursor(m_cursorDefault, Vector2.zero, CursorMode.Auto);
+                                Cursor.SetCursor(m_cursorDefault, CURSOR_POS, CursorMode.Auto);
 
                                 foreach (Fuse _fuse in m_uiFuse)
                                     _fuse.enabled = true;
