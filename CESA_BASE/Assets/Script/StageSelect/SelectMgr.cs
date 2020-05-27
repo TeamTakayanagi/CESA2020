@@ -113,8 +113,12 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     {
         if (m_zoomObj.GetComponent<Renderer>().material.GetFloat("_texNum") > 0)
         {
+            // ステージセレクト→ゲーム のフェード
+            m_camera.StartZoomFade(m_zoomObj.transform.position);
+
             // シーン遷移開始
-            SceneManager.LoadScene("SampleSceneSugi");
+            //SceneManager.LoadScene("SampleSceneSugi");
+
         }
     }
 }
