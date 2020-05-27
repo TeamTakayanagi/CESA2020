@@ -4,16 +4,27 @@ using UnityEngine;
 
 public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
 {
-    [SerializeField]
-    private GameObject FadePrefab = null;
-    private GameObject m_fade;
+    public enum FadeType
+    {
+        Game_Start,
+        Alpha,
+    }
 
-    private bool m_fadeFlg;
+    public enum FadeState
+    {
+        FadeIn,
+        SceneLoad,
+        FadeOut,
+    }
+
+
+    private string m_nextScene;
+    private FadeType m_type;
+    private FadeState m_state;
 
     // Start is called before the first frame update
     void Start()
     {
-        m_fade = Instantiate(FadePrefab, transform);
         DontDestroyOnLoad(gameObject);
     }
 
@@ -23,22 +34,14 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
         
     }
 
-    public void StartFade(string _str = "null")
+    public void FadeIn(string nextScene)
     {
-        switch (_str)
-        {
-            case "Alpha":
-                m_fade.GetComponent<FadeAlpha>().StartFade();
-                break;
+        m_state = FadeState.FadeIn;
+        m_nextScene = nextScene;
+    }
 
-            //case "Start":
-            //    m_fade.GetComponent<FadeGameStart>().StartFade();
-            //    break;
-
-
-            default:
-                m_fade.GetComponent<FadeAlpha>().StartFade();
-                break;
-        }
+    public void FadeOut()
+    {
+        m_state = FadeState.FadeOut;
     }
 }

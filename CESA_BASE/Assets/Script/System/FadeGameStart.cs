@@ -9,7 +9,7 @@ public class FadeGameStart : MonoBehaviour
     private enum FadeStep
     {
         None = 0,
-        StepFuse,  // 導火線がスライド
+        StepFuse,   // 導火線がスライド
         StepIdle,   // 待機（ここでシーンロード？
         StepMouse,  // ネズミがかじる
         StepEnd,
