@@ -77,6 +77,22 @@ namespace ProcessedtParameter
         public const int OBJECT_ROT_COUNT = 3;                                      // オブジェクトの角度情報の文字数
         public const int STAGE_DATA_COUNT = ADDINFO_WORD_COUNT + OBJECT_WORD_COUNT + OBJECT_ROT_COUNT;   // ステージデータの文字数
     }
+
+    public readonly struct ClickObj
+    {
+        public struct Tree
+        {
+            public const float SWAYS_SPEED = 20;
+            public const float SWAYS_ANGLE = 3;
+            public const float MAX_REDIAN = 9;
+        }
+        public struct Grass
+        {
+            public const float SWAYS_SPEED = 20;
+            public const float SWAYS_POS = 0.001f;
+            public const float MAX_REDIAN = 12;
+        }
+    }
 }
 
 namespace NameDefine
