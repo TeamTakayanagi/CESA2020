@@ -17,7 +17,11 @@ public class InputMouse : MonoBehaviour
     public static void RoadCamera()
     {
         m_main = Camera.main;
-        m_sub = GameObject.FindGameObjectWithTag(NameDefine.TagName.SubCamera).GetComponent<Camera>();
+        GameObject obj = GameObject.FindGameObjectWithTag(NameDefine.TagName.SubCamera);
+        if (obj)
+        {
+            m_sub = obj.GetComponent<Camera>();
+        }
     }
 
     public static bool MouseClick(Mouse_Place place)

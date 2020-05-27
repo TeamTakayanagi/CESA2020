@@ -34,7 +34,7 @@ public class Grass : ClickedObject
         while (m_redian < 12)
         {
             m_redian += Time.deltaTime * 10;
-            transform.position += Vector3.right * 0.03f * Mathf.Sin(m_redian);
+            transform.position += Vector3.right * 0.003f * Mathf.Sin(m_redian);
 
             yield return null;
         }
