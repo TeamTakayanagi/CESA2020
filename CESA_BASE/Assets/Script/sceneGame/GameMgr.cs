@@ -81,7 +81,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     override protected void Awake()
     {
-        Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + 1);
+        Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + 0);
         StageCreateMgr.Instance.CreateStage(transform, info);
         m_stageSize = info.size;
         m_gameStep = GameStart;
@@ -138,8 +138,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         foreach (GameGimmick _gimmick in _gimmicks)
         {
             m_fieldObject.AddLast(_gimmick.gameObject);
-            // スタート演出のため導火線の更新処理停止（ステージエディタ完成後修正予定）
-            _gimmick.enabled = false;
         }
 
         Camera.main.GetComponent<MainCamera>().Control = true;
@@ -167,10 +165,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             Fuse _start = m_saveObj.GetComponent<Fuse>();
             _start.GameStart();
 
-            foreach (GameObject _obj in m_fieldObject)
-                _obj.GetComponent<Behaviour>().enabled = true;
-
             m_UIFuseCreate.enabled = true;
+            DestroyImmediate(m_start.gameObject);
+            EffectManager.Instance.EffectCreate(EffectManager.Instance.GetFireworks(), Vector3.zero, Quaternion.identity);
             m_saveObj = null;
         }
         else if(Input.GetMouseButtonDown(0))

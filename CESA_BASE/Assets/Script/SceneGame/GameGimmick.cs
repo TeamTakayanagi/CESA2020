@@ -18,6 +18,7 @@ public class GameGimmick : MonoBehaviour
     // 水
     [SerializeField]
     private float m_gimmickValue = 0.0f;      // 水の長さ
+    private float m_materialValue = 0.0f;      // 水の長さ
     private bool m_isGimmickStart = false;
 
     public GimmickType Type
@@ -69,6 +70,12 @@ public class GameGimmick : MonoBehaviour
     {
         if (m_type == GimmickType.Water)
             m_isGimmickStart = true;
+        else if (m_type == GimmickType.Goal)
+        {
+            m_materialValue = -0.5f;
+            transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_OutTime", transform.localPosition.y + m_materialValue);
+            m_isGimmickStart = false;
+        }
         else
             m_isGimmickStart = false;
         m_gimmickValue = 0.0f;
@@ -85,7 +92,9 @@ public class GameGimmick : MonoBehaviour
         else if(m_type == GimmickType.Goal)
         {
             m_gimmickValue += Time.deltaTime * GameMgr.Instance.GameSpeed;
-            if(m_gimmickValue >= AdjustParameter.Fuse_Constant.BURN_MAX_TIME)
+            m_materialValue += Time.deltaTime * GameMgr.Instance.GameSpeed / AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
+            transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_OutTime", transform.localPosition.y + m_materialValue);
+            if (m_gimmickValue >= AdjustParameter.Fuse_Constant.BURN_MAX_TIME)
             {
                 m_gimmickValue = AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
                 GameMgr.Instance.BurnCount -= 1;

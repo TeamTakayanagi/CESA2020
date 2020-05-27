@@ -44,7 +44,8 @@ public class StartProduction : MonoBehaviour
         m_fire = transform.GetChild(2).gameObject;
 
         m_defaultPos = m_fire.transform.localPosition;
-        m_fuse.GetComponent<Image>().material.SetFloat("_OutTime", 0);
+        m_fuse.GetComponent<Image>().material.SetFloat("_MaskX", 0);
+        m_fuse.GetComponent<Image>().material.SetFloat("_MaskY", 0);
     }
 
     // Update is called once per frame
@@ -57,7 +58,7 @@ public class StartProduction : MonoBehaviour
         if (m_fire.transform.localPosition.x >= m_fireworks.transform.localPosition.x)
             m_state = Production.end;
 
-        m_fuse.GetComponent<Image>().material.SetFloat("_OutTime",
+        m_fuse.GetComponent<Image>().material.SetFloat("_MaskX",
             Mathf.Clamp01((m_fire.transform.localPosition - m_defaultPos).x / (m_fireworks.transform.localPosition - m_defaultPos).x));
     }
 }

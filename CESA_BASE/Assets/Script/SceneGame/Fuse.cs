@@ -276,9 +276,6 @@ public class Fuse : MonoBehaviour
                                 {
                                     GameGimmick _gimmick = _obj.gameObject.GetComponent<GameGimmick>();
 
-                                    // 当たった
-                                    _gimmick.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
-
                                     // 当たったものがゴールなら
                                     if (_gimmick.Type == GameGimmick.GimmickType.Goal && !_gimmick.GimmickStart)
                                     {
