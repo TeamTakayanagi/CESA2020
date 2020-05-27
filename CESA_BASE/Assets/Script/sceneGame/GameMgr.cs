@@ -56,7 +56,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     private float m_tutorialTIme = 0;
     private int m_tutorialState = 0;
-    private float m_tutorialTIme = 0;
 
     public int BurnCount
     {
@@ -136,7 +135,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         {
             m_gameStep = GameTutorial;
             GameObject canvas = GameObject.FindGameObjectWithTag(NameDefine.TagName.UICanvas);
-            m_saveObj.Add(canvas.transform.GetChild(0).gameObject);
+            m_saveObj = canvas.transform.GetChild(0).gameObject;
         }
 
         // フィールドオブジェクトの取得
