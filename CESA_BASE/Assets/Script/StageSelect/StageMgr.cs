@@ -30,7 +30,7 @@ public class StageMgr : SingletonMonoBehaviour<StageMgr>
             {
                 if (!Utility.CSVFile.InitSaveData("SaveData"))
                 {
-
+                    Utility.CSVFile.InitSaveData("SaveData");
                 }
 
                 m_step = (int)StageMgrState.LoadCsv;
@@ -99,7 +99,7 @@ public class StageMgr : SingletonMonoBehaviour<StageMgr>
         {
             for (int i = 0; i < m_childRender.Length; i++)
             {
-                m_childRender[i].material.SetFloat("_texNum", float.Parse(m_SaveData.data[i][1]));
+                //m_childRender[i].material.SetFloat("_texNum", float.Parse(m_SaveData.data[i][1]));
             }
 
             m_step++;

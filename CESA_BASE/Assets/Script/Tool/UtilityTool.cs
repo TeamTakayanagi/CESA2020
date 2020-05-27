@@ -136,19 +136,22 @@ namespace Utility
 
             try
             {
-                _reader = new BinaryReader(new FileStream(Application.dataPath + BIN_PATH + _fileName + ".bin", FileMode.Open));
+                try
+                {
+                    _reader = new BinaryReader(new FileStream(Application.dataPath + BIN_PATH + _fileName + ".bin", FileMode.Open));
 
+                }
+                catch
+                {
+                    Debug.LogWarning("LoadBinエラー");
+                    return null;
+                }
                 for (int i = 0; i < StageMgr.Instance.transform.childCount; i++)
                 {
                     string _test = _reader.ReadString();
                     string[] _str = _test.Split(',');
                     _saveData.data.Add(_str);
                 }
-            }
-            catch
-            {
-                Debug.LogWarning("エラー");
-                return null;
             }
             finally
             {

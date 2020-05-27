@@ -8,7 +8,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     private const float UP_SPEED = 0.5f;
 
     private readonly Vector3 InitCameraPos = new Vector3(0.0f, 80.0f, -10.0f);
-    private readonly Vector3 InitLogoPos = new Vector3(0.0f, -20.0f, 0.0f);
+    private readonly Vector3 InitLogoPos = new Vector3(0.0f, 0.1f, 0.0f);
     private readonly Vector3 m_initGuidPos = new Vector3(0.0f, -50.0f, -20.0f);
     private readonly Vector3 LogoUpPos = Vector3.zero;
 
@@ -49,6 +49,9 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     // Start is called before the first frame update
     void Start()
     {
+        // カメラに移るようにポジション変更
+        transform.position = Camera.main.transform.position + Vector3.forward * 5;
+
         m_logo = transform.GetChild(0).gameObject;
         m_logoCanvas = transform.GetComponent<Canvas>();
         m_camera = Camera.main.gameObject;
