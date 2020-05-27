@@ -34,7 +34,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private Vector3 m_createPos = Vector3.zero;                         // 導火線の生成位置
     private GameObject m_resultClear = null;                            // ゲームクリア用のUIの親オブジェクト
     private GameObject m_resultGameover = null;                         // ゲームオーバー用のUIの親オブジェクト
-    private GameObject m_slide = null;                         // ゲームオーバー用のUIの親オブジェクト
+    private StartProduction m_start = null;                                  // ゲームオーバー用のUIの親オブジェクト
+    private GameObject m_slide = null;                                  // ゲームオーバー用のUIの親オブジェクト
     private Fuse m_selectFuse = null;                                   // 選択しているUIの導火線   
     private UIFuseCreate m_UIFuseCreate = null;                         // UIの導火線生成オブジェクト
     private GameObject m_saveObj = null;                                // 各GameStepごとにオブジェクトを格納（スタート：カウントダウン数字　ゲームクリア：花火）
@@ -101,11 +102,12 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
         // ゲームクリア用のUIの親オブジェクト取得
         m_resultClear = GameObject.FindGameObjectWithTag(NameDefine.TagName.UIGameClear);
-
         // ゲームオーバー用のUIの親オブジェクト取得
         m_resultGameover = GameObject.FindGameObjectWithTag(NameDefine.TagName.UIGameOver);
         // ゲームのポーズ処理の親オブジェクト取得
         m_slide = FindObjectOfType<GameButton>().gameObject;
+        // ゲームスタート用のオブジェクト格納
+        m_start = FindObjectOfType<StartProduction>();
         // UIの導火線生成オブジェクト取得し、動きを止める
         m_UIFuseCreate = FindObjectOfType<UIFuseCreate>();
         m_UIFuseCreate.enabled = false;
@@ -158,16 +160,23 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// </summary>
     void GameStart()
     {
-        m_gameStep = GameMain;
+        if (m_start.State == StartProduction.Production.end)
+        {
+            m_gameStep = GameMain;
 
-        Fuse _start = m_saveObj.GetComponent<Fuse>();
-        _start.GameStart();
+            Fuse _start = m_saveObj.GetComponent<Fuse>();
+            _start.GameStart();
 
-        foreach (GameObject _obj in m_fieldObject)
-            _obj.GetComponent<Behaviour>().enabled = true;
+            foreach (GameObject _obj in m_fieldObject)
+                _obj.GetComponent<Behaviour>().enabled = true;
 
-        m_UIFuseCreate.enabled = true;
-        m_saveObj = null;
+            m_UIFuseCreate.enabled = true;
+            m_saveObj = null;
+        }
+        else if(Input.GetMouseButtonDown(0))
+        {
+            m_start.State = StartProduction.Production.move;
+        }
     }
 
     /// <summary>
@@ -727,10 +736,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         moveDistance_text = TEXT_POS - startPos_text;
         moveDistance_button = BUTTON_POS - startPos_rePlay;
 
-        while ((Time.time - startTime) < AdjustParameter.Result_Constant.DURATION)
+        while ((Time.time - startTime) < AdjustParameter.Production_Constant.DURATION)
         {
-            _text.localPosition = startPos_text + moveDistance_text * m_animCurve.Evaluate((Time.time - startTime) / AdjustParameter.Result_Constant.DURATION);
-            _button.localPosition = startPos_rePlay + moveDistance_button * m_animCurve.Evaluate((Time.time - startTime) / AdjustParameter.Result_Constant.DURATION);
+            _text.localPosition = startPos_text + moveDistance_text * m_animCurve.Evaluate((Time.time - startTime) / AdjustParameter.Production_Constant.DURATION);
+            _button.localPosition = startPos_rePlay + moveDistance_button * m_animCurve.Evaluate((Time.time - startTime) / AdjustParameter.Production_Constant.DURATION);
             yield return 0;
         }
     }

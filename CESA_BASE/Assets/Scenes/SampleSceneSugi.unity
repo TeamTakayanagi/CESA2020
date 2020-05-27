@@ -1104,6 +1104,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2278912824055337549, guid: f3fd204ae5c8b884fa41d885d6181a2f,
+        type: 3}
+      propertyPath: m_Name
+      value: fire
+      objectReference: {fileID: 0}
     - target: {fileID: 3395087932507020599, guid: f3fd204ae5c8b884fa41d885d6181a2f,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -1257,7 +1262,12 @@ PrefabInstance:
     - target: {fileID: 3959496220864699293, guid: f3fd204ae5c8b884fa41d885d6181a2f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6284725371532632999, guid: f3fd204ae5c8b884fa41d885d6181a2f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6716154930796809493, guid: f3fd204ae5c8b884fa41d885d6181a2f,
         type: 3}
