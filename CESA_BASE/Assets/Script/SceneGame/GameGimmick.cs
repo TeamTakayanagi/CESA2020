@@ -97,7 +97,10 @@ public class GameGimmick : MonoBehaviour
             {
                 m_gimmickValue = AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
                 GameMgr.Instance.BurnCount -= 1;
-                Effekseer.EffekseerEmitter effect = EffectManager.Instance.EffectCreate(Effekseer.EffekseerEmitter.EffectType.fireworks_core, transform.position, Quaternion.identity);
+                Effekseer.EffekseerEmitter effect = EffectManager.Instance.EffectCreate(Effekseer.EffekseerEmitter.EffectType.fireworks_core,
+                    transform.position,
+                    new Vector3(transform.position.x, AdjustParameter.Production_Constant.END_FIRE_POS_Y, transform.position.z),
+                    Vector3.one, Quaternion.identity);
                 GameMgr.Instance.FireGoal(true, effect.gameObject);
                 m_isGimmickStart = false;
             }

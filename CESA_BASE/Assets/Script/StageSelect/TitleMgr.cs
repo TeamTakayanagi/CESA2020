@@ -7,7 +7,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     private const float GUID_TIME = 1.0f;
     private const float UP_SPEED = 0.5f;
 
-    private readonly Vector3 InitCameraPos = new Vector3(-3.0f, 3.0f, -21.0f);
+    private readonly Vector3 InitCameraPos = new Vector3(-3.0f, 5.0f, -21.0f);
     private readonly Vector3 InitLogoPos = new Vector3(0.0f, 0.4f, 0.0f);
     private readonly Vector3 m_initGuidPos = new Vector3(0.0f, 0.0f, 0.0f);
     private readonly Vector3 LogoUpPos = new Vector3(0.0f, 0.8f, 0.0f);

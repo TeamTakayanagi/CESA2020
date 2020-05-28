@@ -50,7 +50,26 @@ namespace Effekseer
 		/// エフェクトの速度
 		/// </summary>
 		protected Vector3 m_moveVector = Vector3.zero;                            // 移動方向
-
+		public Vector3 Move
+		{
+			set
+			{
+				m_moveVector = value;
+			}
+		}/// <summary xml:lang="en">
+		 /// Effect move
+		 /// </summary>
+		 /// <summary xml:lang="ja">
+		 /// エフェクトの速度
+		 /// </summary>
+		protected Vector3 m_target = Vector3.zero;                            // 移動方向
+		public Vector3 Target
+		{
+			set
+			{
+				m_target = value;
+			}
+		}
 		/// <summary xml:lang="en">
 		/// Effect name
 		/// </summary>

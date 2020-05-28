@@ -23,6 +23,25 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager>
 
         return effect;
     }
+    public EffekseerEmitter EffectCreate(EffekseerEmitter.EffectType type, Vector3 pos,Vector3 scale, Quaternion rot)
+    {
+        EffekseerEmitter effect = Instantiate(m_effectList[(int)type], transform) as EffekseerEmitter;
+        effect.transform.localPosition = pos;
+        effect.transform.localRotation = rot;
+        effect.transform.localScale = scale;
+
+        return effect;
+    }
+    public EffekseerEmitter EffectCreate(EffekseerEmitter.EffectType type, Vector3 pos, Vector3 move, Vector3 scale, Quaternion rot)
+    {
+        EffekseerEmitter effect = Instantiate(m_effectList[(int)type], transform) as EffekseerEmitter;
+        effect.transform.localPosition = pos;
+        effect.transform.localRotation = rot;
+        effect.transform.localScale = scale;
+        effect.Target = move;
+
+        return effect;
+    }
     public EffekseerEmitter EffectCreate(EffekseerEmitter.EffectType type, Vector3 pos, Quaternion rot, Transform parent)
     {
         EffekseerEmitter effect = Instantiate(m_effectList[(int)type], parent) as EffekseerEmitter;

@@ -31,6 +31,17 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         }
     }
 
+    override protected void Awake()
+    {
+        m_stages.AddRange(GameObject.FindGameObjectWithTag("StageParent").GetComponentsInChildren<Stage>());
+        for(int i = 0; i < m_stages.Count; ++i)
+        {
+            m_stages[i].StageNum = i;
+        }
+        // セーブデータを読み込む
+        m_SaveData = Utility.CSVFile.LoadBin("SaveData", m_stages.Count);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -42,33 +53,17 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         m_camera.Type = MainCamera.CameraType.SwipeMove;
         m_camera.Control = true;
 
-        m_stages.AddRange(StageMgr.Instance.GetComponentsInChildren<Stage>());
-        for(int i = 0; i < m_stages.Count; ++i)
-        {
-            m_stages[i].StageNum = i;
-        }
 
         m_uiArrow.SetActive(false);
         m_uiStartBack.SetActive(false);
 
         // ステージ番号順にソート
         m_stages.Sort((a, b) => a.StageNum - b.StageNum);
-
-        // セーブデータを読み込む
-        m_SaveData = Utility.CSVFile.LoadBin("SaveData");
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        // エフェクトテスト
-        //if (Input.GetKeyDown(KeyCode.Return))
-        //{
-        //    Effekseer.EffekseerEmitter _effekt =
-        //        EffectManager.Instance.EffectCreate(Effekseer.EffekseerEmitter.EffectType.fireworks_core, Vector3.zero, Quaternion.identity);
-        //}
-
         if (m_camera.Type == MainCamera.CameraType.SwipeMove)
         {
             if (Input.GetMouseButtonDown(0))
@@ -93,16 +88,10 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                     // 背景オブジェクトとの判定
                     else if (_hit.transform.tag == NameDefine.TagName.ClickObj)
                     {
-                        BGObjs _bgObjects = BGObjs.Instance.GetComponent<BGObjs>();
-                        for (int i = 0; i < _bgObjects.transform.childCount; i++)
+                        ClickedObject _click = _hit.transform.GetComponent<ClickedObject>();
+                        if (_click)
                         {
-                            for (int j = 0; j < _bgObjects.transform.GetChild(i).childCount; j++)
-                            {
-                                if (_hit.transform == _bgObjects.transform.GetChild(i).GetChild(j))
-                                {
-                                    _hit.transform.GetComponent<ClickedObject>().OnClick();
-                                }
-                            }
+                            _click.OnClick();
                         }
                     }
                 }

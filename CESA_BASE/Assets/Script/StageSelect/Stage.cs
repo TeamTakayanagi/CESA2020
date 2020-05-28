@@ -36,7 +36,6 @@ public class Stage : MonoBehaviour
             {
                 StartCoroutine("FireWorks");
             }
-
             m_srep++;
         }
     }
@@ -46,8 +45,11 @@ public class Stage : MonoBehaviour
         while (true)
         {
             if (transform.childCount == 0)
-                m_effekt = EffectManager.Instance.EffectCreate(Effekseer.EffekseerEmitter.EffectType.fireworks_core, transform.position, Quaternion.identity, transform);
-
+            {
+                m_effekt = EffectManager.Instance.EffectCreate(Effekseer.EffekseerEmitter.EffectType.fireworks_core, transform.position, 
+                    new Vector3(transform.position.x, AdjustParameter.Production_Constant.END_FIRE_POS_Y / 10, transform.position.z),
+                    Vector3.one / 10, Quaternion.identity);
+            }
             yield return new WaitForSeconds(5 + Random.Range(0, 3));
         }
     }

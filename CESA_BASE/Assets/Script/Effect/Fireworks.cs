@@ -29,8 +29,8 @@ public class Fireworks : EffekseerEmitter
         {
             // 打ち上げた際の処理
             case State.launch:
-                transform.position += m_moveVector * Time.deltaTime;
-                if (transform.position.y >= AdjustParameter.Production_Constant.END_FIRE_POS_Y)
+                transform.position += m_moveVector * Time.deltaTime * Vector3.Dot(transform.localScale, Vector3.one);
+                if (transform.position.y >= m_target.y)
                 {
                     m_staet = State.create;
                 }
@@ -41,7 +41,7 @@ public class Fireworks : EffekseerEmitter
                 m_createWait -= Time.deltaTime;
                 if(m_createWait <= 0.0f)
                 {
-                    EffectManager.Instance.EffectCreate(EffectManager.Instance.GetFireworks(), transform.position, Quaternion.identity);
+                    EffectManager.Instance.EffectCreate(EffectManager.Instance.GetFireworks(), transform.position, transform.localScale, Quaternion.identity);
                     DestroyImmediate(gameObject);
                 }
                 break;

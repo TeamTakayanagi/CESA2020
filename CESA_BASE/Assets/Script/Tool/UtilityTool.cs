@@ -128,7 +128,7 @@ namespace Utility
         /// </summary>
         /// <param name="_fileName"></param>
         /// <returns></returns>
-        public static BinData LoadBin(string _fileName)
+        public static BinData LoadBin(string _fileName, int stageNum)
         {
             BinaryReader _reader = null;
             BinData _saveData = new BinData();
@@ -146,7 +146,7 @@ namespace Utility
                     Debug.LogWarning("LoadBinエラー");
                     return null;
                 }
-                for (int i = 0; i < StageMgr.Instance.transform.childCount; i++)
+                for (int i = 0; i < stageNum; i++)
                 {
                     string _test = _reader.ReadString();
                     string[] _str = _test.Split(',');
@@ -163,41 +163,41 @@ namespace Utility
 
         public static bool SaveBin(string _fileName, int _StageNum, int _clearState)
         {
-            BinData _saveData = new BinData();
-            _saveData.data = new List<string[]>();
+            //BinData _saveData = new BinData();
+            //_saveData.data = new List<string[]>();
             
-            _saveData = LoadBin(_fileName);
-            if (_saveData == null)
-            {
-                Debug.LogWarning("ファイルが見つかりません。");
-                return false;
-            }
+            //_saveData = LoadBin(_fileName);
+            //if (_saveData == null)
+            //{
+            //    Debug.LogWarning("ファイルが見つかりません。");
+            //    return false;
+            //}
 
-            BinaryWriter _writer = null;
-            try
-            {
-                _writer = new BinaryWriter(new FileStream(Application.dataPath + BIN_PATH + _fileName + ".bin", FileMode.Create));
+            //BinaryWriter _writer = null;
+            //try
+            //{
+            //    _writer = new BinaryWriter(new FileStream(Application.dataPath + BIN_PATH + _fileName + ".bin", FileMode.Create));
 
-                for (int i = 0; i < StageMgr.Instance.transform.childCount; i++)
-                {
-                    if (i == _StageNum)
-                    {
-                        _writer.Write("" + i + ',' + _clearState);
-                    }
-                    else
-                    {
-                        _writer.Write("" + i + ',' + _saveData.data[i][1]);
-                    }
-                }
-            }
-            catch
-            {
-                return false;
-            }
-            finally
-            {
-                _writer.Close();
-            }
+            //    for (int i = 0; i < StageMgr.Instance.transform.childCount; i++)
+            //    {
+            //        if (i == _StageNum)
+            //        {
+            //            _writer.Write("" + i + ',' + _clearState);
+            //        }
+            //        else
+            //        {
+            //            _writer.Write("" + i + ',' + _saveData.data[i][1]);
+            //        }
+            //    }
+            //}
+            //catch
+            //{
+            //    return false;
+            //}
+            //finally
+            //{
+            //    _writer.Close();
+            //}
 
             return true;
         }
@@ -208,26 +208,26 @@ namespace Utility
         /// <param name="_fileName"></param>
         public static bool InitSaveData(string _fileName)
         {
-            BinaryWriter _writer = null;
-            try
-            {
-                _writer = new BinaryWriter(new FileStream(Application.dataPath + BIN_PATH + _fileName + ".bin", FileMode.Create));
+            //BinaryWriter _writer = null;
+            //try
+            //{
+            //    _writer = new BinaryWriter(new FileStream(Application.dataPath + BIN_PATH + _fileName + ".bin", FileMode.Create));
 
-                _writer.Write("0,1");
-                for (int i = 1; i < StageMgr.Instance.transform.childCount; i++)
-                {
-                    _writer.Write(i + ",0");
-                }
-            }
-            catch
-            {
-                Debug.LogWarning("ファイルが見つかりません。");
-                return false;
-            }
-            finally
-            {
-                _writer.Close();
-            }
+            //    _writer.Write("0,1");
+            //    for (int i = 1; i < StageMgr.Instance.transform.childCount; i++)
+            //    {
+            //        _writer.Write(i + ",0");
+            //    }
+            //}
+            //catch
+            //{
+            //    Debug.LogWarning("ファイルが見つかりません。");
+            //    return false;
+            //}
+            //finally
+            //{
+            //    _writer.Close();
+            //}
 
             return true;
         }   

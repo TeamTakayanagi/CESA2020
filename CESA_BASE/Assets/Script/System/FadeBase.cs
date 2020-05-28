@@ -68,7 +68,6 @@ public abstract class FadeBase : MonoBehaviour
             else
             {
                 SceneManager.LoadScene(m_nextScene);
-                FadeMgr.Instance.SetCamera();
             }
         }
     }
