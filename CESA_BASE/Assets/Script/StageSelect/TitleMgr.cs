@@ -7,8 +7,8 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     private const float GUID_TIME = 1.0f;
     private const float UP_SPEED = 0.5f;
 
-    private readonly Vector3 InitCameraPos = new Vector3(0.0f, 10.0f, -10.0f);
-    private readonly Vector3 InitLogoPos = new Vector3(0.0f, -20.0f, 0.0f);
+    private readonly Vector3 InitCameraPos = new Vector3(-3.0f, 3.0f, -21.0f);
+    private readonly Vector3 InitLogoPos = new Vector3(0.0f, 0.1f, 0.0f);
     private readonly Vector3 m_initGuidPos = new Vector3(0.0f, -50.0f, -20.0f);
     private readonly Vector3 LogoUpPos = Vector3.zero;
 
@@ -33,7 +33,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     private TitleStep m_step = TitleStep.Scroll;
 
     private float m_delayCounter = 0;
-    private GameObject m_camera = null;
+    private MainCamera m_camera = null;
     private GameObject m_logo = null;
     private GameObject m_guid = null;
     private Canvas m_logoCanvas = null;
@@ -49,15 +49,23 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     // Start is called before the first frame update
     void Start()
     {
+        // カメラに移るようにポジション変更
+        transform.position = Camera.main.transform.position + Vector3.forward * 5;
+
+        // オブジェクトの取得
         m_logo = transform.GetChild(0).gameObject;
         m_logoCanvas = transform.GetComponent<Canvas>();
-        m_camera = Camera.main.gameObject;
-        m_camera.GetComponent<MainCamera>().Control = false;
+        m_camera = Camera.main.GetComponent<MainCamera>();
         // マウス制御クラスにカメラの情報を渡す
         InputMouse.RoadCamera();
 
+        // カメラの位置、角度の初期化
         m_camera.transform.position = InitCameraPos;
         m_camera.transform.rotation = InitCameraRot;
+        m_camera.Control = false;
+        // タイトルカンバスの位置のカメラの前に持ってくる
+        transform.position = Camera.main.transform.position + new Vector3(0, -1, 1);
+        // ロゴの位置、角度の初期化
         m_logo.transform.rotation = InitObjRot;
         m_logo.transform.position = m_logoCanvas.transform.position + m_logo.transform.rotation * InitLogoPos;
     }
@@ -131,6 +139,8 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
                 m_step = TitleStep.Select;
                 m_camera.GetComponent<MainCamera>().Control = true;
             }
+
+            m_camera.GetComponent<MainCamera>().Control = true;
         }
 
         // タイトル演出スキップ
