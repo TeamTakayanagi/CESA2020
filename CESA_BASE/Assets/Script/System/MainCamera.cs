@@ -29,6 +29,7 @@ public class MainCamera : MonoBehaviour
 
     private Vector3 m_savePos = Vector3.zero;               // 差分計算のための移動開始地点格納変数
     private Vector3 m_target = Vector3.zero;                // 回転の中心座標もしくは、移動先
+    private Vector3 m_targetOld = Vector3.zero;                // 回転の中心座標もしくは、移動先
     private Vector3 m_storePos = Vector3.zero;              // 元の位置格納
     private CameraState m_cameraState;                      // カメラの状態に応じて関数を格納
 
@@ -42,7 +43,7 @@ public class MainCamera : MonoBehaviour
     private Vector3 m_scaleMax = Vector3.zero;              // マスクの最初の大きさ
     private Vector3 m_scaleMin = Vector3.zero;              // マスクの縮小後のサイズ
     [SerializeField]
-    private GameObject m_fadeMask;                          // マスク
+    private GameObject m_fadeMask = null;                          // マスク
 
     public bool Control
     {
@@ -95,7 +96,7 @@ public class MainCamera : MonoBehaviour
 
         transform.tag = "MainCamera";
         m_default = m_type;
-        m_target = transform.position;
+        m_target = m_targetOld = transform.position;
         SetState();
 
         m_myCamera = GetComponent<Camera>();
@@ -281,8 +282,10 @@ public class MainCamera : MonoBehaviour
                     difference.y * Time.deltaTime * AdjustParameter.Camera_Constant.SWIPE_MOVE);
         }
 
-        if(transform.position != m_target)
+        if(transform.position != m_target && m_targetOld != m_target)
             transform.DOMove(m_target, AdjustParameter.Camera_Constant.SWIPE_DERAY);
+
+        m_targetOld = m_target;
     }
     // ズームインの動き
     void CameraZoomIn()

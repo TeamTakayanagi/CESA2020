@@ -142,53 +142,48 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
                             continue;
 
                         Vector3 pos = Utility.CSVFile.IndexToPos(i, csvData.size.x, csvData.size.y, csvData.size.z);
-                        _fuse = Instantiate(m_fuseList[j], pos, Quaternion.identity);
-                        _fuse.transform.parent = parent;
+                        _fuse = Instantiate(m_fuseList[j], parent);
+                        _fuse.transform.position = pos;
                         _fuse.Type = (Fuse.FuseType)int.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT, ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT));
                         _fuse.transform.localEulerAngles = new Vector3(
                             float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT, 1)),
                             float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT + 1, 1)),
                             float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT + 2, 1))) * 90.0f;
                         
-                        switch (_fuse.Type)
+
+                        if(_fuse.Type >= Fuse.FuseType.MoveLeft && _fuse.Type <= Fuse.FuseType.MoveForward)
                         {
-                            case Fuse.FuseType.Rotate:
-                                // 回転用テクスチャを子供に
-                                GameObject _colider = Instantiate(m_rotMark, _fuse.transform.position, Quaternion.identity);
-                                _colider.transform.SetParent(_fuse.transform, true);
-                                break;
-                            case Fuse.FuseType.MoveLeft:
-                                // 移動用テクスチャを子供に
-                                _colider = Instantiate(m_moveMark, _fuse.transform.position, Quaternion.identity);
-                                _colider.transform.SetParent(_fuse.transform, true);
-                                break;
-                            case Fuse.FuseType.MoveRight:
-                                // 移動用テクスチャを子供に
-                                _colider = Instantiate(m_moveMark, _fuse.transform.position, Quaternion.Euler(0.0f, 180.0f, 0.0f));
-                                _colider.transform.SetParent(_fuse.transform, true);
-                                break;
-                            case Fuse.FuseType.MoveUp:
-                                // 移動用テクスチャを子供に
-                                _colider = Instantiate(m_moveMark, _fuse.transform.position, Quaternion.Euler(0.0f, 0.0f, 90.0f));
-                                _colider.transform.SetParent(_fuse.transform, true);
-                                break;
-                            case Fuse.FuseType.MoveDown:
-                                // 移動用テクスチャを子供に
-                                _colider = Instantiate(m_moveMark, _fuse.transform.position, Quaternion.Euler(180.0f, 0.0f, 90.0f));
-                                _colider.transform.SetParent(_fuse.transform, true);
-                                break;
-                            case Fuse.FuseType.MoveForward:
-                                // 移動用テクスチャを子供に
-                                _colider = Instantiate(m_moveMark, _fuse.transform.position, Quaternion.Euler(0.0f, 90.0f, 0.0f));
-                                _colider.transform.SetParent(_fuse.transform, true);
-                                break;
-                            case Fuse.FuseType.MoveBack:
-                                // 移動用テクスチャを子供に
-                                _colider = Instantiate(m_moveMark, _fuse.transform.position, Quaternion.Euler(0.0f, 270.0f, 0.0f));
-                                _colider.transform.SetParent(_fuse.transform, true);
-                                break;
-                            default:
-                                break;
+                            Quaternion rot = Quaternion.identity;
+                            switch (_fuse.Type)
+                            {
+                                case Fuse.FuseType.MoveRight:
+                                    rot = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+                                    break;
+                                case Fuse.FuseType.MoveUp:
+                                    rot = Quaternion.Euler(0.0f, 0.0f, 90.0f);
+                                    break;
+                                case Fuse.FuseType.MoveDown:
+                                    rot = Quaternion.Euler(180.0f, 0.0f, 90.0f);
+                                    break;
+                                case Fuse.FuseType.MoveForward:
+                                    rot = Quaternion.Euler(0.0f, 90.0f, 0.0f);
+
+                                    break;
+                                case Fuse.FuseType.MoveBack:
+                                    rot = Quaternion.Euler(0.0f, 270.0f, 0.0f);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            GameObject _colider = Instantiate(m_moveMark, _fuse.transform);
+                            _colider.transform.position = _fuse.transform.position;
+                            _colider.transform.rotation = rot;
+                        }
+                        else if(_fuse.Type == Fuse.FuseType.Rotate)
+                        {
+                            GameObject _colider = Instantiate(m_rotMark, _fuse.transform);
+                            _colider.transform.position = _fuse.transform.position;
+                            _colider.transform.rotation = Quaternion.identity;
                         }
 
                         _createList.Add(_fuse.gameObject);
@@ -206,8 +201,8 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
                             continue;
 
                         Vector3 pos = Utility.CSVFile.IndexToPos(i, csvData.size.x, csvData.size.y, csvData.size.z);
-                        _gimmick = Instantiate(m_gimmkList[j], pos, Quaternion.identity);
-                        _gimmick.transform.parent = parent;
+                        _gimmick = Instantiate(m_gimmkList[j], parent);
+                        _gimmick.transform.position = pos;
                         _gimmick.Type = (GameGimmick.GimmickType)j;
                         _gimmick.transform.localEulerAngles = new Vector3(
                             float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT, 1)),
@@ -239,10 +234,9 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
         // 
         for (int i = UIFuseCount; i < amount; ++i)
         {
-            Fuse _fuse = Instantiate(m_fuseList[indexList[i - UIFuseCount]], Vector3.zero, Quaternion.identity);
+            Fuse _fuse = Instantiate(m_fuseList[indexList[i - UIFuseCount]], parent);
             _fuse.Type = Fuse.FuseType.Normal;
             _fuse.State = Fuse.FuseState.UI;
-            _fuse.transform.SetParent(parent, true);
             _fuse.transform.localPosition = new Vector3((i % 2) * AdjustParameter.UI_Object_Constant.INTERVAL_X - 1.0f,
                 1.0f + (i / 2) * AdjustParameter.UI_Object_Constant.INTERVAL_Y,
                 AdjustParameter.UI_Object_Constant.DEFAULT_POS_Z);
@@ -253,8 +247,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
                 _fuse.transform.localEulerAngles = new Vector3(90.0f * UnityEngine.Random.Range(0, 4), 90.0f * UnityEngine.Random.Range(0, 4), 90.0f * UnityEngine.Random.Range(0, 4));
 
             // UI専用のコライダーを子供に
-            GameObject _colider = Instantiate(m_uiColider, _fuse.transform.position, Quaternion.identity);
-            _colider.transform.SetParent(_fuse.transform, true);
+            Instantiate(m_uiColider, _fuse.transform);
         }
     }
 
@@ -281,10 +274,9 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
         else
             place = 1;
 
-        Fuse _fuse = Instantiate(m_fuseList[indexList[0]], transform.position, Quaternion.identity);
+        Fuse _fuse = Instantiate(m_fuseList[indexList[0]], parent);
         _fuse.Type = Fuse.FuseType.Normal;
         _fuse.State = Fuse.FuseState.UI;
-        _fuse.transform.SetParent(parent, true);
         _fuse.EndPos = new Vector3(place,
             1.0f + ((fuseAmount - (Mathf.Abs(fuseRean.x - fuseRean.y) / 2)) / 2) * AdjustParameter.UI_Object_Constant.INTERVAL_Y,
             AdjustParameter.UI_Object_Constant.DEFAULT_POS_Z);
@@ -296,8 +288,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
             GameMgr.Instance.UIFuse = _fuse;    // リストの末尾に追加
 
         // UI専用のコライダーを子供に
-        GameObject _colider = Instantiate(m_uiColider, _fuse.transform.position, Quaternion.identity);
-        _colider.transform.SetParent(_fuse.transform, true);
+        Instantiate(m_uiColider, _fuse.transform);
     }
 
     /// <summary>
@@ -310,8 +301,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
         // 
         for (int i = 0; i < m_gimmkList.Count; ++i)
         {
-            GameGimmick _gimmick = Instantiate(m_gimmkList[indexList[i]], Vector3.zero, Quaternion.identity);
-            _gimmick.transform.SetParent(parent, true);
+            GameGimmick _gimmick = Instantiate(m_gimmkList[indexList[i]], parent);
             _gimmick.UI = true;
             _gimmick.transform.localPosition = new Vector3((i % 2) * AdjustParameter.UI_Object_Constant.INTERVAL_X - 1.0f,
                 1.0f + (i / 2) * AdjustParameter.UI_Object_Constant.INTERVAL_Y, AdjustParameter.UI_Object_Constant.DEFAULT_POS_Z);

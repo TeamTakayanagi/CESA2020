@@ -17,8 +17,7 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager>
 
     public EffekseerEmitter EffectCreate(EffekseerEmitter.EffectType type, Vector3 pos, Quaternion rot)
     {
-        EffekseerEmitter effect = Instantiate(m_effectList[(int)type]) as EffekseerEmitter;
-        effect.transform.parent = transform;
+        EffekseerEmitter effect = Instantiate(m_effectList[(int)type], transform) as EffekseerEmitter;
         effect.transform.localPosition = pos;
         effect.transform.localRotation = rot;
 
@@ -26,8 +25,7 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager>
     }
     public EffekseerEmitter EffectCreate(EffekseerEmitter.EffectType type, Vector3 pos, Quaternion rot, Transform parent)
     {
-        EffekseerEmitter effect = Instantiate(m_effectList[(int)type]) as EffekseerEmitter;
-        effect.transform.SetParent(parent, true);
+        EffekseerEmitter effect = Instantiate(m_effectList[(int)type], parent) as EffekseerEmitter;
         effect.transform.position = pos;
         effect.transform.localRotation = rot;
 
@@ -39,8 +37,8 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager>
         for(int i = 0; i < effectList.Length; ++i)
         {
             EffekseerEmitter effect = effectList[i];
-            //if (effect.effectType == EffekseerEmitter.EffectType.Click)
-            //    continue;
+            if (effect.effectType == EffekseerEmitter.EffectType.Click)
+                continue;
 
             DestroyImmediate(effect.gameObject);
         }

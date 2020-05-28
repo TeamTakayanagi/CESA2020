@@ -19,5 +19,5 @@ MonoBehaviour:
   soundResources: []
   modelResources:
   - path: Model/sphere02.asset
-    asset: {fileID: 0}
+    asset: {fileID: 11400000, guid: 35219e5dcdec261408ac1ef0539b0342, type: 2}
   Scale: 0.2

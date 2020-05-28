@@ -86,12 +86,12 @@ public class StageMgr : SingletonMonoBehaviour<StageMgr>
         // Binaryファイル読込
         if (m_step == StageMgrState.LoadCsv)
         {
-            // セーブデータを読み込む
-            m_SaveData = Utility.CSVFile.LoadBin("SaveData");
-            if (m_SaveData != null)
-            {
-                m_step++;
-            }
+            //// セーブデータを読み込む
+            //m_SaveData = Utility.CSVFile.LoadBin("SaveData");
+            //if (m_SaveData != null)
+            //{
+            //    m_step++;
+            //}
         }
 
         // ステージの色を変える
