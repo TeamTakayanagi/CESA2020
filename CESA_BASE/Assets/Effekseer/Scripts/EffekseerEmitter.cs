@@ -16,6 +16,7 @@ namespace Effekseer
 		{
 			Spark = 0,
 			Click,
+			Spark_2D,
 			Dust,
 			Leafe,
 			fireworks_core,

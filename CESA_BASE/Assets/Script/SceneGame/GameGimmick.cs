@@ -78,7 +78,6 @@ public class GameGimmick : MonoBehaviour
         }
         else
             m_isGimmickStart = false;
-        m_gimmickValue = 0.0f;
     }
 
     void Update()

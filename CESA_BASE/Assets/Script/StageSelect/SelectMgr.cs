@@ -11,6 +11,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
 
     private List<Stage> m_stages = new List<Stage>();
     private Stage m_zoomObj = null;
+    private bool m_sceneTrans = false;
 
     public Stage ZoomObj
     {
@@ -23,6 +24,8 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     // Start is called before the first frame update
     void Start()
     {
+        m_sceneTrans = false;
+
         m_uiArrow = transform.GetChild(0).gameObject;
         m_uiStartBack = transform.GetChild(1).gameObject;
         m_camera = Camera.main.GetComponent<MainCamera>();
@@ -79,21 +82,21 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                         //}
                     }
 
-                    // 背景オブジェクトとの判定
-                    else if (_hit.transform.root.GetComponent<BGObjs>())
-                    {
-                        BGObjs _bgObjects = BGObjs.Instance.GetComponent<BGObjs>();
-                        for (int i = 0; i < _bgObjects.transform.childCount; i++)
-                        {
-                            for (int j = 0; j < _bgObjects.transform.GetChild(i).childCount; j++)
-                            {
-                                if (_hit.transform == _bgObjects.transform.GetChild(i).GetChild(j))
-                                {
-                                    _hit.transform.GetComponent<ClickedObject>().OnClick();
-                                }
-                            }
-                        }
-                    }
+                    //// 背景オブジェクトとの判定
+                    //else if (_hit.transform.root.GetComponent<BGObjs>())
+                    //{
+                    //    BGObjs _bgObjects = BGObjs.Instance.GetComponent<BGObjs>();
+                    //    for (int i = 0; i < _bgObjects.transform.childCount; i++)
+                    //    {
+                    //        for (int j = 0; j < _bgObjects.transform.GetChild(i).childCount; j++)
+                    //        {
+                    //            if (_hit.transform == _bgObjects.transform.GetChild(i).GetChild(j))
+                    //            {
+                    //                _hit.transform.GetComponent<ClickedObject>().OnClick();
+                    //            }
+                    //        }
+                    //    }
+                    //}
                 }
             }
         }
@@ -112,21 +115,25 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
 
     public void ZoomOut()
     {
+        if (m_sceneTrans)
+            return;
+
         m_uiArrow.SetActive(false);
         m_uiStartBack.SetActive(false);
         m_camera.StartZoomOut();
     }
 
-    public void GameStart()
+    public void SceneLoad()
     {
-        if (m_zoomObj.GetComponent<Renderer>().material.GetFloat("_texNum") > 0)
+        if (m_sceneTrans)
+            return;
+
+        //if (m_zoomObj.GetComponent<Renderer>().material.GetFloat("_texNum") > 0)
         {
-            // ステージセレクト→ゲーム のフェード
             m_camera.StartZoomFade(m_zoomObj.transform.position);
-
-            // シーン遷移開始
-            //SceneManager.LoadScene("SampleSceneSugi");
-
+            // ステージセレクト→ゲーム のフェード
+            FadeMgr.Instance.StartFade(FadeMgr.FadeType.Scale, "SampleSceneSugi");
+            m_sceneTrans = true;
         }
     }
 }

@@ -15,7 +15,7 @@ public class StartProduction : MonoBehaviour
 
     GameObject m_fireworks = null;
     GameObject m_fuse = null;
-    GameObject m_fire = null;
+    Effekseer.EffekseerEmitter m_fire = null;
     Vector3 m_defaultPos;
     Production m_state = Production.wait;
 
@@ -41,7 +41,7 @@ public class StartProduction : MonoBehaviour
         // 演出用の子オブジェクト取得
         m_fuse = transform.GetChild(0).gameObject;
         m_fireworks = transform.GetChild(1).gameObject;
-        m_fire = transform.GetChild(2).gameObject;
+        m_fire = transform.GetChild(2).GetComponent<Effekseer.EffekseerEmitter>();
 
         m_defaultPos = m_fire.transform.localPosition;
         m_fuse.GetComponent<Image>().material.SetFloat("_MaskX", 0);
@@ -56,8 +56,10 @@ public class StartProduction : MonoBehaviour
 
         m_fire.transform.localPosition += new Vector3(AdjustParameter.Production_Constant.START_TIME, 0.0f, 0.0f) * Time.deltaTime;
         if (m_fire.transform.localPosition.x >= m_fireworks.transform.localPosition.x)
+        {
             m_state = Production.end;
-
+            m_fire.Stop();
+        }
         m_fuse.GetComponent<Image>().material.SetFloat("_MaskX",
             Mathf.Clamp01((m_fire.transform.localPosition - m_defaultPos).x / (m_fireworks.transform.localPosition - m_defaultPos).x));
     }

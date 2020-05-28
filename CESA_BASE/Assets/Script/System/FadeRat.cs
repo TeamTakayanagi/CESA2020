@@ -35,9 +35,8 @@ public class FadeRat : FadeBase
             rect.localPosition = new Vector3(RAT_POS_X * -(i % 2 * 2 - 1), RAT_POS_Y - i * RAT_POS_Y, 0.0f);
             m_ratRect.Add(rect);
         }
-        m_func = null;
+
         m_particleRat.Stop();
-        m_state = FadeState.None;
         base.Start();
     }
 
@@ -49,14 +48,14 @@ public class FadeRat : FadeBase
 
     override protected void FadeIn()
     {
-        m_target = transform.GetChild(0).position.x;
+        m_target = transform.GetChild(0).localPosition.x;
         m_judgeTrans = m_fuseRect[0];
         base.FadeIn();
 
         for (int i = 0; i < m_fuseRect.Count; ++i)
         {
             RectTransform trans = m_fuseRect[i];
-            trans.DOMoveX(m_target, FADE_RAT_TIME);
+            trans.DOLocalMoveX(0, FADE_RAT_TIME);
         }
     }
 
@@ -64,19 +63,19 @@ public class FadeRat : FadeBase
     {
         m_particleRat.Play();
 
-        m_target = transform.GetChild(0).position.x;
+        m_target = transform.GetChild(0).localPosition.x;
         m_judgeTrans = m_ratRect[1];
         base.FadeOut();
 
         for (int i = 0; i < m_ratRect.Count; ++i)
         {
             RectTransform trans = m_ratRect[i];
-            trans.DOMoveX(m_target, FADE_RAT_TIME);
+            trans.DOLocalMoveX(0, FADE_RAT_TIME);
         }
     }
     override protected bool FadeCheack()
     {
-        return (int)Mathf.Ceil(m_judgeTrans.position.x) == (int)m_target;
+        return m_judgeTrans.localPosition.x > -FUSE_POS_X * 0.01f && m_judgeTrans.localPosition.x < FUSE_POS_X * 0.01f;
     }
 
     override protected void Draw(bool isDraw)

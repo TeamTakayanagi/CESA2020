@@ -800,11 +800,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     }
     public void Retire()
     {
-        if (m_gameStep != GameMain)
-            return;
-
         EffectManager.Instance.DestoryEffects();
-        SceneManager.LoadScene("StageSelectLatte");
+        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, "StageSelecSugi");
     }
     public void ChangeGameSpeed()
     {

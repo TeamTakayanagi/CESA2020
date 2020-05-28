@@ -31,7 +31,7 @@ public class InputMouse : MonoBehaviour
 
             Vector3 mousePos = screenCamera.ScreenToWorldPoint(screen);
             Effekseer.EffekseerEmitter effect = EffectManager.Instance.EffectCreate(Effekseer.EffekseerEmitter.EffectType.Click,
-                mousePos, Quaternion.identity, Camera.main.transform);
+                mousePos, Quaternion.identity, m_main.transform);
             effect.transform.localScale *= screenCamera.orthographicSize;
         }
     }

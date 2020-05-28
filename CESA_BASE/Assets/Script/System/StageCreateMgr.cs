@@ -204,6 +204,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
                         _gimmick = Instantiate(m_gimmkList[j], parent);
                         _gimmick.transform.position = pos;
                         _gimmick.Type = (GameGimmick.GimmickType)j;
+                        _gimmick.Value = float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT, ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT));
                         _gimmick.transform.localEulerAngles = new Vector3(
                             float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT, 1)),
                             float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT + 1, 1)),

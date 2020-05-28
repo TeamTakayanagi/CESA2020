@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public abstract class FadeBase : MonoBehaviour
 {
     protected delegate void FadeStateFunc();
@@ -45,6 +45,8 @@ public abstract class FadeBase : MonoBehaviour
     // Start is called before the first frame update
     protected void Start()
     {
+        m_func = null;
+        m_state = FadeState.None;
         Draw(false);
     }
 
@@ -63,6 +65,11 @@ public abstract class FadeBase : MonoBehaviour
 
             if (m_state == FadeState.None || m_func == null)
                 Draw(false);
+            else
+            {
+                SceneManager.LoadScene(m_nextScene);
+                FadeMgr.Instance.SetCamera();
+            }
         }
     }
 

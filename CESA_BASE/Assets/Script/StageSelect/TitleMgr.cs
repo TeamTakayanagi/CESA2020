@@ -49,6 +49,8 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     // Start is called before the first frame update
     void Start()
     {
+        Camera.main.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
+
         // カメラに移るようにポジション変更
         transform.position = Camera.main.transform.position + Vector3.forward * 5;
 
@@ -63,8 +65,10 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         m_camera.transform.position = InitCameraPos;
         m_camera.transform.rotation = InitCameraRot;
         m_camera.Control = false;
+
         // タイトルカンバスの位置のカメラの前に持ってくる
         transform.position = Camera.main.transform.position + new Vector3(0, -1, 1);
+
         // ロゴの位置、角度の初期化
         m_logo.transform.rotation = InitObjRot;
         m_logo.transform.position = m_logoCanvas.transform.position + m_logo.transform.rotation * InitLogoPos;

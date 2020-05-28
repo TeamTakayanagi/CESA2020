@@ -39,9 +39,6 @@ public class MainCamera : MonoBehaviour
     private bool m_isControl = false;                       // プレイヤーがカメラの操作をできるか
     private Camera m_myCamera = null;
 
-    //--- フェード演出用 ---
-    private Vector3 m_scaleMax = Vector3.zero;              // マスクの最初の大きさ
-    private Vector3 m_scaleMin = Vector3.zero;              // マスクの縮小後のサイズ
     [SerializeField]
     private GameObject m_fadeMask = null;                          // マスク
 
@@ -83,7 +80,7 @@ public class MainCamera : MonoBehaviour
             case CameraType.ZoomOut:
                 m_cameraState = CameraZoomOut;
                 break;
-            case CameraType.ZoomFade:           // フェード演出用
+            case CameraType.ZoomFade:
                 m_cameraState = ZoomFade;
                 break;
         }
@@ -315,26 +312,19 @@ public class MainCamera : MonoBehaviour
     {
         m_type = CameraType.ZoomFade;
         SetState();
+
         m_target = _zoomObj;
-        m_scaleMax = m_fadeMask.transform.localScale;
-        m_scaleMin = new Vector3(0f, 0f, 0f);
-    }
+        transform.DOPause();
+
+        // 筒の上部に移動してからさらに近づく
+        transform.position = m_target + new Vector3(0.0f, 10.0f, 0.0f);
+        transform.LookAt(m_target);
+
+        transform.DOLocalMove(m_target + new Vector3(0.01f, 3.0f, 0.0f), AdjustParameter.Camera_Constant.FADE_DURATION);
+   }
 
     // フェードするときの動き
     void ZoomFade()
     {
-        //float speed = 1f;
-
-        // 筒の上部に移動してからさらに近づく
-        Vector3 path = new Vector3(m_target.x, m_target.y + 200f, m_target.z);
-        transform.DOLocalMove(path, AdjustParameter.Camera_Constant.FADE_DURATION);          
-        transform.DOLocalMove(m_target, AdjustParameter.Camera_Constant.FADE_DURATION);
-
-        m_fadeMask.transform.DOScale(m_scaleMin, AdjustParameter.Camera_Constant.FADE_DURATION);    // マスク縮小
-
-        //transform.position = Vector3.Lerp(transform.position, path, speed * Time.deltaTime);
-        //transform.position = Vector3.Lerp(transform.position, m_target, speed * Time.deltaTime);
-
-        transform.LookAt(m_target);
     }
 }
