@@ -8,9 +8,9 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     private const float UP_SPEED = 0.5f;
 
     private readonly Vector3 InitCameraPos = new Vector3(-3.0f, 3.0f, -21.0f);
-    private readonly Vector3 InitLogoPos = new Vector3(0.0f, 0.1f, 0.0f);
-    private readonly Vector3 m_initGuidPos = new Vector3(0.0f, -50.0f, -20.0f);
-    private readonly Vector3 LogoUpPos = Vector3.zero;
+    private readonly Vector3 InitLogoPos = new Vector3(0.0f, 0.4f, 0.0f);
+    private readonly Vector3 m_initGuidPos = new Vector3(0.0f, 0.0f, 0.0f);
+    private readonly Vector3 LogoUpPos = new Vector3(0.0f, 0.8f, 0.0f);
 
     private readonly Quaternion InitCameraRot = Quaternion.Euler(new Vector3(-60, 0, 0));
     private readonly Quaternion InitObjRot = Quaternion.Euler(new Vector3(30, 0, 0));
@@ -68,6 +68,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         // ロゴの位置、角度の初期化
         m_logo.transform.rotation = InitObjRot;
         m_logo.transform.position = m_logoCanvas.transform.position + m_logo.transform.rotation * InitLogoPos;
+
     }
 
     // Update is called once per frame
@@ -99,7 +100,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         // タイトルロゴを少し上にずらす
         else if (m_step == TitleStep.LogoUp)
         {
-            m_logo.transform.Translate(Vector3.up * UP_SPEED);
+            m_logo.transform.Translate(Vector3.up * UP_SPEED * Time.deltaTime);
 
             if (m_logo.transform.position.y >= (m_logoCanvas.transform.position + m_logo.transform.rotation * LogoUpPos).y)
             {
@@ -108,7 +109,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
 
                 if (m_delayCounter >= GUID_TIME)
                 {
-                    m_guid = Instantiate(m_guidPrefab, m_logoCanvas.transform.transform.position + InitObjRot * m_initGuidPos,
+                    m_guid = Instantiate(m_guidPrefab, m_logoCanvas.transform.position + InitObjRot * m_initGuidPos,
                         InitObjRot, transform);
                     m_step = TitleStep.Wite;
                 }
@@ -127,8 +128,8 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         // クリック時
         else if (m_step == TitleStep.Retreat)
         {
-            m_logo.transform.Translate(Vector3.up * UP_SPEED);
-            m_guid.transform.Translate(Vector3.back * UP_SPEED);
+            m_logo.transform.Translate(Vector3.up * UP_SPEED * Time.deltaTime);
+            m_guid.transform.Translate(Vector3.down * UP_SPEED * Time.deltaTime);
 
             if (!m_logo.GetComponent<OutsideCanvas>().isVisible &&
                 !m_guid.GetComponent<OutsideCanvas>().isVisible)

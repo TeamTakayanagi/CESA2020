@@ -8,15 +8,25 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     private MainCamera m_camera = null;
     private GameObject m_uiArrow = null;
     private GameObject m_uiStartBack = null;
-
+    
     private List<Stage> m_stages = new List<Stage>();
     private Stage m_zoomObj = null;
+
+    private Utility.CSVFile.BinData m_SaveData = new Utility.CSVFile.BinData();
 
     public Stage ZoomObj
     {
         set
         {
             m_zoomObj = value;
+        }
+    }
+
+    public Utility.CSVFile.BinData SaveData
+    {
+        get
+        {
+            return m_SaveData;
         }
     }
 
@@ -40,11 +50,22 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
 
         // ステージ番号順にソート
         m_stages.Sort((a, b) => a.StageNum - b.StageNum);
+
+        // セーブデータを読み込む
+        m_SaveData = Utility.CSVFile.LoadBin("SaveData");
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        // エフェクトテスト
+        //if (Input.GetKeyDown(KeyCode.Return))
+        //{
+        //    Effekseer.EffekseerEmitter _effekt =
+        //        EffectManager.Instance.EffectCreate(Effekseer.EffekseerEmitter.EffectType.fireworks_core, Vector3.zero, Quaternion.identity);
+        //}
+
         if (m_camera.Type == MainCamera.CameraType.SwipeMove)
         {
             if (Input.GetMouseButtonDown(0))
@@ -54,33 +75,20 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
 
                 if (Physics.Raycast(_ray, out _hit))
                 {
-                    Stage _stage = _hit.transform.GetComponent<Stage>();
-
                     // ステージとの判定
-                    if (_stage)
+                    if (_hit.transform.tag == NameDefine.TagName.Stage)
                     {
+                        Stage _stage = _hit.transform.GetComponent<Stage>();
                         m_zoomObj = _stage;
                         m_camera.StartZoomIn(_stage.transform.position);
 
                         m_uiArrow.SetActive(true);
                         m_uiStartBack.SetActive(true);
 
-                        //for (int i = 0; i < m_stages.Count; ++i)
-                        //{
-                        //    Stage _stage = m_stages[i];
-                        //    if (_hit.transform != _stage.transform)
-                        //        continue;
-
-                        //    m_zoomObj = _stage;
-                        //    m_camera.StartZoomIn(_stage.transform.position);
-
-                        //    m_uiArrow.SetActive(true);
-                        //    m_uiStartBack.SetActive(true);
-                        //}
                     }
 
                     // 背景オブジェクトとの判定
-                    else if (_hit.transform.root.GetComponent<BGObjs>())
+                    else if (_hit.transform.tag == NameDefine.TagName.ClickObj)
                     {
                         BGObjs _bgObjects = BGObjs.Instance.GetComponent<BGObjs>();
                         for (int i = 0; i < _bgObjects.transform.childCount; i++)
@@ -119,13 +127,10 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
 
     public void GameStart()
     {
-        if (m_zoomObj.GetComponent<Renderer>().material.GetFloat("_texNum") > 0)
+        if (int.Parse(m_SaveData.data[m_zoomObj.StageNum][1]) > 0)
         {
             // ステージセレクト→ゲーム のフェード
             m_camera.StartZoomFade(m_zoomObj.transform.position);
-
-            // シーン遷移開始
-            //SceneManager.LoadScene("SampleSceneSugi");
 
         }
     }
