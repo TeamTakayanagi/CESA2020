@@ -24,6 +24,25 @@ public class StageMgr : SingletonMonoBehaviour<StageMgr>
     // Update is called once per frame
     void Update()
     {
+        // Binaryファイル読込
+        if (m_step == StageMgrState.LoadCsv)
+        {
+            // セーブデータを読み込む
+            m_SaveData = Utility.CSVFile.LoadBin("SaveData");
+            if (m_SaveData != null)
+            {
+                m_step++;
+            }
+        }
 
+        // ステージの色を変える
+        else if (m_step == StageMgrState.ShaderSwitch)
+        {
+            for (int i = 0; i < m_childRender.Length; i++)
+            {
+                //m_childRender[i].material.SetFloat("_texNum", float.Parse(m_SaveData.data[i][1]));
+            }
+            m_step++;
+        }
     }
 }

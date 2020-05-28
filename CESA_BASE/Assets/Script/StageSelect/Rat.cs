@@ -39,7 +39,7 @@ public class Rat : MonoBehaviour
         {
             m_radian += Time.deltaTime;
             transform.position = new Vector3(transform.parent.position.x + m_radius * Mathf.Cos(m_radian * m_speed),
-                                            0,
+                                            0.05f,
                                             transform.parent.position.z + m_radius * Mathf.Sin(m_radian * m_speed));
             transform.LookAt(transform.parent.position);
             transform.localEulerAngles += new Vector3(0, 90);

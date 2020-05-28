@@ -112,6 +112,7 @@ namespace NameDefine
         public const string TerrainBlock = "TerrainBlock";
         public const string Gimmick = "Gimmick";
         public const string Stage = "Stage";
+        public const string ClickObj = "ClickObject";
 
         public const string FuseI = "Fuse/I";
         public const string FuseL = "Fuse/L";
