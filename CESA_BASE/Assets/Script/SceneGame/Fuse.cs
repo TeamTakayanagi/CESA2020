@@ -49,7 +49,12 @@ public class Fuse : MonoBehaviour
     private Vector3 m_defaultPos = Vector3.zero;
     private Vector3 m_defaultRot = Vector3.zero;
 
-    private bool m_isRotate = false;
+    public bool m_isRotate = false;
+    public bool m_isMoved = false;             // 移動中か
+
+    private Vector3 m_oldPos = Vector3.zero;    // position保存用
+    private Vector3 m_oldRot = Vector3.zero;    // rotation保存用
+
 
     public float CountTime
     {
@@ -205,6 +210,9 @@ public class Fuse : MonoBehaviour
         // 元の位置を保存
         if (m_state != FuseState.UI)
         m_defaultPos = transform.position;
+
+        m_oldPos = transform.position;
+        m_oldRot = transform.eulerAngles;
     }
 
     void Update()
@@ -251,6 +259,9 @@ public class Fuse : MonoBehaviour
                                 if (Utility.TagSeparate.getParentTagName(_obj.transform.tag) == NameDefine.TagName.Fuse)
                                 {
                                     Fuse _fuse = _obj.GetComponent<Fuse>();
+                                    if (_fuse.State == FuseState.Wet)
+                                        continue;
+
                                     _fuse.State = FuseState.Burn;
                                     GameMgr.Instance.BurnCount += 1;
 
@@ -306,11 +317,15 @@ public class Fuse : MonoBehaviour
                 }
             case FuseState.Wet:
                 {
-                    gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.blue); // debug
+                    gameObject.GetComponent<Renderer>().material.color =  new Color(0, 0, 1, 0.5f); ; // debug
 
                     m_countTime -= Time.deltaTime/* * GameMgr.Instance.GameSpeed*/;
                     if (m_countTime <= 0.0f)
+                    {
+                        gameObject.GetComponent<Renderer>().material.color = new Color(0, 0, 0, 0.2f); // debug
+
                         m_state = FuseState.None;
+                    }
                     break;
                 }
             case FuseState.Out:
@@ -328,6 +343,29 @@ public class Fuse : MonoBehaviour
             default:
                 break;
         }
+
+        // 導火線の移動中判定
+        if(m_oldPos == transform.position)
+        {
+            m_isMoved = false;
+        }
+        else
+        {
+            m_isMoved = true;
+        }
+        m_oldPos = transform.position;
+
+        if (m_oldRot == transform.eulerAngles)
+        {
+            m_isRotate = false;
+        }
+        else
+        {
+            m_isRotate = true;
+        }
+        m_oldRot = transform.eulerAngles;
+
+
     }
 
     private void FixedUpdate()
@@ -431,18 +469,23 @@ public class Fuse : MonoBehaviour
 
     private void GimmickMove(Vector3 direct)
     {
-        Vector3 movePos;   // 移動位置
-        bool isMove = transform.position == m_defaultPos;
+        if (!m_isMoved)
+        {
 
-        if (!isMove)
-        {
-            movePos = m_defaultPos;
-            StartCoroutine(MoveFuse(movePos, direct));
-        }
-        else
-        {
-            movePos = m_defaultPos - direct;
-            StartCoroutine(MoveFuse(movePos, -direct));
+            Vector3 movePos;   // 移動位置
+            bool isMove = transform.position == m_defaultPos;
+            m_isMoved = true;
+
+            if (!isMove)
+            {
+                movePos = m_defaultPos;
+                StartCoroutine(MoveFuse(movePos, direct));
+            }
+            else
+            {
+                movePos = m_defaultPos - direct;
+                StartCoroutine(MoveFuse(movePos, -direct));
+            }
         }
     }
 
@@ -452,7 +495,7 @@ public class Fuse : MonoBehaviour
     public IEnumerator RotateFuse()
     {
         //回転中のフラグを立てる
-        m_isRotate = true;
+        //m_isRotate = true;
 
         //回転処理
         float sumAngle = 0.0f; //angleの合計を保存
@@ -471,7 +514,7 @@ public class Fuse : MonoBehaviour
         }
 
         //回転中のフラグを倒す
-        m_isRotate = false;
+        //m_isRotate = false;
         yield return null;
     }
 
@@ -509,11 +552,14 @@ public class Fuse : MonoBehaviour
         if (m_state == FuseState.Out || m_state == FuseState.UI)
             return;
 
-        m_state = FuseState.Wet;
-        m_countTime = AdjustParameter.Fuse_Constant.WET_MAX_TIME; 
+        //m_state = FuseState.Wet;
+        //m_countTime = AdjustParameter.Fuse_Constant.WET_MAX_TIME; 
 
         if (m_state == FuseState.Burn)
         {
+            m_state = FuseState.Wet;
+            m_countTime = AdjustParameter.Fuse_Constant.WET_MAX_TIME;
+
             // 燃える演出
             m_childTarget.localScale = Vector3.one;
             m_childTarget.position = transform.position;
@@ -526,5 +572,21 @@ public class Fuse : MonoBehaviour
 
             GameMgr.Instance.BurnOutFuse();
         }
+        else
+        {
+            m_state = FuseState.Wet;
+            m_countTime = AdjustParameter.Fuse_Constant.WET_MAX_TIME;
+        }
+
+
+    }
+
+    public bool SetMoveFrag()
+    {
+        return m_isMoved;
+    }
+    public bool SetRotFrag()
+    {
+        return m_isRotate;
     }
 }

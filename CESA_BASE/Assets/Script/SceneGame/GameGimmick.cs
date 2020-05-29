@@ -19,6 +19,13 @@ public class GameGimmick : MonoBehaviour
     [SerializeField]
     private float m_gimmickValue = 0.0f;      // 水の長さ
     private bool m_isGimmickStart = false;
+    private GameObject m_fountain = null;
+    private GameObject m_particle = null;
+    private GameObject childParticle = null;
+
+
+    private bool m_isMoved = false;
+    private bool m_isRotate = false;
 
     public GimmickType Type
     {
@@ -68,10 +75,16 @@ public class GameGimmick : MonoBehaviour
     void Start()
     {
         if (m_type == GimmickType.Water)
+        {
+            m_fountain = (GameObject)Resources.Load("Fountain");
+            m_particle = Instantiate(m_fountain, transform.position, transform.rotation);
+            childParticle = m_particle.transform.GetChild(0).gameObject;
+
             m_isGimmickStart = true;
+        }
         else
             m_isGimmickStart = false;
-        m_gimmickValue = 0.0f;
+        //m_gimmickValue = 0.0f;
     }
 
     void Update()
@@ -98,13 +111,38 @@ public class GameGimmick : MonoBehaviour
     public IEnumerator GimmickWater()
     {
         RaycastHit hit = new RaycastHit();
-        if (Physics.Raycast(transform.position, Vector3.forward, out hit, m_gimmickValue))
+        Vector3 rot = new Vector3(transform.rotation.x / 90,
+            transform.rotation.y / 90, transform.rotation.z / 90);
+
+        if (Physics.Raycast(transform.position, transform.rotation * Vector3.forward , out hit, m_gimmickValue))
         {
-            if (hit.collider.gameObject.CompareTag("Fuse"))
+            if (Utility.TagSeparate.getParentTagName(hit.collider.tag) == NameDefine.TagName.Fuse)
             {
                 hit.collider.gameObject.GetComponent<Fuse>().FuseWet();
+
+                m_isMoved = hit.collider.gameObject.GetComponent<Fuse>().SetMoveFrag();
+                m_isRotate = hit.collider.gameObject.GetComponent<Fuse>().SetRotFrag();
+
+                m_particle.transform.localScale = new Vector3(0.3f, 0.3f, hit.distance * 0.2f);
+
+                if (m_isMoved || m_isRotate)
+                {
+                    childParticle.gameObject.SetActive(false);
+                }
+                else
+                {
+                    childParticle.gameObject.SetActive(true);
+                }
             }
         }
+        else
+        {
+            m_particle.transform.localScale = new Vector3(0.3f, 0.3f, m_gimmickValue * 0.2f);
+        }
+
+
+        Debug.DrawRay(transform.position, transform.rotation * Vector3.forward, Color.blue, 5, false);
+
 
         yield break;
     }
