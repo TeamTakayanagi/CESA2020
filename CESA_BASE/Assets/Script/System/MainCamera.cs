@@ -39,9 +39,6 @@ public class MainCamera : MonoBehaviour
     private bool m_isControl = false;                       // プレイヤーがカメラの操作をできるか
     private Camera m_myCamera = null;
 
-    [SerializeField]
-    private GameObject m_fadeMask = null;                          // マスク
-
     public bool Control
     {
         set

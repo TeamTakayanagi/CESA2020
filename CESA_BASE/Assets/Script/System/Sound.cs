@@ -117,6 +117,7 @@ public class Sound : SingletonMonoBehaviour<Sound>
         m_bgmSource.clip = m_bgmDict[bgmName];
         m_bgmSource.Play();
         m_bgmSource.volume = Mathf.Clamp01(volume);
+        m_bgmSource.loop = true;
     }
 
     /// <summary>

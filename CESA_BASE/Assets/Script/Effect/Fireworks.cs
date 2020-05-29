@@ -20,6 +20,7 @@ public class Fireworks : EffekseerEmitter
         m_moveVector = new Vector3(0.0f, AdjustParameter.Production_Constant.END_FIRE_POS_Y - transform.position.y, 0.0f);
         m_createWait = AdjustParameter.Production_Constant.WAIT_TIME;
         m_staet = State.launch;
+        Sound.Instance.PlaySE("se_hanabi_bef", gameObject.GetInstanceID());
         base.Start();
     }
 
@@ -42,6 +43,7 @@ public class Fireworks : EffekseerEmitter
                 if(m_createWait <= 0.0f)
                 {
                     EffectManager.Instance.EffectCreate(EffectManager.Instance.GetFireworks(), transform.position, transform.localScale, Quaternion.identity);
+                    Sound.Instance.PlaySE("se_hanabi_aft", gameObject.GetInstanceID());
                     DestroyImmediate(gameObject);
                 }
                 break;

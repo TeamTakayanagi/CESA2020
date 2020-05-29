@@ -50,6 +50,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     void Start()
     {
         Camera.main.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
+        Sound.Instance.PlayBGM("bgm_title");
 
         // カメラに移るようにポジション変更
         transform.position = Camera.main.transform.position + Vector3.forward * 5;

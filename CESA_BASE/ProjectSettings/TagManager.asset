@@ -28,6 +28,7 @@ TagManager:
   - UI/Retire
   - UI/GameSpeed
   - ClickObject
+  - StageParent
   layers:
   - Default
   - TransparentFX
