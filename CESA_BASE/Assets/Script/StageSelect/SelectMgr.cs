@@ -36,7 +36,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         m_stages.AddRange(GameObject.FindGameObjectWithTag("StageParent").GetComponentsInChildren<Stage>());
         for(int i = 0; i < m_stages.Count; ++i)
         {
-            m_stages[i].StageNum = i;
+            m_stages[i].StageNum = i + 1;
         }
         // セーブデータを読み込む
         m_SaveData = Utility.CSVFile.LoadBin("SaveData", m_stages.Count);
@@ -125,11 +125,11 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         if (m_sceneTrans)
             return;
 
-        if (int.Parse(m_SaveData.data[m_zoomObj.StageNum][1]) > 0)
+        if (int.Parse(m_SaveData.data[m_zoomObj.StageNum - 1][1]) > 0)
         {
             m_camera.StartZoomFade(m_zoomObj.transform.position);
             // ステージセレクト→ゲーム のフェード
-            FadeMgr.Instance.StartFade(FadeMgr.FadeType.Scale, "SampleSceneSugi");
+            FadeMgr.Instance.StartFade(FadeMgr.FadeType.Scale, "SampleSceneSugi", m_zoomObj.StageNum);
             m_sceneTrans = true;
         }
     }

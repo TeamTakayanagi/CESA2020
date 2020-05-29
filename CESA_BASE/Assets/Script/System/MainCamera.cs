@@ -22,7 +22,6 @@ public class MainCamera : MonoBehaviour
         ZoomOut,
         ZoomFade    // フェード演出用
     }
-
     [SerializeField]
     private CameraType m_type = CameraType.AroundALL;       // カメラの移動タイプ
     private CameraType m_default = CameraType.AroundALL;    // 格納用
@@ -92,7 +91,6 @@ public class MainCamera : MonoBehaviour
         m_default = m_type;
         m_target = m_targetOld = transform.position;
         SetState();
-
         m_myCamera = GetComponent<Camera>();
         m_myCamera.fieldOfView = ZOOM_FAR;
 

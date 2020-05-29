@@ -323,8 +323,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 51461371330993495, guid: 8f40ce69c17c662488f7a61b2ceff02e,
         type: 3}
+      propertyPath: m_typettt.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 51461371330993495, guid: 8f40ce69c17c662488f7a61b2ceff02e,
+        type: 3}
       propertyPath: m_type
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 51461371330993495, guid: 8f40ce69c17c662488f7a61b2ceff02e,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f40ce69c17c662488f7a61b2ceff02e, type: 3}

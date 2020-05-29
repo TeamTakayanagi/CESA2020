@@ -92,7 +92,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     override protected void Awake()
     {
-        Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + 0);
+        Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + FadeMgr.Instance.StageNum);
         StageCreateMgr.Instance.CreateStage(transform, info);
         m_stageSize = info.size;
         m_gameStep = GameStart;
@@ -154,9 +154,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
         GameGimmick[] _gimmicks = FindObjectsOfType<GameGimmick>();
         foreach (GameGimmick _gimmick in _gimmicks)
-        {
             m_fieldObject.AddLast(_gimmick.gameObject);
-        }
 
         Camera.main.GetComponent<MainCamera>().Control = true;
         Sound.Instance.PlayBGM("bgm_game");
@@ -784,7 +782,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     public void BackToTitle()
     {
         EffectManager.Instance.DestoryEffects();
-        SceneManager.LoadScene("StageSelectLatte");
+        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, "StageSelecSugi", 0);
     }
     public void Retry()
     {
@@ -801,7 +799,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     public void Retire()
     {
         EffectManager.Instance.DestoryEffects();
-        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, "StageSelecSugi");
+        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, "StageSelecSugi", 0);
     }
     public void ChangeGameSpeed()
     {

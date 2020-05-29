@@ -32,7 +32,7 @@ public class Stage : MonoBehaviour
     {
         if (m_srep == 0)
         {
-            if (int.Parse(SelectMgr.Instance.SaveData.data[m_stageNum][1]) > 0)
+            if (int.Parse(SelectMgr.Instance.SaveData.data[m_stageNum - 1][1]) > 0)
             {
                 StartCoroutine("FireWorks");
             }

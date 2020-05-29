@@ -76,11 +76,6 @@
 				fixed3 normal2 = UnpackNormal(waveTex2);
 				fixed3 normal = BlendNormals(normal1, normal2);
 
-				fixed3 distortion1 = UnpackScaleNormal(waveTex1, _Refraction.x);
-				fixed3 distortion2 = UnpackScaleNormal(waveTex2, _Refraction.y);
-				fixed2 distortion = BlendNormals(distortion1, distortion2).rg;
-
-
 				o.Albedo = float3(0, 0, 0);
 				o.Emission = _Color;
 				o.Metallic = 0;
@@ -91,4 +86,5 @@
 			ENDCG
 		}
 
-			FallBack "Transparent/Diffuse"}
+	FallBack "Transparent/Diffuse"
+}

@@ -200,8 +200,36 @@ public class Fuse : MonoBehaviour
 
         if (m_type == FuseType.Start)
         {
+            Vector3 entry = Vector3.zero;
+            BoxCollider[] coliders = GetComponents<BoxCollider>();
+            for (int i = 0; i < coliders.Length; ++i)
+            {
+                // 長いコライダー
+                if (coliders[i].center == Vector3.zero)
+                {
+                    Vector3 direct = transform.rotation * coliders[i].size;
+                    float max = Mathf.Max(direct.x, direct.y, direct.z);
+                    direct = direct - new Vector3(max, max, max);
+                    direct = new Vector3(Mathf.Clamp01(Mathf.Floor(direct.x + 1)),
+                        Mathf.Clamp01(Mathf.Floor(direct.y + 1)), Mathf.Clamp01(Mathf.Floor(direct.z + 1)));
+                    entry = Vector3.Dot(transform.position, direct) * direct;
+                    break;
+                }
+                // 短いコライダー
+                else
+                {
+                    Vector3 center = coliders[i].center;
+                    Vector3 absolute = new Vector3(Mathf.Clamp01(Mathf.Floor(center.x + 1)),
+                        Mathf.Clamp01(Mathf.Floor(center.y + 1)), Mathf.Clamp01(Mathf.Floor(center.z + 1)));
+                    if (Vector3.Dot(transform.position, absolute) * Vector3.Dot(center, absolute) > 0)
+                    {
+                        entry = Vector3.Dot(center, absolute) * absolute;
+                        break;
+                    }
+                }
+            }
             m_state = FuseState.None;
-            m_targetDistance = Vector3.down / 2.0f;
+            m_targetDistance = entry / 2.0f;
         }
         else
         {

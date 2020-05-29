@@ -36,17 +36,6 @@ public class Spark : EffekseerEmitter
             m_fuseCollider.Remove(m_enterCollider);
             break;
         }
-        if (!m_enterCollider)
-            m_enterCollider = null;
-        for (int i = 0; i < m_fuseCollider.Count; ++i)
-        {
-            if (Mathf.Abs(Vector3.Dot(m_moveVector, m_fuseClass.transform.rotation * m_fuseCollider[i].size)) < 0.5f)
-                continue;
-
-            m_enterCollider = m_fuseCollider[i];
-            m_fuseCollider.Remove(m_enterCollider);
-            break;
-        }
     }
 
     // Update is called once per frame

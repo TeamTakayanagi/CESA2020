@@ -12,10 +12,18 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
         Alpha,
     }
 
-    public int m_stageNum = -1;
+    private int m_stageNum = 0;
     private List<FadeBase> m_fadeList = new List<FadeBase>();
     FadeBase m_fade = null;
     private Canvas m_canvas = null;
+
+    public int StageNum
+    {
+        get
+        {
+            return m_stageNum;
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -36,7 +44,7 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
     }
 
 
-    public void StartFade(FadeType type, string nextScene, int nextStage = -1)
+    public void StartFade(FadeType type, string nextScene, int nextStage)
     {
         m_fade = m_fadeList[(int)type].GetComponent<FadeBase>();
         m_fade.FadeStart(nextScene);

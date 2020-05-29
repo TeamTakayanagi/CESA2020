@@ -27,24 +27,16 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         Max
     }
 
+    private static bool m_isFirst = true;
 
     [SerializeField]
     private GameObject m_guidPrefab = null;
     private TitleStep m_step = TitleStep.Scroll;
-
     private float m_delayCounter = 0;
     private MainCamera m_camera = null;
     private GameObject m_logo = null;
     private GameObject m_guid = null;
     private Canvas m_logoCanvas = null;
-
-    public TitleStep Step
-    {
-        get
-        {
-            return m_step;
-        }
-    }
 
     // Start is called before the first frame update
     void Start()
@@ -52,15 +44,25 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         Camera.main.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
         Sound.Instance.PlayBGM("bgm_title");
 
-        // カメラに移るようにポジション変更
-        transform.position = Camera.main.transform.position + Vector3.forward * 5;
-
         // オブジェクトの取得
         m_logo = transform.GetChild(0).gameObject;
         m_logoCanvas = transform.GetComponent<Canvas>();
         m_camera = Camera.main.GetComponent<MainCamera>();
         // マウス制御クラスにカメラの情報を渡す
         InputMouse.RoadCamera();
+
+        if (!m_isFirst)
+        {
+            m_camera.transform.rotation = LastCameraRot;
+
+            Destroy(m_logo.gameObject);
+            m_step = TitleStep.Select;
+            m_camera.GetComponent<MainCamera>().Control = true;
+            return;
+        }
+        
+        // カメラに移るようにポジション変更
+        transform.position = Camera.main.transform.position + Vector3.forward * 5;
 
         // カメラの位置、角度の初期化
         m_camera.transform.position = InitCameraPos;
@@ -74,12 +76,13 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         m_logo.transform.rotation = InitObjRot;
         m_logo.transform.position = m_logoCanvas.transform.position + m_logo.transform.rotation * InitLogoPos;
 
+        m_isFirst = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        // カメラが回転してくる
+            // カメラが回転してくる
         if (m_step == TitleStep.Scroll)
         {
             m_camera.transform.Rotate(InitCameraRot * Vector3.right * 0.3f);
