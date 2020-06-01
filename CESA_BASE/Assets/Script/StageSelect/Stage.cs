@@ -26,12 +26,12 @@ public class Stage : MonoBehaviour
     private void Start()
     {
         // クリア状態の格納
-        int _saveData = int.Parse(SelectMgr.Instance.SaveData.data[m_stageNum - 1]);
+        int _saveData = int.Parse(SelectMgr.SaveData.data[m_stageNum - 1]);
 
         m_myMaterial = transform.GetComponent<Renderer>().material;
         m_myMaterial.SetFloat("_mono", _saveData);
 
-        if (int.Parse(SelectMgr.Instance.SaveData.data[m_stageNum - 1]) > 0)
+        if (int.Parse(SelectMgr.SaveData.data[m_stageNum - 1]) > 0)
         {
             StartCoroutine("FireWorks");
         }
