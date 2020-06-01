@@ -6,9 +6,11 @@ using UnityEngine.UI;
 public class Stage : MonoBehaviour
 {
     Effekseer.EffekseerEmitter m_effekt = null;
+    private Material m_myMaterial = null;
 
     private int m_srep = 0;
 
+    [SerializeField]
     private int m_stageNum = 0;
 
     public int StageNum
@@ -25,6 +27,11 @@ public class Stage : MonoBehaviour
 
     private void Start()
     {
+        // クリア状態の格納
+        int _saveData = int.Parse(SelectMgr.Instance.SaveData.data[m_stageNum - 1]);
+
+        m_myMaterial = transform.GetComponent<Renderer>().material;
+        m_myMaterial.SetFloat("_mono", _saveData);
 
     }
 
@@ -32,7 +39,7 @@ public class Stage : MonoBehaviour
     {
         if (m_srep == 0)
         {
-            if (int.Parse(SelectMgr.Instance.SaveData.data[m_stageNum - 1][1]) > 0)
+            if (int.Parse(SelectMgr.Instance.SaveData.data[m_stageNum - 1]) > 0)
             {
                 StartCoroutine("FireWorks");
             }
@@ -42,6 +49,8 @@ public class Stage : MonoBehaviour
 
     private IEnumerator FireWorks()
     {
+        float _launchTiming = (Random.Range(0, 600) + Time.deltaTime * 30) / 60;
+        yield return new WaitForSeconds(ProcessedtParameter.LaunchTiming.INIT + _launchTiming);
         while (true)
         {
             if (transform.childCount == 0)
@@ -50,7 +59,9 @@ public class Stage : MonoBehaviour
                     new Vector3(transform.position.x, AdjustParameter.Production_Constant.END_FIRE_POS_Y / 10, transform.position.z),
                     Vector3.one / 10, Quaternion.identity);
             }
-            yield return new WaitForSeconds(5 + Random.Range(0, 3));
+            _launchTiming = (Random.Range(0, 600) + Time.deltaTime * 30) / 60;
+
+            yield return new WaitForSeconds(ProcessedtParameter.LaunchTiming.NEXT + _launchTiming);
         }
     }
 }

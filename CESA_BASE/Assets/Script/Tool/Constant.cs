@@ -95,6 +95,12 @@ namespace ProcessedtParameter
             public const float MAX_REDIAN = 12;
         }
     }
+
+    public readonly struct LaunchTiming
+    {
+        public const float INIT = 3;
+        public const float NEXT = 7;
+    }
 }
 
 namespace NameDefine
@@ -113,6 +119,7 @@ namespace NameDefine
         public const string Gimmick = "Gimmick";
         public const string Stage = "Stage";
         public const string ClickObj = "ClickObject";
+        public const string StageParent = "StageParent";
 
         public const string FuseI = "Fuse/I";
         public const string FuseL = "Fuse/L";

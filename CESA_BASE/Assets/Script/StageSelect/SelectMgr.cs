@@ -106,7 +106,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     /// <param name="direct">右（1）左（-1）</param>
     public void ClickArrow(int direct)
     {
-        m_zoomObj = m_stages[Mathf.Clamp(m_zoomObj.StageNum + direct, 0, m_stages.Count - 1)];
+        m_zoomObj = m_stages[Mathf.Clamp((m_zoomObj.StageNum - 1) + direct, 0, m_stages.Count - 1)];
         m_camera.StartZoomIn(m_zoomObj.transform.position);
     }
 
@@ -125,7 +125,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         if (m_sceneTrans)
             return;
 
-        if (int.Parse(m_SaveData.data[m_zoomObj.StageNum - 1][1]) > 0)
+        if (int.Parse(m_SaveData.data[m_zoomObj.StageNum - 1]) > 0)
         {
             m_camera.StartZoomFade(m_zoomObj.transform.position);
             // ステージセレクト→ゲーム のフェード
