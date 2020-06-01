@@ -158,36 +158,24 @@ namespace Utility
             return _saveData;
         }
 
-        public static bool SaveBin(string _fileName, int _StageNum, int _clearState)
+        public static bool SaveBin(string _fileName, int _stageNum, int _clearState, int _dataSize)
         {
-            BinData _saveData = new BinData();
-            _saveData.data = new List<string>();
-
-            _saveData = LoadBin(_fileName, _StageNum);
-            if (_saveData == null)
-            {
-                Debug.LogWarning("ファイルが見つかりません。");
-                return false;
-            }
-
             BinaryWriter _writer = null;
+            BinData _saveData = null;
+
             try
             {
                 _writer = new BinaryWriter(new FileStream(Application.dataPath + BIN_PATH + _fileName + ".bin", FileMode.Create));
+                _saveData = SelectMgr.SaveData;
 
-//                string m_
+                _saveData.data[_stageNum] = _clearState.ToString();
 
-                for (int i = 0; i < GameObject.FindGameObjectWithTag(NameDefine.TagName.StageParent).transform.childCount; i++)
+                string _str = _saveData.data[0];
+                for (int i = 1; i < _dataSize; i++)
                 {
-                    if (i == _StageNum)
-                    {
-                        _writer.Write("" + i + ',' + _clearState);
-                    }
-                    else
-                    {
-                        _writer.Write("" + i + ',' + _saveData.data[i][1]);
-                    }
+                    _str += "," + _saveData.data[i];
                 }
+                _writer.Write(_str);
             }
             catch
             {

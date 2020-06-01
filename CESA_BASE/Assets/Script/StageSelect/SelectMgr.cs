@@ -13,7 +13,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     private Stage m_zoomObj = null;
     private bool m_sceneTrans = false;
 
-    private Utility.CSVFile.BinData m_SaveData = new Utility.CSVFile.BinData();
+    private static Utility.CSVFile.BinData m_saveData = new Utility.CSVFile.BinData();
 
     public Stage ZoomObj
     {
@@ -23,11 +23,11 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         }
     }
 
-    public Utility.CSVFile.BinData SaveData
+    public static Utility.CSVFile.BinData SaveData
     {
         get
         {
-            return m_SaveData;
+            return m_saveData;
         }
     }
 
@@ -39,7 +39,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
             m_stages[i].StageNum = i + 1;
         }
         // セーブデータを読み込む
-        m_SaveData = Utility.CSVFile.LoadBin("SaveData", m_stages.Count);
+        m_saveData = Utility.CSVFile.LoadBin("SaveData", m_stages.Count);
     }
 
     // Start is called before the first frame update

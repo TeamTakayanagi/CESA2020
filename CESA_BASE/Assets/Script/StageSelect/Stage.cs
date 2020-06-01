@@ -9,8 +9,7 @@ public class Stage : MonoBehaviour
     private Material m_myMaterial = null;
 
     private int m_srep = 0;
-
-    [SerializeField]
+    
     private int m_stageNum = 0;
 
     public int StageNum
