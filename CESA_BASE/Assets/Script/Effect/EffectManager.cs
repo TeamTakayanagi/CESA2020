@@ -30,7 +30,7 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager>
 
     public EffekseerEmitter EffectCreate(EffekseerEmitter.EffectType type, Vector3 pos, Quaternion rot)
     {
-        if (!m_create)
+        if (!m_create && type != EffekseerEmitter.EffectType.Click)
             return null;
 
         EffekseerEmitter effect = Instantiate(m_effectList[(int)type], transform) as EffekseerEmitter;
@@ -41,7 +41,7 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager>
     }
     public EffekseerEmitter EffectCreate(EffekseerEmitter.EffectType type, Vector3 pos,Vector3 scale, Quaternion rot)
     {
-        if (!m_create)
+        if (!m_create && type != EffekseerEmitter.EffectType.Click)
             return null;
 
         EffekseerEmitter effect = Instantiate(m_effectList[(int)type], transform) as EffekseerEmitter;
@@ -53,7 +53,7 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager>
     }
     public EffekseerEmitter EffectCreate(EffekseerEmitter.EffectType type, Vector3 pos, Vector3 move, Vector3 scale, Quaternion rot)
     {
-        if (!m_create)
+        if (!m_create && type != EffekseerEmitter.EffectType.Click)
             return null;
 
         EffekseerEmitter effect = Instantiate(m_effectList[(int)type], transform) as EffekseerEmitter;
@@ -66,7 +66,7 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager>
     }
     public EffekseerEmitter EffectCreate(EffekseerEmitter.EffectType type, Vector3 pos, Quaternion rot, Transform parent)
     {
-        if (!m_create)
+        if (!m_create && type != EffekseerEmitter.EffectType.Click)
             return null;
 
         EffekseerEmitter effect = Instantiate(m_effectList[(int)type], parent) as EffekseerEmitter;

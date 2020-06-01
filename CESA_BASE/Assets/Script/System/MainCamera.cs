@@ -108,9 +108,12 @@ public class MainCamera : MonoBehaviour
             m_target = Vector3.zero;
         }
 
-        // カメラ移動範囲取得
-        m_moveMax = m_movePlace.GetComponent<Renderer>().bounds.max;
-        m_moveMin = m_movePlace.GetComponent<Renderer>().bounds.min;
+        if (m_movePlace)
+        {
+            // カメラ移動範囲取得
+            m_moveMax = m_movePlace.GetComponent<Renderer>().bounds.max;
+            m_moveMin = m_movePlace.GetComponent<Renderer>().bounds.min;
+        }
     }
 
     void Update()

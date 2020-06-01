@@ -213,7 +213,8 @@ public class Fuse : MonoBehaviour
                     direct = new Vector3(Mathf.Clamp01(Mathf.Floor(direct.x + 1)),
                         Mathf.Clamp01(Mathf.Floor(direct.y + 1)), Mathf.Clamp01(Mathf.Floor(direct.z + 1)));
                     entry = Vector3.Dot(transform.position, direct) * direct;
-                    break;
+                    if(entry != Vector3.zero)
+                        break;
                 }
                 // 短いコライダー
                 else

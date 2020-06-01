@@ -701,6 +701,25 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             m_resultClear.SetActive(true);
             m_gameStep = GameClear;
 
+            // ゴール
+            int fireGoal = 0;
+            List<GameGimmick> gameGimmicks = new List<GameGimmick>();
+            foreach(GameObject obj in m_fieldObject)
+            {
+                if (Utility.TagSeparate.getChildTagName(obj.tag) != "Goal")
+                    continue;
+
+                gameGimmicks.Add(obj.GetComponent<GameGimmick>());
+            }
+            for (int i = 0; i < gameGimmicks.Count; ++i)
+            {
+                if (!gameGimmicks[i].GimmickStart)
+                    continue;
+
+                fireGoal++;
+            }
+            //Utility.CSVFile.SaveBin("SaveData", FadeMgr.Instance.StageNum, Mathf.Clamp(fireGoal, 0, 2));
+
             Sound.Instance.PlayBGM("bgm_clear");
             Sound.Instance.PlaySE("se_clear", gameObject.GetInstanceID());
         }

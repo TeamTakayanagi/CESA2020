@@ -31,18 +31,15 @@ public class Stage : MonoBehaviour
         m_myMaterial = transform.GetComponent<Renderer>().material;
         m_myMaterial.SetFloat("_mono", _saveData);
 
+        if (int.Parse(SelectMgr.Instance.SaveData.data[m_stageNum - 1]) > 0)
+        {
+            StartCoroutine("FireWorks");
+        }
     }
 
     private void Update()
     {
-        if (m_srep == 0)
-        {
-            if (int.Parse(SelectMgr.Instance.SaveData.data[m_stageNum - 1]) > 0)
-            {
-                StartCoroutine("FireWorks");
-            }
-            m_srep++;
-        }
+
     }
 
     private IEnumerator FireWorks()

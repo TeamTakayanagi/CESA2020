@@ -103,7 +103,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         if (FadeMgr.Instance.State != FadeBase.FadeState.None)
             return;
 
-        m_zoomObj = m_stages[Mathf.Clamp((m_zoomObj.StageNum - 1) + direct, 0, m_stages.Count - 1)];
+        m_zoomObj = m_stages[Mathf.Clamp(m_zoomObj.StageNum - 1 + direct, 0, m_stages.Count - 1)];
         m_camera.StartZoomIn(m_zoomObj.transform.position);
     }
 

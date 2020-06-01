@@ -35,7 +35,6 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
         }
     }
 
-
     public void NextStage()
     {
         m_stageNum++;
