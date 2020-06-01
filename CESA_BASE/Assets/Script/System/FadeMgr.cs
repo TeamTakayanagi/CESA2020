@@ -1,40 +1,58 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
 {
-    [SerializeField]
-    private GameObject FadePrefab;
-    private GameObject m_fade;
+    public enum FadeType
+    {
+        Rat,
+        Scale,
+        Alpha,
+    }
 
-    private bool m_fadeFlg;
+    private int m_stageNum = 0;
+    private List<FadeBase> m_fadeList = new List<FadeBase>();
+    FadeBase m_fade = null;
+    private Canvas m_canvas = null;
+
+    public int StageNum
+    {
+        get
+        {
+            return m_stageNum;
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        m_fade = Instantiate(FadePrefab, transform);
+        m_canvas = GetComponent<Canvas>();
 
         DontDestroyOnLoad(gameObject);
-    }
+        for(int i = 0; i < transform.childCount; ++i)
+        {
+            m_fadeList.Add(transform.GetChild(i).GetComponent<FadeBase>());
+        }
 
-    // Update is called once per frame
+        m_fadeList.Sort((a, b) => a.FadeType - b.FadeType);
+    }
     void Update()
     {
-        
+        m_canvas.worldCamera = Camera.main;
     }
 
-    public void StartFade(string _str = "null")
-    {
-        switch (_str)
-        {
-            case "Alpha":
-                m_fade.GetComponent<FadeAlpha>().StartFade();
-                break;
 
-            default:
-                m_fade.GetComponent<FadeAlpha>().StartFade();
-                break;
-        }
+    public void StartFade(FadeType type, string nextScene, int nextStage)
+    {
+        m_fade = m_fadeList[(int)type].GetComponent<FadeBase>();
+        m_fade.FadeStart(nextScene);
+        m_stageNum = nextStage;
+    }
+
+    public void SetCamera()
+    {
+        m_canvas.worldCamera = Camera.main;
     }
 }

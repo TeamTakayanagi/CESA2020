@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4638224155626910222
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4638224155626910216}
+  - component: {fileID: 4638224155626910223}
+  m_Layer: 0
+  m_Name: SoundMgr
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4638224155626910216
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4638224155626910222}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4638224155626910223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4638224155626910222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b85539960c368024aa7ec167304d5078, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sound: 0
+  m_bgmList:
+  - {fileID: 8300000, guid: bddbe427b5a99b34d920e96584273418, type: 3}
+  - {fileID: 8300000, guid: 22685e2745020d0469400da288a54a34, type: 3}
+  - {fileID: 8300000, guid: b3e21c01c097d6944934de32582450d6, type: 3}
+  - {fileID: 8300000, guid: a5a2cb26d7bad30499f00a036e00302f, type: 3}
+  m_seList:
+  - {fileID: 8300000, guid: f1a36a84278b717489bde5344cda8c42, type: 3}
+  - {fileID: 8300000, guid: ece9f468f4fb5214399b4b845de50426, type: 3}
+  - {fileID: 8300000, guid: e61eb1cc506755f45b30214110de44ef, type: 3}
+  - {fileID: 8300000, guid: 299d5a4cb73dd944c95488d87dd4af5c, type: 3}
+  - {fileID: 8300000, guid: b470e27619ab98b48b2e7bd13d52da5b, type: 3}
+  MAX_PLAY_SE: 10

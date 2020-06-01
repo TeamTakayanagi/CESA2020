@@ -4,13 +4,31 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Fade
-  - UICamera
-  - Fuse
+  - SubCamera
   - UI/Logo
   - UI/Stage
-  - Fuse/pole
-  - Fuse/L
+  - UI/GameClear
+  - UI/GameOver
+  - Fuse/-I
+  - Fuse/-L
+  - Fuse/-T
+  - Fuse/-X
+  - Fuse/LL
+  - Fuse/TT
+  - Fuse/XX
+  - TerrainBlock
+  - Fuse
+  - UICanvas
+  - Gimmick/Goal
+  - Gimmick/Hose
+  - Gimmick/SubMission
+  - Gimmick/Wall
+  - Stage
+  - Fade
+  - UI/Retire
+  - UI/GameSpeed
+  - ClickObject
+  - StageParent
   layers:
   - Default
   - TransparentFX
@@ -20,7 +38,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - PostEffect
   - 
   - 
   - 
