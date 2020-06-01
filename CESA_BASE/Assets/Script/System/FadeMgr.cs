@@ -17,6 +17,15 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
     FadeBase m_fade = null;
     private Canvas m_canvas = null;
 
+    private int m_maxStage = 1;
+    public int MaxStage
+    {
+        get
+        {
+            return m_maxStage;
+        }
+    }
+
     public int StageNum
     {
         get
@@ -52,6 +61,8 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
         }
 
         m_fadeList.Sort((a, b) => a.FadeType - b.FadeType);
+
+        m_maxStage = GameObject.FindGameObjectWithTag(NameDefine.TagName.StageParent).transform.childCount;
     }
     void Update()
     {
