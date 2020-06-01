@@ -80,18 +80,39 @@ public class FadeRat : FadeBase
 
     override protected void Draw(bool isDraw)
     {
-        for (int i = 0; i < m_fuseRect.Count; ++i)
+        if (!isDraw)
         {
-            RectTransform trans = m_fuseRect[i];
-            trans.GetComponent<SpriteRenderer>().enabled = isDraw;
+            for (int i = 0; i < m_fuseRect.Count; ++i)
+            {
+                RectTransform trans = m_fuseRect[i];
+                trans.GetComponent<SpriteRenderer>().enabled = isDraw;
+                trans.localPosition = new Vector3(FUSE_POS_X * (i % 2 * 2 - 1), FUSE_POS_Y - i * FUSE_POS_Y, 0.0f);
+            }
+            for (int i = 0; i < m_ratRect.Count; ++i)
+            {
+                RectTransform trans = m_ratRect[i];
+                trans.GetChild(0).GetComponent<SpriteRenderer>().enabled = isDraw;
+                trans.GetChild(1).GetComponent<SpriteMask>().enabled = isDraw;
+                trans.localPosition = new Vector3(RAT_POS_X * -(i % 2 * 2 - 1), RAT_POS_Y - i * RAT_POS_Y, 0.0f);
+                if (!isDraw)
+                    trans.DOPause();
+            }
         }
-        for (int i = 0; i < m_ratRect.Count; ++i)
+        else
         {
-            RectTransform trans = m_ratRect[i];
-            trans.GetChild(0).GetComponent<SpriteRenderer>().enabled = isDraw;
-            trans.GetChild(1).GetComponent<SpriteMask>().enabled = isDraw;
-            if (!isDraw)
-                trans.DOPause();
+            for (int i = 0; i < m_fuseRect.Count; ++i)
+            {
+                RectTransform trans = m_fuseRect[i];
+                trans.GetComponent<SpriteRenderer>().enabled = isDraw;
+            }
+            for (int i = 0; i < m_ratRect.Count; ++i)
+            {
+                RectTransform trans = m_ratRect[i];
+                trans.GetChild(0).GetComponent<SpriteRenderer>().enabled = isDraw;
+                trans.GetChild(1).GetComponent<SpriteMask>().enabled = isDraw;
+                if (!isDraw)
+                    trans.DOPause();
+            }
         }
     }
 }

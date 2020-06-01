@@ -48,6 +48,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private UIFuseCreate m_UIFuseCreate = null;                         // UIの導火線生成オブジェクト
     private GameObject m_saveObj = null;                                // 各GameStepごとにオブジェクトを格納（スタート：カウントダウン数字　ゲームクリア：花火）
     private LinkedList<GameObject> m_fieldObject = new LinkedList<GameObject>();      // ゲーム画面のオブジェクト
+    private LinkedList<GameGimmick> m_gimmickList = new LinkedList<GameGimmick>();      // ゲーム画面のオブジェクト
     private LinkedList<Fuse> m_uiFuse = new LinkedList<Fuse>();         // UI部分の導火線
     private GameStep m_gameStep = null;                                 // 現在のゲームの進行状況の関数
 
@@ -154,8 +155,11 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
         GameGimmick[] _gimmicks = FindObjectsOfType<GameGimmick>();
         foreach (GameGimmick _gimmick in _gimmicks)
+        {
+            if (_gimmick.Type == GameGimmick.GimmickType.Goal)
+                m_gimmickList.AddLast(_gimmick);
             m_fieldObject.AddLast(_gimmick.gameObject);
-
+        }
         Camera.main.GetComponent<MainCamera>().Control = true;
         Sound.Instance.PlayBGM("bgm_game");
     }
@@ -703,22 +707,17 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
             // ゴール
             int fireGoal = 0;
-            List<GameGimmick> gameGimmicks = new List<GameGimmick>();
-            foreach(GameObject obj in m_fieldObject)
+            foreach (GameGimmick _gimmick in m_gimmickList)
             {
-                if (Utility.TagSeparate.getChildTagName(obj.tag) != "Goal")
-                    continue;
-
-                gameGimmicks.Add(obj.GetComponent<GameGimmick>());
-            }
-            for (int i = 0; i < gameGimmicks.Count; ++i)
-            {
-                if (!gameGimmicks[i].GimmickStart)
+                if (!_gimmick.GimmickStart)
                     continue;
 
                 fireGoal++;
             }
-            //Utility.CSVFile.SaveBin("SaveData", FadeMgr.Instance.StageNum, Mathf.Clamp(fireGoal, 0, 2));
+            if (m_gimmickList.Count == 1)
+                fireGoal++;
+
+            Utility.CSVFile.SaveBinAt("SaveData", FadeMgr.Instance.StageNum, Mathf.Clamp(fireGoal, 0, 2));
 
             Sound.Instance.PlayBGM("bgm_clear");
             Sound.Instance.PlaySE("se_clear", gameObject.GetInstanceID());

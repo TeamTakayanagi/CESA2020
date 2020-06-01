@@ -51,7 +51,7 @@ public class StartProduction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (m_state != Production.move)
+        if (!m_fire || m_state != Production.move)
             return;
 
         m_fire.transform.localPosition += new Vector3(AdjustParameter.Production_Constant.START_TIME, 0.0f, 0.0f) * Time.deltaTime;

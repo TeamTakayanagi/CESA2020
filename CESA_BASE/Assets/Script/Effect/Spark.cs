@@ -158,9 +158,10 @@ public class Spark : EffekseerEmitter
     /// <returns></returns>
     static public Spark Instantiate(Vector3 pos, Vector3 move, Fuse fuse, int haveEffect)
     {
-        Spark spark = EffectManager.Instance.EffectCreate(EffectType.Spark, pos, Quaternion.identity).GetComponent<Spark>();
-        if (!spark)
+        EffekseerEmitter effect = EffectManager.Instance.EffectCreate(EffectType.Spark, pos, Quaternion.identity);
+         if (!effect)
             return null;
+       Spark spark = effect.GetComponent<Spark>();
 
         spark.m_moveVector = move;
         spark.m_fuseClass = fuse;
