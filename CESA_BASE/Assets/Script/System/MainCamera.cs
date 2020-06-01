@@ -262,6 +262,8 @@ public class MainCamera : MonoBehaviour
     // フリック移動
     void CameraSwipeMove()
     {
+        if (m_type != CameraType.SwipeMove) return;
+
         if (!m_isScroll && Input.GetMouseButtonDown(1))
         {
             m_isScroll = true;
@@ -315,7 +317,7 @@ public class MainCamera : MonoBehaviour
         {
             m_myCamera.fieldOfView = ZOOM_FAR;
             m_type = m_default;
-            m_target = transform.position;
+            //m_target = transform.position;
             SetState();
         }
     }

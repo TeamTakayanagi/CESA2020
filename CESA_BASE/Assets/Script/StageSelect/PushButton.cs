@@ -14,6 +14,16 @@ public class PushButton : MonoBehaviour
     private Image image;
     private float time;
 
+    private Color m_oldColor;
+    private bool m_noneAlphaFlg = false;   // true : 透過 / false : 不透明
+    public bool NoneAalpha
+    {
+        get
+        {
+            return m_noneAlphaFlg;
+        }
+    }
+
     private enum ObjType
     {
         TEXT,
@@ -28,12 +38,12 @@ public class PushButton : MonoBehaviour
         stSpeed = Speed;
 
         //アタッチしてるオブジェクトを判別
-        if (this.gameObject.GetComponent<Image>())
+        if (gameObject.GetComponent<Image>())
         {
             thisObjType = ObjType.IMAGE;
             image = this.gameObject.GetComponent<Image>();
         }
-        else if (this.gameObject.GetComponent<Text>())
+        else if (gameObject.GetComponent<Text>())
         {
             thisObjType = ObjType.TEXT;
             text = this.gameObject.GetComponent<Text>();
@@ -60,6 +70,18 @@ public class PushButton : MonoBehaviour
     {
         time += Time.deltaTime * 5.0f * stSpeed;
         color.a = Mathf.Sin(time) * 0.5f + 0.5f;
+
+        if (color.a <= Mathf.Clamp(color.a, 0.0001f, 1.0f))
+        {
+            color.a = Mathf.Clamp(color.a, 0.0001f, 1.0f);
+
+            m_noneAlphaFlg = true;
+        }
+        else
+        {
+            m_noneAlphaFlg = false;
+        }
+        m_oldColor = color;
 
         return color;
     }

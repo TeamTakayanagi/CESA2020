@@ -38,9 +38,18 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     private GameObject m_guid = null;
     private Canvas m_logoCanvas = null;
 
+    public TitleStep Step
+    {
+        get
+        {
+            return m_step;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        //Utility.CSVFile.InitSaveData("SaveData");
         Camera.main.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
         Sound.Instance.PlayBGM("bgm_title");
 
@@ -136,17 +145,40 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         // クリック時
         else if (m_step == TitleStep.Retreat)
         {
-            m_logo.transform.Translate(Vector3.up * UP_SPEED * Time.deltaTime);
-            m_guid.transform.Translate(Vector3.down * UP_SPEED * Time.deltaTime);
+            // 案１
+            // --タイトルロゴが消えるまで位置をずらしていく---------------------------- //
+            //transform.position = Camera.main.transform.position + new Vector3(0, -1, 1);
+            // ------------------------------------------------------------------------ //
 
-            if (!m_logo.GetComponent<OutsideCanvas>().isVisible &&
-                !m_guid.GetComponent<OutsideCanvas>().isVisible)
+            if (m_logo != null)
             {
-                Destroy(m_logo.gameObject);
-                Destroy(m_guid.gameObject);
-                //Destroy(m_logoCanvas.gameObject);
-                m_step = TitleStep.Select;
+                m_logo.transform.Translate(Vector3.up * UP_SPEED * Time.deltaTime);
+
+                if (!m_logo.GetComponent<OutsideCanvas>().isVisible)
+                {
+                    Destroy(m_logo.gameObject);
+                }
+            }
+            if (m_guid != null)
+            {
+                m_guid.transform.Translate(Vector3.down * UP_SPEED * Time.deltaTime);
+
+                if (!m_guid.GetComponent<OutsideCanvas>().isVisible)
+                {
+                    if (m_guid.GetComponent<PushButton>().NoneAalpha)
+                    {
+                        Destroy(m_guid.gameObject);
+                    }
+                }
+            }
+
+            if (m_logo == null && m_guid == null)
+            {
+                Destroy(m_logoCanvas.gameObject);
+
                 m_camera.GetComponent<MainCamera>().Control = true;
+
+                m_step = TitleStep.Select;
             }
 
             m_camera.GetComponent<MainCamera>().Control = true;
