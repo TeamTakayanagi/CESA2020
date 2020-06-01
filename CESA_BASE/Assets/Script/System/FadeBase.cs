@@ -29,6 +29,10 @@ public abstract class FadeBase : MonoBehaviour
     }
     public FadeState State
     {
+        get
+        {
+            return m_state;
+        }
         set
         {
             m_state = value;
@@ -42,7 +46,6 @@ public abstract class FadeBase : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
     protected void Start()
     {
         m_func = null;
@@ -50,7 +53,6 @@ public abstract class FadeBase : MonoBehaviour
         Draw(false);
     }
 
-    // Update is called once per frame
     protected void Update()
     {
         if (m_state == FadeState.None || m_func == null)
@@ -64,7 +66,10 @@ public abstract class FadeBase : MonoBehaviour
             m_func = m_funcNext;
 
             if (m_state == FadeState.None || m_func == null)
+            {
                 Draw(false);
+                EffectManager.Instance.Create = true;
+            }
             else
             {
                 SceneManager.LoadScene(m_nextScene);
@@ -77,6 +82,7 @@ public abstract class FadeBase : MonoBehaviour
         m_state = FadeState.FadeIn;
         m_nextScene = nextScene;
         m_func = FadeIn;
+        Draw(true);
     }
 
     /// <summary>
@@ -84,7 +90,6 @@ public abstract class FadeBase : MonoBehaviour
     /// </summary>
     protected virtual void FadeIn()
     {
-        Draw(true);
         m_stateNext = FadeState.FadeOut;
         m_funcNext = FadeOut;
     }
@@ -103,6 +108,7 @@ public abstract class FadeBase : MonoBehaviour
     /// </summary>
     /// <returns>その条件を満たしたか</returns>
     protected abstract bool FadeCheack();
+
     /// <summary>
     /// 描画変更
     /// </summary>

@@ -11,7 +11,6 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     
     private List<Stage> m_stages = new List<Stage>();
     private Stage m_zoomObj = null;
-    private bool m_sceneTrans = false;
 
     private Utility.CSVFile.BinData m_SaveData = new Utility.CSVFile.BinData();
 
@@ -45,8 +44,6 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     // Start is called before the first frame update
     void Start()
     {
-        m_sceneTrans = false;
-
         m_uiArrow = transform.GetChild(0).gameObject;
         m_uiStartBack = transform.GetChild(1).gameObject;
         m_camera = Camera.main.GetComponent<MainCamera>();
@@ -82,7 +79,6 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
 
                         m_uiArrow.SetActive(true);
                         m_uiStartBack.SetActive(true);
-
                     }
 
                     // 背景オブジェクトとの判定
@@ -90,9 +86,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                     {
                         ClickedObject _click = _hit.transform.GetComponent<ClickedObject>();
                         if (_click)
-                        {
                             _click.OnClick();
-                        }
                     }
                 }
             }
@@ -106,13 +100,16 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     /// <param name="direct">右（1）左（-1）</param>
     public void ClickArrow(int direct)
     {
+        if (FadeMgr.Instance.State != FadeBase.FadeState.None)
+            return;
+
         m_zoomObj = m_stages[Mathf.Clamp(m_zoomObj.StageNum + direct, 0, m_stages.Count - 1)];
         m_camera.StartZoomIn(m_zoomObj.transform.position);
     }
 
     public void ZoomOut()
     {
-        if (m_sceneTrans)
+        if (FadeMgr.Instance.State != FadeBase.FadeState.None)
             return;
 
         m_uiArrow.SetActive(false);
@@ -122,15 +119,14 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
 
     public void SceneLoad()
     {
-        if (m_sceneTrans)
+        if (FadeMgr.Instance.State != FadeBase.FadeState.None)
             return;
 
         if (int.Parse(m_SaveData.data[m_zoomObj.StageNum - 1][1]) > 0)
         {
             m_camera.StartZoomFade(m_zoomObj.transform.position);
             // ステージセレクト→ゲーム のフェード
-            FadeMgr.Instance.StartFade(FadeMgr.FadeType.Scale, "SampleSceneSugi", m_zoomObj.StageNum);
-            m_sceneTrans = true;
+            FadeMgr.Instance.StartFade(FadeMgr.FadeType.Scale, "SampleScene", m_zoomObj.StageNum);
         }
     }
 }

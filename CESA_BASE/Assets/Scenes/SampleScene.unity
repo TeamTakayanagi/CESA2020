@@ -987,7 +987,7 @@ Canvas:
   serializedVersion: 3
   m_RenderMode: 1
   m_Camera: {fileID: 1488873938}
-  m_PlaneDistance: 5
+  m_PlaneDistance: 3
   m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
@@ -3178,7 +3178,7 @@ GameObject:
   - component: {fileID: 3523624299774790686}
   - component: {fileID: 2094370356792996709}
   - component: {fileID: 3512127520726932765}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: fire
   m_TagString: Untagged
   m_Icon: {fileID: 0}

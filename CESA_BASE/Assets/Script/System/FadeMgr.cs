@@ -24,6 +24,22 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
             return m_stageNum;
         }
     }
+    public FadeBase.FadeState State
+    {
+        get
+        {
+            if (!m_fade)
+                return FadeBase.FadeState.None;
+
+            return m_fade.State;
+        }
+    }
+
+
+    public void NextStage()
+    {
+        m_stageNum++;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -40,19 +56,16 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
     }
     void Update()
     {
+        // パワー
         m_canvas.worldCamera = Camera.main;
     }
-
 
     public void StartFade(FadeType type, string nextScene, int nextStage)
     {
         m_fade = m_fadeList[(int)type].GetComponent<FadeBase>();
         m_fade.FadeStart(nextScene);
         m_stageNum = nextStage;
-    }
-
-    public void SetCamera()
-    {
-        m_canvas.worldCamera = Camera.main;
+        EffectManager.Instance.DestoryEffects();
+        EffectManager.Instance.Create = false;
     }
 }

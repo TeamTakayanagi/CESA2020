@@ -22,21 +22,25 @@ public class MainCamera : MonoBehaviour
         ZoomOut,
         ZoomFade    // フェード演出用
     }
+
     [SerializeField]
     private CameraType m_type = CameraType.AroundALL;       // カメラの移動タイプ
     private CameraType m_default = CameraType.AroundALL;    // 格納用
 
     private Vector3 m_savePos = Vector3.zero;               // 差分計算のための移動開始地点格納変数
     private Vector3 m_target = Vector3.zero;                // 回転の中心座標もしくは、移動先
-    private Vector3 m_targetOld = Vector3.zero;                // 回転の中心座標もしくは、移動先
+    private Vector3 m_targetOld = Vector3.zero;             // 回転の中心座標もしくは、移動先
     private Vector3 m_storePos = Vector3.zero;              // 元の位置格納
+    private Vector3 m_moveMax = Vector3.zero;               // 移動範囲最大値
+    private Vector3 m_moveMin = Vector3.zero;               // 移動範囲最小値
     private CameraState m_cameraState;                      // カメラの状態に応じて関数を格納
+    public GameObject m_movePlace = null;                  // （注）取得方法模索中
 
+    private Camera m_myCamera = null;                       // 
     private float m_moveRotate = 0.0f;                      // 回転の際の初期位置からの角度
     private float m_moveRadiuse = 0.0f;                     // 回転の際の半径
     private bool m_isScroll = false;                        // スクロール中か
     private bool m_isControl = false;                       // プレイヤーがカメラの操作をできるか
-    private Camera m_myCamera = null;
 
     public bool Control
     {
@@ -82,7 +86,6 @@ public class MainCamera : MonoBehaviour
         }
     }
 
-
     void Awake()
     {
         DOTween.SetTweensCapacity(1250, 3125);
@@ -104,6 +107,10 @@ public class MainCamera : MonoBehaviour
         {
             m_target = Vector3.zero;
         }
+
+        // カメラ移動範囲取得
+        m_moveMax = m_movePlace.GetComponent<Renderer>().bounds.max;
+        m_moveMin = m_movePlace.GetComponent<Renderer>().bounds.min;
     }
 
     void Update()
@@ -278,6 +285,17 @@ public class MainCamera : MonoBehaviour
             transform.DOMove(m_target, AdjustParameter.Camera_Constant.SWIPE_DERAY);
 
         m_targetOld = m_target;
+
+        Vector3 pos = new Vector3(
+            Mathf.Clamp(transform.position.x, m_moveMin.x, m_moveMax.x), transform.position.y,
+            Mathf.Clamp(transform.position.z, m_moveMin.z, m_moveMax.z));
+
+        // 範囲外
+        if (transform.position != pos)
+        {
+            transform.DOPause();
+            transform.position = pos;
+        }
     }
     // ズームインの動き
     void CameraZoomIn()
@@ -321,5 +339,6 @@ public class MainCamera : MonoBehaviour
     // フェードするときの動き
     void ZoomFade()
     {
+
     }
 }

@@ -8,7 +8,6 @@ public class Stage : MonoBehaviour
     Effekseer.EffekseerEmitter m_effekt = null;
 
     private int m_srep = 0;
-
     private int m_stageNum = 0;
 
     public int StageNum
@@ -25,11 +24,6 @@ public class Stage : MonoBehaviour
 
     private void Start()
     {
-
-    }
-
-    private void Update()
-    {
         if (m_srep == 0)
         {
             if (int.Parse(SelectMgr.Instance.SaveData.data[m_stageNum - 1][1]) > 0)
@@ -38,6 +32,11 @@ public class Stage : MonoBehaviour
             }
             m_srep++;
         }
+    }
+
+    private void Update()
+    {
+
     }
 
     private IEnumerator FireWorks()

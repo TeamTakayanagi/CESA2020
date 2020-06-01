@@ -75,7 +75,7 @@ public class FadeRat : FadeBase
     }
     override protected bool FadeCheack()
     {
-        return m_judgeTrans.localPosition.x > -FUSE_POS_X * 0.01f && m_judgeTrans.localPosition.x < FUSE_POS_X * 0.01f;
+        return m_judgeTrans.localPosition.x > - FUSE_POS_X * 0.01f && m_judgeTrans.localPosition.x < FUSE_POS_X * 0.01f;
     }
 
     override protected void Draw(bool isDraw)
@@ -89,6 +89,9 @@ public class FadeRat : FadeBase
         {
             RectTransform trans = m_ratRect[i];
             trans.GetChild(0).GetComponent<SpriteRenderer>().enabled = isDraw;
+            trans.GetChild(1).GetComponent<SpriteMask>().enabled = isDraw;
+            if (!isDraw)
+                trans.DOPause();
         }
     }
 }
