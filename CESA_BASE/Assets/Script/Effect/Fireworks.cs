@@ -17,7 +17,7 @@ public class Fireworks : EffekseerEmitter
 
     new void Start()
     {
-        m_moveVector = new Vector3(0.0f, AdjustParameter.Production_Constant.END_FIRE_POS_Y - transform.position.y, 0.0f);
+        m_moveVector = new Vector3(0.0f, m_target.y - transform.position.y, 0.0f);
         m_createWait = AdjustParameter.Production_Constant.WAIT_TIME;
         m_staet = State.launch;
         Sound.Instance.PlaySE("se_hanabi_bef", gameObject.GetInstanceID());
@@ -30,7 +30,7 @@ public class Fireworks : EffekseerEmitter
         {
             // 打ち上げた際の処理
             case State.launch:
-                transform.position += m_moveVector * Time.deltaTime * Vector3.Dot(transform.localScale, Vector3.one);
+                transform.position += m_moveVector * Time.deltaTime;
                 if (transform.position.y >= m_target.y)
                 {
                     m_staet = State.create;
