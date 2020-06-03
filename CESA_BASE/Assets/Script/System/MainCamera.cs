@@ -38,6 +38,8 @@ public class MainCamera : MonoBehaviour
     private bool m_isControl = false;                       // プレイヤーがカメラの操作をできるか
     private Camera m_myCamera = null;
 
+    Vector3 m_pos = Vector3.zero;
+
     public bool Control
     {
         set
@@ -134,9 +136,10 @@ public class MainCamera : MonoBehaviour
         {
             m_default = m_type;
             m_type = CameraType.ZoomIn;
+            m_pos = transform.position;
         }
         SetState();
-        m_target = new Vector3(_zoomObj.x, transform.position.y, _zoomObj.z - transform.position.y * 1.5f);
+        m_target = new Vector3(_zoomObj.x, m_pos.y + _zoomObj.y - 2, _zoomObj.z - 3.5f);
     }
 
     // ズームアウト準備

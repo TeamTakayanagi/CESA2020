@@ -612,7 +612,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
 
         Vector3Int half = new Vector3Int((int)Mathf.Floor(m_stageSize.x / 2.0f),
-            (int)Mathf.Floor(m_stageSize.x / 2.0f), (int)Mathf.Floor(m_stageSize.z / 2.0f));
+            (int)Mathf.Floor(m_stageSize.y / 2.0f), (int)Mathf.Floor(m_stageSize.z / 2.0f));
         Vector3Int stageMax = half;
         Vector3Int stageMin = -half;
 
@@ -782,7 +782,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     public void BackToTitle()
     {
         EffectManager.Instance.DestoryEffects();
-        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, "StageSelecSugi", 0);
+        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, ProcessedtParameter.Game_Scene.STAGE_SELECT, 0);
     }
     public void Retry()
     {
@@ -799,7 +799,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     public void Retire()
     {
         EffectManager.Instance.DestoryEffects();
-        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, "StageSelecSugi", 0);
+        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, ProcessedtParameter.Game_Scene.GAME_MAIN, 0);
     }
     public void ChangeGameSpeed()
     {

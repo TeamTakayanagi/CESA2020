@@ -58,6 +58,12 @@ namespace AdjustParameter
 // 他のオブジェクトでも共有する定数があれば（共有しないなら各クラス内で）
 namespace ProcessedtParameter
 {
+    public readonly struct Game_Scene
+    {
+        public const string STAGE_SELECT = "StageSelectLatte";
+        public const string GAME_MAIN = "SampleSceneLatte";
+    }
+
     public readonly struct Camera_Constant
     {
         public const float RECT_WIDTH = 0.8f;                          // メインカメラの映す幅

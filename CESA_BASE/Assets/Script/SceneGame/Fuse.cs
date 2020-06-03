@@ -229,7 +229,9 @@ public class Fuse : MonoBehaviour
                 }
             }
             m_state = FuseState.None;
-            m_targetDistance = entry / 2.0f;
+            m_targetDistance = new Vector3(Mathf.Clamp(entry.x, -1, 1),
+                                            Mathf.Clamp(entry.y, -1, 1),
+                                            Mathf.Clamp(entry.z, -1, 1)) / 2.0f;
         }
         else
         {

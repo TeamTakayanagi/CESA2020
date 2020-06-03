@@ -5,10 +5,16 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/StageSelecSugi.unity
     guid: ab5dbfbc22856cd4792b36759c45c62f
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SampleSceneSugi.unity
     guid: 05a455e5ef9518a4c8fd82bf084e08a2
+  - enabled: 1
+    path: Assets/Scenes/StageSelectLatte.unity
+    guid: 799690895d0796549b8f8a1472a05109
+  - enabled: 1
+    path: Assets/Scenes/SampleSceneLatte.unity
+    guid: 15931d3119128024c91ed787d3c72acb
   m_configObjects: {}

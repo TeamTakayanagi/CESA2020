@@ -67,7 +67,7 @@ public abstract class FadeBase : MonoBehaviour
                 Draw(false);
             else
             {
-                SceneManager.LoadScene(m_nextScene);
+                SceneManager.LoadSceneAsync(m_nextScene);
             }
         }
     }
