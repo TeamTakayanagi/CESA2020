@@ -127,7 +127,6 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
             m_camera.StartZoomFade(m_zoomObj.transform.position);
             // ステージセレクト→ゲーム のフェード
             FadeMgr.Instance.StartFade(FadeMgr.FadeType.Scale, ProcessedtParameter.Game_Scene.GAME_MAIN, m_zoomObj.StageNum);
-            m_sceneTrans = true;
         }
     }
 }
