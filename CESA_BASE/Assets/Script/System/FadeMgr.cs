@@ -16,6 +16,27 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
     private List<FadeBase> m_fadeList = new List<FadeBase>();
     FadeBase m_fade = null;
     private Canvas m_canvas = null;
+    
+    private int m_startStage = 0;
+    public int StartStage
+    {
+        get
+        {
+            return m_startStage;
+        }
+        set
+        {
+            m_startStage = m_stageNum - 1;
+        }
+    }
+    private int m_clearStage = 0;
+    public int ClearStage
+    {
+        set
+        {
+            m_clearStage = value;
+        }
+    }
 
     private int m_maxStage = 1;
     public int MaxStage
@@ -47,6 +68,7 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
     public void NextStage()
     {
         m_stageNum++;
+        //m_clearStage = m_stageNum - 1;
     }
 
     // Start is called before the first frame update

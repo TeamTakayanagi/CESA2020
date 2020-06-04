@@ -719,6 +719,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 fireGoal++;
 
             Utility.CSVFile.SaveBinAt("SaveData", FadeMgr.Instance.StageNum, Mathf.Clamp(fireGoal, 0, 2));
+            FadeMgr.Instance.ClearStage = FadeMgr.Instance.StageNum - 1;
 
             Sound.Instance.PlayBGM("bgm_clear");
             Sound.Instance.PlaySE("se_clear", gameObject.GetInstanceID());
