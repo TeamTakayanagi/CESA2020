@@ -39,7 +39,6 @@ public class Stage : MonoBehaviour
 
     private void Update()
     {
-
     }
 
     private IEnumerator FireWorks()
@@ -51,7 +50,7 @@ public class Stage : MonoBehaviour
             if (transform.childCount == 0)
             {
                 m_effekt = EffectManager.Instance.EffectCreate(Effekseer.EffekseerEmitter.EffectType.fireworks_core, transform.position, 
-                    new Vector3(transform.position.x, AdjustParameter.Production_Constant.END_FIRE_POS_Y / 10, transform.position.z),
+                    new Vector3(transform.position.x, transform.position.y + AdjustParameter.Production_Constant.END_FIRE_POS_Y / 10, transform.position.z),
                     Vector3.one / 10, Quaternion.identity);
             }
             _launchTiming = (Random.Range(0, 600) + Time.deltaTime * 30) / 60;

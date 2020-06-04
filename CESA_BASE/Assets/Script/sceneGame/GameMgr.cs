@@ -800,7 +800,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     public void BackToTitle()
     {
         EffectManager.Instance.DestoryEffects();
-        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, "StageSelect", 0);
+        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, ProcessedtParameter.Game_Scene.STAGE_SELECT, 0);
     }
     public void Retry()
     {
@@ -818,7 +818,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     public void Retire()
     {
         EffectManager.Instance.DestoryEffects();
-        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, "StageSelect", 0);
+        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, ProcessedtParameter.Game_Scene.GAME_MAIN, 0);
     }
     public void ChangeGameSpeed()
     {

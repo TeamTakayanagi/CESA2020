@@ -71,9 +71,9 @@ public class PushButton : MonoBehaviour
         time += Time.deltaTime * 5.0f * stSpeed;
         color.a = Mathf.Sin(time) * 0.5f + 0.5f;
 
-        if (color.a <= Mathf.Clamp(color.a, 0.0001f, 1.0f))
+        if (color.a <= Mathf.Clamp(color.a, 0.001f, 1.0f))
         {
-            color.a = Mathf.Clamp(color.a, 0.0001f, 1.0f);
+            color.a = Mathf.Clamp(color.a, 0.001f, 1.0f);
 
             m_noneAlphaFlg = true;
         }
