@@ -207,11 +207,14 @@ public class Fuse : MonoBehaviour
                 // 長いコライダー
                 if (coliders[i].center == Vector3.zero)
                 {
+                    // 
                     Vector3 direct = transform.rotation * coliders[i].size;
                     float max = Mathf.Max(direct.x, direct.y, direct.z);
                     direct = direct - new Vector3(max, max, max);
                     direct = new Vector3(Mathf.Clamp01(Mathf.Floor(direct.x + 1)),
                         Mathf.Clamp01(Mathf.Floor(direct.y + 1)), Mathf.Clamp01(Mathf.Floor(direct.z + 1)));
+
+                    // 
                     entry = Vector3.Dot(transform.position, direct) * direct;
                     if(entry != Vector3.zero)
                         break;
@@ -230,7 +233,8 @@ public class Fuse : MonoBehaviour
                 }
             }
             m_state = FuseState.None;
-            m_targetDistance = entry / 2.0f;
+            Vector3 p = new Vector3(Mathf.Clamp(entry.x, -1, 1), Mathf.Clamp(entry.y, -1, 1), Mathf.Clamp(entry.z, -1, 1));
+            m_targetDistance = new Vector3(Mathf.Clamp(entry.x, -1, 1), Mathf.Clamp(entry.y, -1, 1), Mathf.Clamp(entry.z, -1, 1)) / 2.0f;
         }
         else
         {

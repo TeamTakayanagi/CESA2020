@@ -616,7 +616,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
 
         Vector3Int half = new Vector3Int((int)Mathf.Floor(m_stageSize.x / 2.0f),
-            (int)Mathf.Floor(m_stageSize.x / 2.0f), (int)Mathf.Floor(m_stageSize.z / 2.0f));
+            (int)Mathf.Floor(m_stageSize.y / 2.0f), (int)Mathf.Floor(m_stageSize.z / 2.0f));
         Vector3Int stageMax = half;
         Vector3Int stageMin = -half;
 
