@@ -170,8 +170,9 @@ public class Fuse : MonoBehaviour
         m_state = FuseState.Burn;
         Spark spark = Spark.Instantiate(transform.position + m_targetDistance, m_targetDistance * -2.0f, this, m_haveEffect.Count);
         Renderer modelRender = m_childModel.GetComponent<Renderer>();
+
         // 導火線の燃えてきた方向にシェーダー用のオブジェクトを移動
-        m_childTarget.position = transform.position + TargetDistance;
+        m_childTarget.position = transform.position + m_targetDistance;
         modelRender.material.SetVector("_Target", m_childTarget.position);
         modelRender.material.SetVector("_Center", m_childModel.position);
         m_haveEffect.Add(spark);

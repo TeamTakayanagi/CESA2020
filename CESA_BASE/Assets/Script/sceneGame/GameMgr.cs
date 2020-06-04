@@ -57,7 +57,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     private float m_tutorialTIme = 0;
     private int m_tutorialState = 0;
-
+    Vector3 m_mouse = Vector3.zero;
     public int BurnCount
     {
         get
@@ -211,6 +211,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             Vector3 screen = Camera.main.WorldToScreenPoint(transform.position);
             mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z);
             mousePos = Camera.main.ScreenToWorldPoint(mousePos);
+            m_mouse = mousePos;
             // 生成場所を取得
             m_createPos = FindNearFuse(mousePos);
             if (m_createPos != OUTPOS)
@@ -689,7 +690,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// <summary>
     /// ゴールが燃えた時、燃え尽きた時の処理
     /// </summary>
-    /// <param name="goal">ゴールのオブジェクト</param>
     public void FireGoal(bool isBurnOut, GameObject fireworks = null)
     {
         if (m_gameStep != GameMain)
@@ -714,6 +714,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
                 fireGoal++;
             }
+            // ゴールが1つなら、クリアを全クリアに書き換え
             if (m_gimmickList.Count == 1)
                 fireGoal++;
 
@@ -777,7 +778,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     private void attention(GameObject _target)
     {
-
         if (m_attentionMain == null)
         {
             if (m_attentionMain == null)
@@ -794,8 +794,14 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
     }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// ボタンの処理
+    private void OnGUI()
+    {
+        Rect rect = new Rect(1.0f, 1.0f, 400, 300);
+        GUI.Label(rect, "mouse" + m_mouse);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ボタンの処理
 
     public void BackToTitle()
     {
@@ -805,20 +811,20 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     public void Retry()
     {
         EffectManager.Instance.DestoryEffects();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, SceneManager.GetActiveScene().name, FadeMgr.Instance.StageNum);
         m_gameStep = null;
     }
     public void NextStsge()
     {
         EffectManager.Instance.DestoryEffects();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         FadeMgr.Instance.NextStage();
+        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, SceneManager.GetActiveScene().name, FadeMgr.Instance.StageNum);
         m_gameStep = null;
     }
     public void Retire()
     {
         EffectManager.Instance.DestoryEffects();
-        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, ProcessedtParameter.Game_Scene.GAME_MAIN, 0);
+        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, ProcessedtParameter.Game_Scene.STAGE_SELECT, 0);
     }
     public void ChangeGameSpeed()
     {
