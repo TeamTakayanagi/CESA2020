@@ -91,6 +91,8 @@ public class FadeRat : FadeBase
             for (int i = 0; i < m_ratRect.Count; ++i)
             {
                 RectTransform trans = m_ratRect[i];
+                if (!trans)
+                    continue;
                 trans.GetChild(0).GetComponent<SpriteRenderer>().enabled = isDraw;
                 trans.GetChild(1).GetComponent<SpriteMask>().enabled = isDraw;
                 trans.localPosition = new Vector3(RAT_POS_X * -(i % 2 * 2 - 1), RAT_POS_Y - i * RAT_POS_Y, 0.0f);

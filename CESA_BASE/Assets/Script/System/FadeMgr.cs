@@ -32,6 +32,10 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
     private int m_clearStage = 0;
     public int ClearStage
     {
+        get
+        {
+            return m_clearStage;
+        }
         set
         {
             m_clearStage = value;
@@ -70,13 +74,20 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
         m_stageNum++;
         //m_clearStage = m_stageNum - 1;
     }
-
+    override protected void Awake()
+    {
+        if (this != Instance)
+        {
+            Destroy(this);
+            return;
+        }
+        DontDestroyOnLoad(gameObject);
+    }
     // Start is called before the first frame update
     void Start()
     {
         m_canvas = GetComponent<Canvas>();
 
-        DontDestroyOnLoad(gameObject);
         for(int i = 0; i < transform.childCount; ++i)
         {
             m_fadeList.Add(transform.GetChild(i).GetComponent<FadeBase>());
@@ -84,7 +95,7 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
 
         m_fadeList.Sort((a, b) => a.FadeType - b.FadeType);
 
-        m_maxStage = GameObject.FindGameObjectWithTag(NameDefine.TagName.StageParent).transform.childCount;
+        m_maxStage = FindObjectsOfType<Stage>().Length;
     }
     void Update()
     {

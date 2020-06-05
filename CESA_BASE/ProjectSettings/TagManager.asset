@@ -29,6 +29,7 @@ TagManager:
   - UI/GameSpeed
   - ClickObject
   - StageParent
+  - fuseParent
   layers:
   - Default
   - TransparentFX

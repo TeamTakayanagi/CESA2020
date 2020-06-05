@@ -11,6 +11,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     
     private List<Stage> m_stages = new List<Stage>();
     private Stage m_zoomObj = null;
+    private static int m_tryStage = 0;
 
     private static Utility.CSVFile.BinData m_saveData = new Utility.CSVFile.BinData();
 
@@ -56,6 +57,18 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
 
         // ステージ番号順にソート
         m_stages.Sort((a, b) => a.StageNum - b.StageNum);
+
+        GameObject fuseParent = GameObject.FindGameObjectWithTag("fuseParent");
+        if (m_tryStage < FadeMgr.Instance.ClearStage)
+        {
+            // 
+            for(int i = m_tryStage; i < FadeMgr.Instance.ClearStage; ++i)
+            {
+                Transform _fuseGroup = fuseParent.transform.GetChild(i);
+                // まとまりごとに開放していく
+
+            }
+        }
     }
 
     // Update is called once per frame
@@ -91,7 +104,6 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                 }
             }
         }
-
     }
 
     /// <summary>
@@ -125,8 +137,9 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         if (int.Parse(m_saveData.data[m_zoomObj.StageNum - 1]) > 0)
         {
             m_camera.StartZoomFade(m_zoomObj.transform.position);
+            m_tryStage = m_zoomObj.StageNum;
             // ステージセレクト→ゲーム のフェード
-            FadeMgr.Instance.StartFade(FadeMgr.FadeType.Scale, ProcessedtParameter.Game_Scene.GAME_MAIN, m_zoomObj.StageNum);
+            FadeMgr.Instance.StartFade(FadeMgr.FadeType.Scale, ProcessedtParameter.Game_Scene.GAME_MAIN, m_tryStage);
         }
     }
 }
