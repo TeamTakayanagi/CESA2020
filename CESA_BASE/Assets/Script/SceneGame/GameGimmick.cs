@@ -21,6 +21,13 @@ public class GameGimmick : MonoBehaviour
     private float m_materialValue = 0.0f;      // 水の長さ
     private bool m_isGimmickStart = false;
 
+    private GameObject m_fountain = null;
+    private GameObject m_particle = null;
+    private GameObject childParticle = null;
+    private bool m_isMoved = false;
+    private bool m_isRotate = false;
+
+
     public GimmickType Type
     {
         get
@@ -69,7 +76,17 @@ public class GameGimmick : MonoBehaviour
     void Start()
     {
         if (m_type == GimmickType.Water)
+        {
+            // Resourcesからパーティクル取得
+            m_fountain = (GameObject)Resources.Load("Fountain");
+            // 位置調整用
+            Vector3 instantPos = transform.position + (transform.rotation * Vector3.forward) / 2
+                + (transform.rotation * Vector3.down) / 8;
+            m_particle = Instantiate(m_fountain, instantPos, transform.rotation);
+            childParticle = m_particle.transform.GetChild(0).gameObject;
+
             m_isGimmickStart = true;
+        }
         else if (m_type == GimmickType.Goal)
         {
             m_materialValue = -0.5f;
@@ -110,13 +127,41 @@ public class GameGimmick : MonoBehaviour
     public IEnumerator GimmickWater()
     {
         RaycastHit hit = new RaycastHit();
-        if (Physics.Raycast(transform.position, Vector3.forward, out hit, m_gimmickValue))
+        
+        if (Physics.Raycast(transform.position, transform.rotation * Vector3.forward, out hit, m_gimmickValue))
         {
-            if (hit.collider.gameObject.CompareTag("Fuse"))
+            if (Utility.TagSeparate.getParentTagName(hit.collider.tag) == NameDefine.TagName.Fuse)
             {
                 hit.collider.gameObject.GetComponent<Fuse>().FuseWet();
+
+                // Fuseがギミック動作中か取得
+                m_isMoved = hit.collider.gameObject.GetComponent<Fuse>().SetMoveFrag();
+                m_isRotate = hit.collider.gameObject.GetComponent<Fuse>().SetRotFrag();
+
+                // 水が当たってる時の長さ
+                m_particle.transform.localScale = new Vector3(0.3f, 0.3f, hit.distance * 0.2f);
+
+                // water drop のパーティクルが暴れるのでFuseのギミック中は表示しない
+                if (m_isMoved || m_isRotate)
+                {
+                    childParticle.gameObject.SetActive(false);
+                }
+                else
+                {
+                    childParticle.gameObject.SetActive(true);
+                }
             }
         }
+        else
+        {
+            childParticle.gameObject.SetActive(true);
+            // 当たっていないときの長さ
+            m_particle.transform.localScale = new Vector3(0.3f, 0.3f, m_gimmickValue * 0.3f - 0.1f);
+        }
+
+        // レイ表示
+        //Debug.DrawRay(transform.position, transform.rotation * Vector3.forward, Color.blue, 5, false);
+
 
         yield break;
     }

@@ -7,6 +7,9 @@ public class Grass : ClickedObject
     private float m_redian = 0;
     private Vector3 m_initPos = Vector3.zero;
 
+    private int m_animeNum = 0;
+    private int m_animeTime = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -16,7 +19,16 @@ public class Grass : ClickedObject
     // Update is called once per frame
     void Update()
     {
-
+        m_animeTime++;
+        if (m_animeTime > ProcessedtParameter.ClickObj.Grass.ANIME_DURATION)
+        {
+            m_animeNum = Random.Range(0, 5);
+            if (m_animeNum == 0)
+            {
+                StartCoroutine("SwaysTree");
+            }
+            m_animeTime = 0;
+        }
     }
 
     public override void OnClick()
