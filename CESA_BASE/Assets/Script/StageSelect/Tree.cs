@@ -41,7 +41,6 @@ public class Tree : ClickedObject
         {
             m_redian += Time.deltaTime * ProcessedtParameter.ClickObj.Tree.SWAYS_SPEED;
             transform.localEulerAngles = Vector3.forward * ProcessedtParameter.ClickObj.Tree.SWAYS_ANGLE * Mathf.Sin(m_redian);
-
             yield return null;
         }
 
