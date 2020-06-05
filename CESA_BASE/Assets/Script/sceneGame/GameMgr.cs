@@ -132,12 +132,12 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         terrainCreate.CreateGround(m_stageSize.x, m_stageSize.z, - m_stageSize.y / 2 - 1);
 
         // 開始演出準備
-        //if (false)
-        //{
-        //    m_gameStep = GameTutorial;
-        //    GameObject canvas = GameObject.FindGameObjectWithTag(NameDefine.TagName.UICanvas);
-        //    m_saveObj = canvas.transform.GetChild(0).gameObject;
-        //}
+        if (false)
+        {
+            m_gameStep = GameTutorial;
+            GameObject canvas = GameObject.FindGameObjectWithTag(NameDefine.TagName.UICanvas);
+            m_saveObj = canvas.transform.GetChild(0).gameObject;
+        }
 
         // フィールドオブジェクトの取得
         Fuse[] _fuseList = FindObjectsOfType<Fuse>();
@@ -562,6 +562,16 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
     }
 
+    private void RunToGamemain(bool _flg)
+    {
+        foreach (Fuse _fuse in m_uiFuse)
+            _fuse.enabled = _flg;
+        foreach (GameObject _obj in m_fieldObject)
+            _obj.GetComponent<Behaviour>().enabled = _flg;
+
+        m_UIFuseCreate.enabled = _flg;
+    }
+
     /// <summary>
     /// 一番近い導火線の座標から生成位置を決定
     /// </summary>
@@ -590,7 +600,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
         // そのオブジェクトの上下左右前後どちらにあるのか
         {
-            float f = Time.time;
             Vector3 distance, absolute;
             // 距離を求める
             distance = mousePos - nearObj.transform.position;

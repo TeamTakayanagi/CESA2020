@@ -12,9 +12,9 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
         Alpha,
     }
 
-    private Canvas m_canvas = null;
-    private FadeBase m_fade = null;
     private List<FadeBase> m_fadeList = new List<FadeBase>();
+    FadeBase m_fade = null;
+    private Canvas m_canvas = null;
 
     public FadeBase.FadeState State
     {

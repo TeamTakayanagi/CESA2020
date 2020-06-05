@@ -11,11 +11,12 @@ public class SelectFuse : MonoBehaviour
 
     private Vector3 m_targetDistance = Vector3.zero;
 
-    private bool m_isBurn = false;
-    private SelectFuse m_nextFuse = null;
     private Transform m_childModel = null;
-    private Transform m_childTarget = null;
     private Renderer m_childRenderer = null;
+    private Transform m_childTarget = null;
+    private HashSet<GameObject> m_collObj = new HashSet<GameObject>();
+
+    private bool m_isBurn = false;
 
     public bool Burn
     {
@@ -36,7 +37,17 @@ public class SelectFuse : MonoBehaviour
         m_childTarget = transform.GetChild(1);
         m_childRenderer = m_childModel.GetComponent<Renderer>();
         m_childRenderer.material.SetTexture("_MainTex", m_fuseTex);
-        m_targetDistance = Vector3.zero;
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        m_targetDistance = Vector3.right / 2.0f;
+        //// 導火線の燃えてきた方向にシェーダー用のオブジェクトを移動
+        //Renderer modelRender = m_childModel.GetComponent<Renderer>();
+        //m_childTarget.position = transform.position + m_targetDistance;
+        //modelRender.material.SetVector("_Target", m_childTarget.position);
+        //modelRender.material.SetVector("_Center", m_childModel.position);
     }
 
     // Update is called once per frame
@@ -54,8 +65,8 @@ public class SelectFuse : MonoBehaviour
             // 導火線と同じ大きさになったら
             if (m_childTarget.localScale.x >= 1.0f)
             {
-                m_childTarget.position = transform.position;
                 m_childTarget.localScale = Vector3.one;
+                m_childTarget.position = transform.position;
             }
 
             // 色を変えるオブジェクトの座標
@@ -65,29 +76,29 @@ public class SelectFuse : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// クリア演出
-    /// </summary>
-    public void BurnStart()
+    private void OnTriggerEnter(Collider other)
     {
-        // 導火線の燃えてきた方向にシェーダー用のオブジェクトを移動
-        Renderer modelRender = m_childModel.GetComponent<Renderer>();
-        m_childTarget.position = transform.position + m_targetDistance;
-        modelRender.material.SetVector("_Target", m_childTarget.position);
-        modelRender.material.SetVector("_Center", m_childModel.position);
-        m_isBurn = true;
+        // 導火線との判定
+        if (Utility.TagSeparate.getParentTagName(other.transform.tag) == NameDefine.TagName.Fuse)
+        {
+            SelectFuse _fuse = other.gameObject.GetComponent<SelectFuse>();
+
+            // 相手が燃えているもしくは燃え尽きた後なら処理を飛ばす
+            if (!_fuse || _fuse.m_isBurn)
+                return;
+
+            m_collObj.Add(_fuse.gameObject);
+        }
+        else if (Utility.TagSeparate.getParentTagName(other.transform.tag) == NameDefine.TagName.Gimmick)
+        {
+            GameGimmick _gimmick = other.gameObject.GetComponent<GameGimmick>();
+
+            // 水は燃えないので
+            if (_gimmick.Type == GameGimmick.GimmickType.Water)
+                return;
+
+            m_collObj.Add(_gimmick.gameObject);
+        }
     }
 
-    public void BurnOut(Vector3 backPos, Vector3 nextPos)
-    {
-        // 導火線の燃えてきた方向にシェーダー用のオブジェクトを移動
-        Renderer modelRender = m_childModel.GetComponent<Renderer>();
-        m_childTarget.position = transform.position;
-        m_childTarget.localScale = Vector3.one;
-        modelRender.material.SetVector("_Target", m_childTarget.position);
-        modelRender.material.SetVector("_Center", m_childModel.position);
-        m_childRenderer.material.SetFloat("_Ration", 1.0f);
-        m_isBurn = false;
-        m_targetDistance = Vector3.zero;
-    }
 }
