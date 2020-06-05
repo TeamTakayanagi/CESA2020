@@ -50,7 +50,12 @@ public class Fuse : MonoBehaviour
     private Vector3 m_defaultPos = Vector3.zero;
     private Vector3 m_defaultRot = Vector3.zero;
 
-    private bool m_isRotate = false;
+    // ギミック発動中フラグ
+    private bool m_isRotate = false;           // 回転中フラグ
+    public bool m_isMoved = false;             // 移動中フラグ
+
+    private Vector3 m_oldPos = Vector3.zero;    // position保存用
+    private Vector3 m_oldRot = Vector3.zero;    // rotation保存用
 
     public float CountTime
     {
@@ -347,7 +352,8 @@ public class Fuse : MonoBehaviour
                 }
             case FuseState.Wet:
                 {
-                    gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.blue); // debug
+                    // 濡れているとき青くする
+                    gameObject.GetComponent<Renderer>().material.color = new Color(0, 0, 1, 0.5f);
 
                     m_countTime -= Time.deltaTime/* * GameMgr.Instance.GameSpeed*/;
                     if (m_countTime <= 0.0f)
@@ -369,6 +375,28 @@ public class Fuse : MonoBehaviour
             default:
                 break;
         }
+
+        // 導火線のギミック動作中判定
+        if (m_oldPos == transform.position)
+        {
+            m_isMoved = false;
+        }
+        else
+        {
+            m_isMoved = true;
+        }
+        m_oldPos = transform.position;
+
+        // 回転中
+        if (m_oldRot == transform.eulerAngles)
+        {
+            m_isRotate = false;
+        }
+        else
+        {
+            m_isRotate = true;
+        }
+        m_oldRot = transform.eulerAngles;
     }
 
     private void FixedUpdate()
@@ -472,18 +500,22 @@ public class Fuse : MonoBehaviour
 
     private void GimmickMove(Vector3 direct)
     {
-        Vector3 movePos;   // 移動位置
-        bool isMove = transform.position == m_defaultPos;
+        // 移動中でないとき移動させる
+        if (!m_isMoved)
+        {
+            Vector3 movePos;   // 移動位置
+            bool isMove = transform.position == m_defaultPos;
 
-        if (!isMove)
-        {
-            movePos = m_defaultPos;
-            StartCoroutine(MoveFuse(movePos, direct));
-        }
-        else
-        {
-            movePos = m_defaultPos - direct;
-            StartCoroutine(MoveFuse(movePos, -direct));
+            if (!isMove)
+            {
+                movePos = m_defaultPos;
+                StartCoroutine(MoveFuse(movePos, direct));
+            }
+            else
+            {
+                movePos = m_defaultPos - direct;
+                StartCoroutine(MoveFuse(movePos, -direct));
+            }
         }
     }
 
@@ -492,28 +524,27 @@ public class Fuse : MonoBehaviour
     /// </summary>
     public IEnumerator RotateFuse()
     {
-        //回転中のフラグを立てる
-        m_isRotate = true;
-
-        //回転処理
-        float sumAngle = 0.0f; //angleの合計を保存
-        while (sumAngle < 90.0f)
+        //回転中じゃないとき回転させる
+        if (!m_isRotate)
         {
-            float fuseAngle = AdjustParameter.Fuse_Constant.ROT_VALUE; //ここを変えると回転速度が変わる
-            sumAngle += fuseAngle;
+            //回転処理
+            float sumAngle = 0.0f; //angleの合計を保存
+            while (sumAngle < 90.0f)
+            {
+                float fuseAngle = AdjustParameter.Fuse_Constant.ROT_VALUE; //ここを変えると回転速度が変わる
+                sumAngle += fuseAngle;
 
-            // 90度以上回転しないように値を制限
-            if (sumAngle > 90.0f)
-                fuseAngle -= sumAngle - 90f;
+                // 90度以上回転しないように値を制限
+                if (sumAngle > 90.0f)
+                    fuseAngle -= sumAngle - 90f;
 
-            transform.RotateAround(transform.position, Vector3.down, fuseAngle);
+                transform.RotateAround(transform.position, Vector3.down, fuseAngle);
+
+                yield return null;
+            }
 
             yield return null;
         }
-
-        //回転中のフラグを倒す
-        m_isRotate = false;
-        yield return null;
     }
 
     /// <summary>
@@ -550,11 +581,14 @@ public class Fuse : MonoBehaviour
         if (m_state == FuseState.Out || m_state == FuseState.UI)
             return;
 
-        m_state = FuseState.Wet;
-        m_countTime = AdjustParameter.Fuse_Constant.WET_MAX_TIME; 
+        //m_state = FuseState.Wet;
+        //m_countTime = AdjustParameter.Fuse_Constant.WET_MAX_TIME; 
 
         if (m_state == FuseState.Burn)
         {
+            m_state = FuseState.Wet;
+            m_countTime = AdjustParameter.Fuse_Constant.WET_MAX_TIME;
+
             // 燃える演出
             m_childTarget.localScale = Vector3.one;
             m_childTarget.position = transform.position;
@@ -567,5 +601,20 @@ public class Fuse : MonoBehaviour
 
             GameMgr.Instance.BurnOutFuse();
         }
+        else
+        {
+            m_state = FuseState.Wet;
+            m_countTime = AdjustParameter.Fuse_Constant.WET_MAX_TIME;
+        }
+    }
+
+    // GameGimmick.cs に送る
+    public bool SetMoveFrag()
+    {
+        return m_isMoved;
+    }
+    public bool SetRotFrag()
+    {
+        return m_isRotate;
     }
 }
