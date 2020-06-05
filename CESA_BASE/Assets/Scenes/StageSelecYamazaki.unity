@@ -4903,20 +4903,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_alphaChange:
-    _alphaType: 3
+    _alphaType: 0
     _min: 0
     _max: 1
-    _time: 0.5
-    _alphaValue: 0
-    _speed: 0
+    _time: 0
   m_function:
   - _functionType: 0
     _sinType: 0
-    _isLooping: 0
+    _isLooping: 1
     _deleyTime: 0
     _startAngle: {x: 0, y: 0, z: 0}
-    _speed: {x: 0, y: 0, z: 0}
-    _amp: {x: 0, y: 0, z: 0}
+    _speed: {x: 1, y: 1, z: 0}
+    _amp: {x: 0.2, y: 0.2, z: 0}
 --- !u!222 &1126954477419619328
 CanvasRenderer:
   m_ObjectHideFlags: 0
