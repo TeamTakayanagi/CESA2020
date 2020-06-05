@@ -15,7 +15,6 @@ public class FadeRat : FadeBase
     private ParticleSystem m_particleRat = null;
     private List<RectTransform> m_fuseRect = new List<RectTransform>();
     private List<RectTransform> m_ratRect = new List<RectTransform>();
-    private float m_target = 0.0f;
     private RectTransform m_judgeTrans = null;      // フェードの終了判断となるオブジェクトの格納（正方向に移動するオブジェクト）
 
     // Start is called before the first frame update
@@ -48,7 +47,6 @@ public class FadeRat : FadeBase
 
     override protected void FadeIn()
     {
-        m_target = transform.GetChild(0).localPosition.x;
         m_judgeTrans = m_fuseRect[0];
         base.FadeIn();
 
@@ -63,7 +61,6 @@ public class FadeRat : FadeBase
     {
         m_particleRat.Play();
 
-        m_target = transform.GetChild(0).localPosition.x;
         m_judgeTrans = m_ratRect[1];
         base.FadeOut();
 

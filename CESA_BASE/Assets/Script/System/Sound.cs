@@ -32,7 +32,7 @@ public class Sound : SingletonMonoBehaviour<Sound>
     {
         if (this != Instance)
         {
-            Destroy(this);
+            Destroy(gameObject);
             return;
         }
         DontDestroyOnLoad(gameObject);

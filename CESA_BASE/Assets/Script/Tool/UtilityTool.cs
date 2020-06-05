@@ -161,19 +161,16 @@ namespace Utility
         public static bool SaveBinAt(string _fileName, int _stageNum, int _clearState)
         {
             BinaryWriter _writer = null;
-            BinData _saveData = null;
-
             try
             {
                 _writer = new BinaryWriter(new FileStream(Application.dataPath + BIN_PATH + _fileName + ".bin", FileMode.Create));
-                _saveData = SelectMgr.SaveData;
 
-                _saveData.data[_stageNum - 1] = _clearState.ToString();
+                SelectMgr.SaveData.data[_stageNum - 1] = _clearState.ToString();
 
-                string _str = _saveData.data[0];
-                for (int i = 1; i < _saveData.data.Count; i++)
+                string _str = SelectMgr.SaveData.data[0];
+                for (int i = 1; i < SelectMgr.SaveData.data.Count; i++)
                 {
-                    _str += "," + _saveData.data[i];
+                    _str += "," + SelectMgr.SaveData.data[i];
                 }
                 _writer.Write(_str);
             }

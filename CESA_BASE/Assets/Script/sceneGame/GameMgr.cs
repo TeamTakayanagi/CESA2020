@@ -93,7 +93,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     override protected void Awake()
     {
-        Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + FadeMgr.Instance.StageNum);
+        Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + SelectMgr.SelectStage);
         StageCreateMgr.Instance.CreateStage(transform, info);
         m_stageSize = info.size;
         m_gameStep = GameStart;
@@ -718,9 +718,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             if (m_gimmickList.Count == 1)
                 fireGoal++;
 
-            Utility.CSVFile.SaveBinAt("SaveData", FadeMgr.Instance.StageNum, Mathf.Clamp(fireGoal, 0, 2));
-            if(FadeMgr.Instance.ClearStage < FadeMgr.Instance.StageNum)
-             FadeMgr.Instance.ClearStage = FadeMgr.Instance.StageNum;
+            Utility.CSVFile.SaveBinAt("SaveData", SelectMgr.SelectStage, Mathf.Clamp(fireGoal, 0, 2));
 
             Sound.Instance.PlayBGM("bgm_clear");
             Sound.Instance.PlaySE("se_clear", gameObject.GetInstanceID());
@@ -808,25 +806,25 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     public void BackToTitle()
     {
         EffectManager.Instance.DestoryEffects();
-        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, ProcessedtParameter.Game_Scene.STAGE_SELECT, 0);
+        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, ProcessedtParameter.Game_Scene.STAGE_SELECT);
     }
     public void Retry()
     {
         EffectManager.Instance.DestoryEffects();
-        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, SceneManager.GetActiveScene().name, FadeMgr.Instance.StageNum);
+        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, SceneManager.GetActiveScene().name);
         m_gameStep = null;
     }
     public void NextStsge()
     {
         EffectManager.Instance.DestoryEffects();
-        FadeMgr.Instance.NextStage();
-        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, SceneManager.GetActiveScene().name, FadeMgr.Instance.StageNum);
+        SelectMgr.SelectStage++;
+        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, SceneManager.GetActiveScene().name);
         m_gameStep = null;
     }
     public void Retire()
     {
         EffectManager.Instance.DestoryEffects();
-        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, ProcessedtParameter.Game_Scene.STAGE_SELECT, 0);
+        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, ProcessedtParameter.Game_Scene.STAGE_SELECT);
     }
     public void ChangeGameSpeed()
     {

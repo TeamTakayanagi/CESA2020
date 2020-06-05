@@ -8,8 +8,8 @@ public class Stage : MonoBehaviour
     Effekseer.EffekseerEmitter m_effekt = null;
     private Material m_myMaterial = null;
 
-    private int m_srep = 0;
-    private int m_stageNum = 0;
+    private int m_stageNum = 0;                 // 自身のステージ番号
+    private int m_clearState = 0;               // クリア状況
     private HashSet<GameObject> m_collObj = new HashSet<GameObject>();
 
     public int StageNum
@@ -23,6 +23,13 @@ public class Stage : MonoBehaviour
             m_stageNum = value;
         }
     }
+    public int ClearState
+    {
+        set
+        {
+            m_clearState = value;
+        }
+    }
 
     private void Start()
     {
@@ -32,7 +39,7 @@ public class Stage : MonoBehaviour
         m_myMaterial = transform.GetComponent<Renderer>().material;
         m_myMaterial.SetFloat("_mono", _saveData);
 
-        if (int.Parse(SelectMgr.SaveData.data[m_stageNum - 1]) > 0)
+        if (m_clearState > 0)
         {
             StartCoroutine("FireWorks");
             GetComponent<Renderer>().material.SetFloat("_mono", 1);
