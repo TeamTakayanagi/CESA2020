@@ -80,6 +80,7 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager>
             if (effect.effectType == EffekseerEmitter.EffectType.Click)
                 continue;
 
+            effect.Stop();
             DestroyImmediate(effect.gameObject);
         }
     }

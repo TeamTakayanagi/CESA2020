@@ -89,7 +89,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
             else if(i > m_clearStage - 1)
             {
                 // 導火線を描画しない
-                _fuseGroup.gameObject.SetActive(false);
+                //_fuseGroup.gameObject.SetActive(false);
             }
             // 未クリアのステージをクリアした
             else if (i == m_clearStage - 1 && ms_selectStage >= m_clearStage)
@@ -127,13 +127,6 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.F5))
-        {
-            FadeMgr.Instance.StartFade(FadeMgr.FadeType.Scale, ProcessedtParameter.Game_Scene.STAGE_SELECT);
-            ms_tryStage = 1;
-            ms_selectStage = 2;
-        }
-
         if (m_camera.Type == MainCamera.CameraType.SwipeMove)
         {
             if (Input.GetMouseButtonDown(0))
@@ -197,10 +190,12 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         // クリアしたステージの次のステージもしくはクリア済みのステージか
         if (m_zoomObj.StageNum == m_clearStage + 1 || int.Parse(ms_saveData.data[m_zoomObj.StageNum - 1]) > 0)
         {
+            m_uiArrow.SetActive(false);
+            m_uiStartBack.SetActive(false);
             m_camera.StartZoomFade(m_zoomObj.transform.position);
             ms_tryStage = ms_selectStage = m_zoomObj.StageNum;
             // ステージセレクト→ゲーム のフェード
-            FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, ProcessedtParameter.Game_Scene.GAME_MAIN);
+            FadeMgr.Instance.StartFade(FadeMgr.FadeType.Scale, NameDefine.Game_Scene.GAME_MAIN);
         }
     }
 }

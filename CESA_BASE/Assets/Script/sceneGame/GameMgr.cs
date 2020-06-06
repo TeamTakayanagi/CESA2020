@@ -31,11 +31,12 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private Sprite[] m_attentionSprite = null;
 
     // 定数
+    private readonly Vector2 CURSOR_POS = new Vector2(142.0f, 25.0f);  // マウスカーソルの位置
     private readonly Vector3 TEXT_POS = new Vector3(0.0f, 100, 0.0f);   // リザルトテキストの移動距離
     private readonly Vector3 BUTTON_POS = new Vector3(0.0f, 100.0f, 0.0f); // リザルトボタンの移動距離              
     private readonly Vector3 OUTPOS = new Vector3(-50, -50, -50);       // 導火線を生成できない位置
+    private readonly Vector3 CURSOL_WORLD = new Vector3(0.0f, 0.5f, 0.5f);  // マウスカーソルをワールド座標に変えるときの補正
     private readonly AnimationCurve m_animCurve = AnimationCurve.Linear(0, 0, 1, 1);   // リザルトUIの移動用
-    private readonly Vector2 CURSOR_POS = new Vector2(142.0f, 25.0f);  // マウスカーソルの位置
     
     private int m_burnCount = 1;                                        // 燃えている導火線の数
     private int m_gameSpeed = 1;                                        // ゲーム加速処理
@@ -208,7 +209,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         {
             // マウス座標をワールド座標で取得
             Vector3 mousePos = Vector3.zero;
-            Vector3 screen = Camera.main.WorldToScreenPoint(transform.position + Quaternion.Euler(0.0f, Camera.main.transform.localEulerAngles.y, 0.0f) * Vector3.back * 0.5f);
+            Vector3 screen = Camera.main.WorldToScreenPoint(transform.position + Quaternion.Euler(0.0f, Camera.main.transform.localEulerAngles.y, 0.0f) * CURSOL_WORLD);
             mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z);
             mousePos = Camera.main.ScreenToWorldPoint(mousePos);
             m_mouse = mousePos;
@@ -612,8 +613,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             absolute = new Vector3(Mathf.Clamp01(Mathf.Floor(absolute.x + 1)),
                 Mathf.Clamp01(Mathf.Floor(absolute.y + 1)), Mathf.Clamp01(Mathf.Floor(absolute.z + 1)));
 
-            objPos = nearObj.transform.position +
-                    absolute * Mathf.Sign(Vector3.Dot(distance, absolute));
+            objPos = nearObj.transform.position + absolute * Mathf.Sign(Vector3.Dot(distance, absolute));
         }
 
         Vector3Int half = new Vector3Int((int)Mathf.Floor(m_stageSize.x / 2.0f),
@@ -806,10 +806,13 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     public void BackToTitle()
     {
         EffectManager.Instance.DestoryEffects();
-        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, ProcessedtParameter.Game_Scene.STAGE_SELECT);
+        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, NameDefine.Game_Scene.STAGE_SELECT);
     }
     public void Retry()
     {
+        if (FadeMgr.Instance.State != FadeBase.FadeState.None)
+            return;
+
         EffectManager.Instance.DestoryEffects();
         FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, SceneManager.GetActiveScene().name);
         m_gameStep = null;
@@ -823,8 +826,11 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     }
     public void Retire()
     {
+        if (FadeMgr.Instance.State != FadeBase.FadeState.None)
+            return;
+
         EffectManager.Instance.DestoryEffects();
-        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, ProcessedtParameter.Game_Scene.STAGE_SELECT);
+        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, NameDefine.Game_Scene.STAGE_SELECT);
     }
     public void ChangeGameSpeed()
     {

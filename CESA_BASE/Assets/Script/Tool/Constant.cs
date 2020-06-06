@@ -5,7 +5,7 @@ namespace AdjustParameter
     public readonly struct Camera_Constant
     {
         public const float CAMERA_NEAR = 5.0f;                          // カメラのNear
-        public const float CAMERA_FAR = 10.0f;                          // カメラのFar
+        public const float CAMERA_FAR = 15.0f;                          // カメラのFar
         public const float VALUE_SCROLL = 0.5f;                         // NearとFarの間を変化させるときの値
         public const float ROT_Y_VALUE = 0.5f;                          // Y軸固定で見渡すときの回転速度
         public const float SWIPE_MOVE = 1.0f;                           // スワイプの移動速度
@@ -52,11 +52,6 @@ namespace AdjustParameter
 // 他のオブジェクトでも共有する定数があれば（共有しないなら各クラス内で）
 namespace ProcessedtParameter
 {
-    public readonly struct Game_Scene
-    {
-        public const string STAGE_SELECT = "StageSelectLatte";
-        public const string GAME_MAIN = "SampleSceneLatte";
-    }
     public readonly struct UI_Object_Constant
     {
         public const float DEFAULT_POS_Y = 11.0f;
@@ -115,6 +110,12 @@ namespace ProcessedtParameter
 
 namespace NameDefine
 {
+    public readonly struct Game_Scene
+    {
+        public const string STAGE_SELECT = "StageSelectLatte";
+        public const string GAME_MAIN = "SampleSceneLatte";
+    }
+
     public readonly struct TagName
     {
         public const string None = "None";

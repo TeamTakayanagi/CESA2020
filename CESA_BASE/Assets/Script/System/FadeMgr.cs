@@ -51,12 +51,19 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
     void Update()
     {
         // パワー
-        m_canvas.worldCamera = Camera.main;
+        if(!m_canvas.worldCamera)
+            m_canvas.worldCamera = Camera.main;
     }
 
     public void StartFade(FadeType type, string nextScene)
     {
-        m_fade = m_fadeList[(int)type].GetComponent<FadeBase>();
+        m_fade = m_fadeList[(int)type];
+        // フェード中にフェードが始まれば
+        if(m_fade.State != FadeBase.FadeState.None)
+        {
+            // 現在のフェードを中断
+
+        }
         m_fade.FadeStart(nextScene);
         EffectManager.Instance.DestoryEffects();
         EffectManager.Instance.Create = false;
