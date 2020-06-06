@@ -208,7 +208,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         {
             // マウス座標をワールド座標で取得
             Vector3 mousePos = Vector3.zero;
-            Vector3 screen = Camera.main.WorldToScreenPoint(transform.position + Quaternion.Euler(0.0f, Camera.main.transform.localEulerAngles.y, 0.0f) * Vector3.back);
+            Vector3 screen = Camera.main.WorldToScreenPoint(transform.position + Quaternion.Euler(0.0f, Camera.main.transform.localEulerAngles.y, 0.0f) * Vector3.back * 0.5f);
             mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z);
             mousePos = Camera.main.ScreenToWorldPoint(mousePos);
             m_mouse = mousePos;
@@ -290,9 +290,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                             m_selectFuse.DefaultPos.y < _fuse.DefaultPos.y)
                         {
                             if (_fuse.EndPos == Vector3.zero)
-                                _fuse.EndPos = _fuse.transform.localPosition - new Vector3(0.0f, AdjustParameter.UI_Object_Constant.INTERVAL_Y, 0.0f);
+                                _fuse.EndPos = _fuse.transform.localPosition - new Vector3(0.0f, ProcessedtParameter.UI_Object_Constant.INTERVAL_Y, 0.0f);
                             else
-                                _fuse.EndPos -= new Vector3(0.0f, AdjustParameter.UI_Object_Constant.INTERVAL_Y, 0.0f);
+                                _fuse.EndPos -= new Vector3(0.0f, ProcessedtParameter.UI_Object_Constant.INTERVAL_Y, 0.0f);
                         }
                     }
 
@@ -496,9 +496,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                                         m_selectFuse.DefaultPos.y < _fuse.DefaultPos.y)
                                     {
                                         if (_fuse.EndPos == Vector3.zero)
-                                            _fuse.EndPos = _fuse.transform.localPosition - new Vector3(0.0f, AdjustParameter.UI_Object_Constant.INTERVAL_Y, 0.0f);
+                                            _fuse.EndPos = _fuse.transform.localPosition - new Vector3(0.0f, ProcessedtParameter.UI_Object_Constant.INTERVAL_Y, 0.0f);
                                         else
-                                            _fuse.EndPos -= new Vector3(0.0f, AdjustParameter.UI_Object_Constant.INTERVAL_Y, 0.0f);
+                                            _fuse.EndPos -= new Vector3(0.0f, ProcessedtParameter.UI_Object_Constant.INTERVAL_Y, 0.0f);
                                     }
                                 }
 
@@ -613,7 +613,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 Mathf.Clamp01(Mathf.Floor(absolute.y + 1)), Mathf.Clamp01(Mathf.Floor(absolute.z + 1)));
 
             objPos = nearObj.transform.position +
-                    absolute * AdjustParameter.Fuse_Constant.DEFAULT_SCALE * Mathf.Sign(Vector3.Dot(distance, absolute));
+                    absolute * Mathf.Sign(Vector3.Dot(distance, absolute));
         }
 
         Vector3Int half = new Vector3Int((int)Mathf.Floor(m_stageSize.x / 2.0f),

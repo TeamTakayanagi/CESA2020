@@ -54,7 +54,7 @@ public class StartProduction : MonoBehaviour
         if (!m_fire || m_state != Production.move)
             return;
 
-        m_fire.transform.localPosition += new Vector3(AdjustParameter.Production_Constant.START_TIME, 0.0f, 0.0f) * Time.deltaTime;
+        m_fire.transform.localPosition += new Vector3(AdjustParameter.Production_Constant.START_FUSE_MOVE, 0.0f, 0.0f) * Time.deltaTime;
         if (m_fire.transform.localPosition.x >= m_fireworks.transform.localPosition.x)
         {
             m_state = Production.end;
