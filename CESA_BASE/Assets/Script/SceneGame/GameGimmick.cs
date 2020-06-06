@@ -132,11 +132,11 @@ public class GameGimmick : MonoBehaviour
         {
             if (Utility.TagSeparate.getParentTagName(hit.collider.tag) == NameDefine.TagName.Fuse)
             {
-                hit.collider.gameObject.GetComponent<Fuse>().FuseWet();
+                hit.collider.gameObject.GetComponent<GameFuse>().FuseWet();
 
                 // Fuseがギミック動作中か取得
-                m_isMoved = hit.collider.gameObject.GetComponent<Fuse>().SetMoveFrag();
-                m_isRotate = hit.collider.gameObject.GetComponent<Fuse>().SetRotFrag();
+                m_isMoved = hit.collider.gameObject.GetComponent<GameFuse>().SetMoveFrag();
+                m_isRotate = hit.collider.gameObject.GetComponent<GameFuse>().SetRotFrag();
 
                 // 水が当たってる時の長さ
                 m_particle.transform.localScale = new Vector3(0.3f, 0.3f, hit.distance * 0.2f);

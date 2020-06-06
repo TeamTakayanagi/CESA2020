@@ -6,7 +6,7 @@ using Effekseer;
 public class Spark : EffekseerEmitter
 {
     private int m_instanceID = 0;                                            // 導火線から見てこのエフェクトが何個目か
-    private Fuse m_fuseClass = null;                                        // 導火線キューブ取得用
+    private FuseBase m_fuseClass = null;                                        // 導火線キューブ取得用
     private BoxCollider m_enterCollider = null;                             // 進入方向の導火線コライダ
     private List<BoxCollider> m_fuseCollider = new List<BoxCollider>();     // 進入方向以外導火線のコライダ
 
@@ -22,7 +22,6 @@ public class Spark : EffekseerEmitter
 
         // コライダ取得
         m_fuseCollider.AddRange(m_fuseClass.GetComponents<BoxCollider>());
-        speed = DEFAULT_SPEED * GameMgr.Instance.GameSpeed;
         Sound.Instance.PlaySE("se_fuse", gameObject.GetInstanceID());
 
 
@@ -50,7 +49,7 @@ public class Spark : EffekseerEmitter
         Transform fuseTarget = m_fuseClass.ChildTarget;
 
         // 導火線が燃え立つ来たのを確認して自信を即削除
-        if (m_fuseClass.State == Fuse.FuseState.Out && fuseTarget.localScale.x >= 1.0f)
+        if (m_fuseClass.State == GameFuse.FuseState.Out && fuseTarget.localScale.x >= 1.0f)
         {
             Sound.Instance.StopSE("se_fuse", gameObject.GetInstanceID());
             DestroyImmediate(gameObject);
@@ -58,11 +57,11 @@ public class Spark : EffekseerEmitter
         }
 
         // 移動量計算
-        Vector3 move = m_moveVector * Time.deltaTime * GameMgr.Instance.GameSpeed / AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
+        Vector3 move = m_moveVector * Time.deltaTime / AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
         Vector3 afterPos = transform.position;
 
         // 移動
-        if (m_fuseClass.State == Fuse.FuseState.Burn)
+        if (m_fuseClass.State == GameFuse.FuseState.Burn)
             afterPos += move;
 
         // 中心に来た時
@@ -156,7 +155,7 @@ public class Spark : EffekseerEmitter
     /// <param name="fuse">エフェクトのある導火線</param>
     /// <param name="haveEffect">導火線の何個目のエフェクトか（追加生成はー１）</param>
     /// <returns></returns>
-    static public Spark Instantiate(Vector3 pos, Vector3 move, Fuse fuse, int haveEffect)
+    static public Spark Instantiate(Vector3 pos, Vector3 move, FuseBase fuse, int haveEffect)
     {
         EffekseerEmitter effect = EffectManager.Instance.EffectCreate(EffectType.Spark, pos, Quaternion.identity);
          if (!effect)

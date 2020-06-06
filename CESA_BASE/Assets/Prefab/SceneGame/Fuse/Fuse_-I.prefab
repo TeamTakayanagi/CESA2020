@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 2106609202041211741}
   - component: {fileID: 2106609202041211738}
   - component: {fileID: 2106609202041211739}
-  - component: {fileID: 1732906167570232031}
   - component: {fileID: 870916018659024005}
   - component: {fileID: 2106609202041211740}
+  - component: {fileID: 6852544397683297358}
   m_Layer: 0
   m_Name: Fuse_-I
   m_TagString: Fuse/-I
@@ -84,20 +84,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &1732906167570232031
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2106609202041211742}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc394b1b40dc9bf488459c406b81c7e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_type: 0
-  m_fuseTex: {fileID: 2800000, guid: d0e12c524957bf04ab681f61b9df1dd0, type: 3}
 --- !u!54 &870916018659024005
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -127,6 +113,21 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.3, y: 0.3, z: 1.1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6852544397683297358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2106609202041211742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32093399b05cf2e46b1605b39db6cffc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_fuseTex: {fileID: 2800000, guid: d0e12c524957bf04ab681f61b9df1dd0, type: 3}
+  m_type: 0
+  m_isMoved: 0
 --- !u!1001 &229235428686467201
 PrefabInstance:
   m_ObjectHideFlags: 0

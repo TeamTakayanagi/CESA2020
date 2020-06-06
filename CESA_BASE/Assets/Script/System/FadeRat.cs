@@ -9,7 +9,7 @@ public class FadeRat : FadeBase
     private const float FUSE_POS_Y = 330;
     private const float RAT_POS_X = 3000;
     private const float RAT_POS_Y = 330;
-    private const float FADE_RAT_TIME = 5.0f;
+    private const float FADE_RAT_TIME = 4.0f;
 
     [SerializeField]
     private ParticleSystem m_particleRat = null;
@@ -17,7 +17,6 @@ public class FadeRat : FadeBase
     private List<RectTransform> m_ratRect = new List<RectTransform>();
     private RectTransform m_judgeTrans = null;      // フェードの終了判断となるオブジェクトの格納（正方向に移動するオブジェクト）
 
-    // Start is called before the first frame update
     new void Start()
     {
         Transform fuse = transform.GetChild(0);
@@ -39,7 +38,6 @@ public class FadeRat : FadeBase
         base.Start();
     }
 
-    // Update is called once per frame
     new void Update()
     {
         base.Update();
@@ -55,6 +53,7 @@ public class FadeRat : FadeBase
             RectTransform trans = m_fuseRect[i];
             trans.DOLocalMoveX(0, FADE_RAT_TIME);
         }
+            //StartCoroutine(Move(5));
     }
 
     override protected void FadeOut()
@@ -72,7 +71,7 @@ public class FadeRat : FadeBase
     }
     override protected bool FadeCheack()
     {
-        return m_judgeTrans.localPosition.x > - FUSE_POS_X * 0.01f && m_judgeTrans.localPosition.x < FUSE_POS_X * 0.01f;
+        return m_judgeTrans.localPosition.x > - FUSE_POS_X * 0.1f && m_judgeTrans.localPosition.x < FUSE_POS_X * 0.1f;
     }
 
     override protected void Draw(bool isDraw)
@@ -113,5 +112,17 @@ public class FadeRat : FadeBase
                     trans.DOPause();
             }
         }
+    }
+
+
+    private IEnumerator Move(float time)
+    {
+        float f = 0.0f;
+        while(f < 1)
+        {
+            f += Time.deltaTime / 5;
+            yield return null;
+        }
+        yield break;
     }
 }

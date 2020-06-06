@@ -66,7 +66,7 @@
 				// オブジェクトの距離(長さ)を取得
 				float3 nearTarget = _Target + (i.worldPos - _Center) * _Ration;
 				float minLength = min(length(nearTarget - i.worldPos), length(_Target - i.worldPos));
-				float dist = saturate(minLength);
+				float dist = clamp(saturate(minLength), 0.2f, 1.0f);
 
 				return fixed4(colorTex.rgb * dist, rate);
 			}

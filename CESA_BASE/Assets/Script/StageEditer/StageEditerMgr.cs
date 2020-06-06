@@ -32,12 +32,12 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
     void Start()
     {
 
-        Fuse[] _fuseList = FindObjectsOfType<Fuse>();
+        GameFuse[] _fuseList = FindObjectsOfType<GameFuse>();
         // UIの導火線仮選択
         m_selectObj = _fuseList[0].gameObject;
         m_selectObj.GetComponent<Renderer>().material.color = ColorAlpha(Color.cyan);
         // 導火線のコライダーを真四角に変更
-        foreach(Fuse _fuse in _fuseList)
+        foreach(GameFuse _fuse in _fuseList)
         {
             BoxCollider[] _box = _fuse.GetComponents<BoxCollider>();
             // 1つだけ真四角にして残し2つ目以降は削除
@@ -125,7 +125,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                 // 設置済みの導火線にタッチしているなら
                 else if (Utility.TagSeparate.getParentTagName(hit.collider.tag) == NameDefine.TagName.Fuse)
                 {
-                    Fuse _fuse = hit.collider.GetComponent<Fuse>();
+                    GameFuse _fuse = hit.collider.GetComponent<GameFuse>();
                     // 導火線削除
                     if (Input.GetMouseButtonDown(0))
                     {
@@ -141,15 +141,15 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                     else if (Input.GetMouseButtonDown(2))
                     {
                         string objName = "f";
-                        if (_fuse.Type != Fuse.FuseType.Start)
+                        if (_fuse.Type != GameFuse.FuseType.Start)
                         {
-                            _fuse.Type = Fuse.FuseType.Start;
+                            _fuse.Type = GameFuse.FuseType.Start;
                             _fuse.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.red));
                             m_cursorTouchObj = null;
                         }
                         else
                         {
-                            _fuse.Type = Fuse.FuseType.Normal;
+                            _fuse.Type = GameFuse.FuseType.Normal;
                             _fuse.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.white));
                             m_cursorTouchObj = _fuse.gameObject;
                         }
@@ -157,7 +157,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                         m_fuseData[_fuse.transform.position] = objName + (int)_fuse.Type + m_fuseData[_fuse.transform.position].Substring(2, m_fuseData[_fuse.transform.position].Length - 2);
                     }
                     // 設置位置の色の変更
-                    else if (_fuse.Type != Fuse.FuseType.Start)
+                    else if (_fuse.Type != GameFuse.FuseType.Start)
                     {
                         if (m_cursorTouchObj)
                             m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.white));
@@ -267,10 +267,10 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         if (Utility.TagSeparate.getParentTagName(_createObj.tag) == NameDefine.TagName.Fuse)
         {
             objName = "f";
-            Fuse _fuse = _createObj.GetComponent<Fuse>();
+            GameFuse _fuse = _createObj.GetComponent<GameFuse>();
             if (m_selectObj)
             {
-                Fuse _select = m_selectObj.GetComponent<Fuse>();
+                GameFuse _select = m_selectObj.GetComponent<GameFuse>();
                 _fuse.Type = _select.Type;
                 _fuse.transform.localEulerAngles = new Vector3(createRotX, createRotY, createRotZ);
             }
@@ -585,9 +585,9 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 
         for(int i = 0; i < transform.GetChild(0).childCount; ++i)
         {
-            Fuse _fuse = transform.GetChild(0).GetChild(i).gameObject.GetComponent<Fuse>();
+            GameFuse _fuse = transform.GetChild(0).GetChild(i).gameObject.GetComponent<GameFuse>();
 
-            if (!_fuse || _fuse.State != Fuse.FuseState.UI)
+            if (!_fuse || _fuse.State != GameFuse.FuseState.UI)
                 continue;
 
             _fuse.transform.localEulerAngles = new Vector3(

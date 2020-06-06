@@ -36,7 +36,7 @@
             o.Albedo = c.rgb;
             o.Metallic = _Metallic;
             o.Smoothness = _Glossiness;
-            o.Alpha = c.a
+            o.Alpha = c.a;
         }
         ENDCG
     }

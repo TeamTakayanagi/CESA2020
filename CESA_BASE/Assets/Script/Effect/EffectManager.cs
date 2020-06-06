@@ -10,10 +10,6 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager>
     private bool m_create = true;
     public bool Create
     {
-        get
-        {
-            return m_create;
-        }
         set
         {
             m_create = value;

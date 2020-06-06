@@ -68,11 +68,11 @@ public abstract class FadeBase : MonoBehaviour
             if (m_state == FadeState.None || m_func == null)
             {
                 Draw(false);
-                EffectManager.Instance.Create = true;
             }
             else
             {
                 SceneManager.LoadSceneAsync(m_nextScene);
+                EffectManager.Instance.Create = true;
             }
         }
     }

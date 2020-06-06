@@ -44,12 +44,12 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private GameObject m_resultGameover = null;                         // ゲームオーバー用のUIの親オブジェクト
     private StartProduction m_start = null;                                  // ゲームオーバー用のUIの親オブジェクト
     private GameObject m_slide = null;                                  // ゲームオーバー用のUIの親オブジェクト
-    private Fuse m_selectFuse = null;                                   // 選択しているUIの導火線   
+    private GameFuse m_selectFuse = null;                                   // 選択しているUIの導火線   
     private UIFuseCreate m_UIFuseCreate = null;                         // UIの導火線生成オブジェクト
     private GameObject m_saveObj = null;                                // 各GameStepごとにオブジェクトを格納（スタート：カウントダウン数字　ゲームクリア：花火）
     private LinkedList<GameObject> m_fieldObject = new LinkedList<GameObject>();      // ゲーム画面のオブジェクト
     private LinkedList<GameGimmick> m_gimmickList = new LinkedList<GameGimmick>();      // ゲーム画面のオブジェクト
-    private LinkedList<Fuse> m_uiFuse = new LinkedList<Fuse>();         // UI部分の導火線
+    private LinkedList<GameFuse> m_uiFuse = new LinkedList<GameFuse>();         // UI部分の導火線
     private GameStep m_gameStep = null;                                 // 現在のゲームの進行状況の関数
 
     private Image m_attentionMain = null;
@@ -76,7 +76,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             return m_gameSpeed;
         }
     }
-    public Fuse UIFuse
+    public GameFuse UIFuse
     {
         set
         {
@@ -127,27 +127,27 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // 初期生成位置はわからないので生成不可能場所を格納
         m_createPos = OUTPOS;
 
-        // 地形生成オブジェクト取得
+        //// 地形生成オブジェクト取得
         TerrainCreate terrainCreate = FindObjectOfType<TerrainCreate>();
-        terrainCreate.CreateGround(m_stageSize.x, m_stageSize.z, - m_stageSize.y / 2 - 1);
+        terrainCreate.CreateGround(m_stageSize.x, m_stageSize.z, -m_stageSize.y / 2 - 1);
 
         // 開始演出準備
-        if (false)
-        {
-            m_gameStep = GameTutorial;
-            GameObject canvas = GameObject.FindGameObjectWithTag(NameDefine.TagName.UICanvas);
-            m_saveObj = canvas.transform.GetChild(0).gameObject;
-        }
+        //if (false)
+        //{
+        //    m_gameStep = GameTutorial;
+        //    GameObject canvas = GameObject.FindGameObjectWithTag(NameDefine.TagName.UICanvas);
+        //    m_saveObj = canvas.transform.GetChild(0).gameObject;
+        //}
 
         // フィールドオブジェクトの取得
-        Fuse[] _fuseList = FindObjectsOfType<Fuse>();
-        foreach (Fuse _fuse in _fuseList)
+        GameFuse[] _fuseList = FindObjectsOfType<GameFuse>();
+        foreach (GameFuse _fuse in _fuseList)
         {
-            if (_fuse.State == Fuse.FuseState.UI)
+            if (_fuse.State == GameFuse.FuseState.UI)
                 m_uiFuse.AddLast(_fuse);
             else
             {
-                if(_fuse.Type == Fuse.FuseType.Start)
+                if(_fuse.Type == GameFuse.FuseType.Start)
                     m_saveObj =_fuse.gameObject;
 
                 m_fieldObject.AddLast(_fuse.gameObject);
@@ -182,7 +182,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         {
             m_gameStep = GameMain;
 
-            Fuse _start = m_saveObj.GetComponent<Fuse>();
+            GameFuse _start = m_saveObj.GetComponent<GameFuse>();
             _start.GameStart();
 
             m_UIFuseCreate.enabled = true;
@@ -208,7 +208,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         {
             // マウス座標をワールド座標で取得
             Vector3 mousePos = Vector3.zero;
-            Vector3 screen = Camera.main.WorldToScreenPoint(transform.position);
+            Vector3 screen = Camera.main.WorldToScreenPoint(transform.position + Quaternion.Euler(0.0f, Camera.main.transform.localEulerAngles.y, 0.0f) * Vector3.back);
             mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z);
             mousePos = Camera.main.ScreenToWorldPoint(mousePos);
             m_mouse = mousePos;
@@ -245,11 +245,11 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     // 新規選択
                     if (!m_selectFuse || m_selectFuse.gameObject != hit.collider.transform.parent.gameObject)
                     {
-                        Fuse _fuse = hit.collider.transform.parent.GetComponent<Fuse>();
+                        GameFuse _fuse = hit.collider.transform.parent.GetComponent<GameFuse>();
                         if (!_fuse || _fuse.EndPos != Vector3.zero)
                             return;
 
-                        if (_fuse.State == Fuse.FuseState.UI)
+                        if (_fuse.State == GameFuse.FuseState.UI)
                         {
                             if(m_selectFuse)
                                 m_selectFuse.SelectUIFuse(false);
@@ -275,13 +275,13 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 // 導火線設置
                 if (m_selectFuse)
                 {
-                    m_selectFuse.Type = Fuse.FuseType.Normal;
-                    m_selectFuse.State = Fuse.FuseState.None;
+                    m_selectFuse.Type = GameFuse.FuseType.Normal;
+                    m_selectFuse.State = GameFuse.FuseState.None;
                     m_UIFuseCreate.FuseAmount -= new Vector2Int
                         ((int)((m_selectFuse.DefaultPos.x + 1) / 2 + 1) % 2, (int)((m_selectFuse.DefaultPos.x + 1) / 2) % 2);
 
                     // UI部分の移動
-                    foreach (Fuse _fuse in m_uiFuse)
+                    foreach (GameFuse _fuse in m_uiFuse)
                     {
                         if (_fuse == m_selectFuse)
                             continue;
@@ -322,12 +322,12 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                         if (Utility.TagSeparate.getParentTagName(hit.collider.tag) == NameDefine.TagName.Fuse)
                         {
                             // 導火線のギミック始動
-                            hit.collider.gameObject.GetComponent<Fuse>().OnGimmick();
+                            hit.collider.gameObject.GetComponent<GameFuse>().OnGimmick();
                         }
                         else if(parent && Utility.TagSeparate.getParentTagName(parent.tag) == NameDefine.TagName.Fuse)
                         {
                             // 導火線のギミック始動
-                            hit.collider.transform.parent.GetComponent<Fuse>().OnGimmick();
+                            hit.collider.transform.parent.GetComponent<GameFuse>().OnGimmick();
                         }
                     }
                 }
@@ -376,7 +376,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     m_tutorialTIme += Time.deltaTime;
                     if (m_tutorialTIme >= 2)
                     {
-                        foreach (Fuse _fuse in m_uiFuse)
+                        foreach (GameFuse _fuse in m_uiFuse)
                             _fuse.enabled = false;
                         foreach (GameObject _obj in m_fieldObject)
                             _obj.GetComponent<Behaviour>().enabled = false;
@@ -412,11 +412,11 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                                 // 新規選択
                                 if (!m_selectFuse || m_selectFuse.gameObject != hit.collider.transform.parent.gameObject)
                                 {
-                                    Fuse _fuse = hit.collider.transform.parent.GetComponent<Fuse>();
+                                    GameFuse _fuse = hit.collider.transform.parent.GetComponent<GameFuse>();
                                     if (!_fuse || _fuse.EndPos != Vector3.zero)
                                         return;
 
-                                    if (_fuse.State == Fuse.FuseState.UI)
+                                    if (_fuse.State == GameFuse.FuseState.UI)
                                     {
                                         if (m_selectFuse)
                                             m_selectFuse.SelectUIFuse(false);
@@ -481,13 +481,13 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                             // 導火線設置
                             if (m_selectFuse)
                             {
-                                m_selectFuse.Type = Fuse.FuseType.Normal;
-                                m_selectFuse.State = Fuse.FuseState.None;
+                                m_selectFuse.Type = GameFuse.FuseType.Normal;
+                                m_selectFuse.State = GameFuse.FuseState.None;
                                 m_UIFuseCreate.FuseAmount -= new Vector2Int
                                     ((int)((m_selectFuse.DefaultPos.x + 1) / 2 + 1) % 2, (int)((m_selectFuse.DefaultPos.x + 1) / 2) % 2);
 
                                 // UI部分の移動
-                                foreach (Fuse _fuse in m_uiFuse)
+                                foreach (GameFuse _fuse in m_uiFuse)
                                 {
                                     if (_fuse == m_selectFuse)
                                         continue;
@@ -517,7 +517,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                                 // マウスカーソル用の画像をデフォルトに変更
                                 Cursor.SetCursor(m_cursorDefault, CURSOR_POS, CursorMode.Auto);
 
-                                foreach (Fuse _fuse in m_uiFuse)
+                                foreach (GameFuse _fuse in m_uiFuse)
                                     _fuse.enabled = true;
                                 foreach (GameObject _obj in m_fieldObject)
                                     _obj.GetComponent<Behaviour>().enabled = true;
@@ -537,7 +537,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     m_tutorialTIme += Time.deltaTime;
                     if (m_tutorialTIme >= 10)
                     {
-                        foreach (Fuse _fuse in m_uiFuse)
+                        foreach (GameFuse _fuse in m_uiFuse)
                             _fuse.enabled = false;
                         foreach (GameObject _obj in m_fieldObject)
                             _obj.GetComponent<Behaviour>().enabled = false;
@@ -564,7 +564,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     private void RunToGamemain(bool _flg)
     {
-        foreach (Fuse _fuse in m_uiFuse)
+        foreach (GameFuse _fuse in m_uiFuse)
             _fuse.enabled = _flg;
         foreach (GameObject _obj in m_fieldObject)
             _obj.GetComponent<Behaviour>().enabled = _flg;
@@ -678,7 +678,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// 導火線が消えるときの
     /// </summary>
     /// <param name="_fuse">燃え尽きた導火線</param>
-    public void DestroyFuse(Fuse _fuse)
+    public void DestroyFuse(GameFuse _fuse)
     {
         // ゲーム中以外はこの関数には入らない
         if (m_gameStep != GameMain)
@@ -741,7 +741,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // ポーズバーの消去
         DestroyImmediate(m_slide);
         if (m_selectFuse)
-            m_selectFuse.State = Fuse.FuseState.None;
+            m_selectFuse.State = GameFuse.FuseState.None;
 
         // ゲーム部分の事後処理
         if (m_selectFuse)

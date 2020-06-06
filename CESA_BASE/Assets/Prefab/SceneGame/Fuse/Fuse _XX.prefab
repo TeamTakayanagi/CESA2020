@@ -11,11 +11,11 @@ GameObject:
   - component: {fileID: 3056428101694598085}
   - component: {fileID: 3056428101694598082}
   - component: {fileID: 3056428101694598083}
-  - component: {fileID: 3412097083348357703}
   - component: {fileID: 4269602951940881437}
   - component: {fileID: 3056428101694598084}
   - component: {fileID: 4842086027828753424}
   - component: {fileID: 8340982296103275929}
+  - component: {fileID: 860717478374324831}
   m_Layer: 0
   m_Name: Fuse _XX
   m_TagString: Fuse/XX
@@ -86,20 +86,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &3412097083348357703
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3056428101694598086}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc394b1b40dc9bf488459c406b81c7e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_type: 0
-  m_fuseTex: {fileID: 2800000, guid: dbf7cb37b267ffd4eb8d461c49b1c0d0, type: 3}
 --- !u!54 &4269602951940881437
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -155,6 +141,21 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.3, y: 0.3, z: 1.1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &860717478374324831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3056428101694598086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32093399b05cf2e46b1605b39db6cffc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_fuseTex: {fileID: 2800000, guid: dbf7cb37b267ffd4eb8d461c49b1c0d0, type: 3}
+  m_type: 0
+  m_isMoved: 0
 --- !u!1001 &2784368125157231471
 PrefabInstance:
   m_ObjectHideFlags: 0
