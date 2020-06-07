@@ -302,7 +302,8 @@ public class MainCamera : MonoBehaviour
         if (transform.position != pos)
         {
             transform.DOPause();
-            transform.position = pos;
+            transform.DOMove(pos, AdjustParameter.Camera_Constant.SWIPE_OUT);
+            Debug.Log("out");
         }
     }
     // ズームインの動き

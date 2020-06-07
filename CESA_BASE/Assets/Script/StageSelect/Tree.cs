@@ -18,7 +18,7 @@ public class Tree : ClickedObject
         m_countTime++;
         if (m_countTime > ProcessedtParameter.ClickObj.Tree.ANIME_DURATION)
         {
-            if (Random.Range(0, 50) == 0)
+            if (Random.Range(0, 100) == 0)
             {
                 //EffectManager.Instance.EffectCreate(Effekseer.EffekseerEmitter.EffectType.Leafe, transform.position + new Vector3(0.0f, transform.localScale.y / 2.0f, 0.0f), Quaternion.identity);
             }

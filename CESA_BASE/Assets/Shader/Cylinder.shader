@@ -21,7 +21,6 @@
         struct Input
         {
             float2 uv_MainTex;
-            float4 screenPos;
         };
 
         sampler2D _MainTex;

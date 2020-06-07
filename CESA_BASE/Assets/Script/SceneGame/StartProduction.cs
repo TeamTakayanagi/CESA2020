@@ -35,7 +35,7 @@ public class StartProduction : MonoBehaviour
     {
         m_state = Production.wait;
     }
-    // Start is called before the first frame update
+
     void Start()
     {
         // 演出用の子オブジェクト取得

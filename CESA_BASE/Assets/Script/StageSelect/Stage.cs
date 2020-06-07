@@ -36,19 +36,21 @@ public class Stage : MonoBehaviour
 
     private void Start()
     {
-        // クリア状態の格納
-        int _saveData = int.Parse(SelectMgr.SaveData.data[m_stageNum - 1]);
-
         m_myMaterial = transform.GetComponent<Renderer>().material;
-        m_myMaterial.SetFloat("_mono", _saveData);
+        m_myMaterial.SetFloat("_mono", m_clearState);
 
-        if (m_clearState > 0)
+        if (m_clearState < 0)
+        {
+            m_clearState *= -1;
+            StartCoroutine("Clear");
+        }
+        else if (m_clearState > 0)
         {
             StartCoroutine("FireWorks");
-            GetComponent<Renderer>().material.SetFloat("_mono", 1);
+            m_myMaterial.SetFloat("_mono", 1);
         }
         else
-            GetComponent<Renderer>().material.SetFloat("_mono", 0);
+            m_myMaterial.SetFloat("_mono", 0);
     }
 
     private void Update()
@@ -72,5 +74,23 @@ public class Stage : MonoBehaviour
 
             yield return new WaitForSeconds(ProcessedtParameter.LaunchTiming.NEXT + _launchTiming);
         }
+    }
+
+    /// <summary>
+    /// 最新のクリアステージを徐々に色を変える
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator Clear()
+    {
+        float alpha = 0.0f;
+        while (alpha < 1.0f)
+        {
+            m_myMaterial.SetFloat("_mono", alpha);
+            alpha += Time.deltaTime / 5.0f;
+            yield return null;
+        }
+
+        StartCoroutine("FireWorks");
+        yield break;
     }
 }

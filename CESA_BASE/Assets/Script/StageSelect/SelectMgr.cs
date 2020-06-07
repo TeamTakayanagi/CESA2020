@@ -65,6 +65,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                 m_clearStage = i + 1;
             }
         }
+        m_stageList[m_clearStage - 1].ClearState *= -1;
     }
 
     void Start()
