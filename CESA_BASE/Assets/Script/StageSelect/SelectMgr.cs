@@ -192,7 +192,6 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         m_zoomObj = m_stageList[Mathf.Clamp(m_zoomObj.StageNum - 1 + direct, 0, m_stageList.Count - 1)];
         m_camera.StartZoomIn(m_zoomObj.transform.position);
         gameObj.transform.localScale = Vector3.one;
-
     }
 
     public void ZoomOut()
