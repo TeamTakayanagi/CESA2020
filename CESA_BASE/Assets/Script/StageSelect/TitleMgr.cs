@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
 {
@@ -8,9 +9,9 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     private const float UP_SPEED = 0.5f;
 
     private readonly Vector3 InitCameraPos = new Vector3(-3.0f, 5.0f, -21.0f);
-    private readonly Vector3 InitLogoPos = new Vector3(0.0f, 0.4f, 0.0f);
+    private readonly Vector3 InitLogoPos = new Vector3(0.0f, 0.4f, 1.0f);
     private readonly Vector3 m_initGuidPos = new Vector3(0.0f, 0.0f, 0.0f);
-    private readonly Vector3 LogoUpPos = new Vector3(0.0f, 0.8f, 0.0f);
+    private readonly Vector3 LogoUpPos = new Vector3(0.0f, 0.8f, 1.0f);
 
     private readonly Quaternion InitCameraRot = Quaternion.Euler(new Vector3(-60, 0, 0));
     private readonly Quaternion InitObjRot = Quaternion.Euler(new Vector3(30, 0, 0));
@@ -24,18 +25,19 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         Wite,
         Retreat,
         Select,
+        MoveSkip,
         Max
     }
 
     private static bool m_isFirst = true;
 
     [SerializeField]
-    private GameObject m_guidPrefab = null;
+    private Image m_guidPrefab = null;
     private TitleStep m_step = TitleStep.Scroll;
     private float m_delayCounter = 0;
     private MainCamera m_camera = null;
-    private GameObject m_logo = null;
-    private GameObject m_guid = null;
+    private TitleLogo m_logo = null;
+    private Image m_guid = null;
     private Canvas m_logoCanvas = null;
 
     public TitleStep Step
@@ -43,6 +45,10 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         get
         {
             return m_step;
+        }
+        set
+        {
+            m_step = value;
         }
     }
 
@@ -54,7 +60,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         Sound.Instance.PlayBGM("bgm_title");
 
         // オブジェクトの取得
-        m_logo = transform.GetChild(0).gameObject;
+        m_logo = transform.GetChild(0).GetComponent<TitleLogo>();
         m_logoCanvas = transform.GetComponent<Canvas>();
         m_camera = Camera.main.GetComponent<MainCamera>();
         // マウス制御クラスにカメラの情報を渡す
@@ -106,10 +112,15 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         // タイトルロゴを魅せる
         else if (m_step == TitleStep.Charm)
         {
-            m_delayCounter += Time.deltaTime;
-            if (m_delayCounter > CHARM_TIME)
+            //m_delayCounter += Time.deltaTime;
+            //if (m_delayCounter > CHARM_TIME)
+            //{
+            //    m_delayCounter = 0;
+            //    m_step = TitleStep.LogoUp;
+            //}
+
+            if (m_logo.Step == TitleLogo.LogoStep.StepLast)
             {
-                m_delayCounter = 0;
                 m_step = TitleStep.LogoUp;
             }
         }
@@ -138,6 +149,8 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         {
             if (Input.GetMouseButtonUp(0))
             {
+                m_guid.GetComponent<PushButton>().Flg = false;
+
                 m_step = TitleStep.Retreat;
             }
         }
@@ -154,7 +167,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
             {
                 m_logo.transform.Translate(Vector3.up * UP_SPEED * Time.deltaTime);
 
-                if (!m_logo.GetComponent<OutsideCanvas>().isVisible)
+                if (m_logo.AddAlpha(false))
                 {
                     Destroy(m_logo.gameObject);
                 }
@@ -163,12 +176,12 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
             {
                 m_guid.transform.Translate(Vector3.down * UP_SPEED * Time.deltaTime);
 
-                if (!m_guid.GetComponent<OutsideCanvas>().isVisible)
+                float _alpha = m_guid.color.a;
+                _alpha = Mathf.Clamp(Mathf.Lerp(_alpha, -0.5f, Time.deltaTime), 0, 1);
+                m_guid.color = new Color(1, 1, 1, _alpha);
+                if (_alpha == 0)
                 {
-                    if (m_guid.GetComponent<PushButton>().NoneAalpha)
-                    {
-                        Destroy(m_guid.gameObject);
-                    }
+                    Destroy(m_guid.gameObject);
                 }
             }
 
@@ -187,7 +200,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         // タイトル演出スキップ
         if (m_step < TitleStep.Wite && Input.GetMouseButtonUp(0))
         {
-            m_step = TitleStep.Wite;
+            m_step = TitleStep.MoveSkip;
             m_camera.transform.rotation = LastCameraRot;
             m_logo.transform.position = transform.position + m_logo.transform.rotation * LogoUpPos;
             m_guid = Instantiate(m_guidPrefab, transform.position + InitObjRot * m_initGuidPos, InitObjRot, transform);
