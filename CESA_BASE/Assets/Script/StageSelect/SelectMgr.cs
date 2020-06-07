@@ -14,6 +14,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     private GameObject m_uiStartBack = null;
 
     private List<Stage> m_stageList = new List<Stage>();
+    private GameObject m_selectingObj = null;
     private Stage m_zoomObj = null;
 
     private static Utility.CSVFile.BinData ms_saveData = new Utility.CSVFile.BinData();
@@ -128,7 +129,8 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     // Update is called once per frame
     void Update()
     {
-        if (m_camera.Type == MainCamera.CameraType.SwipeMove)
+        if (m_camera.Type == MainCamera.CameraType.SwipeMove ||
+            m_camera.Type == MainCamera.CameraType.ZoomIn)
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -155,6 +157,23 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                         if (_click)
                             _click.OnClick();
                     }
+
+                    if (_hit.transform.tag == "UI/Arrow")
+                    {
+                        m_selectingObj = _hit.transform.gameObject;
+                        m_selectingObj.transform.localScale = Vector3.one * 0.8f;
+
+                    }
+                }
+            }
+            else if (!Input.GetMouseButton(0))
+            {
+                if (m_selectingObj != null)
+                {
+                    if (m_selectingObj.transform.localScale != Vector3.one)
+                    {
+                        m_selectingObj.transform.localScale = Vector3.one;
+                    }
                 }
             }
         }
@@ -164,13 +183,16 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     /// 矢印をクリック
     /// </summary>
     /// <param name="direct">右（1）左（-1）</param>
-    public void ClickArrow(int direct)
+    public void ClickArrow(GameObject gameObj)
     {
         if (FadeMgr.Instance.State != FadeBase.FadeState.None)
             return;
 
+        int direct = gameObj.transform.position.x > gameObj.transform.root.position.x ? 1 : -1;
         m_zoomObj = m_stageList[Mathf.Clamp(m_zoomObj.StageNum - 1 + direct, 0, m_stageList.Count - 1)];
         m_camera.StartZoomIn(m_zoomObj.transform.position);
+        gameObj.transform.localScale = Vector3.one;
+
     }
 
     public void ZoomOut()
