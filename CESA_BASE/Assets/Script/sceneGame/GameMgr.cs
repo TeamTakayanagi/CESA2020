@@ -38,7 +38,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private GameObject m_resultClear = null;                            // ゲームクリア用のUIの親オブジェクト
     private GameObject m_resultGameover = null;                         // ゲームオーバー用のUIの親オブジェクト
     private StartProduction m_start = null;                                  // ゲームオーバー用のUIの親オブジェクト
-    private GameObject m_slide = null;                                  // ゲームオーバー用のUIの親オブジェクト
+    //private GameObject m_slide = null;                                  // ゲームオーバー用のUIの親オブジェクト
     private GameFuse m_selectFuse = null;                                   // 選択しているUIの導火線   
     private UIFuseCreate m_UIFuseCreate = null;                         // UIの導火線生成オブジェクト
     private GameObject m_saveObj = null;                                // 各GameStepごとにオブジェクトを格納（スタート：カウントダウン数字　ゲームクリア：花火）
@@ -109,7 +109,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // ゲームオーバー用のUIの親オブジェクト取得
         m_resultGameover = GameObject.FindGameObjectWithTag(NameDefine.TagName.UIGameOver);
         // ゲームのポーズ処理の親オブジェクト取得
-        m_slide = FindObjectOfType<GameButton>().gameObject;
+        //m_slide = FindObjectOfType<GameButton>().gameObject;
         // ゲームスタート用のオブジェクト格納
         m_start = FindObjectOfType<StartProduction>();
         // UIの導火線生成オブジェクト取得し、動きを止める
@@ -731,7 +731,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         Camera.main.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
 
         // ポーズバーの消去
-        DestroyImmediate(m_slide);
+        //DestroyImmediate(m_slide);
         if (m_selectFuse)
             m_selectFuse.State = GameFuse.FuseState.None;
 
