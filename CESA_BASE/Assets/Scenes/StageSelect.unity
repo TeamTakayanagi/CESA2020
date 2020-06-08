@@ -5232,6 +5232,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29a743af34a7e024aae7408d36f1dbad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_cursorDefaultTemp: {fileID: 2800000, guid: a338823b1f2038c4487eeb326a20c51a, type: 3}
+  m_cursorCatchTemp: {fileID: 2800000, guid: 15daf44b716ac2e43953d5400a50eccd, type: 3}
 --- !u!1 &564193449
 GameObject:
   m_ObjectHideFlags: 0
