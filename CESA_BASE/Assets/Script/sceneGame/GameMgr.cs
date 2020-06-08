@@ -17,11 +17,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         Button,
     }
 
-    // シリアライズ化
-    [SerializeField]
-    private Texture2D m_cursorDefault = null;                           // マウスカーソル（通常時）
-    [SerializeField]
-    private Texture2D m_cursorCatch = null;                             // マウスカーソル（UIの導火線選択時）
     [SerializeField]
     private Vector3Int m_stageSize = Vector3Int.zero;                   // ステージサイズ
 
@@ -31,7 +26,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private Sprite[] m_attentionSprite = null;
 
     // 定数
-    private readonly Vector2 CURSOR_POS = new Vector2(142.0f, 25.0f);  // マウスカーソルの位置
     private readonly Vector3 TEXT_POS = new Vector3(0.0f, 100, 0.0f);   // リザルトテキストの移動距離
     private readonly Vector3 BUTTON_POS = new Vector3(0.0f, 100.0f, 0.0f); // リザルトボタンの移動距離              
     private readonly Vector3 OUTPOS = new Vector3(-50, -50, -50);       // 導火線を生成できない位置
@@ -106,12 +100,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     void Start()
     {
         Camera.main.rect = new Rect(0.0f, 0.0f, ProcessedtParameter.Camera_Constant.RECT_WIDTH, 1.0f);
-
+        Camera.main.GetComponent<MainCamera>().Near = Mathf.Max(m_stageSize.x, m_stageSize.z);
         // マウス制御クラスにカメラの情報を渡す
         InputMouse.RoadCamera();
-
-        // マウスカーソル用の画像を変更
-        Cursor.SetCursor(m_cursorDefault, CURSOR_POS, CursorMode.Auto);
 
         // ゲームクリア用のUIの親オブジェクト取得
         m_resultClear = GameObject.FindGameObjectWithTag(NameDefine.TagName.UIGameClear);
@@ -257,7 +248,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                             m_selectFuse = _fuse;
                             m_selectFuse.SelectUIFuse(true);
                             // マウスカーソル用の画像を選択時に変更
-                            Cursor.SetCursor(m_cursorCatch, CURSOR_POS, CursorMode.Auto);
+                            InputMouse.ChangeCursol(false);
                         }
                     }
                     // 選択解除
@@ -266,7 +257,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                         m_selectFuse.SelectUIFuse(false);
                         m_selectFuse = null;
                         // マウスカーソル用の画像をデフォルトに変更
-                        Cursor.SetCursor(m_cursorDefault, CURSOR_POS, CursorMode.Auto);
+                        InputMouse.ChangeCursol(true);
                     }
                 }
             }
@@ -310,7 +301,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     m_selectFuse = null;
                     m_createPos = OUTPOS;
                     // マウスカーソル用の画像をデフォルトに変更
-                    Cursor.SetCursor(m_cursorDefault, CURSOR_POS, CursorMode.Auto);
+                    InputMouse.ChangeCursol(true);
                 }
                 // ギミック動作
                 else
@@ -425,7 +416,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                                         m_selectFuse = _fuse;
                                         m_selectFuse.SelectUIFuse(true);
                                         // マウスカーソル用の画像を選択時に変更
-                                        Cursor.SetCursor(m_cursorCatch, CURSOR_POS, CursorMode.Auto);
+                                        InputMouse.ChangeCursol(false);
 
                                         m_tutorialState = 2;
                                     }
@@ -516,7 +507,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                                 m_selectFuse = null;
                                 m_createPos = OUTPOS;
                                 // マウスカーソル用の画像をデフォルトに変更
-                                Cursor.SetCursor(m_cursorDefault, CURSOR_POS, CursorMode.Auto);
+                                InputMouse.ChangeCursol(true);
 
                                 foreach (GameFuse _fuse in m_uiFuse)
                                     _fuse.enabled = true;
@@ -792,12 +783,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 m_attentionSub.sprite = m_attentionSprite[1];
             }
         }
-    }
-
-    private void OnGUI()
-    {
-        Rect rect = new Rect(1.0f, 1.0f, 400, 300);
-        GUI.Label(rect, "mouse" + m_mouse);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

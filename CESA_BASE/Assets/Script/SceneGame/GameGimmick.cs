@@ -27,6 +27,7 @@ public class GameGimmick : MonoBehaviour
     private bool m_isMoved = false;
     private bool m_isRotate = false;
 
+    private ObjectFunction m_function = null;
 
     public GimmickType Type
     {
@@ -59,6 +60,7 @@ public class GameGimmick : MonoBehaviour
         set
         {
             m_isGimmickStart = value;
+            m_function.Stop = value;
         }
     }
     public float Value
@@ -75,6 +77,8 @@ public class GameGimmick : MonoBehaviour
 
     void Start()
     {
+        m_function = transform.GetChild(0).GetComponent<ObjectFunction>();
+
         if (m_type == GimmickType.Water)
         {
             // Resourcesからパーティクル取得
@@ -86,15 +90,20 @@ public class GameGimmick : MonoBehaviour
             childParticle = m_particle.transform.GetChild(0).gameObject;
 
             m_isGimmickStart = true;
+            m_function.Stop = true;
         }
         else if (m_type == GimmickType.Goal)
         {
             m_materialValue = -0.5f;
             transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_OutTime", transform.localPosition.y + m_materialValue);
             m_isGimmickStart = false;
+            m_function.Stop = false;
+
         }
         else
+        {
             m_isGimmickStart = false;
+        }
     }
 
     void Update()
@@ -109,7 +118,7 @@ public class GameGimmick : MonoBehaviour
         {
             m_gimmickValue += Time.deltaTime * GameMgr.Instance.GameSpeed;
             m_materialValue += Time.deltaTime * GameMgr.Instance.GameSpeed / AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
-            transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_OutTime", transform.localPosition.y + m_materialValue);
+
             if (m_gimmickValue >= AdjustParameter.Fuse_Constant.BURN_MAX_TIME)
             {
                 m_gimmickValue = AdjustParameter.Fuse_Constant.BURN_MAX_TIME;

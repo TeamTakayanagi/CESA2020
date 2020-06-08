@@ -39,6 +39,17 @@ public class ObjectFunction : MonoBehaviour
     private List<Function> m_function = new List<Function>();   // 機能のリスト
     private Vector3 m_standardValue = Vector3.zero;         // 基準となる初期座標
 
+    public bool Stop
+    {
+        set
+        {
+            for(int i = 0, size = m_function.Count; i < size; ++i)
+            {
+                m_function[i]._stop = !value;
+            }
+        }
+    }
+
     private void Awake()
     {
         // Function

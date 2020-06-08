@@ -58,7 +58,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         //Utility.CSVFile.InitSaveData("SaveData");
         Camera.main.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
         Sound.Instance.PlayBGM("bgm_title");
-
+        InputMouse.ChangeCursol(true);
         // オブジェクトの取得
         m_logo = transform.GetChild(0).GetComponent<TitleLogo>();
         m_logoCanvas = transform.GetComponent<Canvas>();

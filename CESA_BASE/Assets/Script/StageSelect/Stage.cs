@@ -43,11 +43,13 @@ public class Stage : MonoBehaviour
         {
             m_clearState *= -1;
             StartCoroutine("Clear");
+            m_myMaterial.SetFloat("_texType", m_clearState - 1);
         }
         else if (m_clearState > 0)
         {
             StartCoroutine("FireWorks");
             m_myMaterial.SetFloat("_mono", 1);
+            m_myMaterial.SetFloat("_texType", m_clearState - 1);
         }
         else
             m_myMaterial.SetFloat("_mono", 0);

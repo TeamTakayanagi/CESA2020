@@ -25,7 +25,7 @@ public class MainCamera : MonoBehaviour
 
     [SerializeField]
     private CameraType m_type = CameraType.AroundALL;       // カメラの移動タイプ
-    private CameraType m_default = CameraType.AroundALL;    // 格納用
+    private CameraType m_defType = CameraType.AroundALL;    // 格納用
 
     private Vector3 m_savePos = Vector3.zero;               // 差分計算のための移動開始地点格納変数
     private Vector3 m_target = Vector3.zero;                // 回転の中心座標もしくは、移動先
@@ -42,7 +42,14 @@ public class MainCamera : MonoBehaviour
     private bool m_isScroll = false;                        // スクロール中か
     private bool m_isControl = false;                       // プレイヤーがカメラの操作をできるか
 
-    Vector3 m_pos = Vector3.zero;
+    private float m_near = AdjustParameter.Camera_Constant.CAMERA_NEAR;
+    public float Near
+    {
+        set
+        {
+            m_near = value;
+        }
+    }
 
     public bool Control
     {
@@ -77,13 +84,13 @@ public class MainCamera : MonoBehaviour
                 m_cameraState = CameraSwipeMove;
                 break;
             case CameraType.ZoomIn:
-                m_cameraState = CameraZoomIn;
+                m_cameraState = null;
                 break;
             case CameraType.ZoomOut:
                 m_cameraState = CameraZoomOut;
                 break;
             case CameraType.ZoomFade:
-                m_cameraState = ZoomFade;
+                m_cameraState = null;
                 break;
         }
     }
@@ -93,7 +100,7 @@ public class MainCamera : MonoBehaviour
         DOTween.SetTweensCapacity(1250, 3125);
 
         transform.tag = "MainCamera";
-        m_default = m_type;
+        m_defType = m_type;
         m_target = m_targetOld = transform.position;
         SetState();
         m_myCamera = GetComponent<Camera>();
@@ -131,7 +138,7 @@ public class MainCamera : MonoBehaviour
         }
 
         // カメラ操作無効のフラグを立てているなら
-        if (!m_isControl)
+        if (!m_isControl || m_cameraState == null)
             return;
 
         m_cameraState();
@@ -140,28 +147,39 @@ public class MainCamera : MonoBehaviour
     // ズームイン準備
     public void StartZoomIn(Vector3 _zoomObj)
     {
-        m_savePos = transform.position;
+        if (m_type == CameraType.ZoomOut)
+            return;
 
+        transform.DOPause();
         if (m_type != CameraType.ZoomIn)
         {
-            m_default = m_type;
-            m_type = CameraType.ZoomIn;
-            m_pos = transform.position;
+            m_savePos = transform.position;
+            m_defType = m_type;
         }
+        m_type = CameraType.ZoomIn;
         SetState();
-        m_target = new Vector3(_zoomObj.x, m_pos.y + _zoomObj.y - 2, _zoomObj.z - 3.5f);
+        m_cameraState = null;
+        m_target = new Vector3(_zoomObj.x, m_savePos.y + _zoomObj.y - 2, _zoomObj.z - 3.5f);
+        transform.DOLocalMove(m_target, AdjustParameter.Camera_Constant.ZOOM_SPEED);
+        m_myCamera.DOFieldOfView(ZOOM_NEAR, AdjustParameter.Camera_Constant.ZOOM_SPEED);
     }
 
     // ズームアウト準備
     public void StartZoomOut()
     {
+        if (m_type != CameraType.ZoomIn)
+            return;
+
+        transform.DOPause();
         m_type = CameraType.ZoomOut;
         SetState();
         m_target = m_savePos;
+        transform.DOLocalMove(m_target, AdjustParameter.Camera_Constant.ZOOM_SPEED);
+        m_myCamera.DOFieldOfView(ZOOM_FAR, AdjustParameter.Camera_Constant.ZOOM_SPEED);
     }
 
-///////////////////////////////////////////////////////////////////////
-//カメラのモードごとの動き
+    ///////////////////////////////////////////////////////////////////////
+    //カメラのモードごとの動き
 
     // 全方向見渡す
     void CameraAroundAll()
@@ -230,33 +248,33 @@ public class MainCamera : MonoBehaviour
         }
 
         // 上下左右移動
-        else if (!m_isScroll && Input.GetMouseButtonDown(2))
-        {
-            m_isScroll = true;
-            m_savePos = Input.mousePosition;
-        }
-        else if (m_isScroll && Input.GetMouseButtonUp(2))
-        {
-            m_isScroll = false;
-        }
-        else if (m_isScroll && Input.GetMouseButton(2))
-        {
-            Vector3 difference = Input.mousePosition - m_savePos;
-            if (Mathf.Abs(difference.x) >= Mathf.Abs(difference.y))
-                transform.position -= transform.rotation *
-                    new Vector3(difference.x * Time.deltaTime * AdjustParameter.Camera_Constant.ROT_Y_VALUE, 0.0f, 0.0f);
-            else
-                transform.position -= new Vector3(0.0f, difference.y * Time.deltaTime * AdjustParameter.Camera_Constant.ROT_Y_VALUE, 0.0f);
-
-            m_savePos = Input.mousePosition;
-        }
+        //else if (!m_isScroll && Input.GetMouseButtonDown(2))
+        //{
+        //    m_isScroll = true;
+        //    m_savePos = Input.mousePosition;
+        //}
+        //else if (m_isScroll && Input.GetMouseButtonUp(2))
+        //{
+        //    m_isScroll = false;
+        //}
+        //else if (m_isScroll && Input.GetMouseButton(2))
+        //{
+        //    Vector3 difference = Input.mousePosition - m_savePos;
+        //    if (Mathf.Abs(difference.x) >= Mathf.Abs(difference.y))
+        //        transform.position -= transform.rotation *
+        //            new Vector3(difference.x * Time.deltaTime * AdjustParameter.Camera_Constant.ROT_Y_VALUE, 0.0f, 0.0f);
+        //    else
+        //        transform.position -= new Vector3(0.0f, difference.y * Time.deltaTime * AdjustParameter.Camera_Constant.ROT_Y_VALUE, 0.0f);
+        //
+        //    m_savePos = Input.mousePosition;
+        //}
 
         // カメラ手前移動
         else if (scroll != 0.0f)
         {
             float next = m_moveRadiuse - scroll * AdjustParameter.Camera_Constant.VALUE_SCROLL * 10;
 
-            if (next > AdjustParameter.Camera_Constant.CAMERA_NEAR &&
+            if (next > m_near &&
                 next < AdjustParameter.Camera_Constant.CAMERA_FAR)
             {
                 m_moveRadiuse = next;
@@ -275,6 +293,7 @@ public class MainCamera : MonoBehaviour
             m_isScroll = true;
             m_savePos = Input.mousePosition;
             m_storePos = transform.position;
+            transform.DOPause();
         }
         else if (m_isScroll && Input.GetMouseButtonUp(1))
         {
@@ -283,14 +302,15 @@ public class MainCamera : MonoBehaviour
         else if (m_isScroll && Input.GetMouseButton(1))
         {
             Vector3 difference = Input.mousePosition - m_savePos;
-
             m_target = m_storePos - new Vector3(
-                    difference.x * Time.deltaTime * AdjustParameter.Camera_Constant.SWIPE_MOVE, 0.0f,
-                    difference.y * Time.deltaTime * AdjustParameter.Camera_Constant.SWIPE_MOVE);
+                    difference.x * 0.01f * AdjustParameter.Camera_Constant.SWIPE_MOVE, 0.0f,
+                    difference.y * 0.01f * AdjustParameter.Camera_Constant.SWIPE_MOVE);
         }
 
-        if(transform.position != m_target && m_targetOld != m_target)
+        if (transform.position != m_target && m_targetOld != m_target)
+        {
             transform.DOMove(m_target, AdjustParameter.Camera_Constant.SWIPE_DERAY);
+        }
 
         m_targetOld = m_target;
 
@@ -303,28 +323,27 @@ public class MainCamera : MonoBehaviour
         {
             transform.DOPause();
             transform.DOMove(pos, AdjustParameter.Camera_Constant.SWIPE_OUT);
-            Debug.Log("out");
         }
     }
-    // ズームインの動き
+    
+    // ズームアウトの動き
     void CameraZoomIn()
     {
-        if (m_myCamera.fieldOfView == ZOOM_NEAR)
-            return;
-
-        transform.DOLocalMove(m_target, AdjustParameter.Camera_Constant.ZOOM_SPEED);
-        m_myCamera.DOFieldOfView(ZOOM_NEAR, AdjustParameter.Camera_Constant.ZOOM_SPEED);
+        if(m_myCamera.fieldOfView < ZOOM_NEAR + 1.0f)
+        {
+            m_myCamera.fieldOfView = ZOOM_NEAR;
+            transform.DOPause();
+            m_cameraState = null;
+        }
     }
-    // ズームアウトの動き
     void CameraZoomOut()
     {
-        transform.DOLocalMove(m_target, AdjustParameter.Camera_Constant.ZOOM_SPEED);
-        m_myCamera.DOFieldOfView(ZOOM_FAR, AdjustParameter.Camera_Constant.ZOOM_SPEED);
         if(m_myCamera.fieldOfView >= ZOOM_FAR - 1.0f)
         {
             m_myCamera.fieldOfView = ZOOM_FAR;
-            m_type = m_default;
-            //m_target = transform.position;
+            m_type = m_defType;
+            transform.DOPause();
+            m_target = transform.position;
             SetState();
         }
     }
@@ -345,10 +364,4 @@ public class MainCamera : MonoBehaviour
         transform.DOLocalMove(m_target + new Vector3(0.01f, 3.0f, 0.0f),
             AdjustParameter.Camera_Constant.FADE_DURATION);
    }
-
-    // フェードするときの動き
-    void ZoomFade()
-    {
-
-    }
 }

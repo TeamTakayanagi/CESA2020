@@ -4,6 +4,15 @@ using UnityEngine;
 
 public class InputMouse : MonoBehaviour
 {
+    [SerializeField]
+    private Texture2D m_cursorDefaultTemp = null;                           // マウスカーソル（通常時）
+    [SerializeField]
+    private Texture2D m_cursorCatchTemp = null;                             // マウスカーソル（UIの導火線選択時）
+    private static Texture2D m_cursorDefault = null;                           // マウスカーソル（通常時）
+    private static Texture2D m_cursorCatch = null;                             // マウスカーソル（UIの導火線選択時）
+
+    private static readonly Vector2 CURSOR_POS = new Vector2(142.0f, 25.0f);  // マウスカーソルの位置
+
     private static Camera m_main;
     private static Camera m_sub;
 
@@ -17,6 +26,10 @@ public class InputMouse : MonoBehaviour
 
     void Start()
     {
+        m_cursorDefault = m_cursorDefaultTemp;
+        m_cursorCatch = m_cursorCatchTemp;
+        // マウスカーソル用の画像を変更
+        Cursor.SetCursor(m_cursorDefault, CURSOR_POS, CursorMode.Auto);
         RoadCamera();
     }
 
@@ -54,6 +67,14 @@ public class InputMouse : MonoBehaviour
     {
         return Input.mousePosition.x > Screen.width * Camera.main.rect.width;
     } 
+    public static void ChangeCursol(bool isDefault)
+    {
+        // マウスカーソル用の画像を変更
+        if (isDefault)
+            Cursor.SetCursor(m_cursorDefault, CURSOR_POS, CursorMode.Auto);
+        else
+            Cursor.SetCursor(m_cursorCatch, CURSOR_POS, CursorMode.Auto);
+    }
 
     public static Camera GetScreenCamera()
     {
