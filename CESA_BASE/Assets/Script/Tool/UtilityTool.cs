@@ -258,41 +258,4 @@ namespace Utility
             m_randomDict.Clear();
         }
     }
-
-    public static class MyMath
-    {
-        /// <summary>
-        /// XYZの中で一番大きい値の要素を大きさ1にしてそれ以外を0の値で返す
-        /// </summary>
-        /// <param name="vec"></param>
-        /// <returns></returns>
-        public static Vector3 GetMaxDirect(Vector3 vec)
-        {
-            Vector3 absolute;
-            // 距離を求める
-            // 絶対値にしたものを入れる
-            absolute = new Vector3(Mathf.Abs(vec.x), Mathf.Abs(vec.y), Mathf.Abs(vec.z));
-            // XYZの絶対値の最大値を求める
-            float max = Mathf.Max(absolute.x, absolute.y, absolute.z);
-            // 一番大きい要素は１、そのほか2つは0を入れる
-            absolute -= new Vector3(max, max, max);
-            absolute = new Vector3(Mathf.Clamp01(Mathf.Floor(absolute.x + 1)),
-                Mathf.Clamp01(Mathf.Floor(absolute.y + 1)), Mathf.Clamp01(Mathf.Floor(absolute.z + 1)));
-            return absolute;
-        }
-        public static Vector3 GetMaxDirectSign(Vector3 vec)
-        {
-            Vector3 absolute;
-            // 距離を求める
-            // 絶対値にしたものを入れる
-            absolute = new Vector3(Mathf.Abs(vec.x), Mathf.Abs(vec.y), Mathf.Abs(vec.z));
-            // XYZの絶対値の最大値を求める
-            float max = Mathf.Max(absolute.x, absolute.y, absolute.z);
-            // 一番大きい要素は１、そのほか2つは0を入れる
-            absolute -= new Vector3(max, max, max);
-            absolute = new Vector3(Mathf.Clamp01(Mathf.Floor(absolute.x + 1)),
-                Mathf.Clamp01(Mathf.Floor(absolute.y + 1)), Mathf.Clamp01(Mathf.Floor(absolute.z + 1)));
-            return absolute * Mathf.Sign(Vector3.Dot(vec, absolute));
-        }
-    }
 }

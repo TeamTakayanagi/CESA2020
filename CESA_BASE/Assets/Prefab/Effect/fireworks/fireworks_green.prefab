@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35d396bcb8480c24eb784eebe6096a99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectType: 8
+  effectType: 7
   effectAsset: {fileID: 11400000, guid: 8f54247be32ec2946aec8050ec638249, type: 2}
   playOnStart: 1
   isLooping: 0

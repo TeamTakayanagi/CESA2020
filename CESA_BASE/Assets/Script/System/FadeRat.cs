@@ -9,7 +9,7 @@ public class FadeRat : FadeBase
     private const float FUSE_POS_Y = 330;
     private const float RAT_POS_X = 3000;
     private const float RAT_POS_Y = 330;
-    private const float FADE_RAT_TIME = 4.0f;
+    private const float FADE_RAT_TIME = 5.0f;
 
     [SerializeField]
     private ParticleSystem m_particleRat = null;
@@ -17,6 +17,7 @@ public class FadeRat : FadeBase
     private List<RectTransform> m_ratRect = new List<RectTransform>();
     private RectTransform m_judgeTrans = null;      // フェードの終了判断となるオブジェクトの格納（正方向に移動するオブジェクト）
 
+    // Start is called before the first frame update
     new void Start()
     {
         Transform fuse = transform.GetChild(0);
@@ -38,6 +39,7 @@ public class FadeRat : FadeBase
         base.Start();
     }
 
+    // Update is called once per frame
     new void Update()
     {
         base.Update();
@@ -70,7 +72,7 @@ public class FadeRat : FadeBase
     }
     override protected bool FadeCheack()
     {
-        return m_judgeTrans.localPosition.x > - FUSE_POS_X * 0.1f && m_judgeTrans.localPosition.x < FUSE_POS_X * 0.1f;
+        return m_judgeTrans.localPosition.x > - FUSE_POS_X * 0.01f && m_judgeTrans.localPosition.x < FUSE_POS_X * 0.01f;
     }
 
     override protected void Draw(bool isDraw)
@@ -81,6 +83,7 @@ public class FadeRat : FadeBase
             {
                 RectTransform trans = m_fuseRect[i];
                 trans.GetComponent<SpriteRenderer>().enabled = isDraw;
+                trans.localPosition = new Vector3(FUSE_POS_X * (i % 2 * 2 - 1), FUSE_POS_Y - i * FUSE_POS_Y, 0.0f);
             }
             for (int i = 0; i < m_ratRect.Count; ++i)
             {
@@ -89,6 +92,7 @@ public class FadeRat : FadeBase
                     continue;
                 trans.GetChild(0).GetComponent<SpriteRenderer>().enabled = isDraw;
                 trans.GetChild(1).GetComponent<SpriteMask>().enabled = isDraw;
+                trans.localPosition = new Vector3(RAT_POS_X * -(i % 2 * 2 - 1), RAT_POS_Y - i * RAT_POS_Y, 0.0f);
                 if (!isDraw)
                     trans.DOPause();
             }
@@ -99,29 +103,15 @@ public class FadeRat : FadeBase
             {
                 RectTransform trans = m_fuseRect[i];
                 trans.GetComponent<SpriteRenderer>().enabled = isDraw;
-                trans.localPosition = new Vector3(FUSE_POS_X * (i % 2 * 2 - 1), FUSE_POS_Y - i * FUSE_POS_Y, 0.0f);
             }
             for (int i = 0; i < m_ratRect.Count; ++i)
             {
                 RectTransform trans = m_ratRect[i];
                 trans.GetChild(0).GetComponent<SpriteRenderer>().enabled = isDraw;
                 trans.GetChild(1).GetComponent<SpriteMask>().enabled = isDraw;
-                trans.localPosition = new Vector3(RAT_POS_X * -(i % 2 * 2 - 1), RAT_POS_Y - i * RAT_POS_Y, 0.0f);
                 if (!isDraw)
                     trans.DOPause();
             }
         }
-    }
-
-
-    private IEnumerator Move(float time)
-    {
-        float f = 0.0f;
-        while(f < 1)
-        {
-            f += Time.deltaTime / 5;
-            yield return null;
-        }
-        yield break;
     }
 }

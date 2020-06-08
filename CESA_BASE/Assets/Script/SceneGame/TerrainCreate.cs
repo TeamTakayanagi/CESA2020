@@ -71,15 +71,15 @@ public class TerrainCreate : MonoBehaviour
     /// </summary>
     public void CreateWall(int _stageSizeY)
     {
-        GameFuse[] _fuseList = FindObjectsOfType<GameFuse>();
+        Fuse[] _fuseList = FindObjectsOfType<Fuse>();
         GameGimmick[] _gimmickList = FindObjectsOfType<GameGimmick>();
         Transform _wallBefore = transform.GetChild((int)TerrainChild.Wall);
         List<Vector3> _wallAfter = new List<Vector3>();
 
-        foreach (GameFuse _fuse in _fuseList)
+        foreach (Fuse _fuse in _fuseList)
         {
             // UIか地面の上に設置されているものなら
-            if (_fuse.State == GameFuse.FuseState.UI ||
+            if (_fuse.State == Fuse.FuseState.UI ||
                 _fuse.transform.position.y == - _stageSizeY / 2)
                 continue;
 

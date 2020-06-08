@@ -30,7 +30,6 @@ TagManager:
   - ClickObject
   - StageParent
   - fuseParent
-  - UI/Arrow
   layers:
   - Default
   - TransparentFX

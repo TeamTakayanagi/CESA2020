@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Tutorial : MonoBehaviour
 {
-    private LinkedList<GameFuse> m_uiFuse = new LinkedList<GameFuse>();         // UI部分の導火線
+    private LinkedList<Fuse> m_uiFuse = new LinkedList<Fuse>();         // UI部分の導火線
     private LinkedList<GameObject> m_fieldObject = new LinkedList<GameObject>();      // ゲーム画面の導火線
 
     private int m_step;
@@ -23,7 +23,7 @@ public class Tutorial : MonoBehaviour
 
         if (m_tutorialFlg)
         {
-            foreach (GameFuse _fuse in m_uiFuse)
+            foreach (Fuse _fuse in m_uiFuse)
                 _fuse.enabled = false;
             foreach (GameObject _obj in m_fieldObject)
                 _obj.GetComponent<Behaviour>().enabled = false;

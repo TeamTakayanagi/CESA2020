@@ -5,19 +5,22 @@ using UnityEngine.UI;
 
 public class PushButton : MonoBehaviour
 {
-    [SerializeField]
-    private float m_speed = 0.5f;
+    //public
+    public float Speed;
+    public static float stSpeed;
 
-    private Text m_text = null;
-    private Image m_image = null;
+    //private
+    private Text text;
+    private Image image;
+    private float time;
 
-    private float m_time = 0; 
-    private bool m_flg = false;
-    public bool Flg
+    private Color m_oldColor;
+    private bool m_noneAlphaFlg = false;   // true : 透過 / false : 不透明
+    public bool NoneAalpha
     {
-        set
+        get
         {
-            m_flg = value;
+            return m_noneAlphaFlg;
         }
     }
 
@@ -32,49 +35,59 @@ public class PushButton : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        stSpeed = Speed;
+
         //アタッチしてるオブジェクトを判別
         if (gameObject.GetComponent<Image>())
         {
             thisObjType = ObjType.IMAGE;
-            m_image = this.gameObject.GetComponent<Image>();
+            image = this.gameObject.GetComponent<Image>();
         }
         else if (gameObject.GetComponent<Text>())
         {
             thisObjType = ObjType.TEXT;
-            m_text = this.gameObject.GetComponent<Text>();
+            text = this.gameObject.GetComponent<Text>();
         }
 
-        m_flg = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (m_flg)
+        //オブジェクトのAlpha値を更新
+        if (thisObjType == ObjType.IMAGE)
         {
-            //オブジェクトのAlpha値を更新
-            if (thisObjType == ObjType.IMAGE)
-            {
-                m_image.color = GetAlphaColor(m_image.color);
-            }
-            else if (thisObjType == ObjType.TEXT)
-            {
-                m_text.color = GetAlphaColor(m_text.color);
-            }
+            image.color = GetAlphaColor(image.color);
+        }
+        else if (thisObjType == ObjType.TEXT)
+        {
+            text.color = GetAlphaColor(text.color);
         }
     }
 
     //Alpha値を更新してColorを返す
-    private Color GetAlphaColor(Color color)
+    Color GetAlphaColor(Color color)
     {
-        m_time += Time.deltaTime * 5.0f * m_speed;
-        color.a = Mathf.Sin(m_time) * 0.5f + 0.5f;
+        time += Time.deltaTime * 5.0f * stSpeed;
+        color.a = Mathf.Sin(time) * 0.5f + 0.5f;
 
         if (color.a <= Mathf.Clamp(color.a, 0.001f, 1.0f))
         {
             color.a = Mathf.Clamp(color.a, 0.001f, 1.0f);
+
+            m_noneAlphaFlg = true;
         }
+        else
+        {
+            m_noneAlphaFlg = false;
+        }
+        m_oldColor = color;
 
         return color;
+    }
+
+    public static void setFlashSpead(float setSpead)
+    {
+        stSpeed = setSpead;
     }
 }

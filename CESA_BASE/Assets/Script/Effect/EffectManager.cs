@@ -10,6 +10,10 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager>
     private bool m_create = true;
     public bool Create
     {
+        get
+        {
+            return m_create;
+        }
         set
         {
             m_create = value;
@@ -80,7 +84,6 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager>
             if (effect.effectType == EffekseerEmitter.EffectType.Click)
                 continue;
 
-            effect.Stop();
             DestroyImmediate(effect.gameObject);
         }
     }

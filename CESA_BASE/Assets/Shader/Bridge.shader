@@ -3,7 +3,6 @@
 	Properties
 	{
 		_MainTex("Texture", 2D) = "white" {}
-		_Normal("_Normal", 2D) = "white" {}
 		_Radius("Radius", Range(1, 100)) = 10
 	}
 		SubShader
@@ -26,9 +25,7 @@
 				};
 
 				sampler2D _MainTex;
-				sampler2D _Normal;
 				float4 _MainTex_ST;
-				float4 _Normal_ST;
 
 				v2f vert(appdata_base v) {
 					v2f o;

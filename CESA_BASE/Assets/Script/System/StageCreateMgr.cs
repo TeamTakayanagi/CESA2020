@@ -22,7 +22,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
     [SerializeField]
     private GameObject m_moveMark = null;
     [SerializeField]
-    private List<GameFuse> m_fuseList = new List<GameFuse>();
+    private List<Fuse> m_fuseList = new List<Fuse>();
     [SerializeField]
     private List<GameGimmick> m_gimmkList = new List<GameGimmick>();
 
@@ -30,7 +30,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
     {
         // 昇順に並び替え
         m_gimmkList.Sort((a, b) => a.Type - b.Type);
-        var comp = new Comparison<GameFuse>(CompColider);
+        var comp = new Comparison<Fuse>(CompColider);
         m_fuseList.Sort(comp);
     }
 
@@ -40,7 +40,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
     /// <param name="a"></param>
     /// <param name="b"></param>
     /// <returns></returns>
-    private int CompColider(GameFuse a, GameFuse b)
+    private int CompColider(Fuse a, Fuse b)
     {
         BoxCollider[] boxA, boxB;
         boxA = a.GetComponents<BoxCollider>();
@@ -79,7 +79,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
                 if (tagName == "--")
                     continue;
 
-                GameFuse _fuse = null;
+                Fuse _fuse = null;
                 for (int j = 0; j < m_fuseList.Count; ++j)
                 {
                     // タグの一部が一致しているなら
@@ -89,7 +89,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
                     Vector3 pos = Utility.CSVFile.IndexToPos(i, csvData.size.x, csvData.size.y, csvData.size.z);
                     _fuse = Instantiate(m_fuseList[j], pos, Quaternion.identity);
                     _fuse.transform.parent = parent;
-                    _fuse.Type = (GameFuse.FuseType)int.Parse(csvData.data[i].Substring(0, ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT));
+                    _fuse.Type = (Fuse.FuseType)int.Parse(csvData.data[i].Substring(0, ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT));
                     _fuse.transform.localEulerAngles = new Vector3(
                         float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.OBJECT_ROT_COUNT, 1)),
                         float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.OBJECT_ROT_COUNT + 1, 1)),
@@ -134,7 +134,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
                 // 配置されていないなら
                 if (objName == "f")
                 {
-                    GameFuse _fuse = null;
+                    Fuse _fuse = null;
                     for (int j = 0; j < m_fuseList.Count; ++j)
                     {
                         // タグの一部が一致しているなら
@@ -144,32 +144,32 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
                         Vector3 pos = Utility.CSVFile.IndexToPos(i, csvData.size.x, csvData.size.y, csvData.size.z);
                         _fuse = Instantiate(m_fuseList[j], parent);
                         _fuse.transform.position = pos;
-                        _fuse.Type = (GameFuse.FuseType)int.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT, ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT));
+                        _fuse.Type = (Fuse.FuseType)int.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT, ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT));
                         _fuse.transform.localEulerAngles = new Vector3(
                             float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT, 1)),
                             float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT + 1, 1)),
                             float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT + 2, 1))) * 90.0f;
                         
 
-                        if(_fuse.Type >= GameFuse.FuseType.MoveLeft && _fuse.Type <= GameFuse.FuseType.MoveForward)
+                        if(_fuse.Type >= Fuse.FuseType.MoveLeft && _fuse.Type <= Fuse.FuseType.MoveForward)
                         {
                             Quaternion rot = Quaternion.identity;
                             switch (_fuse.Type)
                             {
-                                case GameFuse.FuseType.MoveRight:
+                                case Fuse.FuseType.MoveRight:
                                     rot = Quaternion.Euler(0.0f, 180.0f, 0.0f);
                                     break;
-                                case GameFuse.FuseType.MoveUp:
+                                case Fuse.FuseType.MoveUp:
                                     rot = Quaternion.Euler(0.0f, 0.0f, 90.0f);
                                     break;
-                                case GameFuse.FuseType.MoveDown:
+                                case Fuse.FuseType.MoveDown:
                                     rot = Quaternion.Euler(180.0f, 0.0f, 90.0f);
                                     break;
-                                case GameFuse.FuseType.MoveForward:
+                                case Fuse.FuseType.MoveForward:
                                     rot = Quaternion.Euler(0.0f, 90.0f, 0.0f);
 
                                     break;
-                                case GameFuse.FuseType.MoveBack:
+                                case Fuse.FuseType.MoveBack:
                                     rot = Quaternion.Euler(0.0f, 270.0f, 0.0f);
                                     break;
                                 default:
@@ -179,7 +179,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
                             _colider.transform.position = _fuse.transform.position;
                             _colider.transform.rotation = rot;
                         }
-                        else if(_fuse.Type == GameFuse.FuseType.Rotate)
+                        else if(_fuse.Type == Fuse.FuseType.Rotate)
                         {
                             GameObject _colider = Instantiate(m_rotMark, _fuse.transform);
                             _colider.transform.position = _fuse.transform.position;
@@ -235,12 +235,12 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
         // 
         for (int i = UIFuseCount; i < amount; ++i)
         {
-            GameFuse _fuse = Instantiate(m_fuseList[indexList[i - UIFuseCount]], parent);
-            _fuse.Type = GameFuse.FuseType.Normal;
-            _fuse.State = GameFuse.FuseState.UI;
-            _fuse.transform.localPosition = new Vector3((i % 2) * ProcessedtParameter.UI_Object_Constant.INTERVAL_X - 1.0f,
-                1.0f + (i / 2) * ProcessedtParameter.UI_Object_Constant.INTERVAL_Y,
-                ProcessedtParameter.UI_Object_Constant.DEFAULT_POS_Z);
+            Fuse _fuse = Instantiate(m_fuseList[indexList[i - UIFuseCount]], parent);
+            _fuse.Type = Fuse.FuseType.Normal;
+            _fuse.State = Fuse.FuseState.UI;
+            _fuse.transform.localPosition = new Vector3((i % 2) * AdjustParameter.UI_Object_Constant.INTERVAL_X - 1.0f,
+                1.0f + (i / 2) * AdjustParameter.UI_Object_Constant.INTERVAL_Y,
+                AdjustParameter.UI_Object_Constant.DEFAULT_POS_Z);
             _fuse.EndPos = Vector3.zero;
             _fuse.DefaultPos = _fuse.transform.parent.position +_fuse.transform.localPosition;
 
@@ -275,14 +275,14 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
         else
             place = 1;
 
-        GameFuse _fuse = Instantiate(m_fuseList[indexList[0]], parent);
-        _fuse.Type = GameFuse.FuseType.Normal;
-        _fuse.State = GameFuse.FuseState.UI;
+        Fuse _fuse = Instantiate(m_fuseList[indexList[0]], parent);
+        _fuse.Type = Fuse.FuseType.Normal;
+        _fuse.State = Fuse.FuseState.UI;
         _fuse.EndPos = new Vector3(place,
-            1.0f + ((fuseAmount - (Mathf.Abs(fuseRean.x - fuseRean.y) / 2)) / 2) * ProcessedtParameter.UI_Object_Constant.INTERVAL_Y,
-            ProcessedtParameter.UI_Object_Constant.DEFAULT_POS_Z);
-        _fuse.transform.localPosition = new Vector3(place, ProcessedtParameter.UI_Object_Constant.DEFAULT_POS_Y,
-            ProcessedtParameter.UI_Object_Constant.DEFAULT_POS_Z);
+            1.0f + ((fuseAmount - (Mathf.Abs(fuseRean.x - fuseRean.y) / 2)) / 2) * AdjustParameter.UI_Object_Constant.INTERVAL_Y,
+            AdjustParameter.UI_Object_Constant.DEFAULT_POS_Z);
+        _fuse.transform.localPosition = new Vector3(place, AdjustParameter.UI_Object_Constant.DEFAULT_POS_Y,
+            AdjustParameter.UI_Object_Constant.DEFAULT_POS_Z);
         _fuse.transform.localEulerAngles = new Vector3(90.0f * UnityEngine.Random.Range(0, 4), 90.0f * UnityEngine.Random.Range(0, 4), 90.0f * UnityEngine.Random.Range(0, 4));
 
         if (GameMgr.Instance)
@@ -304,8 +304,8 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
         {
             GameGimmick _gimmick = Instantiate(m_gimmkList[indexList[i]], parent);
             _gimmick.UI = true;
-            _gimmick.transform.localPosition = new Vector3((i % 2) * ProcessedtParameter.UI_Object_Constant.INTERVAL_X - 1.0f,
-                1.0f + (i / 2) * ProcessedtParameter.UI_Object_Constant.INTERVAL_Y, ProcessedtParameter.UI_Object_Constant.DEFAULT_POS_Z);
+            _gimmick.transform.localPosition = new Vector3((i % 2) * AdjustParameter.UI_Object_Constant.INTERVAL_X - 1.0f,
+                1.0f + (i / 2) * AdjustParameter.UI_Object_Constant.INTERVAL_Y, AdjustParameter.UI_Object_Constant.DEFAULT_POS_Z);
         }
     }
 

@@ -140,28 +140,36 @@ public class MainCamera : MonoBehaviour
     // ズームイン準備
     public void StartZoomIn(Vector3 _zoomObj)
     {
-        m_savePos = transform.position;
+        if (m_type == CameraType.ZoomIn || m_type == CameraType.ZoomOut)
+            return;
 
-        if (m_type != CameraType.ZoomIn)
-        {
-            m_default = m_type;
-            m_type = CameraType.ZoomIn;
-            m_pos = transform.position;
-        }
+        m_savePos = transform.position;
+        //if (m_type != CameraType.ZoomIn)
+        //{
+        m_default = m_type;
+        m_type = CameraType.ZoomIn;
+        //}
         SetState();
-        m_target = new Vector3(_zoomObj.x, m_pos.y + _zoomObj.y - 2, _zoomObj.z - 3.5f);
+        m_target = new Vector3(_zoomObj.x, transform.position.y + _zoomObj.y - 2, _zoomObj.z - 3.5f);
+        transform.DOLocalMove(m_target, AdjustParameter.Camera_Constant.ZOOM_SPEED);
+        m_myCamera.DOFieldOfView(ZOOM_NEAR, AdjustParameter.Camera_Constant.ZOOM_SPEED);
     }
 
     // ズームアウト準備
     public void StartZoomOut()
     {
+        if (m_type != CameraType.ZoomIn)
+            return;
+
         m_type = CameraType.ZoomOut;
         SetState();
         m_target = m_savePos;
+        transform.DOLocalMove(m_target, AdjustParameter.Camera_Constant.ZOOM_SPEED);
+        m_myCamera.DOFieldOfView(ZOOM_NEAR, AdjustParameter.Camera_Constant.ZOOM_SPEED);
     }
 
-///////////////////////////////////////////////////////////////////////
-//カメラのモードごとの動き
+    ///////////////////////////////////////////////////////////////////////
+    //カメラのモードごとの動き
 
     // 全方向見渡す
     void CameraAroundAll()
@@ -223,7 +231,7 @@ public class MainCamera : MonoBehaviour
         {
             Vector3 difference = Input.mousePosition - m_savePos;
 
-            m_moveRotate -= difference.x * Time.deltaTime * AdjustParameter.Camera_Constant.ROT_Y_VALUE;
+            m_moveRotate -= difference.x * Time.deltaTime * AdjustParameter.Camera_Constant.ROTY_VALUE;
             m_savePos = Input.mousePosition;
             transform.position = new Vector3(m_moveRadiuse * Mathf.Cos(m_moveRotate), m_moveRadiuse * Mathf.Sin(15), m_moveRadiuse * Mathf.Sin(m_moveRotate));
             transform.LookAt(Vector3.zero);
@@ -244,9 +252,9 @@ public class MainCamera : MonoBehaviour
             Vector3 difference = Input.mousePosition - m_savePos;
             if (Mathf.Abs(difference.x) >= Mathf.Abs(difference.y))
                 transform.position -= transform.rotation *
-                    new Vector3(difference.x * Time.deltaTime * AdjustParameter.Camera_Constant.ROT_Y_VALUE, 0.0f, 0.0f);
+                    new Vector3(difference.x * Time.deltaTime * AdjustParameter.Camera_Constant.ROTY_VALUE, 0.0f, 0.0f);
             else
-                transform.position -= new Vector3(0.0f, difference.y * Time.deltaTime * AdjustParameter.Camera_Constant.ROT_Y_VALUE, 0.0f);
+                transform.position -= new Vector3(0.0f, difference.y * Time.deltaTime * AdjustParameter.Camera_Constant.ROTY_VALUE, 0.0f);
 
             m_savePos = Input.mousePosition;
         }
@@ -302,8 +310,7 @@ public class MainCamera : MonoBehaviour
         if (transform.position != pos)
         {
             transform.DOPause();
-            transform.DOMove(pos, AdjustParameter.Camera_Constant.SWIPE_OUT);
-            Debug.Log("out");
+            transform.position = pos;
         }
     }
     // ズームインの動き
@@ -342,8 +349,7 @@ public class MainCamera : MonoBehaviour
         transform.position = m_target + new Vector3(0.0f, 10.0f, 0.0f);
         transform.LookAt(m_target);
 
-        transform.DOLocalMove(m_target + new Vector3(0.01f, 3.0f, 0.0f),
-            AdjustParameter.Camera_Constant.FADE_DURATION);
+        transform.DOLocalMove(m_target + new Vector3(0.01f, 3.0f, 0.0f), AdjustParameter.Camera_Constant.FADE_DURATION);
    }
 
     // フェードするときの動き
