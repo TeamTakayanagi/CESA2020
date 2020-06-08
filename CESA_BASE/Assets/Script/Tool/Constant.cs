@@ -114,7 +114,7 @@ namespace NameDefine
     public readonly struct Game_Scene
     {
         public const string STAGE_SELECT = "StageSelect";
-        public const string GAME_MAIN = "GameScene";
+        public const string GAME_MAIN = "GameSceneLatte";
     }
 
     public readonly struct TagName

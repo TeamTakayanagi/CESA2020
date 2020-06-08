@@ -157,23 +157,6 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                         if (_click)
                             _click.OnClick();
                     }
-
-                    if (_hit.transform.tag == "UI/Arrow")
-                    {
-                        m_selectingObj = _hit.transform.gameObject;
-                        m_selectingObj.transform.localScale = Vector3.one * 0.8f;
-
-                    }
-                }
-            }
-            else if (!Input.GetMouseButton(0))
-            {
-                if (m_selectingObj != null)
-                {
-                    if (m_selectingObj.transform.localScale != Vector3.one)
-                    {
-                        m_selectingObj.transform.localScale = Vector3.one;
-                    }
                 }
             }
         }
@@ -187,6 +170,8 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     {
         if (FadeMgr.Instance.State != FadeBase.FadeState.None)
             return;
+
+//        gameObj.GetComponent<Animator>()
 
         int direct = gameObj.transform.position.x > gameObj.transform.root.position.x ? 1 : -1;
         m_zoomObj = m_stageList[Mathf.Clamp(m_zoomObj.StageNum - 1 + direct, 0, m_stageList.Count - 1)];
