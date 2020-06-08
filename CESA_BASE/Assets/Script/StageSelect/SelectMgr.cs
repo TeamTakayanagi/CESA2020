@@ -59,6 +59,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         {
             m_stageList[i].StageNum = i + 1;
             m_stageList[i].ClearState = int.Parse(ms_saveData.data[i]);
+
             // 最後までクリアしたか、もしくは次のステージがクリアされていないなら
             if (m_stageList[i].ClearState > 0)
             {
@@ -71,11 +72,11 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
 
     void Start()
     {
-        Transform fuseParent = GameObject.FindGameObjectWithTag("fuseParent").transform;
-        // 導火線の見た目を変化
-        Transform _fuseGroup;
-        SelectFuse[] _fuseList;
         SelectFuse _fuse;
+        SelectFuse[] _fuseList;
+        Transform fuseParent = GameObject.FindGameObjectWithTag("fuseParent").transform;
+        Transform _fuseGroup;
+
         // ステージ毎にそこにつながる導火線の確認
         for (int i = 0; i < fuseParent.childCount; ++i)
         {
@@ -86,12 +87,6 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                 // 導火線のまとまりごとに開放していく
                 for (int j = 0, size = _fuseList.Length; j < size; ++j)
                     _fuseList[j].BurnOut();
-            }
-            // クリアしていないステージの2つ目以降
-            else if(i > m_clearStage - 1)
-            {
-                // 導火線を描画しない
-                //_fuseGroup.gameObject.SetActive(false);
             }
             // 未クリアのステージをクリアした
             else if (i == m_clearStage - 1 && ms_selectStage >= m_clearStage)
@@ -110,7 +105,6 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
             }
         }
 
-
         // UIのオブジェクトの格納
         m_uiArrow = transform.GetChild(0).gameObject;
         m_uiStartBack = transform.GetChild(1).gameObject;
@@ -119,6 +113,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         m_uiArrow.SetActive(false);
         m_uiStartBack.SetActive(false);
 
+        // 
         m_camera = Camera.main.GetComponent<MainCamera>();
         m_camera.Type = MainCamera.CameraType.SwipeMove;
 
@@ -144,12 +139,12 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                     {
                         Stage _stage = _hit.transform.GetComponent<Stage>();
                         m_zoomObj = _stage;
+                        m_zoomObj.MoveCoroutine(true);
                         m_camera.StartZoomIn(_stage.transform.position);
 
                         m_uiArrow.SetActive(true);
                         m_uiStartBack.SetActive(true);
                     }
-
                     // 背景オブジェクトとの判定
                     else if (_hit.transform.tag == NameDefine.TagName.ClickObj)
                     {
@@ -202,6 +197,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         m_uiArrow.SetActive(false);
         m_uiStartBack.SetActive(false);
         m_camera.StartZoomOut();
+        m_zoomObj.MoveCoroutine(false);
     }
 
     public void SceneLoad()
@@ -214,6 +210,8 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         {
             m_uiArrow.SetActive(false);
             m_uiStartBack.SetActive(false);
+            m_zoomObj.MoveCoroutine(false);
+            m_zoomObj.OffText();
             m_camera.StartZoomFade(m_zoomObj.transform.position);
             ms_tryStage = ms_selectStage = m_zoomObj.StageNum;
             // ステージセレクト→ゲーム のフェード

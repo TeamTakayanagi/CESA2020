@@ -29,7 +29,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private readonly Vector3 TEXT_POS = new Vector3(0.0f, 100, 0.0f);   // リザルトテキストの移動距離
     private readonly Vector3 BUTTON_POS = new Vector3(0.0f, 100.0f, 0.0f); // リザルトボタンの移動距離              
     private readonly Vector3 OUTPOS = new Vector3(-50, -50, -50);       // 導火線を生成できない位置
-    private readonly Vector3 CURSOL_WORLD = new Vector3(0.0f, 0.5f, 0.5f);  // マウスカーソルをワールド座標に変えるときの補正
+    private readonly Vector3 CURSOL_WORLD = new Vector3(0.0f, 0.3f, 0.5f);  // マウスカーソルをワールド座標に変えるときの補正
     private readonly AnimationCurve m_animCurve = AnimationCurve.Linear(0, 0, 1, 1);   // リザルトUIの移動用
     
     private int m_burnCount = 1;                                        // 燃えている導火線の数
@@ -200,7 +200,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         {
             // マウス座標をワールド座標で取得
             Vector3 mousePos = Vector3.zero;
-            Vector3 screen = Camera.main.WorldToScreenPoint(transform.position + Quaternion.Euler(0.0f, Camera.main.transform.localEulerAngles.y, 0.0f) * CURSOL_WORLD);
+            Vector3 screen = Camera.main.WorldToScreenPoint(transform.position + 
+                Quaternion.Euler(0.0f, Camera.main.transform.localEulerAngles.y, 0.0f) * CURSOL_WORLD);
             mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z);
             mousePos = Camera.main.ScreenToWorldPoint(mousePos);
             m_mouse = mousePos;

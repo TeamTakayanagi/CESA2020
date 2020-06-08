@@ -5,11 +5,13 @@ using UnityEngine.UI;
 
 public class Stage : MonoBehaviour
 {
-    Effekseer.EffekseerEmitter m_effekt = null;
+    private const float TEXT_POS_Y = 1.0f;
+
     private Material m_myMaterial = null;
 
     private int m_stageNum = 0;                 // 自身のステージ番号
     private int m_clearState = 0;               // クリア状況
+    private GameObject m_stageText = null;
 
     public int StageNum
     {
@@ -38,7 +40,6 @@ public class Stage : MonoBehaviour
     {
         m_myMaterial = transform.GetComponent<Renderer>().material;
         m_myMaterial.SetFloat("_mono", m_clearState);
-
         if (m_clearState < 0)
         {
             m_clearState *= -1;
@@ -53,6 +54,10 @@ public class Stage : MonoBehaviour
         }
         else
             m_myMaterial.SetFloat("_mono", 0);
+
+        m_stageText = transform.GetChild(0).gameObject;
+        m_stageText.GetComponent<TextMesh>().text += m_stageNum.ToString();
+        m_stageText.transform.localPosition = new Vector3(0f, 1f, 0f);
     }
 
     private void Update()
@@ -68,7 +73,7 @@ public class Stage : MonoBehaviour
         {
             if (transform.childCount == 0)
             {
-                m_effekt = EffectManager.Instance.EffectCreate(Effekseer.EffekseerEmitter.EffectType.fireworks_core, transform.position,
+                EffectManager.Instance.EffectCreate(Effekseer.EffekseerEmitter.EffectType.fireworks_core, transform.position,
                     new Vector3(transform.position.x, transform.position.y + AdjustParameter.Production_Constant.END_FIRE_POS_Y / 10, transform.position.z),
                     Vector3.one / 10, Quaternion.identity);
             }
@@ -76,6 +81,32 @@ public class Stage : MonoBehaviour
 
             yield return new WaitForSeconds(ProcessedtParameter.LaunchTiming.NEXT + _launchTiming);
         }
+    }
+
+    // テキストをふわふわさせる
+    private IEnumerator MoveText()
+    {
+        while (true)
+        {
+            m_stageText.transform.localPosition =
+                 new Vector3(m_stageText.transform.localPosition.x,
+                  TEXT_POS_Y + Mathf.PingPong(Time.time / 6, 0.1f),
+                   m_stageText.transform.localPosition.z);
+            yield return null;
+        }
+    }
+
+    public void MoveCoroutine(bool isStart)
+    {
+        if(isStart)
+            StartCoroutine("MoveText");
+        else
+            StopCoroutine("MoveText");
+    }
+
+    public void OffText()
+    {
+        m_stageText.SetActive(false);
     }
 
     /// <summary>

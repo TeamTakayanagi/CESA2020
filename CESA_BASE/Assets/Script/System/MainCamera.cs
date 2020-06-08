@@ -27,10 +27,11 @@ public class MainCamera : MonoBehaviour
     private CameraType m_type = CameraType.AroundALL;       // カメラの移動タイプ
     private CameraType m_defType = CameraType.AroundALL;    // 格納用
 
-    private Vector3 m_savePos = Vector3.zero;               // 差分計算のための移動開始地点格納変数
+    private Vector3 m_savePos = Vector3.zero;               // マウス移動開始地点格納変数
     private Vector3 m_target = Vector3.zero;                // 回転の中心座標もしくは、移動先
     private Vector3 m_targetOld = Vector3.zero;             // 回転の中心座標もしくは、移動先
     private Vector3 m_storePos = Vector3.zero;              // 元の位置格納
+
     private Vector3 m_moveMax = Vector3.zero;               // 移動範囲最大値
     private Vector3 m_moveMin = Vector3.zero;               // 移動範囲最小値
     private CameraState m_cameraState;                      // カメラの状態に応じて関数を格納
