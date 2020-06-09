@@ -13,33 +13,19 @@ public class GameGimmick : MonoBehaviour
 
     [SerializeField]
     private GimmickType m_type = GimmickType.Goal;
-    private bool m_isUI = false;
-
-    // 水
     [SerializeField]
-    private float m_gimmickValue = 0.0f;      // 水の長さ
-    private float m_materialValue = 0.0f;      // 水の長さ
+    private float m_gimmickValue = 0.0f;
+
+    private bool m_isOnce = false;              // 一度きり判定用
     private bool m_isGimmickStart = false;
+    private bool m_isUI = false;
 
     private GameObject m_fountain = null;
     private GameObject m_particle = null;
     private GameObject childParticle = null;
-    private bool m_isMoved = false;
-    private bool m_isRotate = false;
 
     private ObjectFunction m_function = null;
 
-    public GimmickType Type
-    {
-        get
-        {
-            return m_type;
-        }
-        set
-        {
-            m_type = value;
-        }
-    }
     public bool UI
     {
         get
@@ -74,9 +60,21 @@ public class GameGimmick : MonoBehaviour
             m_gimmickValue = value;
         }
     }
+    public GimmickType Type
+    {
+        get
+        {
+            return m_type;
+        }
+        set
+        {
+            m_type = value;
+        }
+    }
 
     void Start()
     {
+        m_isOnce = false;
         m_function = transform.GetChild(0).GetComponent<ObjectFunction>();
 
         if (m_type == GimmickType.Water)
@@ -94,8 +92,6 @@ public class GameGimmick : MonoBehaviour
         }
         else if (m_type == GimmickType.Goal)
         {
-            m_materialValue = -0.5f;
-            transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_OutTime", transform.localPosition.y + m_materialValue);
             m_isGimmickStart = false;
             m_function.Stop = false;
 
@@ -108,7 +104,7 @@ public class GameGimmick : MonoBehaviour
 
     void Update()
     {
-        if (!m_isGimmickStart)
+        if (!m_isGimmickStart || m_isOnce)
             return;
 
         if (m_type == GimmickType.Water)
@@ -117,19 +113,41 @@ public class GameGimmick : MonoBehaviour
         else if(m_type == GimmickType.Goal)
         {
             m_gimmickValue += Time.deltaTime * GameMgr.Instance.GameSpeed;
-            m_materialValue += Time.deltaTime * GameMgr.Instance.GameSpeed / AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
 
             if (m_gimmickValue >= AdjustParameter.Fuse_Constant.BURN_MAX_TIME)
             {
                 m_gimmickValue = AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
-                GameMgr.Instance.BurnCount -= 1;
-                Effekseer.EffekseerEmitter effect = EffectManager.Instance.EffectCreate(Effekseer.EffekseerEmitter.EffectType.fireworks_core,
-                    transform.position,
+
+                Effekseer.EffekseerEmitter effect = EffectManager.Instance.EffectCreate(
+                    Effekseer.EffekseerEmitter.EffectType.fireworks_core,  transform.position,
                     new Vector3(transform.position.x, AdjustParameter.Production_Constant.END_FIRE_POS_Y, transform.position.z),
                     Vector3.one, Quaternion.identity);
+                // 継続して花火を打ち上げ
+                StartCoroutine("FireWorks");
+
+                // ゲーム終了の合図
+                GameMgr.Instance.BurnCount -= 1;
                 GameMgr.Instance.FireGoal(true, effect.gameObject);
+
+                m_isOnce = true;
                 m_isGimmickStart = false;
             }
+        }
+    }
+
+    private IEnumerator FireWorks()
+    {
+        float _launchTiming = (Random.Range(0, 600) + Time.deltaTime * 30) / 60;
+        yield return new WaitForSeconds(ProcessedtParameter.LaunchTiming.GAME + _launchTiming);
+        while (true)
+        {
+            EffectManager.Instance.EffectCreate(
+                Effekseer.EffekseerEmitter.EffectType.fireworks_core, transform.position,
+                new Vector3(transform.position.x, AdjustParameter.Production_Constant.END_FIRE_POS_Y, transform.position.z),
+                Vector3.one, Quaternion.identity);
+            _launchTiming = (Random.Range(0, 600) + Time.deltaTime * 30) / 60;
+
+            yield return new WaitForSeconds(ProcessedtParameter.LaunchTiming.GAME + _launchTiming);
         }
     }
 
@@ -141,24 +159,21 @@ public class GameGimmick : MonoBehaviour
         {
             if (Utility.TagSeparate.getParentTagName(hit.collider.tag) == NameDefine.TagName.Fuse)
             {
-                hit.collider.gameObject.GetComponent<GameFuse>().FuseWet();
+                GameFuse _fuse = hit.collider.gameObject.GetComponent<GameFuse>();
+                _fuse.FuseWet();
 
                 // Fuseがギミック動作中か取得
-                m_isMoved = hit.collider.gameObject.GetComponent<GameFuse>().SetMoveFrag();
-                m_isRotate = hit.collider.gameObject.GetComponent<GameFuse>().SetRotFrag();
+                bool isMoved = _fuse.SetMoveFrag();
+                bool isRotate = _fuse.SetRotFrag();
 
                 // 水が当たってる時の長さ
                 m_particle.transform.localScale = new Vector3(0.3f, 0.3f, hit.distance * 0.2f);
 
                 // water drop のパーティクルが暴れるのでFuseのギミック中は表示しない
-                if (m_isMoved || m_isRotate)
-                {
+                if (isMoved || isRotate)
                     childParticle.gameObject.SetActive(false);
-                }
                 else
-                {
                     childParticle.gameObject.SetActive(true);
-                }
             }
         }
         else
@@ -167,10 +182,6 @@ public class GameGimmick : MonoBehaviour
             // 当たっていないときの長さ
             m_particle.transform.localScale = new Vector3(0.3f, 0.3f, m_gimmickValue * 0.3f - 0.1f);
         }
-
-        // レイ表示
-        //Debug.DrawRay(transform.position, transform.rotation * Vector3.forward, Color.blue, 5, false);
-
 
         yield break;
     }

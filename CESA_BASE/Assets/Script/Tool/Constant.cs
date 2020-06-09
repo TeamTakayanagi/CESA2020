@@ -106,6 +106,7 @@ namespace ProcessedtParameter
     {
         public const float INIT = 3;
         public const float NEXT = 7;
+        public const float GAME = 5;
     }
 }
 
