@@ -334,7 +334,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             Camera.main.transform.LookAt(m_saveObj.transform.position);
 
         // UIの移動
-        StartCoroutine(SlideResultUI(m_resultClear, ProcessedtParameter.LaunchTiming.INIT));
+        StartCoroutine(SlideResultUI(m_resultClear, AdjustParameter.Production_Constant.RESULT_TIME));
     }
 
     /// <summary>
@@ -697,7 +697,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             if (m_gimmickList.Count == 1)
                 fireGoal++;
 
-            Utility.CSVFile.SaveBinAt("SaveData", SelectMgr.SelectStage, Mathf.Clamp(fireGoal, 0, 2));
+            SelectMgr.SaveStage(Mathf.Clamp(fireGoal, 0, 2));
 
             Sound.Instance.PlayBGM("bgm_clear");
             Sound.Instance.PlaySE("se_clear", gameObject.GetInstanceID());

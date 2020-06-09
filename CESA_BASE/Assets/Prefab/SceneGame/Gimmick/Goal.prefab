@@ -162,7 +162,7 @@ MonoBehaviour:
   m_function:
   - _functionType: 0
     _sinType: 1
-    _isLooping: 0
+    _isLooping: 1
     _deleyTime: 0
     _startAngle: {x: 0, y: 0, z: 0}
     _speed: {x: 10, y: 10, z: 10}

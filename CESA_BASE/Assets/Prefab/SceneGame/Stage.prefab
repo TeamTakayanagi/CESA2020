@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3337836880254095025
+--- !u!1 &794508910235747692
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,9 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3337836880254095031}
-  - component: {fileID: 3337836880254095030}
-  - component: {fileID: 3337836880254095024}
+  - component: {fileID: 5363350313193453882}
+  - component: {fileID: 5591644309980400434}
+  - component: {fileID: 3536991378017345216}
   m_Layer: 2
   m_Name: Stage
   m_TagString: Untagged
@@ -18,13 +18,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3337836880254095031
+--- !u!4 &5363350313193453882
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3337836880254095025}
+  m_GameObject: {fileID: 794508910235747692}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -32,28 +32,28 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3337836880254095030
+--- !u!114 &5591644309980400434
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3337836880254095025}
+  m_GameObject: {fileID: 794508910235747692}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ab13068abb27543418c1e0e4e79e4c7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_cursorDefault: {fileID: 2800000, guid: bd227bcf8d6d00142bb1aa9bce846cdf, type: 3}
-  m_cursorCatch: {fileID: 2800000, guid: e40aa7c11e664964d89de529b497c47f, type: 3}
   m_stageSize: {x: 5, y: 5, z: 5}
---- !u!114 &3337836880254095024
+  m_attentionPrefab: {fileID: 0}
+  m_attentionSprite: []
+--- !u!114 &3536991378017345216
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3337836880254095025}
+  m_GameObject: {fileID: 794508910235747692}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ec4dfb9dee5782149971387da418b475, type: 3}
@@ -61,14 +61,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_uiColider: {fileID: 3876445250114426605, guid: 058983e8983353f439e6d8addd8289f1,
     type: 3}
+  m_rotMark: {fileID: 8140620955807321555, guid: 729800bfee3cd1744afa71f879f72064,
+    type: 3}
+  m_moveMark: {fileID: 1587527042974671339, guid: 1b2094d6ded22544dbc26c9eb3c4e84f,
+    type: 3}
   m_fuseList:
-  - {fileID: 3412097083348357703, guid: e14f67ed782985745a2ffa0e0923bef0, type: 3}
-  - {fileID: 1732906167570232031, guid: fb96d0b6d01bf3d448baf3054af9eddb, type: 3}
-  - {fileID: 8650867093764866717, guid: 830b03d576b435b48a6c5a757cbb1172, type: 3}
-  - {fileID: 4673786657170428972, guid: b04bd03d34d11574cbb32728018749f0, type: 3}
-  - {fileID: 9114426403724752180, guid: 7a221607fc3632e468f1c6b706afc3e6, type: 3}
-  - {fileID: 1110969899053069830, guid: 30bc6166a95cc0c48bf3a93945744236, type: 3}
-  - {fileID: 3563000543437124281, guid: 33528e98008fc0549b5cfc80980b61dd, type: 3}
+  - {fileID: 860717478374324831, guid: e14f67ed782985745a2ffa0e0923bef0, type: 3}
+  - {fileID: 6852544397683297358, guid: fb96d0b6d01bf3d448baf3054af9eddb, type: 3}
+  - {fileID: 4331029774654046972, guid: 830b03d576b435b48a6c5a757cbb1172, type: 3}
+  - {fileID: 2773401856679054669, guid: b04bd03d34d11574cbb32728018749f0, type: 3}
+  - {fileID: 6116507944565530582, guid: 7a221607fc3632e468f1c6b706afc3e6, type: 3}
+  - {fileID: 2643045898083234609, guid: 30bc6166a95cc0c48bf3a93945744236, type: 3}
+  - {fileID: 1173296018462805346, guid: 33528e98008fc0549b5cfc80980b61dd, type: 3}
   m_gimmkList:
   - {fileID: 7488070144606620390, guid: 9ded0ac000e288f4ebe8bcf53161136c, type: 3}
   - {fileID: 6304553998292776801, guid: e46937b05935260438570808ce4f8a51, type: 3}

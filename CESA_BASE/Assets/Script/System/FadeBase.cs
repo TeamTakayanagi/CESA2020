@@ -14,8 +14,6 @@ public abstract class FadeBase : MonoBehaviour
     }
 
     protected string m_nextScene;
-    protected FadeStateFunc m_func;
-    protected FadeStateFunc m_funcNext;
     protected FadeState m_state;
     protected FadeState m_stateNext;
     protected FadeMgr.FadeType m_type;
@@ -48,29 +46,27 @@ public abstract class FadeBase : MonoBehaviour
 
     protected void Start()
     {
-        m_func = null;
         m_state = FadeState.None;
         Draw(false);
     }
 
     protected void Update()
     {
-        if (m_state == FadeState.None || m_func == null)
+        if (m_state == FadeState.None)
             return;
 
-        m_func();
 
         if (FadeCheack())
         {
             m_state = m_stateNext;
-            m_func = m_funcNext;
 
-            if (m_state == FadeState.None || m_func == null)
+            if (m_state == FadeState.None)
             {
                 Draw(false);
             }
             else
             {
+                FadeOut();
                 SceneManager.LoadSceneAsync(m_nextScene);
                 EffectManager.Instance.Create = true;
             }
@@ -81,7 +77,7 @@ public abstract class FadeBase : MonoBehaviour
     {
         m_state = FadeState.FadeIn;
         m_nextScene = nextScene;
-        m_func = FadeIn;
+        FadeIn();
         Draw(true);
     }
 
@@ -91,7 +87,6 @@ public abstract class FadeBase : MonoBehaviour
     protected virtual void FadeIn()
     {
         m_stateNext = FadeState.FadeOut;
-        m_funcNext = FadeOut;
     }
 
     /// <summary>
@@ -100,7 +95,6 @@ public abstract class FadeBase : MonoBehaviour
     protected virtual void FadeOut()
     {
         m_stateNext = FadeState.None;
-        m_funcNext = null;
     }
 
     /// <summary>

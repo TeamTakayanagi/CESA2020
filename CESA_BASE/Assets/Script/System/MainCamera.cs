@@ -315,8 +315,10 @@ public class MainCamera : MonoBehaviour
         }
 
         if (transform.position != m_target && m_targetOld != m_target)
+        {
+            transform.DOPause();
             transform.DOMove(m_target, AdjustParameter.Camera_Constant.SWIPE_DERAY);
-
+        }
         m_targetOld = m_target;
 
         Vector3 pos = new Vector3(

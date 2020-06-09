@@ -22,7 +22,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
     override protected void Awake()
     {
         // デバッグログを無効化
-        Debug.unityLogger.logEnabled = false;
+        //Debug.unityLogger.logEnabled = false;
         // カメラ操作を可能に
         Camera.main.GetComponent<MainCamera>().Control = true;
         m_isPreview = false; 
@@ -88,6 +88,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                     {
                         if (m_selectObj)
                             m_selectObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.white));
+
                         m_selectObj = hit.collider.gameObject;
                         m_selectObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.cyan));
                     }
@@ -98,6 +99,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         else
         {
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
             // 設置場所を選択
             if (Physics.Raycast(ray, out hit))
             {
@@ -263,7 +265,8 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         _createObj.transform.parent = transform.GetChild(0);
         string objID = "";
         string objName = "";
-        
+        string rot = "";
+
         if (Utility.TagSeparate.getParentTagName(_createObj.tag) == NameDefine.TagName.Fuse)
         {
             objName = "f";
@@ -276,24 +279,36 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             }
             objID = (int)_fuse.Type + Utility.TagSeparate.getChildTagName(_createObj.tag).
                 Substring(0, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT);
+            rot = (_createObj.transform.localEulerAngles.x / 90).ToString() +
+                (_createObj.transform.localEulerAngles.y / 90).ToString() +
+                (_createObj.transform.localEulerAngles.z / 90).ToString();
         }
         else if (Utility.TagSeparate.getParentTagName(_createObj.tag) == NameDefine.TagName.Gimmick)
         {
+            bool isWater = false;
             objName = "g";
             GameGimmick _gimmick = _createObj.GetComponent<GameGimmick>();
+
             if (m_selectObj)
             {
                 GameGimmick _select = m_selectObj.GetComponent<GameGimmick>();
                 _gimmick.Type = _select.Type;
                 _gimmick.transform.localEulerAngles = new Vector3(createRotX, createRotY, createRotZ);
+                isWater = _gimmick.Type == GameGimmick.GimmickType.Water;
             }
             objID = (int)_gimmick.Value % 10 + Utility.TagSeparate.getChildTagName(_createObj.tag).
                 Substring(0, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT);
+
+            if (isWater)
+                rot = (_createObj.transform.localEulerAngles.x / 90).ToString() +
+                         (_createObj.transform.localEulerAngles.y / 90).ToString() +
+                        (_createObj.transform.localEulerAngles.z / 90).ToString();
+            else
+                rot = "000";
         }
 
         // ステージ配列に情報追加
-        m_fuseData.Add(_createObj.transform.position, objName + objID + 
-            _createObj.transform.localEulerAngles.x / 90 + _createObj.transform.localEulerAngles.y / 90 + _createObj.transform.localEulerAngles.z / 90);
+        m_fuseData.Add(_createObj.transform.position, objName + objID + rot);
     }
 
     Color ColorAlpha(Color color)

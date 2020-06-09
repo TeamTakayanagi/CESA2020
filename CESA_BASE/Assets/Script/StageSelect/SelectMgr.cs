@@ -47,6 +47,15 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         }
     }
 
+    public static void SaveStage(int state)
+    {
+        // クリア段階がすでに完全クリアなら飛ばす
+        if (int.Parse(ms_saveData.data[SelectStage - 1]) > state)
+            return;
+
+        Utility.CSVFile.SaveBinAt("SaveData", SelectStage, state);
+    }
+
     override protected void Awake()
     {
         // セーブデータを読み込む

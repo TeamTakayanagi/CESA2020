@@ -33,7 +33,7 @@ public class FadeZoom : FadeBase
 
     override protected void FadeOut()
     {
-        m_sprite.color -= new Color(0.0f, 0.0f, 0.0f, 1.0f * Time.deltaTime);
+        m_sprite.DOColor(new Color(0.0f, 0.0f, 0.0f, 0.0f), AdjustParameter.Camera_Constant.FADE_DURATION) ;
         base.FadeOut();
     }
     override protected bool FadeCheack()
