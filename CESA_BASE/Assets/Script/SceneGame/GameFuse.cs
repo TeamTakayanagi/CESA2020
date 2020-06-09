@@ -337,8 +337,10 @@ public class GameFuse : FuseBase
             // 相手が燃えているもしくは燃え尽きた後なら処理を飛ばす
             if (!_fuse || _fuse.State != FuseState.None)
                 return;
-            if (transform.position == _fuse.transform.position + m_targetDistance * 2)
+
+            if (transform.position == _fuse.transform.position - m_targetDistance * 2)
                 return;
+
             m_collObj.Add(_fuse.gameObject);
         }
         else if (Utility.TagSeparate.getParentTagName(other.transform.tag) == NameDefine.TagName.Gimmick)
