@@ -171,7 +171,10 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         if (FadeMgr.Instance.State != FadeBase.FadeState.None)
             return;
 
-//        gameObj.GetComponent<Animator>()
+        //gameObj.GetComponent<Animator>().SetTrigger("Highlighted");
+        //gameObj.GetComponent<Animator>().SetBool("Selected", false);
+        //gameObj.GetComponent<Animator>().SetBool("Highlighted", true);
+        gameObj.GetComponent<Animator>().ResetTrigger("Highlighted");
 
         int direct = gameObj.transform.position.x > gameObj.transform.root.position.x ? 1 : -1;
         m_zoomObj = m_stageList[Mathf.Clamp(m_zoomObj.StageNum - 1 + direct, 0, m_stageList.Count - 1)];

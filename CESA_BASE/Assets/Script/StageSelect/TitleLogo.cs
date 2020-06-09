@@ -36,7 +36,7 @@ public class TitleLogo : MonoBehaviour
     private Image[] m_logoChild = null;
 
     private float m_alphaSpeed = 1;
-    private float m_LetterMove = 0.01f;
+    private float m_LetterMove = 0.05f;
 
     // Start is called before the first frame update
     void Start()
@@ -47,9 +47,9 @@ public class TitleLogo : MonoBehaviour
         m_logoChild[(int)LogoChild.BackToLetter].color = Color.clear;
         // タイトルの文字
         m_logoChild[(int)LogoChild.Letter].transform.position =
-            new Vector3(transform.root.position.x,
-                        transform.root.position.y,
-                        transform.root.position.z - 2);
+            new Vector3(m_logoChild[(int)LogoChild.BackToLetter].transform.position.x,
+                        m_logoChild[(int)LogoChild.BackToLetter].transform.position.y,
+                        m_logoChild[(int)LogoChild.BackToLetter].transform.position.z - 2);
         // ネズミ
         m_logoChild[(int)LogoChild.Rat].transform.localScale = Vector3.zero;
         // 花火
