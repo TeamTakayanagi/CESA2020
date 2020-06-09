@@ -25,25 +25,27 @@ public class MainCamera : MonoBehaviour
 
     [SerializeField]
     private CameraType m_type = CameraType.AroundALL;       // カメラの移動タイプ
+    [SerializeField]
+    private GameObject m_movePlace = null;                  // （注）取得方法模索中
+
     private CameraType m_defType = CameraType.AroundALL;    // 格納用
 
     private Vector3 m_savePos = Vector3.zero;               // マウス移動開始地点格納変数
     private Vector3 m_target = Vector3.zero;                // 回転の中心座標もしくは、移動先
     private Vector3 m_targetOld = Vector3.zero;             // 回転の中心座標もしくは、移動先
     private Vector3 m_storePos = Vector3.zero;              // 元の位置格納
-
     private Vector3 m_moveMax = Vector3.zero;               // 移動範囲最大値
     private Vector3 m_moveMin = Vector3.zero;               // 移動範囲最小値
-    private CameraState m_cameraState;                      // カメラの状態に応じて関数を格納
-    public GameObject m_movePlace = null;                  // （注）取得方法模索中
 
     private Camera m_myCamera = null;                       // 
-    private float m_moveRotate = 0.0f;                      // 回転の際の初期位置からの角度
-    private float m_moveRadiuse = 0.0f;                     // 回転の際の半径
+    private CameraState m_cameraState;                      // カメラの状態に応じて関数を格納
+
     private bool m_isScroll = false;                        // スクロール中か
     private bool m_isControl = false;                       // プレイヤーがカメラの操作をできるか
-
+    private float m_moveRotate = 0.0f;                      // 回転の際の初期位置からの角度
+    private float m_moveRadiuse = 0.0f;                     // 回転の際の半径
     private float m_near = AdjustParameter.Camera_Constant.CAMERA_NEAR;
+
     public float Near
     {
         set
@@ -98,8 +100,6 @@ public class MainCamera : MonoBehaviour
 
     void Awake()
     {
-        DOTween.SetTweensCapacity(1250, 3125);
-
         transform.tag = "MainCamera";
         m_defType = m_type;
         m_target = m_targetOld = transform.position;
@@ -110,7 +110,10 @@ public class MainCamera : MonoBehaviour
         if (m_type == CameraType.AroundY)
         {
             m_moveRadiuse = transform.position.magnitude;
-            transform.position = new Vector3(m_moveRadiuse * Mathf.Cos(m_moveRotate), m_moveRadiuse * Mathf.Sin(AdjustParameter.Camera_Constant.AROUND_ANGLE), m_moveRadiuse * Mathf.Sin(m_moveRotate));
+            transform.position = new Vector3(
+                m_moveRadiuse * Mathf.Cos(m_moveRotate),
+                m_moveRadiuse * Mathf.Sin(AdjustParameter.Camera_Constant.AROUND_ANGLE),
+                m_moveRadiuse * Mathf.Sin(m_moveRotate));
             transform.LookAt(Vector3.zero);
         }
         else if(m_type == CameraType.AroundALL)
@@ -244,7 +247,10 @@ public class MainCamera : MonoBehaviour
 
             m_moveRotate -= difference.x * Time.deltaTime * AdjustParameter.Camera_Constant.ROT_Y_VALUE;
             m_savePos = Input.mousePosition;
-            transform.position = new Vector3(m_moveRadiuse * Mathf.Cos(m_moveRotate), m_moveRadiuse * Mathf.Sin(15), m_moveRadiuse * Mathf.Sin(m_moveRotate));
+            transform.position = new Vector3(
+                m_moveRadiuse * Mathf.Cos(m_moveRotate),
+                m_moveRadiuse * Mathf.Sin(AdjustParameter.Camera_Constant.AROUND_ANGLE),
+                m_moveRadiuse * Mathf.Sin(m_moveRotate));
             transform.LookAt(Vector3.zero);
         }
 
@@ -279,7 +285,7 @@ public class MainCamera : MonoBehaviour
                 next < AdjustParameter.Camera_Constant.CAMERA_FAR)
             {
                 m_moveRadiuse = next;
-                transform.position = new Vector3(m_moveRadiuse * Mathf.Cos(m_moveRotate), m_moveRadiuse * Mathf.Sin(15), m_moveRadiuse * Mathf.Sin(m_moveRotate));
+                transform.position = new Vector3(m_moveRadiuse * Mathf.Cos(m_moveRotate), m_moveRadiuse * Mathf.Sin(AdjustParameter.Camera_Constant.AROUND_ANGLE), m_moveRadiuse * Mathf.Sin(m_moveRotate));
                 transform.LookAt(Vector3.zero);
             }
         }
@@ -309,9 +315,7 @@ public class MainCamera : MonoBehaviour
         }
 
         if (transform.position != m_target && m_targetOld != m_target)
-        {
             transform.DOMove(m_target, AdjustParameter.Camera_Constant.SWIPE_DERAY);
-        }
 
         m_targetOld = m_target;
 
@@ -322,8 +326,9 @@ public class MainCamera : MonoBehaviour
         // 範囲外
         if (transform.position != pos)
         {
+            Vector3 bound = (m_target - pos) * -0.3f;
             transform.DOPause();
-            transform.DOMove(pos, AdjustParameter.Camera_Constant.SWIPE_OUT);
+            transform.DOMove(pos + bound, AdjustParameter.Camera_Constant.SWIPE_DERAY);
         }
     }
     

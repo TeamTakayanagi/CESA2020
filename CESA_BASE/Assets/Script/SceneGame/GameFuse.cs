@@ -335,7 +335,8 @@ public class GameFuse : FuseBase
             GameFuse _fuse = other.gameObject.GetComponent<GameFuse>();
 
             // 相手が燃えているもしくは燃え尽きた後なら処理を飛ばす
-            if (!_fuse || _fuse.State != FuseState.None)
+            if (!_fuse || _fuse.State != FuseState.None || 
+                Vector3.Dot(transform.position - _fuse.transform.position, Vector3.one) * Vector3.Dot(m_targetDistance, Vector3.one) < 0)
                 return;
 
             m_collObj.Add(_fuse.gameObject);

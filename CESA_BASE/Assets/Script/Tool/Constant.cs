@@ -12,7 +12,7 @@ namespace AdjustParameter
         public const float SWIPE_DERAY = 1.0f;                          // スワイプ移動を何秒で行うか
         public const float SWIPE_OUT = 0.1f;                            // スワイプ移動ではじき出されるときの移動時間
         public const float AROUND_MOVE = 5.0f;                          // 全方向見渡すときの速さ
-        public const float AROUND_ANGLE = 15.0f;                        // 全方向見渡すときの初期角度
+        public const float AROUND_ANGLE = -30.0f;                        // 全方向見渡すときの初期角度
         public const float PERMISSION_MOVE = 20.0f;                     // 全方向移動の際、どれほどまでの差を無視するか
         public const float ZOOM_SPEED = 1.0f;                           // ズーム速度
         public const float FADE_DURATION = 2.0f;                        // フェードのズームインでどれほどの時間をかけて進むか

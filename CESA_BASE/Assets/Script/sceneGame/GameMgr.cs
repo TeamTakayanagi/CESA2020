@@ -29,7 +29,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private readonly Vector3 TEXT_POS = new Vector3(0.0f, 100, 0.0f);   // リザルトテキストの移動距離
     private readonly Vector3 BUTTON_POS = new Vector3(0.0f, 100.0f, 0.0f); // リザルトボタンの移動距離              
     private readonly Vector3 OUTPOS = new Vector3(-50, -50, -50);       // 導火線を生成できない位置
-    private readonly Vector3 CURSOL_WORLD = new Vector3(0.0f, 0.3f, 0.5f);  // マウスカーソルをワールド座標に変えるときの補正
+    private readonly Vector3 CURSOL_WORLD = new Vector3(0.0f, 0.5f, 0.5f);  // マウスカーソルをワールド座標に変えるときの補正
     private readonly AnimationCurve m_animCurve = AnimationCurve.Linear(0, 0, 1, 1);   // リザルトUIの移動用
     
     private int m_burnCount = 1;                                        // 燃えている導火線の数
@@ -52,7 +52,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     private float m_tutorialTIme = 0;
     private int m_tutorialState = 0;
-    Vector3 m_mouse = Vector3.zero;
     public int BurnCount
     {
         get
@@ -124,18 +123,18 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         terrainCreate.CreateGround(m_stageSize.x, m_stageSize.z, -m_stageSize.y / 2 - 1);
 
         // 開始演出準備
-        //if (false)
-        //{
-        //    m_gameStep = GameTutorial;
-        //    GameObject canvas = GameObject.FindGameObjectWithTag(NameDefine.TagName.UICanvas);
-        //    m_saveObj = canvas.transform.GetChild(0).gameObject;
-        //}
+        if (false)
+        {
+            m_gameStep = GameTutorial;
+            GameObject canvas = GameObject.FindGameObjectWithTag(NameDefine.TagName.UICanvas);
+            m_saveObj = canvas.transform.GetChild(0).gameObject;
+        }
 
         // フィールドオブジェクトの取得
         GameFuse[] _fuseList = FindObjectsOfType<GameFuse>();
         foreach (GameFuse _fuse in _fuseList)
         {
-            if (_fuse.State == GameFuse.FuseState.UI)
+            if (_fuse.State == FuseBase.FuseState.UI)
                 m_uiFuse.AddLast(_fuse);
             else
             {
@@ -193,18 +192,15 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// </summary>
     void GameMain()
     {
-        Ray ray = new Ray();
 
         // 導火線を選択しているなら
         if (m_selectFuse)
         {
             // マウス座標をワールド座標で取得
-            Vector3 mousePos = Vector3.zero;
-            Vector3 screen = Camera.main.WorldToScreenPoint(transform.position + 
-                Quaternion.Euler(0.0f, Camera.main.transform.localEulerAngles.y, 0.0f) * CURSOL_WORLD);
-            mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z);
-            mousePos = Camera.main.ScreenToWorldPoint(mousePos);
-            m_mouse = mousePos;
+            Vector3 screen = Camera.main.WorldToScreenPoint(transform.position) - new Vector3(0.0f, 0.0f, 0.25f * (int)Mathf.Floor(m_stageSize.z / 2.0f));
+            screen = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z)/* - Quaternion.Euler(0.0f, Camera.main.transform.localEulerAngles.y, 0.0f) * new Vector3(0.0f, 0.5f, 0.5f)*/;
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(screen);
+
             // 生成場所を取得
             m_createPos = FindNearFuse(mousePos);
             if (m_createPos != OUTPOS)
@@ -221,6 +217,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             }
         }
 
+        Ray ray = new Ray();
         RaycastHit hit = new RaycastHit();
         // 設置or選択
         if (Input.GetMouseButtonDown(0))
@@ -242,7 +239,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                         if (!_fuse || _fuse.EndPos != Vector3.zero)
                             return;
 
-                        if (_fuse.State == GameFuse.FuseState.UI)
+                        if (_fuse.State == FuseBase.FuseState.UI)
                         {
                             if(m_selectFuse)
                                 m_selectFuse.SelectUIFuse(false);
@@ -337,7 +334,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             Camera.main.transform.LookAt(m_saveObj.transform.position);
 
         // UIの移動
-        StartCoroutine(SlideResultUI(m_resultClear));
+        StartCoroutine(SlideResultUI(m_resultClear, ProcessedtParameter.LaunchTiming.INIT));
     }
 
     /// <summary>
@@ -346,11 +343,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     public void GameOver()
     {
         // UIの移動
-        StartCoroutine(SlideResultUI(m_resultGameover));
+        StartCoroutine(SlideResultUI(m_resultGameover, 0.0f));
     }
 
-    /// チュートリアルステージ処理
-    /// </summary>
+    // チュートリアルステージ処理
     private void GameTutorial()
     {
         //if (m_tutorialTIme <= 3 * 60)
@@ -386,7 +382,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 {
                     // ガイドを出す
                     {
-                        attention(m_uiFuse.Last.Value.gameObject);
+                        Attention(m_uiFuse.Last.Value.gameObject);
                     }
 
                     // 設置or選択
@@ -555,16 +551,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
     }
 
-    private void RunToGamemain(bool _flg)
-    {
-        foreach (GameFuse _fuse in m_uiFuse)
-            _fuse.enabled = _flg;
-        foreach (GameObject _obj in m_fieldObject)
-            _obj.GetComponent<Behaviour>().enabled = _flg;
-
-        m_UIFuseCreate.enabled = _flg;
-    }
-
     /// <summary>
     /// 一番近い導火線の座標から生成位置を決定
     /// </summary>
@@ -574,7 +560,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     {
         // 一番近くにあるオブジェクト探索用変数
         GameObject nearObj = m_fieldObject.First.Value;
-        Vector3 objPos = Vector3.zero;
 
         // マウスのワールド座標に一番近いオブジェクトを取得
         foreach (GameObject _obj in m_fieldObject)
@@ -591,21 +576,23 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         if (nearObj == null)
             return m_createPos;
 
+        Vector3 objPos = Vector3.zero;
         // そのオブジェクトの上下左右前後どちらにあるのか
         {
             Vector3 distance, absolute;
             // 距離を求める
             distance = mousePos - nearObj.transform.position;
-            // 絶対値にしたものを入れる
-            absolute = new Vector3(Mathf.Abs(distance.x), Mathf.Abs(distance.y), Mathf.Abs(distance.z));
-            // XYZの絶対値の最大値を求める
-            float max = Mathf.Max(absolute.x, absolute.y, absolute.z);
-            // 一番大きい要素は１、そのほか2つは0を入れる
-            absolute -= new Vector3(max, max, max);
-            absolute = new Vector3(Mathf.Clamp01(Mathf.Floor(absolute.x + 1)),
-                Mathf.Clamp01(Mathf.Floor(absolute.y + 1)), Mathf.Clamp01(Mathf.Floor(absolute.z + 1)));
+            //// 絶対値にしたものを入れる
+            //absolute = new Vector3(Mathf.Abs(distance.x), Mathf.Abs(distance.y), Mathf.Abs(distance.z));
+            //// XYZの絶対値の最大値を求める
+            //float max = Mathf.Max(absolute.x, absolute.y, absolute.z);
+            //// 一番大きい要素は１、そのほか2つは0を入れる
+            //absolute -= new Vector3(max, max, max);
+            //absolute = new Vector3(Mathf.Clamp01(Mathf.Floor(absolute.x + 1)),
+            //    Mathf.Clamp01(Mathf.Floor(absolute.y + 1)), Mathf.Clamp01(Mathf.Floor(absolute.z + 1)));
+            absolute = Utility.MyMath.GetMaxDirectSign(distance);
 
-            objPos = nearObj.transform.position + absolute * Mathf.Sign(Vector3.Dot(distance, absolute));
+            objPos = nearObj.transform.position + absolute;
         }
 
         Vector3Int half = new Vector3Int((int)Mathf.Floor(m_stageSize.x / 2.0f),
@@ -746,8 +733,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// </summary>
     /// <param name="result">リザルトの種類</param>
     /// <returns></returns>
-    private IEnumerator SlideResultUI(GameObject result)
+    private IEnumerator SlideResultUI(GameObject result, float waitTime)
     {
+        yield return new WaitForSeconds(waitTime);
+
         float startTime = Time.time;             // 開始時間
         Vector3 moveDistance_text;            // 移動距離および方向
         Vector3 moveDistance_button;            // 移動距離および方向
@@ -768,7 +757,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
     }
 
-    private void attention(GameObject _target)
+    private void Attention(GameObject _target)
     {
         if (m_attentionMain == null)
         {
