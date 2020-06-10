@@ -1,16 +1,18 @@
 ﻿//---調整用変数---
 // レベルデザインなどで後で数値変更を行うべき変数をここに記載
+using System.Numerics;
+
 namespace AdjustParameter
 {
     public readonly struct Camera_Constant
     {
-        public const float CAMERA_NEAR = 7.5f;                          // カメラのNear
+        public const float CAMERA_NEAR = 5.0f;                          // カメラのNear
         public const float CAMERA_FAR = 11.0f;                          // カメラのFar
         public const float VALUE_SCROLL = 0.5f;                         // NearとFarの間を変化させるときの値
         public const float ROT_Y_VALUE = 0.5f;                          // Y軸固定で見渡すときの回転速度
         public const float SWIPE_MOVE = 1.0f;                           // スワイプの移動速度
         public const float SWIPE_DERAY = 1.0f;                          // スワイプ移動を何秒で行うか
-        public const float SWIPE_OUT = 0.1f;                            // スワイプ移動ではじき出されるときの移動時間
+        public const float SWIPE_OUT = -0.3f;                            // スワイプ移動ではじき出されるときの補正値
         public const float AROUND_MOVE = 5.0f;                          // 全方向見渡すときの速さ
         public const float AROUND_ANGLE = -30.0f;                        // 全方向見渡すときの初期角度
         public const float PERMISSION_MOVE = 20.0f;                     // 全方向移動の際、どれほどまでの差を無視するか
