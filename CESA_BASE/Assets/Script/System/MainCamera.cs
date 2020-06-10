@@ -12,6 +12,8 @@ public class MainCamera : MonoBehaviour
 
     private const float ZOOM_NEAR = 30.0f;
     private const float ZOOM_FAR = 60.0f;
+    private readonly Vector3 FADE_UP = new Vector3(0.0f, 10.0f, 0.0f);          // 導火線のどれくらい上にフェード画面を持っていくか
+    private readonly Vector3 FADE_INTO = new Vector3(0.01f, 3.0f, 0.0f);        // 除きこむ座標
 
     public enum CameraType
     {
@@ -328,7 +330,7 @@ public class MainCamera : MonoBehaviour
         // 範囲外
         if (transform.position != pos)
         {
-            Vector3 bound = (m_target - pos) * -0.3f;
+            Vector3 bound = (m_target - pos) * AdjustParameter.Camera_Constant.SWIPE_OUT;
             transform.DOPause();
             transform.DOMove(pos + bound, AdjustParameter.Camera_Constant.SWIPE_DERAY);
         }
@@ -366,10 +368,10 @@ public class MainCamera : MonoBehaviour
         transform.DOPause();
 
         // 筒の上部に移動してからさらに近づく
-        transform.position = m_target + new Vector3(0.0f, 10.0f, 0.0f);
+        transform.position = m_target + FADE_UP;
         transform.LookAt(m_target);
 
-        transform.DOLocalMove(m_target + new Vector3(0.01f, 3.0f, 0.0f),
+        transform.DOLocalMove(m_target + FADE_INTO,
             AdjustParameter.Camera_Constant.FADE_DURATION);
    }
 }

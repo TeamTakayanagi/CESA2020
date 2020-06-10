@@ -8,7 +8,6 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     private const float GUID_TIME = 1.0f;
     private const float UP_SPEED = 0.5f;
 
-    private readonly Vector3 InitCameraPos = new Vector3(-3.0f, 5.0f, -21.0f);
     private readonly Vector3 InitLogoPos = new Vector3(0.0f, 0.4f, 1.0f);
     private readonly Vector3 m_initGuidPos = new Vector3(0.0f, 0.0f, 0.0f);
     private readonly Vector3 LogoUpPos = new Vector3(0.0f, 0.8f, 1.0f);
@@ -55,10 +54,10 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     // Start is called before the first frame update
     void Start()
     {
-        //Utility.CSVFile.InitSaveData("SaveData");
         Camera.main.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
         Sound.Instance.PlayBGM("bgm_title");
         InputMouse.ChangeCursol(true);
+
         // オブジェクトの取得
         m_logo = transform.GetChild(0).GetComponent<TitleLogo>();
         m_logoCanvas = transform.GetComponent<Canvas>();
@@ -80,7 +79,6 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         transform.position = Camera.main.transform.position + Vector3.forward * 5;
 
         // カメラの位置、角度の初期化
-        m_camera.transform.position = InitCameraPos;
         m_camera.transform.rotation = InitCameraRot;
         m_camera.Control = false;
 
@@ -158,11 +156,6 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         // クリック時
         else if (m_step == TitleStep.Retreat)
         {
-            // 案１
-            // --タイトルロゴが消えるまで位置をずらしていく---------------------------- //
-            //transform.position = Camera.main.transform.position + new Vector3(0, -1, 1);
-            // ------------------------------------------------------------------------ //
-
             if (m_logo != null)
             {
                 m_logo.transform.Translate(Vector3.up * UP_SPEED * Time.deltaTime);
@@ -179,22 +172,21 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
                 float _alpha = m_guid.color.a;
                 _alpha = Mathf.Clamp(Mathf.Lerp(_alpha, -0.5f, Time.deltaTime), 0, 1);
                 m_guid.color = new Color(1, 1, 1, _alpha);
+
                 if (_alpha == 0)
-                {
                     Destroy(m_guid.gameObject);
-                }
             }
 
             if (m_logo == null && m_guid == null)
             {
                 Destroy(m_logoCanvas.gameObject);
 
-                m_camera.GetComponent<MainCamera>().Control = true;
+                m_camera.Control = true;
 
                 m_step = TitleStep.Select;
             }
 
-            m_camera.GetComponent<MainCamera>().Control = true;
+            m_camera.Control = true;
         }
 
         // タイトル演出スキップ
