@@ -49,7 +49,7 @@ public class Spark : EffekseerEmitter
         Transform fuseTarget = m_fuseClass.ChildTarget;
 
         // 導火線が燃え立つ来たのを確認して自信を即削除
-        if (m_fuseClass.State == GameFuse.FuseState.Out && fuseTarget.localScale.x >= 1.0f)
+        if (m_fuseClass.State == FuseBase.FuseState.Out && fuseTarget.localScale.x >= 1.0f)
         {
             Sound.Instance.StopSE("se_fuse", gameObject.GetInstanceID());
             DestroyImmediate(gameObject);
@@ -61,7 +61,7 @@ public class Spark : EffekseerEmitter
         Vector3 afterPos = transform.position;
 
         // 移動
-        if (m_fuseClass.State == GameFuse.FuseState.Burn)
+        if (m_fuseClass.State == FuseBase.FuseState.Burn)
             afterPos += move;
 
         // 中心に来た時

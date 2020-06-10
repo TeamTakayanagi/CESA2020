@@ -71,6 +71,9 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager>
 
         return effect;
     }
+    /// <summary>
+    /// エフェクトの全削除
+    /// </summary>
     public void DestoryEffects()
     {
         EffekseerEmitter[] effectList = FindObjectsOfType<EffekseerEmitter>();
@@ -84,6 +87,10 @@ public class EffectManager : SingletonMonoBehaviour<EffectManager>
             DestroyImmediate(effect.gameObject);
         }
     }
+    /// <summary>
+    /// ランダムに花火を取得
+    /// </summary>
+    /// <returns></returns>
     public EffekseerEmitter.EffectType GetFireworks()
     {
         return (EffekseerEmitter.EffectType)Random.Range(

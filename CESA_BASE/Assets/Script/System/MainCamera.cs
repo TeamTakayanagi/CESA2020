@@ -163,9 +163,14 @@ public class MainCamera : MonoBehaviour
         m_type = CameraType.ZoomIn;
         SetState();
         m_cameraState = null;
-        m_target = new Vector3(_zoomObj.x, m_savePos.y + _zoomObj.y - 2, _zoomObj.z - 3.5f);
+
+        const float LENGTH = 3.3f;
+        m_target = new Vector3(_zoomObj.x,
+            _zoomObj.y + LENGTH * Mathf.Sin(Mathf.Deg2Rad * transform.localEulerAngles.x),
+            _zoomObj.z - LENGTH * Mathf.Cos(Mathf.Deg2Rad * transform.localEulerAngles.x));
+
         transform.DOLocalMove(m_target, AdjustParameter.Camera_Constant.ZOOM_SPEED);
-        m_myCamera.DOFieldOfView(ZOOM_NEAR, AdjustParameter.Camera_Constant.ZOOM_SPEED);
+       // m_myCamera.DOFieldOfView(ZOOM_NEAR, AdjustParameter.Camera_Constant.ZOOM_SPEED);
     }
 
     // ズームアウト準備
@@ -179,7 +184,7 @@ public class MainCamera : MonoBehaviour
         SetState();
         m_target = m_savePos;
         transform.DOLocalMove(m_target, AdjustParameter.Camera_Constant.ZOOM_SPEED);
-        m_myCamera.DOFieldOfView(ZOOM_FAR, AdjustParameter.Camera_Constant.ZOOM_SPEED);
+        //m_myCamera.DOFieldOfView(ZOOM_FAR, AdjustParameter.Camera_Constant.ZOOM_SPEED);
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -337,21 +342,20 @@ public class MainCamera : MonoBehaviour
     // ズームアウトの動き
     void CameraZoomIn()
     {
-        if(m_myCamera.fieldOfView < ZOOM_NEAR + 1.0f)
+        if(transform.position.z == m_target.z)
         {
-            m_myCamera.fieldOfView = ZOOM_NEAR;
+            transform.position = m_target;
             transform.DOPause();
             m_cameraState = null;
         }
     }
     void CameraZoomOut()
     {
-        if(m_myCamera.fieldOfView >= ZOOM_FAR - 1.0f)
+        if(transform.position.z == m_target.z)
         {
-            m_myCamera.fieldOfView = ZOOM_FAR;
+            transform.position = m_target;
             m_type = m_defType;
             transform.DOPause();
-            m_target = transform.position;
             SetState();
         }
     }

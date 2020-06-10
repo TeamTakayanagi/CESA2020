@@ -12,15 +12,17 @@ public class Fireworks : EffekseerEmitter
         create,
     }
 
-    float m_createWait;
-    State m_staet;
+    private float m_createWait;
+    private State m_staet;
+    private bool m_isSE;
 
     new void Start()
     {
         m_moveVector = new Vector3(0.0f, m_target.y - transform.position.y, 0.0f);
         m_createWait = AdjustParameter.Production_Constant.WAIT_TIME;
         m_staet = State.launch;
-        Sound.Instance.PlaySE("se_hanabi_bef", gameObject.GetInstanceID());
+        if(m_isSE)
+            Sound.Instance.PlaySE("se_hanabi_bef", gameObject.GetInstanceID());
         base.Start();
     }
 
@@ -43,11 +45,25 @@ public class Fireworks : EffekseerEmitter
                 if(m_createWait <= 0.0f)
                 {
                     EffectManager.Instance.EffectCreate(EffectManager.Instance.GetFireworks(), transform.position, transform.localScale, Quaternion.identity);
-                    Sound.Instance.PlaySE("se_hanabi_aft", gameObject.GetInstanceID());
+                    if (m_isSE)
+                        Sound.Instance.PlaySE("se_hanabi_aft", gameObject.GetInstanceID());
                     DestroyImmediate(gameObject);
                 }
                 break;
         }
         base.Update();
     }
+
+    public static Fireworks Instantiate(EffectType type, Vector3 pos, Vector3 move, Vector3 scale, Quaternion rot, bool isSE)
+    {
+        EffekseerEmitter effect = EffectManager.Instance.EffectCreate(type, pos, move, scale, rot) as EffekseerEmitter;
+        if (!effect)
+            return null;
+
+        Fireworks fire = effect.GetComponent<Fireworks>();
+        fire.m_isSE = isSE;
+
+        return fire;
+    }
+
 }

@@ -14,7 +14,6 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     private GameObject m_uiStartBack = null;
 
     private List<Stage> m_stageList = new List<Stage>();
-    private GameObject m_selectingObj = null;
     private Stage m_zoomObj = null;
 
     private static Utility.CSVFile.BinData ms_saveData = new Utility.CSVFile.BinData();
@@ -175,9 +174,6 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         if (FadeMgr.Instance.State != FadeBase.FadeState.None)
             return;
 
-        //gameObj.GetComponent<Animator>().SetTrigger("Highlighted");
-        //gameObj.GetComponent<Animator>().SetBool("Selected", false);
-        //gameObj.GetComponent<Animator>().SetBool("Highlighted", true);
         gameObj.GetComponent<Animator>().ResetTrigger("Highlighted");
 
         int direct = gameObj.transform.position.x > gameObj.transform.root.position.x ? 1 : -1;

@@ -304,7 +304,7 @@ PrefabInstance:
     - target: {fileID: 51461371330993488, guid: 8f40ce69c17c662488f7a61b2ceff02e,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 51461371330993488, guid: 8f40ce69c17c662488f7a61b2ceff02e,
         type: 3}
@@ -7730,6 +7730,20 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1820443221}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1137626052 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4638224155626910222, guid: e55cf2caae06b154b9e4604c9a991da7,
+    type: 3}
+  m_PrefabInstance: {fileID: 418407496}
+  m_PrefabAsset: {fileID: 0}
+--- !u!81 &1137626055
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1137626052}
+  m_Enabled: 1
 --- !u!1001 &1144404531
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11351,6 +11365,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7860108443855539635, guid: 2b064d156c5f52047ab6f2ec5a88c982,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7860108443855539663, guid: 2b064d156c5f52047ab6f2ec5a88c982,
         type: 3}

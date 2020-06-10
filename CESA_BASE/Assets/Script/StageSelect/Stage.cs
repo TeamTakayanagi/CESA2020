@@ -71,9 +71,9 @@ public class Stage : MonoBehaviour
         yield return new WaitForSeconds(ProcessedtParameter.LaunchTiming.INIT + _launchTiming);
         while (true)
         {
-            EffectManager.Instance.EffectCreate(Effekseer.EffekseerEmitter.EffectType.fireworks_core, transform.position,
+            Fireworks.Instantiate(Effekseer.EffekseerEmitter.EffectType.fireworks_core, transform.position,
                 new Vector3(transform.position.x, transform.position.y + AdjustParameter.Production_Constant.END_FIRE_POS_Y / 10, transform.position.z),
-                Vector3.one / 10, Quaternion.identity);
+                Vector3.one / 10, Quaternion.identity, false);
             _launchTiming = (Random.Range(0, 600) + Time.deltaTime * 30) / 60;
 
             yield return new WaitForSeconds(ProcessedtParameter.LaunchTiming.NEXT + _launchTiming);
