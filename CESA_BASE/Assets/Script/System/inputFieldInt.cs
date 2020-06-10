@@ -15,6 +15,7 @@ public class inputFieldInt : MonoBehaviour
         createRotX,
         createRotY,
         createRotZ,
+        fuseGimmick
     }
 
     [SerializeField]

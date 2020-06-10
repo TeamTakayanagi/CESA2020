@@ -11,6 +11,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
     private GameObject m_feildPrefab = null;
 
     private bool m_isPreview = false;
+    private int m_fuseGimmick = 0;
     private Vector3 m_cameraPos = Vector3.zero;
     private Quaternion m_cameraRot = Quaternion.identity;
     private GameObject m_cursorTouchObj = null;
@@ -110,7 +111,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                     if (Input.GetMouseButtonDown(0) && m_selectObj)
                     {
 
-                        GameObject selectClone = Instantiate(m_selectObj, hit.collider.transform.position, Quaternion.identity);      // 複製
+                        GameObject selectClone = Instantiate(m_selectObj, hit.collider.transform.position, Quaternion.identity);
                         SetObjData(selectClone);
                         Destroy(hit.collider.gameObject);
                     }
@@ -127,7 +128,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                 // 設置済みの導火線にタッチしているなら
                 else if (Utility.TagSeparate.getParentTagName(hit.collider.tag) == NameDefine.TagName.Fuse)
                 {
-                    GameFuse _fuse = hit.collider.GetComponent<GameFuse>();
+                    //GameFuse _fuse = hit.collider.GetComponent<GameFuse>();
                     // 導火線削除
                     if (Input.GetMouseButtonDown(0))
                     {
@@ -139,34 +140,34 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                         Destroy(hit.collider.gameObject);
                         m_fuseData.Remove(hit.transform.position);
                     }
-                    // 導火線モデルのオブジェクトに追加情報を付与・剥奪
-                    else if (Input.GetMouseButtonDown(2))
-                    {
-                        string objName = "f";
-                        if (_fuse.Type != GameFuse.FuseType.Start)
-                        {
-                            _fuse.Type = GameFuse.FuseType.Start;
-                            _fuse.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.red));
-                            m_cursorTouchObj = null;
-                        }
-                        else
-                        {
-                            _fuse.Type = GameFuse.FuseType.Normal;
-                            _fuse.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.white));
-                            m_cursorTouchObj = _fuse.gameObject;
-                        }
+                    //// 導火線モデルのオブジェクトに追加情報を付与・剥奪
+                    //else if (Input.GetMouseButtonDown(2))
+                    //{
+                    //    string objName = "f";
+                    //    if (_fuse.Type != GameFuse.FuseType.Start)
+                    //    {
+                    //        _fuse.Type = GameFuse.FuseType.Start;
+                    //        _fuse.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.red));
+                    //        m_cursorTouchObj = null;
+                    //    }
+                    //    else
+                    //    {
+                    //        _fuse.Type = GameFuse.FuseType.Normal;
+                    //        _fuse.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.white));
+                    //        m_cursorTouchObj = _fuse.gameObject;
+                    //    }
 
-                        m_fuseData[_fuse.transform.position] = objName + (int)_fuse.Type + m_fuseData[_fuse.transform.position].Substring(2, m_fuseData[_fuse.transform.position].Length - 2);
-                    }
-                    // 設置位置の色の変更
-                    else if (_fuse.Type != GameFuse.FuseType.Start)
-                    {
-                        if (m_cursorTouchObj)
-                            m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.white));
+                    //    m_fuseData[_fuse.transform.position] = objName + (int)_fuse.Type + m_fuseData[_fuse.transform.position].Substring(2, m_fuseData[_fuse.transform.position].Length - 2);
+                    //}
+                    //// 設置位置の色の変更
+                    //else if (_fuse.Type != GameFuse.FuseType.Start)
+                    //{
+                    //    if (m_cursorTouchObj)
+                    //        m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.white));
 
-                        m_cursorTouchObj = hit.collider.gameObject;
-                        m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.green));
-                    }
+                    //    m_cursorTouchObj = hit.collider.gameObject;
+                    //    m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.green));
+                    //}
                 }
                 // 設置済みのギミックにタッチしているなら
                 else if (Utility.TagSeparate.getParentTagName(hit.collider.tag) == NameDefine.TagName.Gimmick)
@@ -265,7 +266,6 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
         _createObj.transform.parent = transform.GetChild(0);
         string objID = "";
         string objName = "";
-        string rot = "";
 
         if (Utility.TagSeparate.getParentTagName(_createObj.tag) == NameDefine.TagName.Fuse)
         {
@@ -273,15 +273,11 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             GameFuse _fuse = _createObj.GetComponent<GameFuse>();
             if (m_selectObj)
             {
-                GameFuse _select = m_selectObj.GetComponent<GameFuse>();
-                _fuse.Type = _select.Type;
+                _fuse.Type = (GameFuse.FuseType)m_fuseGimmick;
                 _fuse.transform.localEulerAngles = new Vector3(createRotX, createRotY, createRotZ);
             }
             objID = (int)_fuse.Type + Utility.TagSeparate.getChildTagName(_createObj.tag).
                 Substring(0, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT);
-            rot = (_createObj.transform.localEulerAngles.x / 90).ToString() +
-                (_createObj.transform.localEulerAngles.y / 90).ToString() +
-                (_createObj.transform.localEulerAngles.z / 90).ToString();
         }
         else if (Utility.TagSeparate.getParentTagName(_createObj.tag) == NameDefine.TagName.Gimmick)
         {
@@ -293,22 +289,22 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             {
                 GameGimmick _select = m_selectObj.GetComponent<GameGimmick>();
                 _gimmick.Type = _select.Type;
-                _gimmick.transform.localEulerAngles = new Vector3(createRotX, createRotY, createRotZ);
                 isWater = _gimmick.Type == GameGimmick.GimmickType.Water;
+                if(isWater)
+                    _gimmick.transform.localEulerAngles = new Vector3(createRotX, createRotY, createRotZ);
+                else
+                    _gimmick.transform.localEulerAngles = Vector3.zero;
+
             }
             objID = (int)_gimmick.Value % 10 + Utility.TagSeparate.getChildTagName(_createObj.tag).
                 Substring(0, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT);
-
-            if (isWater)
-                rot = (_createObj.transform.localEulerAngles.x / 90).ToString() +
-                         (_createObj.transform.localEulerAngles.y / 90).ToString() +
-                        (_createObj.transform.localEulerAngles.z / 90).ToString();
-            else
-                rot = "000";
         }
 
         // ステージ配列に情報追加
-        m_fuseData.Add(_createObj.transform.position, objName + objID + rot);
+        m_fuseData.Add(_createObj.transform.position, objName + objID + 
+            _createObj.transform.localEulerAngles.x / 90 +
+            _createObj.transform.localEulerAngles.y / 90 +
+            _createObj.transform.localEulerAngles.z / 90);
     }
 
     Color ColorAlpha(Color color)
@@ -586,7 +582,6 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 
         CreateStage();
     }
-
     public void CreateRot()
     {
         int _createRotX = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotX);
@@ -598,29 +593,93 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             _createRotZ == ProcessedtParameter.System_Constant.ERROR_INT)
             return;
 
-        for(int i = 0; i < transform.GetChild(0).childCount; ++i)
+        Transform fuseParent = transform.GetChild(1).GetChild(0);
+        for (int i = 0; i < fuseParent.childCount; ++i)
         {
-            GameFuse _fuse = transform.GetChild(0).GetChild(i).gameObject.GetComponent<GameFuse>();
+            GameFuse _fuse = fuseParent.GetChild(i).gameObject.GetComponent<GameFuse>();
 
-            if (!_fuse || _fuse.State != GameFuse.FuseState.UI)
+            if (!_fuse || _fuse.State != FuseBase.FuseState.UI)
                 continue;
 
-            _fuse.transform.localEulerAngles = new Vector3(
-                            inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotX),
-                            inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotY),
-                            inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotZ));
+            _fuse.transform.localEulerAngles = new Vector3(_createRotX, _createRotY, _createRotZ);
         } 
 
-        for(int i = 0; i < transform.GetChild(1).childCount; ++i)
+        for(int i = 0; i < fuseParent.childCount; ++i)
         {
-            GameGimmick _gimmick = transform.GetChild(1).GetChild(i).gameObject.GetComponent<GameGimmick>();
+            GameGimmick _gimmick = fuseParent.GetChild(i).gameObject.GetComponent<GameGimmick>();
             if (!_gimmick || !_gimmick.UI)
                 continue;
 
-            _gimmick.transform.localEulerAngles = new Vector3(
-                            inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotX),
-                            inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotY),
-                            inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.createRotZ));
+            _gimmick.transform.localEulerAngles = new Vector3(_createRotX, _createRotY, _createRotZ);
         }
     }
+    public void FuseGimmick()
+    {
+        int _fuseGimmick = inputFieldInt.GetInputFieldInt(inputFieldInt.FieldType.fuseGimmick);
+        if (_fuseGimmick == ProcessedtParameter.System_Constant.ERROR_INT)
+            return;
+
+        m_fuseGimmick = _fuseGimmick;
+        GameFuse.FuseType fuseState = (GameFuse.FuseType)m_fuseGimmick;
+        Transform fuseParent = transform.GetChild(1).GetChild(0);
+        // 表示中のUI導火線の見た目変更
+        for (int i = 0; i < fuseParent.childCount; ++i)
+        {
+            GameFuse _fuse = fuseParent.GetChild(i).GetComponent<GameFuse>();
+
+            if (!_fuse || _fuse.State != FuseBase.FuseState.UI)
+                continue;
+
+            // 子供の数をチェック（3つ以上の場合3個目がギミック用）
+            if(_fuse.transform.childCount >= 3)
+            {
+                // 3つ目を削除
+                DestroyImmediate(_fuse.transform.GetChild(2).gameObject);
+            }
+
+            GameObject childObject = null;
+            Quaternion rot = Quaternion.identity;
+            if (fuseState == GameFuse.FuseType.Normal)
+                continue;
+            else if(fuseState == GameFuse.FuseType.Start)
+            {
+                continue;
+            }
+            else if (fuseState == GameFuse.FuseType.Rotate)
+            {
+                childObject = StageCreateMgr.Instance.RotMark;
+            }
+            else if (fuseState >= GameFuse.FuseType.MoveLeft &&
+                fuseState <= GameFuse.FuseType.MoveForward)
+            {
+                childObject = StageCreateMgr.Instance.MoveMark;
+                switch (fuseState)
+                {
+                    case GameFuse.FuseType.MoveRight:
+                        rot = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+                        break;
+                    case GameFuse.FuseType.MoveUp:
+                        rot = Quaternion.Euler(0.0f, 0.0f, 90.0f);
+                        break;
+                    case GameFuse.FuseType.MoveDown:
+                        rot = Quaternion.Euler(180.0f, 0.0f, 90.0f);
+                        break;
+                    case GameFuse.FuseType.MoveForward:
+                        rot = Quaternion.Euler(0.0f, 90.0f, 0.0f);
+
+                        break;
+                    case GameFuse.FuseType.MoveBack:
+                        rot = Quaternion.Euler(0.0f, 270.0f, 0.0f);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            GameObject mark = Instantiate(childObject, _fuse.transform);
+            mark.transform.position = _fuse.transform.position;
+            mark.transform.rotation = rot;
+        }
+    }
+
 }

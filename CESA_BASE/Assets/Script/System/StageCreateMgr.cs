@@ -26,6 +26,21 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
     [SerializeField]
     private List<GameGimmick> m_gimmkList = new List<GameGimmick>();
 
+    public GameObject RotMark
+    {
+        get
+        {
+            return m_rotMark;
+        }
+    }
+    public GameObject MoveMark
+    {
+        get
+        {
+            return m_moveMark;
+        }
+    }
+
     private void Start()
     {
         // 昇順に並び替え
