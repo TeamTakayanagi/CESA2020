@@ -112,13 +112,6 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         // タイトルロゴを魅せる
         else if (m_step == TitleStep.Charm)
         {
-            //m_delayCounter += Time.deltaTime;
-            //if (m_delayCounter > CHARM_TIME)
-            //{
-            //    m_delayCounter = 0;
-            //    m_step = TitleStep.LogoUp;
-            //}
-
             if (m_logo.Step == TitleLogo.LogoStep.StepLast)
             {
                 m_step = TitleStep.LogoUp;
