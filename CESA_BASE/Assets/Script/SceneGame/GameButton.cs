@@ -40,7 +40,6 @@ public class GameButton : MonoBehaviour
 
     public void SlideVar()
     {
-        Debug.Log("サイドバー");
         RectTransform rect = GetComponent<RectTransform>();
 
         if (!m_isSride)

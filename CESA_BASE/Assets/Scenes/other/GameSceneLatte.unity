@@ -276,7 +276,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1715064557}
+      - m_Target: {fileID: 0}
         m_MethodName: NextStsge
         m_Mode: 1
         m_Arguments:
@@ -427,7 +427,7 @@ Transform:
   m_Children:
   - {fileID: 1685720561}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &452558294
 MonoBehaviour:
@@ -929,7 +929,7 @@ RectTransform:
   - {fileID: 1722907338}
   - {fileID: 6993955891378055208}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1091,7 +1091,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1715064557}
+      - m_Target: {fileID: 0}
         m_MethodName: Retry
         m_Mode: 1
         m_Arguments:
@@ -1297,7 +1297,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1715064557}
+      - m_Target: {fileID: 0}
         m_MethodName: Retire
         m_Mode: 1
         m_Arguments:
@@ -1426,7 +1426,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1715064557}
+      - m_Target: {fileID: 0}
         m_MethodName: ChangeGameSpeed
         m_Mode: 1
         m_Arguments:
@@ -1580,7 +1580,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1715064557}
+      - m_Target: {fileID: 0}
         m_MethodName: Retry
         m_Mode: 1
         m_Arguments:
@@ -1714,6 +1714,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29a743af34a7e024aae7408d36f1dbad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_cursorDefaultTemp: {fileID: 0}
+  m_cursorCatchTemp: {fileID: 0}
 --- !u!4 &1683993194 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 51461371330993488, guid: 8f40ce69c17c662488f7a61b2ceff02e,
@@ -1938,7 +1940,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1715064557}
+      - m_Target: {fileID: 0}
         m_MethodName: BackToTitle
         m_Mode: 1
         m_Arguments:
@@ -1985,18 +1987,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1714319913}
   m_CullTransparentMesh: 0
---- !u!114 &1715064557 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3337836880254095030, guid: ea45495f56f2d0e48b1131b57ec5a879,
-    type: 3}
-  m_PrefabInstance: {fileID: 3337836880753819739}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab13068abb27543418c1e0e4e79e4c7a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1722907337
 GameObject:
   m_ObjectHideFlags: 0
@@ -2223,7 +2213,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1715064557}
+      - m_Target: {fileID: 0}
         m_MethodName: Retry
         m_Mode: 1
         m_Arguments:
@@ -2425,7 +2415,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1715064557}
+      - m_Target: {fileID: 0}
         m_MethodName: ChangeGameSpeed
         m_Mode: 1
         m_Arguments:

@@ -14,7 +14,7 @@ public class Fireworks : EffekseerEmitter
 
     private float m_createWait;
     private State m_staet;
-    private bool m_isSE;
+    private bool m_isSE = false;
 
     new void Start()
     {

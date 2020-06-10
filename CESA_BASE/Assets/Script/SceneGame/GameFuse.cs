@@ -461,7 +461,7 @@ public class GameFuse : FuseBase
                 yield return null;
             }
 
-            yield return null;
+            yield break;
         }
     }
 
@@ -475,14 +475,13 @@ public class GameFuse : FuseBase
         RaycastHit hit = new RaycastHit();
         float dist = 0.5f;
 
-        Debug.DrawRay(transform.position, direction, Color.red, dist);
+        //Debug.DrawRay(transform.position, direction, Color.red, dist);
         if (!Physics.Raycast(transform.position + direction / 2, direction, out hit, dist))
         {
             float sum = 0.0f;
             while (sum < 1.0f)
             {
                 sum += AdjustParameter.Fuse_Constant.MOVE_VALUE * Time.deltaTime;
-
                 transform.position = Vector3.MoveTowards(transform.position, target, AdjustParameter.Fuse_Constant.MOVE_VALUE * Time.deltaTime);
                 yield return null;
             }
@@ -499,9 +498,6 @@ public class GameFuse : FuseBase
         if (m_state == FuseState.Out || m_state == FuseState.UI)
             return;
 
-        //m_state = FuseState.Wet;
-        //m_countTime = AdjustParameter.Fuse_Constant.WET_MAX_TIME; 
-
         if (m_state == FuseState.Burn)
         {
             m_state = FuseState.Wet;
@@ -510,7 +506,6 @@ public class GameFuse : FuseBase
             // 燃える演出
             m_childTarget.localScale = Vector3.one;
             m_childTarget.position = transform.position;
-
             // 色を変えるオブジェクトの座標
             m_childRenderer.material.SetVector("_Target", m_childTarget.position);
             // 燃やす範囲（0:その場だけ ～　1:全域）

@@ -10,10 +10,9 @@ public class MainCamera : MonoBehaviour
     // デリゲート宣言
     delegate void CameraState();
 
-    private const float ZOOM_NEAR = 30.0f;
-    private const float ZOOM_FAR = 60.0f;
+    private const float FIELD_VIEW = 60.0f;
     private readonly Vector3 FADE_UP = new Vector3(0.0f, 10.0f, 0.0f);          // 導火線のどれくらい上にフェード画面を持っていくか
-    private readonly Vector3 FADE_INTO = new Vector3(0.01f, 3.0f, 0.0f);        // 除きこむ座標
+    private readonly Vector3 FADE_INTO = new Vector3(0.01f, 5.0f, 0.0f);        // 除きこむ座標
 
     public enum CameraType
     {
@@ -39,7 +38,6 @@ public class MainCamera : MonoBehaviour
     private Vector3 m_moveMax = Vector3.zero;               // 移動範囲最大値
     private Vector3 m_moveMin = Vector3.zero;               // 移動範囲最小値
 
-    private Camera m_myCamera = null;                       // 
     private CameraState m_cameraState;                      // カメラの状態に応じて関数を格納
 
     private bool m_isScroll = false;                        // スクロール中か
@@ -55,7 +53,6 @@ public class MainCamera : MonoBehaviour
             m_near = value;
         }
     }
-
     public bool Control
     {
         set
@@ -90,6 +87,7 @@ public class MainCamera : MonoBehaviour
                 break;
             case CameraType.ZoomIn:
                 m_cameraState = null;
+                //m_cameraState = CameraZoomIn;
                 break;
             case CameraType.ZoomOut:
                 m_cameraState = CameraZoomOut;
@@ -102,27 +100,36 @@ public class MainCamera : MonoBehaviour
 
     void Awake()
     {
+        // キャパシティーの設定
+        DOTween.SetTweensCapacity(3125, 3125);
+
         transform.tag = "MainCamera";
         m_defType = m_type;
-        m_target = m_targetOld = transform.position;
         SetState();
-        m_myCamera = GetComponent<Camera>();
-        m_myCamera.fieldOfView = ZOOM_FAR;
+
+        // カメラの設定
+        Camera myCamera = GetComponent<Camera>();
+        myCamera.fieldOfView = FIELD_VIEW;
 
         if (m_type == CameraType.AroundY)
         {
+            m_target = m_targetOld = Vector3.zero;
             m_moveRadiuse = transform.position.magnitude;
             transform.position = new Vector3(
-                m_moveRadiuse * Mathf.Cos(m_moveRotate),
-                m_moveRadiuse * Mathf.Sin(AdjustParameter.Camera_Constant.AROUND_ANGLE),
-                m_moveRadiuse * Mathf.Sin(m_moveRotate));
-            transform.LookAt(Vector3.zero);
+                m_moveRadiuse * Mathf.Cos(Mathf.Deg2Rad * m_moveRotate),
+                m_moveRadiuse * Mathf.Sin(Mathf.Deg2Rad * AdjustParameter.Camera_Constant.AROUND_ANGLE),
+                m_moveRadiuse * Mathf.Sin(Mathf.Deg2Rad * m_moveRotate));
+            transform.LookAt(m_target);
         }
         else if(m_type == CameraType.AroundALL)
         {
-            m_target = Vector3.zero;
+            m_target = m_targetOld = Vector3.zero;
         }
+        else
+            m_target = m_targetOld = transform.position;
 
+
+        // 移動範囲のオブジェクトがある場合
         if (m_movePlace)
         {
             // カメラ移動範囲取得
@@ -157,8 +164,10 @@ public class MainCamera : MonoBehaviour
             return;
 
         transform.DOPause();
+        // ズームインに移行する時なら
         if (m_type != CameraType.ZoomIn)
         {
+            // 今の情報を格納
             m_savePos = transform.position;
             m_defType = m_type;
         }
@@ -166,13 +175,12 @@ public class MainCamera : MonoBehaviour
         SetState();
         m_cameraState = null;
 
-        const float LENGTH = 3.3f;
+        const float LENGTH = 2.5f;
         m_target = new Vector3(_zoomObj.x,
             _zoomObj.y + LENGTH * Mathf.Sin(Mathf.Deg2Rad * transform.localEulerAngles.x),
             _zoomObj.z - LENGTH * Mathf.Cos(Mathf.Deg2Rad * transform.localEulerAngles.x));
 
         transform.DOLocalMove(m_target, AdjustParameter.Camera_Constant.ZOOM_SPEED);
-       // m_myCamera.DOFieldOfView(ZOOM_NEAR, AdjustParameter.Camera_Constant.ZOOM_SPEED);
     }
 
     // ズームアウト準備
@@ -186,7 +194,11 @@ public class MainCamera : MonoBehaviour
         SetState();
         m_target = m_savePos;
         transform.DOLocalMove(m_target, AdjustParameter.Camera_Constant.ZOOM_SPEED);
-        //m_myCamera.DOFieldOfView(ZOOM_FAR, AdjustParameter.Camera_Constant.ZOOM_SPEED);
+    }
+
+    public void Attention(float length)
+    {
+
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -212,12 +224,14 @@ public class MainCamera : MonoBehaviour
             Vector3 difference = Input.mousePosition - m_savePos;
             if (Mathf.Abs(difference.x) > AdjustParameter.Camera_Constant.PERMISSION_MOVE)
             {
-                transform.RotateAround(m_target, transform.up, difference.x * Time.deltaTime * AdjustParameter.Camera_Constant.AROUND_MOVE);
+                transform.RotateAround(m_target, transform.up,
+                    difference.x * Time.deltaTime * AdjustParameter.Camera_Constant.AROUND_MOVE);
                 m_savePos = Input.mousePosition;
             }
             if (Mathf.Abs(difference.y) > AdjustParameter.Camera_Constant.PERMISSION_MOVE)
             {
-                transform.RotateAround(m_target, transform.right, -difference.y * Time.deltaTime * AdjustParameter.Camera_Constant.AROUND_MOVE);
+                transform.RotateAround(m_target, transform.right,
+                    -difference.y * Time.deltaTime * AdjustParameter.Camera_Constant.AROUND_MOVE);
                 m_savePos = Input.mousePosition;
             }
         }
@@ -255,9 +269,9 @@ public class MainCamera : MonoBehaviour
             m_moveRotate -= difference.x * Time.deltaTime * AdjustParameter.Camera_Constant.ROT_Y_VALUE;
             m_savePos = Input.mousePosition;
             transform.position = new Vector3(
-                m_moveRadiuse * Mathf.Cos(m_moveRotate),
-                m_moveRadiuse * Mathf.Sin(AdjustParameter.Camera_Constant.AROUND_ANGLE),
-                m_moveRadiuse * Mathf.Sin(m_moveRotate));
+                m_moveRadiuse * Mathf.Cos(Mathf.Deg2Rad * m_moveRotate),
+                m_moveRadiuse * Mathf.Sin(Mathf.Deg2Rad * AdjustParameter.Camera_Constant.AROUND_ANGLE),
+                m_moveRadiuse * Mathf.Sin(Mathf.Deg2Rad * m_moveRotate));
             transform.LookAt(Vector3.zero);
         }
 
@@ -292,15 +306,19 @@ public class MainCamera : MonoBehaviour
                 next < AdjustParameter.Camera_Constant.CAMERA_FAR)
             {
                 m_moveRadiuse = next;
-                transform.position = new Vector3(m_moveRadiuse * Mathf.Cos(m_moveRotate), m_moveRadiuse * Mathf.Sin(AdjustParameter.Camera_Constant.AROUND_ANGLE), m_moveRadiuse * Mathf.Sin(m_moveRotate));
-                transform.LookAt(Vector3.zero);
+                transform.position = new Vector3(
+                    m_moveRadiuse * Mathf.Cos(Mathf.Deg2Rad * m_moveRotate),
+                    m_moveRadiuse * Mathf.Sin(Mathf.Deg2Rad * AdjustParameter.Camera_Constant.AROUND_ANGLE),
+                    m_moveRadiuse * Mathf.Sin(Mathf.Deg2Rad * m_moveRotate));
+                //transform.LookAt(Vector3.zero);
             }
         }
     }
     // フリック移動
     void CameraSwipeMove()
     {
-        if (m_type != CameraType.SwipeMove) return;
+        if (m_type != CameraType.SwipeMove) 
+            return;
 
         if (!m_isScroll && Input.GetMouseButtonDown(1))
         {
@@ -323,7 +341,6 @@ public class MainCamera : MonoBehaviour
 
         if (transform.position != m_target && m_targetOld != m_target)
         {
-            transform.DOPause();
             transform.DOMove(m_target, AdjustParameter.Camera_Constant.SWIPE_DERAY);
         }
         m_targetOld = m_target;

@@ -118,10 +118,10 @@ public class GameGimmick : MonoBehaviour
             {
                 m_gimmickValue = AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
 
-                Effekseer.EffekseerEmitter effect = EffectManager.Instance.EffectCreate(
+                Effekseer.EffekseerEmitter effect = Fireworks.Instantiate(
                     Effekseer.EffekseerEmitter.EffectType.fireworks_core,  transform.position,
                     new Vector3(transform.position.x, AdjustParameter.Production_Constant.END_FIRE_POS_Y, transform.position.z),
-                    Vector3.one, Quaternion.identity);
+                    Vector3.one, Quaternion.identity, true);
                 // 継続して花火を打ち上げ
                 StartCoroutine("FireWorks");
 
@@ -141,11 +141,10 @@ public class GameGimmick : MonoBehaviour
         yield return new WaitForSeconds(ProcessedtParameter.LaunchTiming.GAME + _launchTiming);
         while (true)
         {
-            EffectManager.Instance.EffectCreate(
+            Fireworks.Instantiate(
                 Effekseer.EffekseerEmitter.EffectType.fireworks_core, transform.position,
                 new Vector3(transform.position.x, AdjustParameter.Production_Constant.END_FIRE_POS_Y, transform.position.z),
-                Vector3.one, Quaternion.identity);
-            _launchTiming = (Random.Range(0, 600) + Time.deltaTime * 30) / 60;
+                Vector3.one, Quaternion.identity, true); _launchTiming = (Random.Range(0, 600) + Time.deltaTime * 30) / 60;
 
             yield return new WaitForSeconds(ProcessedtParameter.LaunchTiming.GAME + _launchTiming);
         }

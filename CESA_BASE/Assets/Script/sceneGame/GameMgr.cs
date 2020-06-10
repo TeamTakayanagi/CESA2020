@@ -26,10 +26,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private Sprite[] m_attentionSprite = null;
 
     // 定数
-    private readonly Vector3 TEXT_POS = new Vector3(0.0f, 100, 0.0f);   // リザルトテキストの移動距離
-    private readonly Vector3 BUTTON_POS = new Vector3(0.0f, 100.0f, 0.0f); // リザルトボタンの移動距離              
+    private readonly Vector3 TEXT_POS = new Vector3(0.0f, 150, 0.0f);           // リザルトテキストの移動距離
+    private readonly Vector3 BUTTON_POS = new Vector3(0.0f, -200.0f, 0.0f);      // リザルトボタンの移動距離              
     private readonly Vector3 OUTPOS = new Vector3(-50, -50, -50);       // 導火線を生成できない位置
-    private readonly Vector3 CURSOL_WORLD = new Vector3(0.0f, 0.5f, 0.5f);  // マウスカーソルをワールド座標に変えるときの補正
     private readonly AnimationCurve m_animCurve = AnimationCurve.Linear(0, 0, 1, 1);   // リザルトUIの移動用
     
     private int m_burnCount = 1;                                        // 燃えている導火線の数
@@ -98,7 +97,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     // Start is called before the first frame update
     void Start()
     {
-        Camera.main.rect = new Rect(0.0f, 0.0f, ProcessedtParameter.Camera_Constant.RECT_WIDTH, 1.0f);
+        Camera.main.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
         Camera.main.GetComponent<MainCamera>().Near = Mathf.Max(m_stageSize.x, m_stageSize.z);
         // マウス制御クラスにカメラの情報を渡す
         InputMouse.RoadCamera();
@@ -118,7 +117,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // 初期生成位置はわからないので生成不可能場所を格納
         m_createPos = OUTPOS;
 
-        //// 地形生成オブジェクト取得
+        // 地形生成
         TerrainCreate terrainCreate = FindObjectOfType<TerrainCreate>();
         terrainCreate.CreateGround(m_stageSize.x, m_stageSize.z, -m_stageSize.y / 2 - 1);
 
@@ -176,9 +175,14 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             GameFuse _start = m_saveObj.GetComponent<GameFuse>();
             _start.GameStart();
 
-            m_UIFuseCreate.enabled = true;
             DestroyImmediate(m_start.gameObject);
+            // UI部分を表示・稼働
+            Camera.main.rect = new Rect(0.0f, 0.0f, ProcessedtParameter.Camera_Constant.RECT_WIDTH, 1.0f);
+            m_UIFuseCreate.enabled = true;
+            // 開始エフェクト（花火作成）
             EffectManager.Instance.EffectCreate(EffectManager.Instance.GetFireworks(), Vector3.zero, Quaternion.identity);
+            
+            // 格納用オブジェクトの中身を削除
             m_saveObj = null;
         }
         else if(Input.GetMouseButtonDown(0))
@@ -636,23 +640,13 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             GameMainEnd();
 
             // ゲームオーバー
-            if (!m_saveObj)
-            {
-                m_resultGameover.SetActive(true);
-                m_gameStep = GameOver;
-                Sound.Instance.PlayBGM("bgm_gameover");
-                Sound.Instance.PlaySE("se_gameover", gameObject.GetInstanceID());
-            }
-            // ゲームクリア
-            else
-            {
-                m_resultClear.SetActive(true);
-                m_gameStep = GameClear;
-                Sound.Instance.PlayBGM("bgm_clear");
-                Sound.Instance.PlaySE("se_clear", gameObject.GetInstanceID());
-            }
+            m_gameStep = GameOver;
+            m_resultGameover.SetActive(true);
+            Sound.Instance.PlayBGM("bgm_gameover");
+            Sound.Instance.PlaySE("se_gameover", gameObject.GetInstanceID());
         }
     }
+
     /// <summary>
     /// 導火線が消えるときの
     /// </summary>
@@ -738,7 +732,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         yield return new WaitForSeconds(waitTime);
 
         float startTime = Time.time;             // 開始時間
-        Vector3 moveDistance_text;            // 移動距離および方向
+        Vector3 moveDistance_text;              // 移動距離および方向
         Vector3 moveDistance_button;            // 移動距離および方向
         Transform _text = result.transform.GetChild((int)ResultPlacement.Text);
         Transform _button = result.transform.GetChild((int)ResultPlacement.Button);
@@ -753,8 +747,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         {
             _text.localPosition = startPos_text + moveDistance_text * m_animCurve.Evaluate((Time.time - startTime) / AdjustParameter.Production_Constant.DURATION);
             _button.localPosition = startPos_rePlay + moveDistance_button * m_animCurve.Evaluate((Time.time - startTime) / AdjustParameter.Production_Constant.DURATION);
-            yield return 0;
+            yield return null;
         }
+        yield break;
     }
 
     private void Attention(GameObject _target)
@@ -775,38 +770,51 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
     }
 
+    private IEnumerator EndScene()
+    {
+        EffectManager.Instance.DestoryEffects();
+        m_gameStep = null;
+        Camera.main.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
+
+        m_resultClear.SetActive(false);
+        m_resultGameover.SetActive(false);
+        yield break;
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // ボタンの処理
 
     public void BackToTitle()
     {
-        EffectManager.Instance.DestoryEffects();
-        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, NameDefine.Game_Scene.STAGE_SELECT);
+        EndScene();
+
+        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, NameDefine.Scene_Name.STAGE_SELECT);
     }
     public void Retry()
     {
         if (FadeMgr.Instance.State != FadeBase.FadeState.None)
             return;
 
-        EffectManager.Instance.DestoryEffects();
+        EndScene();
+
         FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, SceneManager.GetActiveScene().name);
-        m_gameStep = null;
     }
     public void NextStsge()
     {
-        EffectManager.Instance.DestoryEffects();
         SelectMgr.SelectStage++;
+        EndScene();
+
         FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, SceneManager.GetActiveScene().name);
-        m_gameStep = null;
     }
     public void Retire()
     {
         if (FadeMgr.Instance.State != FadeBase.FadeState.None)
             return;
 
-        EffectManager.Instance.DestoryEffects();
-        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, NameDefine.Game_Scene.STAGE_SELECT);
+        EndScene();
+        FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, NameDefine.Scene_Name.STAGE_SELECT);
     }
+
     public void ChangeGameSpeed()
     {
         int store = m_gameSpeed - 1;

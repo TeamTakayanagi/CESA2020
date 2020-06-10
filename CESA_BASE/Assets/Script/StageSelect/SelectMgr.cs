@@ -6,8 +6,9 @@ using UnityEngine.SceneManagement;
 public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
 {
     private static int ms_selectStage = 0;          // 直前に遊んだステージ
-    private static int ms_tryStage = -1;               //
-    private int m_clearStage = 0;               //
+    private static int ms_tryStage = -1;            // ステージ選択から当選したステージ
+    private int m_clearStage = 0;                   // クリアした一番先のステージ
+    private const float CAMERA_ATTENTION = 3.0f;
 
     private MainCamera m_camera = null;
     private GameObject m_uiArrow = null;
@@ -62,7 +63,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
             ms_saveData = Utility.CSVFile.LoadBin("SaveData", m_stageList.Count);
 
         // ステージデータを保存
-        m_stageList.AddRange(GameObject.FindGameObjectWithTag("StageParent").GetComponentsInChildren<Stage>());
+        m_stageList.AddRange(GameObject.FindGameObjectWithTag(NameDefine.TagName.StageParent).GetComponentsInChildren<Stage>());
         for (int i = 0, size = m_stageList.Count; i < size; ++i)
         {
             m_stageList[i].StageNum = i + 1;
@@ -75,15 +76,18 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                 m_clearStage = i + 1;
             }
         }
-        m_stageList[m_clearStage - 1].ClearState *= -1;
+
+        // クリアしたステージがあるなら
+        if(m_clearStage > 0)
+            m_stageList[m_clearStage - 1].ClearState *= -1;
     }
 
     void Start()
     {
         SelectFuse _fuse;
         SelectFuse[] _fuseList;
-        Transform fuseParent = GameObject.FindGameObjectWithTag("fuseParent").transform;
         Transform _fuseGroup;
+        Transform fuseParent = GameObject.FindGameObjectWithTag(NameDefine.TagName.FuseParent).transform;
 
         // ステージ毎にそこにつながる導火線の確認
         for (int i = 0; i < fuseParent.childCount; ++i)
@@ -121,9 +125,19 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         m_uiArrow.SetActive(false);
         m_uiStartBack.SetActive(false);
 
-        // 
+        // カメラの初期化（角度はタイトル演出で使うので、タイトルで設定）
         m_camera = Camera.main.GetComponent<MainCamera>();
         m_camera.Type = MainCamera.CameraType.SwipeMove;
+        int attention = m_clearStage;
+        // 完全クリアなら
+        if (attention == m_stageList.Count)
+            attention -= 1;     // 最終ステージに注目
+
+        Vector3 zoom = m_stageList[attention].transform.position;
+        m_camera.transform.position = new Vector3(zoom.x,
+            zoom.y + CAMERA_ATTENTION * Mathf.Sin(Mathf.Deg2Rad * m_camera.transform.localEulerAngles.x),
+            zoom.z - CAMERA_ATTENTION * Mathf.Cos(Mathf.Deg2Rad * m_camera.transform.localEulerAngles.x));
+
 
         // ステージ番号順にソート
         m_stageList.Sort((a, b) => a.StageNum - b.StageNum);
@@ -132,34 +146,32 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     // Update is called once per frame
     void Update()
     {
-        if (m_camera.Type == MainCamera.CameraType.SwipeMove ||
-            m_camera.Type == MainCamera.CameraType.ZoomIn)
+        if (m_camera.Type == MainCamera.CameraType.SwipeMove && 
+            Input.GetMouseButtonDown(0))
         {
-            if (Input.GetMouseButtonDown(0))
+            RaycastHit _hit = new RaycastHit();
+            Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(_ray, out _hit))
             {
-                RaycastHit _hit = new RaycastHit();
-                Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-                if (Physics.Raycast(_ray, out _hit))
+                // ステージとの判定
+                if (_hit.transform.tag == NameDefine.TagName.Stage)
                 {
-                    // ステージとの判定
-                    if (_hit.transform.tag == NameDefine.TagName.Stage)
-                    {
-                        Stage _stage = _hit.transform.GetComponent<Stage>();
-                        m_zoomObj = _stage;
-                        m_zoomObj.MoveCoroutine(true);
-                        m_camera.StartZoomIn(_stage.transform.position);
+                    Stage _stage = _hit.transform.GetComponent<Stage>();
+                    m_zoomObj = _stage;
+                    m_zoomObj.MoveCoroutine(true);
+                    m_camera.StartZoomIn(_stage.transform.position);
 
-                        m_uiArrow.SetActive(true);
-                        m_uiStartBack.SetActive(true);
-                    }
-                    // 背景オブジェクトとの判定
-                    else if (_hit.transform.tag == NameDefine.TagName.ClickObj)
-                    {
-                        ClickedObject _click = _hit.transform.GetComponent<ClickedObject>();
-                        if (_click)
-                            _click.OnClick();
-                    }
+                    // UIを表示
+                    m_uiArrow.SetActive(true);
+                    m_uiStartBack.SetActive(true);
+                }
+                // 背景オブジェクトとの判定
+                else if (_hit.transform.tag == NameDefine.TagName.ClickObj)
+                {
+                    ClickedObject _click = _hit.transform.GetComponent<ClickedObject>();
+                    if (_click)
+                        _click.OnClick();
                 }
             }
         }
@@ -168,7 +180,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     /// <summary>
     /// 矢印をクリック
     /// </summary>
-    /// <param name="direct">右（1）左（-1）</param>
+    /// <param name="gameObj">そのボタンのオブジェクト</param>
     public void ClickArrow(GameObject gameObj)
     {
         if (FadeMgr.Instance.State != FadeBase.FadeState.None)
@@ -182,6 +194,9 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         gameObj.transform.localScale = Vector3.one;
     }
 
+    /// <summary>
+    /// ズームアウトの開始時の処理
+    /// </summary>
     public void ZoomOut()
     {
         if (FadeMgr.Instance.State != FadeBase.FadeState.None)
@@ -193,6 +208,9 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         m_zoomObj.MoveCoroutine(false);
     }
 
+    /// <summary>
+    /// ゲームシーンへの遷移
+    /// </summary>
     public void SceneLoad()
     {
         if (FadeMgr.Instance.State != FadeBase.FadeState.None)
@@ -208,7 +226,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
             m_camera.StartZoomFade(m_zoomObj.transform.position);
             ms_tryStage = ms_selectStage = m_zoomObj.StageNum;
             // ステージセレクト→ゲーム のフェード
-            FadeMgr.Instance.StartFade(FadeMgr.FadeType.Scale, NameDefine.Game_Scene.GAME_MAIN);
+            FadeMgr.Instance.StartFade(FadeMgr.FadeType.Scale, NameDefine.Scene_Name.GAME_MAIN);
         }
     }
 }

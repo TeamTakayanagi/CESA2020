@@ -9,12 +9,12 @@ namespace AdjustParameter
         public const float CAMERA_NEAR = 5.0f;                          // カメラのNear
         public const float CAMERA_FAR = 11.0f;                          // カメラのFar
         public const float VALUE_SCROLL = 0.5f;                         // NearとFarの間を変化させるときの値
-        public const float ROT_Y_VALUE = 0.5f;                          // Y軸固定で見渡すときの回転速度
+        public const float ROT_Y_VALUE = 7.0f;                          // Y軸固定で見渡すときの回転速度
         public const float SWIPE_MOVE = 1.0f;                           // スワイプの移動速度
         public const float SWIPE_DERAY = 1.0f;                          // スワイプ移動を何秒で行うか
         public const float SWIPE_OUT = -0.3f;                            // スワイプ移動ではじき出されるときの補正値
         public const float AROUND_MOVE = 5.0f;                          // 全方向見渡すときの速さ
-        public const float AROUND_ANGLE = -30.0f;                        // 全方向見渡すときの初期角度
+        public const float AROUND_ANGLE = 45.0f;                        // 全方向見渡すときの初期角度
         public const float PERMISSION_MOVE = 20.0f;                     // 全方向移動の際、どれほどまでの差を無視するか
         public const float ZOOM_SPEED = 1.0f;                           // ズーム速度
         public const float FADE_DURATION = 2.0f;                        // フェードのズームインでどれほどの時間をかけて進むか
@@ -117,10 +117,10 @@ namespace ProcessedtParameter
 
 namespace NameDefine
 {
-    public readonly struct Game_Scene
+    public readonly struct Scene_Name
     {
         public const string STAGE_SELECT = "StageSelect";
-        public const string GAME_MAIN = "GameSceneLatte";
+        public const string GAME_MAIN = "GameScene";
     }
 
     public readonly struct TagName
@@ -138,6 +138,7 @@ namespace NameDefine
         public const string Stage = "Stage";
         public const string ClickObj = "ClickObject";
         public const string StageParent = "StageParent";
+        public const string FuseParent = "fuseParent";
 
         public const string FuseI = "Fuse/I";
         public const string FuseL = "Fuse/L";

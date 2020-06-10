@@ -3,8 +3,6 @@ using UnityEngine.UI;
 
 public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
 {
-    // 後からコンスト定数に持っていく
-    private const float CHARM_TIME = 1.5f;
     private const float GUID_TIME = 1.0f;
     private const float UP_SPEED = 0.5f;
 
@@ -14,7 +12,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
 
     private readonly Quaternion InitCameraRot = Quaternion.Euler(new Vector3(-60, 0, 0));
     private readonly Quaternion InitObjRot = Quaternion.Euler(new Vector3(30, 0, 0));
-    private readonly Quaternion LastCameraRot = Quaternion.Euler(new Vector3(30, 0, 0)); 
+    private readonly Quaternion LastCameraRot = Quaternion.Euler(new Vector3(45, 0, 0)); 
 
     public enum TitleStep
     {
@@ -56,7 +54,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     {
         Camera.main.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
         Sound.Instance.PlayBGM("bgm_title");
-        InputMouse.ChangeCursol(true);
+        InputMouse.ChangeCursol(true);          // カーソルをデフォルトに
 
         // オブジェクトの取得
         m_logo = transform.GetChild(0).GetComponent<TitleLogo>();
@@ -67,23 +65,22 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
 
         if (!m_isFirst)
         {
-            m_camera.transform.rotation = LastCameraRot;
-
-            Destroy(m_logo.gameObject);
             m_step = TitleStep.Select;
+            Destroy(m_logo.gameObject);
             m_camera.GetComponent<MainCamera>().Control = true;
+            m_camera.transform.rotation = LastCameraRot;
             return;
         }
         
         // カメラに移るようにポジション変更
-        transform.position = Camera.main.transform.position + Vector3.forward * 5;
+        transform.position = Camera.main.transform.position + Vector3.forward * 5.0f;
 
         // カメラの位置、角度の初期化
         m_camera.transform.rotation = InitCameraRot;
         m_camera.Control = false;
 
         // タイトルカンバスの位置のカメラの前に持ってくる
-        transform.position = Camera.main.transform.position + new Vector3(0, -1, 1);
+        transform.position = Camera.main.transform.position + new Vector3(0.0f, -1.0f, 1.0f);
 
         // ロゴの位置、角度の初期化
         m_logo.transform.rotation = InitObjRot;
