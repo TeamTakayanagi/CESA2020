@@ -484,27 +484,23 @@ public class GameFuse : FuseBase
     /// </summary>
     public IEnumerator RotateFuse()
     {
-        //回転中じゃないとき回転させる
-        if (!m_isRotate)
+        //回転処理
+        float sumAngle = 0.0f; //angleの合計を保存
+        while (sumAngle < 90.0f)
         {
-            //回転処理
-            float sumAngle = 0.0f; //angleの合計を保存
-            while (sumAngle < 90.0f)
-            {
-                float fuseAngle = AdjustParameter.Fuse_Constant.ROT_VALUE; //ここを変えると回転速度が変わる
-                sumAngle += fuseAngle;
+            float fuseAngle = AdjustParameter.Fuse_Constant.ROT_VALUE; //ここを変えると回転速度が変わる
+            sumAngle += fuseAngle;
 
-                // 90度以上回転しないように値を制限
-                if (sumAngle > 90.0f)
-                    fuseAngle -= sumAngle - 90f;
+            // 90度以上回転しないように値を制限
+            if (sumAngle > 90.0f)
+                fuseAngle -= sumAngle - 90f;
 
-                transform.RotateAround(transform.position, Vector3.down, fuseAngle);
+            transform.RotateAround(transform.position, Vector3.down, fuseAngle);
 
-                yield return null;
-            }
-
-            yield break;
+            yield return null;
         }
+
+        yield break;
     }
 
     /// <summary>
@@ -517,7 +513,6 @@ public class GameFuse : FuseBase
         RaycastHit hit = new RaycastHit();
         float dist = 0.5f;
 
-        //Debug.DrawRay(transform.position, direction, Color.red, dist);
         if (!Physics.Raycast(transform.position + direction / 2, direction, out hit, dist))
         {
             float sum = 0.0f;
@@ -547,7 +542,6 @@ public class GameFuse : FuseBase
 
                 yield return null;
             }
-            redian = 0;
             m_arrow.transform.localPosition = m_arrowCurrentPos;    // Arrowをもとの位置に
         }
         yield break;
