@@ -139,6 +139,9 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
             {
                 m_guid.GetComponent<PushButton>().Flg = false;
 
+                // サウンド
+                Sound.Instance.PlaySE("Click", GetInstanceID());
+
                 m_step = TitleStep.Retreat;
             }
         }
