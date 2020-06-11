@@ -5,10 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
 {
-    private static int ms_selectStage = 2;          // 直前に遊んだステージ
+    private static int ms_selectStage = 0;          // 直前に遊んだステージ
     private static int ms_tryStage = -1;            // ステージ選択から当選したステージ
     private int m_clearStage = 0;                   // クリアした一番先のステージ
-    private const float CAMERA_ATTENTION = 3.0f;
+    private const float CAMERA_ATTENTION = 3.5f;
 
     private MainCamera m_camera = null;
     private GameObject m_uiArrow = null;
@@ -72,7 +72,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
             // 最後までクリアしたか、もしくは次のステージがクリアされていないなら
             if (newState > 0)
             {
-                if (true)
+                if (m_stageList[i].ClearState != newState)
                 {
                     // クリアした一番先のステージは
                     m_clearStage = i + 1;

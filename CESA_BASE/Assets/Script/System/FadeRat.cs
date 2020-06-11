@@ -6,9 +6,9 @@ using DG.Tweening;
 public class FadeRat : FadeBase
 {
     private const float FUSE_POS_X = 4500;
-    private const float FUSE_POS_Y = 330;
+    private const float FUSE_POS_Y = 355;
     private const float RAT_POS_X = 3000;
-    private const float RAT_POS_Y = 330;
+    private const float RAT_POS_Y = 355;
     private const float FADE_RAT_TIME = 4.0f;
 
     [SerializeField]
