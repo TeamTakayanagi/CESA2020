@@ -9,8 +9,6 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     private static int ms_selectStage = 0;          // 直前に遊んだステージ
     private static int ms_tryStage = -1;            // ステージ選択から当選したステージ
     private int m_clearStage = 0;                   // クリアした一番先のステージ
-    private const float CAMERA_ATTENTION = 3.5f;
-    private const float CAMERA_ATTENTION_Y = 2;
 
     private MainCamera m_camera = null;
     private GameObject m_uiArrow = null;
@@ -195,12 +193,14 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         if (FadeMgr.Instance.State != FadeBase.FadeState.None)
             return;
 
+        m_zoomObj.MoveCoroutine(false);
         gameObj.GetComponent<Animator>().ResetTrigger("Highlighted");
 
         int direct = gameObj.transform.position.x > gameObj.transform.root.position.x ? 1 : -1;
         m_zoomObj = m_stageList[Mathf.Clamp(m_zoomObj.StageNum - 1 + direct, 0, m_stageList.Count - 1)];
         m_camera.StartZoomIn(m_zoomObj.transform.position);
         gameObj.transform.localScale = Vector3.one;
+        m_zoomObj.MoveCoroutine(true);
 
         // サウンド
         Sound.Instance.PlaySE("se_click", GetInstanceID());

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8105371365175695301}
   - component: {fileID: 8105371365175695303}
   - component: {fileID: 8105371365175695302}
+  - component: {fileID: 4528602355683950454}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -26,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371365175695300}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371367174138012}
@@ -93,6 +94,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &4528602355683950454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371365175695300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371365185086443
 GameObject:
   m_ObjectHideFlags: 0
@@ -320,6 +333,7 @@ GameObject:
   - component: {fileID: 8105371365273552890}
   - component: {fileID: 8105371365273552892}
   - component: {fileID: 8105371365273552891}
+  - component: {fileID: 4985439623646320152}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -335,7 +349,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371365273552889}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371365420728013}
@@ -402,6 +416,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &4985439623646320152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371365273552889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371365370697300
 GameObject:
   m_ObjectHideFlags: 0
@@ -413,6 +439,7 @@ GameObject:
   - component: {fileID: 8105371365370697301}
   - component: {fileID: 8105371365370697303}
   - component: {fileID: 8105371365370697302}
+  - component: {fileID: 7239200451145475730}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -428,7 +455,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371365370697300}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371366448927518}
@@ -495,6 +522,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &7239200451145475730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371365370697300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371365389669147
 GameObject:
   m_ObjectHideFlags: 0
@@ -506,6 +545,7 @@ GameObject:
   - component: {fileID: 8105371365389669148}
   - component: {fileID: 8105371365389669150}
   - component: {fileID: 8105371365389669149}
+  - component: {fileID: 6542519861699853981}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -521,7 +561,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371365389669147}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371365248337205}
@@ -588,6 +628,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &6542519861699853981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371365389669147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371365420728012
 GameObject:
   m_ObjectHideFlags: 0
@@ -1247,6 +1299,7 @@ GameObject:
   - component: {fileID: 8105371365567757513}
   - component: {fileID: 8105371365567757515}
   - component: {fileID: 8105371365567757514}
+  - component: {fileID: 2405162132209989177}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -1262,7 +1315,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371365567757512}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371366345278587}
@@ -1329,6 +1382,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &2405162132209989177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371365567757512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371365588396741
 GameObject:
   m_ObjectHideFlags: 0
@@ -1772,6 +1837,7 @@ GameObject:
   - component: {fileID: 8105371365776622288}
   - component: {fileID: 8105371365776622290}
   - component: {fileID: 8105371365776622289}
+  - component: {fileID: 1210536813122315647}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -1787,7 +1853,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371365776622287}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371365945626498}
@@ -1854,6 +1920,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &1210536813122315647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371365776622287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371365778360834
 GameObject:
   m_ObjectHideFlags: 0
@@ -1865,6 +1943,7 @@ GameObject:
   - component: {fileID: 8105371365778360835}
   - component: {fileID: 8105371365778360837}
   - component: {fileID: 8105371365778360836}
+  - component: {fileID: 3680351487639823953}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -1880,7 +1959,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371365778360834}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371365591928103}
@@ -1947,6 +2026,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &3680351487639823953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371365778360834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371365815220234
 GameObject:
   m_ObjectHideFlags: 0
@@ -2066,6 +2157,7 @@ GameObject:
   - component: {fileID: 8105371365842557801}
   - component: {fileID: 8105371365842557803}
   - component: {fileID: 8105371365842557802}
+  - component: {fileID: 5066567876046597305}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -2081,7 +2173,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371365842557800}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371366485412310}
@@ -2148,6 +2240,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &5066567876046597305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371365842557800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371365847827309
 GameObject:
   m_ObjectHideFlags: 0
@@ -2159,6 +2263,7 @@ GameObject:
   - component: {fileID: 8105371365847827310}
   - component: {fileID: 8105371365847827312}
   - component: {fileID: 8105371365847827311}
+  - component: {fileID: 8315127726405282130}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -2174,7 +2279,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371365847827309}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371367284101551}
@@ -2241,6 +2346,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &8315127726405282130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371365847827309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371365869544633
 GameObject:
   m_ObjectHideFlags: 0
@@ -2360,6 +2477,7 @@ GameObject:
   - component: {fileID: 8105371365873485682}
   - component: {fileID: 8105371365873485684}
   - component: {fileID: 8105371365873485683}
+  - component: {fileID: 8779615212523874671}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -2375,7 +2493,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371365873485681}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371365588396742}
@@ -2442,6 +2560,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &8779615212523874671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371365873485681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371365901071459
 GameObject:
   m_ObjectHideFlags: 0
@@ -2453,6 +2583,7 @@ GameObject:
   - component: {fileID: 8105371365901071460}
   - component: {fileID: 8105371365901071462}
   - component: {fileID: 8105371365901071461}
+  - component: {fileID: 4352211101961995313}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -2468,7 +2599,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371365901071459}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371366453040250}
@@ -2535,6 +2666,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &4352211101961995313
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371365901071459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371365945626497
 GameObject:
   m_ObjectHideFlags: 0
@@ -2653,7 +2796,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8105371365919460930}
   m_Layer: 0
-  m_Name: stages
+  m_Name: Stages
   m_TagString: StageParent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2715,6 +2858,7 @@ GameObject:
   - component: {fileID: 8105371365988362098}
   - component: {fileID: 8105371365988362100}
   - component: {fileID: 8105371365988362099}
+  - component: {fileID: 3636205320960962129}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -2730,7 +2874,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371365988362097}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371365185086444}
@@ -2797,6 +2941,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &3636205320960962129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371365988362097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371366041578258
 GameObject:
   m_ObjectHideFlags: 0
@@ -2808,6 +2964,7 @@ GameObject:
   - component: {fileID: 8105371366041578259}
   - component: {fileID: 8105371366041578261}
   - component: {fileID: 8105371366041578260}
+  - component: {fileID: 1180668073725443182}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -2823,7 +2980,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371366041578258}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371367218486445}
@@ -2890,6 +3047,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &1180668073725443182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371366041578258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371366090231610
 GameObject:
   m_ObjectHideFlags: 0
@@ -2901,6 +3070,7 @@ GameObject:
   - component: {fileID: 8105371366090231611}
   - component: {fileID: 8105371366090231613}
   - component: {fileID: 8105371366090231612}
+  - component: {fileID: 6366494275037858874}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -2916,7 +3086,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371366090231610}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371365565833455}
@@ -2983,6 +3153,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &6366494275037858874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371366090231610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371366136695575
 GameObject:
   m_ObjectHideFlags: 0
@@ -3318,6 +3500,7 @@ GameObject:
   - component: {fileID: 8105371366357742358}
   - component: {fileID: 8105371366357742360}
   - component: {fileID: 8105371366357742359}
+  - component: {fileID: 4118670520218595978}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -3333,7 +3516,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371366357742357}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371366484782846}
@@ -3400,6 +3583,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &4118670520218595978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371366357742357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371366405658335
 GameObject:
   m_ObjectHideFlags: 0
@@ -3519,6 +3714,7 @@ GameObject:
   - component: {fileID: 8105371366441133560}
   - component: {fileID: 8105371366441133562}
   - component: {fileID: 8105371366441133561}
+  - component: {fileID: 8482926108466115049}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -3534,7 +3730,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371366441133559}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371366891106982}
@@ -3601,6 +3797,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &8482926108466115049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371366441133559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371366448927517
 GameObject:
   m_ObjectHideFlags: 0
@@ -4044,6 +4252,7 @@ GameObject:
   - component: {fileID: 8105371366484809826}
   - component: {fileID: 8105371366484809828}
   - component: {fileID: 8105371366484809827}
+  - component: {fileID: 552674639136969369}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -4059,7 +4268,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371366484809825}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371365487009516}
@@ -4126,6 +4335,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &552674639136969369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371366484809825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371366485412309
 GameObject:
   m_ObjectHideFlags: 0
@@ -4245,6 +4466,7 @@ GameObject:
   - component: {fileID: 8105371366510389963}
   - component: {fileID: 8105371366510389965}
   - component: {fileID: 8105371366510389964}
+  - component: {fileID: 7943174162127757657}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -4260,7 +4482,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371366510389962}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371365554658047}
@@ -4327,6 +4549,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &7943174162127757657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371366510389962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371366533927088
 GameObject:
   m_ObjectHideFlags: 0
@@ -4338,6 +4572,7 @@ GameObject:
   - component: {fileID: 8105371366533927089}
   - component: {fileID: 8105371366533927091}
   - component: {fileID: 8105371366533927090}
+  - component: {fileID: 1428545501819503786}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -4353,7 +4588,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371366533927088}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371365451722747}
@@ -4420,6 +4655,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &1428545501819503786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371366533927088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371366554479927
 GameObject:
   m_ObjectHideFlags: 0
@@ -4539,6 +4786,7 @@ GameObject:
   - component: {fileID: 8105371366647216537}
   - component: {fileID: 8105371366647216539}
   - component: {fileID: 8105371366647216538}
+  - component: {fileID: 3049353883634732435}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -4554,7 +4802,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371366647216536}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371365869544634}
@@ -4621,6 +4869,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &3049353883634732435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371366647216536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371366706381367
 GameObject:
   m_ObjectHideFlags: 0
@@ -4632,6 +4892,7 @@ GameObject:
   - component: {fileID: 8105371366706381368}
   - component: {fileID: 8105371366706381370}
   - component: {fileID: 8105371366706381369}
+  - component: {fileID: 6899861788526740554}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -4647,7 +4908,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371366706381367}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371366405658336}
@@ -4714,6 +4975,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &6899861788526740554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371366706381367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371366808602166
 GameObject:
   m_ObjectHideFlags: 0
@@ -4725,6 +4998,7 @@ GameObject:
   - component: {fileID: 8105371366808602167}
   - component: {fileID: 8105371366808602169}
   - component: {fileID: 8105371366808602168}
+  - component: {fileID: 98690093138367378}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -4740,7 +5014,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371366808602166}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371366554479928}
@@ -4807,6 +5081,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &98690093138367378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371366808602166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371366828724449
 GameObject:
   m_ObjectHideFlags: 0
@@ -4818,6 +5104,7 @@ GameObject:
   - component: {fileID: 8105371366828724450}
   - component: {fileID: 8105371366828724452}
   - component: {fileID: 8105371366828724451}
+  - component: {fileID: 6277897535438017624}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -4833,7 +5120,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371366828724449}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371366337057671}
@@ -4900,6 +5187,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &6277897535438017624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371366828724449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371366891106981
 GameObject:
   m_ObjectHideFlags: 0
@@ -5019,6 +5318,7 @@ GameObject:
   - component: {fileID: 8105371366904489530}
   - component: {fileID: 8105371366904489532}
   - component: {fileID: 8105371366904489531}
+  - component: {fileID: 7935434415383224080}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -5034,7 +5334,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371366904489529}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371366929895440}
@@ -5101,6 +5401,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &7935434415383224080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371366904489529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371366929895439
 GameObject:
   m_ObjectHideFlags: 0
@@ -5328,6 +5640,7 @@ GameObject:
   - component: {fileID: 8105371367018982751}
   - component: {fileID: 8105371367018982753}
   - component: {fileID: 8105371367018982752}
+  - component: {fileID: 8873743186835430035}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -5343,7 +5656,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371367018982750}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371365769868378}
@@ -5410,6 +5723,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &8873743186835430035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371367018982750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371367092395540
 GameObject:
   m_ObjectHideFlags: 0
@@ -5421,6 +5746,7 @@ GameObject:
   - component: {fileID: 8105371367092395541}
   - component: {fileID: 8105371367092395543}
   - component: {fileID: 8105371367092395542}
+  - component: {fileID: 5139052044104082034}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -5436,7 +5762,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371367092395540}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371365744832931}
@@ -5503,6 +5829,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &5139052044104082034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371367092395540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371367174138011
 GameObject:
   m_ObjectHideFlags: 0
@@ -5622,6 +5960,7 @@ GameObject:
   - component: {fileID: 8105371367186483314}
   - component: {fileID: 8105371367186483316}
   - component: {fileID: 8105371367186483315}
+  - component: {fileID: 1804249916179798864}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -5637,7 +5976,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371367186483313}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371366455571274}
@@ -5704,6 +6043,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &1804249916179798864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371367186483313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371367218486444
 GameObject:
   m_ObjectHideFlags: 0
@@ -5823,6 +6174,7 @@ GameObject:
   - component: {fileID: 8105371367231106183}
   - component: {fileID: 8105371367231106185}
   - component: {fileID: 8105371367231106184}
+  - component: {fileID: 1008541911671912164}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -5838,7 +6190,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371367231106182}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371365815220235}
@@ -5905,6 +6257,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &1008541911671912164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371367231106182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371367236612666
 GameObject:
   m_ObjectHideFlags: 0
@@ -5916,6 +6280,7 @@ GameObject:
   - component: {fileID: 8105371367236612667}
   - component: {fileID: 8105371367236612669}
   - component: {fileID: 8105371367236612668}
+  - component: {fileID: 3186773686326678055}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -5931,7 +6296,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371367236612666}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371366136695576}
@@ -5998,6 +6363,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &3186773686326678055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371367236612666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371367238726799
 GameObject:
   m_ObjectHideFlags: 0
@@ -6009,6 +6386,7 @@ GameObject:
   - component: {fileID: 8105371367238726800}
   - component: {fileID: 8105371367238726802}
   - component: {fileID: 8105371367238726801}
+  - component: {fileID: 5022518944291652630}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -6024,7 +6402,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371367238726799}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371366946113037}
@@ -6091,6 +6469,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &5022518944291652630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371367238726799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371367272613702
 GameObject:
   m_ObjectHideFlags: 0
@@ -6102,6 +6492,7 @@ GameObject:
   - component: {fileID: 8105371367272613703}
   - component: {fileID: 8105371367272613705}
   - component: {fileID: 8105371367272613704}
+  - component: {fileID: 694160534315904797}
   m_Layer: 0
   m_Name: stageText
   m_TagString: Untagged
@@ -6117,7 +6508,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105371367272613702}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8105371365458467341}
@@ -6184,6 +6575,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &694160534315904797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105371367272613702}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c16a9f2e14a6b04abf07c88de5559de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8105371367284101550
 GameObject:
   m_ObjectHideFlags: 0

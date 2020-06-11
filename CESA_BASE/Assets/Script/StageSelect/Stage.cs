@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 public class Stage : MonoBehaviour
 {
-    private const float TEXT_POS_Y = 1.0f;
+    private const float MODEL_ADJUST = -0.05f;
+    private const float TEXT_POS_Y = 0.75f;
 
     private Material m_myMaterial = null;
 
@@ -57,7 +58,7 @@ public class Stage : MonoBehaviour
 
         m_stageText = transform.GetChild(0).gameObject;
         m_stageText.GetComponent<TextMesh>().text += m_stageNum.ToString();
-        m_stageText.transform.localPosition = new Vector3(0f, 1f, 0f);
+        m_stageText.transform.localPosition = new Vector3(MODEL_ADJUST, TEXT_POS_Y, 0f);
     }
 
     private void Update()

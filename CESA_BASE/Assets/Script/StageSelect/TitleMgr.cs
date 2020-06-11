@@ -12,7 +12,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
 
     private readonly Quaternion InitCameraRot = Quaternion.Euler(new Vector3(-60, 0, 0));
     private readonly Quaternion InitObjRot = Quaternion.Euler(new Vector3(30, 0, 0));
-    private readonly Quaternion LastCameraRot = Quaternion.Euler(new Vector3(45, 0, 0)); 
+    private readonly Quaternion LastCameraRot = Quaternion.Euler(new Vector3(ProcessedtParameter.Camera_Constant.FIRST_ROT_X, 0, 0)); 
 
     public enum TitleStep
     {

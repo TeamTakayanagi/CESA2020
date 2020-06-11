@@ -77,6 +77,7 @@ namespace ProcessedtParameter
     public readonly struct Camera_Constant
     {
         public const float RECT_WIDTH = 0.8f;                          // メインカメラの映す幅
+        public const float FIRST_ROT_X = 45f;                          // メインカメラの映す幅
     }
     public readonly struct GameObject_Constant
     {
