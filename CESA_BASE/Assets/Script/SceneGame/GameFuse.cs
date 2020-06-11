@@ -49,7 +49,17 @@ public class GameFuse : FuseBase
     private Vector3 m_fuseCurrentPos = Vector3.zero;    
     private Vector3 m_arrowCurrentPos = Vector3.zero;
 
-
+    private List<Spark> m_haveEffect = new List<Spark>();
+    public List<BoxCollider> HaveEffect(Spark spark)
+    {
+        List<Spark> sparkList = m_haveEffect;
+        List<BoxCollider> collList = new List<BoxCollider>();
+        for (int i = 0; i < sparkList.Count; ++i)
+        {
+            collList.AddRange(sparkList[i].GetComponents<BoxCollider>());
+        }
+        return collList;
+    }
 
     public Vector3 EndPos
     {
