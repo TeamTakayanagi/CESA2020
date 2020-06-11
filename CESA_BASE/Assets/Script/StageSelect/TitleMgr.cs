@@ -7,11 +7,11 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     private const float UP_SPEED = 0.5f;
 
     private readonly Vector3 InitLogoPos = new Vector3(0.0f, -0.2f, 1.0f);
-    private readonly Vector3 m_initGuidPos = new Vector3(0.0f, -0.6f, 0.0f);
+    private readonly Vector3 InitGuidPos = new Vector3(0.0f, -0.6f, 0.0f);
     private readonly Vector3 LogoUpPos = new Vector3(0.0f, 0.2f, 1.0f);
 
-    private readonly Quaternion InitCameraRot = Quaternion.Euler(new Vector3(-60, 0, 0));
     private readonly Quaternion InitObjRot = Quaternion.Euler(new Vector3(30, 0, 0));
+    private readonly Quaternion InitCameraRot = Quaternion.Euler(new Vector3(-60, 0, 0));
     private readonly Quaternion LastCameraRot = Quaternion.Euler(new Vector3(ProcessedtParameter.Camera_Constant.FIRST_ROT_X, 0, 0)); 
 
     public enum TitleStep
@@ -26,6 +26,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         Max
     }
 
+    // ゲーム機同時のみフラグ
     private static bool m_isFirst = true;
 
     [SerializeField]
@@ -125,7 +126,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
 
                 if (m_delayCounter >= GUID_TIME)
                 {
-                    m_guid = Instantiate(m_guidPrefab, m_logoCanvas.transform.position + InitObjRot * m_initGuidPos,
+                    m_guid = Instantiate(m_guidPrefab, m_logoCanvas.transform.position + InitObjRot * InitGuidPos,
                         InitObjRot, transform);
                     m_step = TitleStep.Wite;
                 }
@@ -188,7 +189,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
             m_step = TitleStep.MoveSkip;
             m_camera.transform.rotation = LastCameraRot;
             m_logo.transform.position = transform.position + m_logo.transform.rotation * LogoUpPos;
-            m_guid = Instantiate(m_guidPrefab, transform.position + InitObjRot * m_initGuidPos, InitObjRot, transform);
+            m_guid = Instantiate(m_guidPrefab, transform.position + InitObjRot * InitGuidPos, InitObjRot, transform);
         }
     }
 }
