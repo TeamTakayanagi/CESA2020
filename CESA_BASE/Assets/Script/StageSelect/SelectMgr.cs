@@ -194,7 +194,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         gameObj.transform.localScale = Vector3.one;
 
         // サウンド
-        Sound.Instance.PlaySE("Click", GetInstanceID());
+        Sound.Instance.PlaySE("se_click", GetInstanceID());
     }
 
     /// <summary>
@@ -202,11 +202,11 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     /// </summary>
     public void ZoomOut()
     {
+        // サウンド
+        Sound.Instance.PlaySE("se_click", GetInstanceID());
+
         if (FadeMgr.Instance.State != FadeBase.FadeState.None)
             return;
-
-        // サウンド
-        Sound.Instance.PlaySE("Click", GetInstanceID());
 
         m_uiArrow.SetActive(false);
         m_uiStartBack.SetActive(false);
@@ -233,7 +233,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
             ms_tryStage = ms_selectStage = m_zoomObj.StageNum;
 
             // サウンド
-            Sound.Instance.PlaySE("Click", GetInstanceID());
+            Sound.Instance.PlaySE("se_click", GetInstanceID());
 
             // ステージセレクト→ゲーム のフェード
             FadeMgr.Instance.StartFade(FadeMgr.FadeType.Scale, NameDefine.Scene_Name.GAME_MAIN);

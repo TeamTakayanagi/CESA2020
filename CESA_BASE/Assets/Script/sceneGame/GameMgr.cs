@@ -187,6 +187,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
         else if(Input.GetMouseButtonDown(0))
         {
+            // サウンド
+            Sound.Instance.PlaySE("se_click", GetInstanceID());
+
             m_start.State = StartProduction.Production.move;
         }
     }
@@ -196,7 +199,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// </summary>
     void GameMain()
     {
-
         // 導火線を選択しているなら
         if (m_selectFuse)
         {
@@ -239,6 +241,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     // 新規選択
                     if (!m_selectFuse || m_selectFuse.gameObject != hit.collider.transform.parent.gameObject)
                     {
+                        // サウンド
+                        Sound.Instance.PlaySE("se_catch", GetInstanceID());
+
                         GameFuse _fuse = hit.collider.transform.parent.GetComponent<GameFuse>();
                         if (!_fuse || _fuse.EndPos != Vector3.zero)
                             return;
@@ -256,6 +261,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     // 選択解除
                     else
                     {
+                        // サウンド
+                        Sound.Instance.PlaySE("se_release", GetInstanceID());
+
                         m_selectFuse.SelectUIFuse(false);
                         m_selectFuse = null;
                         // マウスカーソル用の画像をデフォルトに変更
@@ -786,12 +794,18 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     public void BackToTitle()
     {
+        // サウンド
+        Sound.Instance.PlaySE("se_click", GetInstanceID());
+
         EndScene();
 
         FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, NameDefine.Scene_Name.STAGE_SELECT);
     }
     public void Retry()
     {
+        // サウンド
+        Sound.Instance.PlaySE("se_click", GetInstanceID());
+
         if (FadeMgr.Instance.State != FadeBase.FadeState.None)
             return;
 
@@ -801,6 +815,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     }
     public void NextStsge()
     {
+        // サウンド
+        Sound.Instance.PlaySE("se_click", GetInstanceID());
+
         SelectMgr.SelectStage++;
         EndScene();
 
@@ -808,6 +825,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     }
     public void Retire()
     {
+        // サウンド
+        Sound.Instance.PlaySE("se_click", GetInstanceID());
+
         if (FadeMgr.Instance.State != FadeBase.FadeState.None)
             return;
 
@@ -817,6 +837,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     public void ChangeGameSpeed()
     {
+        // サウンド
+        Sound.Instance.PlaySE("se_click", GetInstanceID());
+
         int store = m_gameSpeed - 1;
         m_gameSpeed = store % 2 + 1;
     }
