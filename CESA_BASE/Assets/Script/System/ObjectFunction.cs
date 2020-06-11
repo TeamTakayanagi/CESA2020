@@ -49,7 +49,7 @@ public class ObjectFunction : MonoBehaviour
             }
         }
     }
-
+    
     private void Awake()
     {
         // Function

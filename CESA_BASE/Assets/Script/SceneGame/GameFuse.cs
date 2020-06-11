@@ -41,6 +41,15 @@ public class GameFuse : FuseBase
     private Vector3 m_oldPos = Vector3.zero;    // position保存用
     private Vector3 m_oldRot = Vector3.zero;    // rotation保存用
 
+    // 移動Fuseの矢印
+    private GameObject m_arrow = null;       // 矢印のオブジェクト
+    private Quaternion m_rot = Quaternion.identity;     // 移動前の矢印の向き
+    private Quaternion m_afterRot = Quaternion.identity;    // 移動後の矢印の向き
+
+    private Vector3 m_fuseCurrentPos = Vector3.zero;    
+    private Vector3 m_arrowCurrentPos = Vector3.zero;
+
+
 
     public Vector3 EndPos
     {
@@ -83,6 +92,7 @@ public class GameFuse : FuseBase
             m_type = value;
         }
     }
+
 
 
 
@@ -163,6 +173,11 @@ public class GameFuse : FuseBase
             modelRender.material.SetVector("_Target", OUTPOS);
             // 燃やす範囲（0:その場だけ ～　1:全域）
             modelRender.material.SetFloat("_Ration", 0);
+        }
+
+        if (m_type >= FuseType.MoveLeft && m_type <= FuseType.MoveForward)
+        {
+            m_arrow = transform.GetChild(2).gameObject;
         }
 
         // 元の位置を保存
@@ -383,31 +398,43 @@ public class GameFuse : FuseBase
                 }
             case FuseType.MoveLeft:
                 {
+                    m_rot = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+                    m_afterRot = Quaternion.Euler(0.0f, 180.0f, 0.0f);
                     GimmickMove(Vector3.left);
                     break;
                 }
             case FuseType.MoveRight:
                 {
+                    m_rot = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+                    m_afterRot = Quaternion.Euler(0.0f, 0.0f, 0.0f);
                     GimmickMove(Vector3.right);
                     break;
                 }
             case FuseType.MoveDown:
                 {
-                    GimmickMove(Vector3.down);
+                    m_rot = Quaternion.Euler(0.0f, 0.0f, -90.0f);
+                    m_afterRot = Quaternion.Euler(0.0f, 0.0f, 90.0f);
+                    GimmickMove(Vector3.up);    // down
                     break;
                 }
             case FuseType.MoveUp:
                 {
-                    GimmickMove(Vector3.up);
+                    m_rot = Quaternion.Euler(0.0f, 0.0f, 90.0f);
+                    m_afterRot = Quaternion.Euler(0.0f, 0.0f, -90.0f);
+                    GimmickMove(Vector3.down);  // up
                     break;
                 }
             case FuseType.MoveBack:
                 {
+                    m_rot = Quaternion.Euler(0.0f, -90.0f, 0.0f);
+                    m_afterRot = Quaternion.Euler(0.0f, 90.0f, 0.0f);
                     GimmickMove(Vector3.back);
                     break;
                 }
             case FuseType.MoveForward:
                 {
+                    m_rot = Quaternion.Euler(0.0f, 90.0f, 0.0f);
+                    m_afterRot = Quaternion.Euler(0.0f, -90.0f, 0.0f);
                     GimmickMove(Vector3.forward);
                     break;
                 }
@@ -424,15 +451,18 @@ public class GameFuse : FuseBase
             Vector3 movePos;   // 移動位置
             bool isMove = transform.position == m_defaultPos;
 
+            m_fuseCurrentPos = transform.position;
+            m_arrowCurrentPos = m_arrow.transform.localPosition;
+
             if (!isMove)
             {
                 movePos = m_defaultPos;
-                StartCoroutine(MoveFuse(movePos, direct));
+                StartCoroutine(MoveFuse(movePos, direct, m_rot));
             }
             else
             {
                 movePos = m_defaultPos - direct;
-                StartCoroutine(MoveFuse(movePos, -direct));
+                StartCoroutine(MoveFuse(movePos, -direct, m_afterRot));
             }
         }
     }
@@ -470,7 +500,7 @@ public class GameFuse : FuseBase
     /// </summary>
     /// <param name="target">目的地</param>
     /// <param name="direction">向き</param>
-    public IEnumerator MoveFuse(Vector3 target, Vector3 direction)
+    public IEnumerator MoveFuse(Vector3 target, Vector3 direction, Quaternion rotate)
     {
         RaycastHit hit = new RaycastHit();
         float dist = 0.5f;
@@ -483,10 +513,31 @@ public class GameFuse : FuseBase
             {
                 sum += AdjustParameter.Fuse_Constant.MOVE_VALUE * Time.deltaTime;
                 transform.position = Vector3.MoveTowards(transform.position, target, AdjustParameter.Fuse_Constant.MOVE_VALUE * Time.deltaTime);
+
                 yield return null;
             }
-        }
 
+            //矢印回転
+            m_arrow.transform.rotation = rotate;
+        }
+        else
+        {
+            // 移動先に他のFuseがある場合その場で揺らす
+
+            transform.position = m_fuseCurrentPos;              // Fuseを現在の位置に固定
+
+            // Tree,Grassと同じ処理
+            float redian = 0;
+            while (redian < AdjustParameter.Arrow_Constant.MAX_REDIAN)
+            {
+                redian += Time.deltaTime * AdjustParameter.Arrow_Constant.SWAYS_SPEED;
+                m_arrow.transform.position += direction * AdjustParameter.Arrow_Constant.SWAYS_POS * Mathf.Sin(redian);
+
+                yield return null;
+            }
+            redian = 0;
+            m_arrow.transform.localPosition = m_arrowCurrentPos;    // Arrowをもとの位置に
+        }
         yield break;
     }
 
