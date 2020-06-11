@@ -55,8 +55,6 @@ public class Sound : SingletonMonoBehaviour<Sound>
 
     private void Update()
     {
-        Debug.Log(m_seSources.Count);
-
         List<Tuple<string, int>> _Remover = new List<Tuple<string, int>>();
         foreach (KeyValuePair<Tuple<string, int>, AudioSource> pair in m_seSources)
         {

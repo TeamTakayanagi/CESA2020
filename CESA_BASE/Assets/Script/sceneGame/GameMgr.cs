@@ -203,8 +203,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         if (m_selectFuse)
         {
             // マウス座標をワールド座標で取得
-            Vector3 screen = Camera.main.WorldToScreenPoint(transform.position) - new Vector3(0.0f, 0.0f, 0.25f * (int)Mathf.Floor(m_stageSize.z / 2.0f));
-            screen = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z)/* - Quaternion.Euler(0.0f, Camera.main.transform.localEulerAngles.y, 0.0f) * new Vector3(0.0f, 0.5f, 0.5f)*/;
+            Vector3 screen = Camera.main.WorldToScreenPoint(transform.position) -
+                new Vector3(0.0f, 0.0f, 0.005f * (int)Mathf.Floor(m_stageSize.z / 2.0f));
+            screen = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z)
+                /* - Quaternion.Euler(0.0f, Camera.main.transform.localEulerAngles.y, 0.0f) * new Vector3(0.0f, 0.5f, 0.5f)*/;
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(screen);
 
             // 生成場所を取得
