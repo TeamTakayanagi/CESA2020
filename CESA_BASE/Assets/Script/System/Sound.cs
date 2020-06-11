@@ -53,6 +53,23 @@ public class Sound : SingletonMonoBehaviour<Sound>
         m_seList.ForEach(se => AddClipDict(m_seDict, se));
     }
 
+    private void Update()
+    {
+        List<Tuple<string, int>> _Remover = new List<Tuple<string, int>>();
+        foreach (KeyValuePair<Tuple<string, int>, AudioSource> pair in m_seSources)
+        {
+            if (!pair.Value.isPlaying)
+            {
+                _Remover.Add(pair.Key);
+            }
+        }
+
+        for (int i = 0; i < _Remover.Count; i++)
+        {
+            m_seSources.Remove(_Remover[i]);
+        }
+    }
+
     /// <summary>
     /// SEを再生
     /// </summary>
@@ -63,13 +80,15 @@ public class Sound : SingletonMonoBehaviour<Sound>
             return;
 
         AudioSource _source = m_seSources.FirstOrDefault(s => s.Value.isPlaying).Value;
+
         if (_source == null)
         {
             if (m_seSources.Count >= MAX_PLAY_SE) 
                 return;
 
             _source = gameObject.AddComponent<AudioSource>();
-            m_seSources.Add(Tuple.Create(seName, instanceID), _source);
+            Tuple<string, int> _tuple = new Tuple<string, int>(seName, instanceID);
+            m_seSources.Add(_tuple, _source);
         }
 
         _source.clip = m_seDict[seName];

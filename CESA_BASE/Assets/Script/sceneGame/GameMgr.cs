@@ -187,6 +187,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
         else if(Input.GetMouseButtonDown(0))
         {
+            // サウンド
+            Sound.Instance.PlaySE("se_click", GetInstanceID());
+
             m_start.State = StartProduction.Production.move;
         }
     }
@@ -200,8 +203,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         if (m_selectFuse)
         {
             // マウス座標をワールド座標で取得
-            Vector3 screen = Camera.main.WorldToScreenPoint(transform.position)
-                - new Vector3(0.0f, 0.0f, 0.25f * (int)Mathf.Floor(m_stageSize.z / 2.0f));
+            Vector3 screen = Camera.main.WorldToScreenPoint(transform.position) -
+                new Vector3(0.0f, 0.0f, 0.005f * (int)Mathf.Floor(m_stageSize.z / 2.0f));
             screen = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z)
                 /* - Quaternion.Euler(0.0f, Camera.main.transform.localEulerAngles.y, 0.0f) * new Vector3(0.0f, 0.5f, 0.5f)*/;
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(screen);
@@ -240,6 +243,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     // 新規選択
                     if (!m_selectFuse || m_selectFuse.gameObject != hit.collider.transform.parent.gameObject)
                     {
+                        // サウンド
+                        Sound.Instance.PlaySE("se_catch", GetInstanceID());
+
                         GameFuse _fuse = hit.collider.transform.parent.GetComponent<GameFuse>();
                         if (!_fuse || _fuse.EndPos != Vector3.zero)
                             return;
@@ -257,6 +263,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     // 選択解除
                     else
                     {
+                        // サウンド
+                        Sound.Instance.PlaySE("se_release", GetInstanceID());
+
                         m_selectFuse.SelectUIFuse(false);
                         m_selectFuse = null;
                         // マウスカーソル用の画像をデフォルトに変更
@@ -786,12 +795,18 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     public void BackToTitle()
     {
+        // サウンド
+        Sound.Instance.PlaySE("se_click", GetInstanceID());
+
         EndScene();
 
         FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, NameDefine.Scene_Name.STAGE_SELECT);
     }
     public void Retry()
     {
+        // サウンド
+        Sound.Instance.PlaySE("se_click", GetInstanceID());
+
         if (FadeMgr.Instance.State != FadeBase.FadeState.None)
             return;
 
@@ -801,6 +816,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     }
     public void NextStsge()
     {
+        // サウンド
+        Sound.Instance.PlaySE("se_click", GetInstanceID());
+
         SelectMgr.SelectStage++;
         EndScene();
 
@@ -808,6 +826,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     }
     public void Retire()
     {
+        // サウンド
+        Sound.Instance.PlaySE("se_click", GetInstanceID());
+
         if (FadeMgr.Instance.State != FadeBase.FadeState.None)
             return;
 
@@ -816,13 +837,11 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     }
     public void ChangeGameSpeed()
     {
+        // サウンド
+        Sound.Instance.PlaySE("se_click", GetInstanceID());
+
         int store = m_gameSpeed;
         m_gameSpeed = store % 2 + 1;
-    }
-
-    private void OnGUI()
-    {
-        GUI.Label(new Rect(10, 10, 300, 400), m_gameSpeed.ToString());
     }
 }
 

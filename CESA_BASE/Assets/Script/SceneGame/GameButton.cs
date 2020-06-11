@@ -40,6 +40,9 @@ public class GameButton : MonoBehaviour
 
     public void SlideVar()
     {
+        // サウンド
+        Sound.Instance.PlaySE("se_click", GetInstanceID());
+
         RectTransform rect = GetComponent<RectTransform>();
 
         if (!m_isSride)
