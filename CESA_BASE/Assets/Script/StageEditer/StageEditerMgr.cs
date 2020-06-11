@@ -45,9 +45,7 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             _box[0].size = Vector3.one;
             _box[0].center = Vector3.zero;
             for(int i = 1; i < _box.Length; ++i)
-            {
                 Destroy(_box[i]);
-            }
 
             // UI選択用のコライダーの削除
             Destroy(_fuse.transform.GetChild(_fuse.transform.childCount - 1).gameObject);
@@ -122,13 +120,13 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
                             m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.white));
 
                         m_cursorTouchObj = hit.collider.gameObject;
-                        m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
+                        m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.yellow));
                     }
                 }
                 // 設置済みの導火線にタッチしているなら
                 else if (Utility.TagSeparate.getParentTagName(hit.collider.tag) == NameDefine.TagName.Fuse)
                 {
-                    //GameFuse _fuse = hit.collider.GetComponent<GameFuse>();
+                    GameFuse _fuse = hit.collider.GetComponent<GameFuse>();
                     // 導火線削除
                     if (Input.GetMouseButtonDown(0))
                     {
@@ -159,15 +157,15 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 
                     //    m_fuseData[_fuse.transform.position] = objName + (int)_fuse.Type + m_fuseData[_fuse.transform.position].Substring(2, m_fuseData[_fuse.transform.position].Length - 2);
                     //}
-                    //// 設置位置の色の変更
-                    //else if (_fuse.Type != GameFuse.FuseType.Start)
-                    //{
-                    //    if (m_cursorTouchObj)
-                    //        m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.white));
+                    // 設置位置の色の変更
+                    else if (_fuse.Type != GameFuse.FuseType.Start)
+                    {
+                        if (m_cursorTouchObj)
+                            m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.white));
 
-                    //    m_cursorTouchObj = hit.collider.gameObject;
-                    //    m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.green));
-                    //}
+                        m_cursorTouchObj = hit.collider.gameObject;
+                        m_cursorTouchObj.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.green));
+                    }
                 }
                 // 設置済みのギミックにタッチしているなら
                 else if (Utility.TagSeparate.getParentTagName(hit.collider.tag) == NameDefine.TagName.Gimmick)
@@ -275,6 +273,17 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             {
                 _fuse.Type = (GameFuse.FuseType)m_fuseGimmick;
                 _fuse.transform.localEulerAngles = new Vector3(createRotX, createRotY, createRotZ);
+                // 子供オブジェクトの作成
+                if(m_selectObj.transform.childCount >= 3)
+                {
+                    Transform obj = Instantiate(m_selectObj.transform.GetChild(2), _fuse.transform);
+                    obj.position = _fuse.transform.position;
+                    obj.rotation = m_selectObj.transform.rotation;
+                }
+            }
+            if(_fuse && _fuse.Type == GameFuse.FuseType.Start)
+            {
+                _fuse.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.red));
             }
             objID = (int)_fuse.Type + Utility.TagSeparate.getChildTagName(_createObj.tag).
                 Substring(0, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT);
@@ -639,40 +648,46 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
 
             GameObject childObject = null;
             Quaternion rot = Quaternion.identity;
-            if (fuseState == GameFuse.FuseType.Normal)
-                continue;
-            else if(fuseState == GameFuse.FuseType.Start)
+            if (fuseState == GameFuse.FuseType.Start)
             {
+                _fuse.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.red));
                 continue;
             }
-            else if (fuseState == GameFuse.FuseType.Rotate)
+            else
             {
-                childObject = StageCreateMgr.Instance.RotMark;
-            }
-            else if (fuseState >= GameFuse.FuseType.MoveLeft &&
-                fuseState <= GameFuse.FuseType.MoveForward)
-            {
-                childObject = StageCreateMgr.Instance.MoveMark;
-                switch (fuseState)
-                {
-                    case GameFuse.FuseType.MoveRight:
-                        rot = Quaternion.Euler(0.0f, 180.0f, 0.0f);
-                        break;
-                    case GameFuse.FuseType.MoveUp:
-                        rot = Quaternion.Euler(0.0f, 0.0f, 90.0f);
-                        break;
-                    case GameFuse.FuseType.MoveDown:
-                        rot = Quaternion.Euler(180.0f, 0.0f, 90.0f);
-                        break;
-                    case GameFuse.FuseType.MoveForward:
-                        rot = Quaternion.Euler(0.0f, 90.0f, 0.0f);
+                _fuse.GetComponent<Renderer>().material.SetColor("_Color", ColorAlpha(Color.white));
+                if (fuseState == GameFuse.FuseType.Normal)
+                    continue;
 
-                        break;
-                    case GameFuse.FuseType.MoveBack:
-                        rot = Quaternion.Euler(0.0f, 270.0f, 0.0f);
-                        break;
-                    default:
-                        break;
+                else if (fuseState == GameFuse.FuseType.Rotate)
+                {
+                    childObject = StageCreateMgr.Instance.RotMark;
+                }
+                else if (fuseState >= GameFuse.FuseType.MoveLeft &&
+                    fuseState <= GameFuse.FuseType.MoveForward)
+                {
+                    childObject = StageCreateMgr.Instance.MoveMark;
+                    switch (fuseState)
+                    {
+                        case GameFuse.FuseType.MoveRight:
+                            rot = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+                            break;
+                        case GameFuse.FuseType.MoveUp:
+                            rot = Quaternion.Euler(0.0f, 0.0f, 90.0f);
+                            break;
+                        case GameFuse.FuseType.MoveDown:
+                            rot = Quaternion.Euler(180.0f, 0.0f, 90.0f);
+                            break;
+                        case GameFuse.FuseType.MoveForward:
+                            rot = Quaternion.Euler(0.0f, 90.0f, 0.0f);
+
+                            break;
+                        case GameFuse.FuseType.MoveBack:
+                            rot = Quaternion.Euler(0.0f, 270.0f, 0.0f);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
 
@@ -681,5 +696,4 @@ public class StageEditerMgr : SingletonMonoBehaviour<StageEditerMgr>
             mark.transform.rotation = rot;
         }
     }
-
 }

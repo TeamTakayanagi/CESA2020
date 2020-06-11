@@ -1,0 +1,52 @@
+﻿------ ビルド開始: プロジェクト: Effekseer, 構成: Debug Any CPU ------
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Effekseer\Scripts\EffekseerModelAsset.cs(48,3): info UNT0013: SerializeField attribute is invalid or redundant for property or field(s): bytes
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Effekseer\Scripts\EffekseerEffectAsset.cs(63,3): info UNT0013: SerializeField attribute is invalid or redundant for property or field(s): textureResources
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Effekseer\Scripts\EffekseerEffectAsset.cs(65,3): info UNT0013: SerializeField attribute is invalid or redundant for property or field(s): soundResources
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Effekseer\Scripts\EffekseerEffectAsset.cs(70,3): info UNT0013: SerializeField attribute is invalid or redundant for property or field(s): Scale
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Effekseer\Scripts\EffekseerEffectAsset.cs(60,3): info UNT0013: SerializeField attribute is invalid or redundant for property or field(s): efkBytes
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Effekseer\Scripts\EffekseerEffectAsset.cs(67,3): info UNT0013: SerializeField attribute is invalid or redundant for property or field(s): modelResources
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Effekseer\Scripts\EffekseerSettings.cs(25,3): info UNT0013: SerializeField attribute is invalid or redundant for property or field(s): drawInSceneView
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Effekseer\Scripts\EffekseerSettings.cs(49,3): info UNT0013: SerializeField attribute is invalid or redundant for property or field(s): maxSquares
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Effekseer\Scripts\EffekseerSettings.cs(71,3): info UNT0013: SerializeField attribute is invalid or redundant for property or field(s): soundInstances
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Effekseer\Scripts\EffekseerSettings.cs(40,3): info UNT0013: SerializeField attribute is invalid or redundant for property or field(s): effectInstances
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Effekseer\Scripts\EffekseerSettings.cs(31,3): info UNT0013: SerializeField attribute is invalid or redundant for property or field(s): RendererType
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Effekseer\Scripts\EffekseerSettings.cs(62,3): info UNT0013: SerializeField attribute is invalid or redundant for property or field(s): isRightEffekseerHandledCoordinateSystem
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Effekseer\Scripts\EffekseerSettings.cs(109,3): info UNT0013: SerializeField attribute is invalid or redundant for property or field(s): standardShader
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Effekseer\Scripts\EffekseerSettings.cs(82,3): info UNT0013: SerializeField attribute is invalid or redundant for property or field(s): enableDistortion
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Effekseer\Scripts\EffekseerSettings.cs(93,3): info UNT0013: SerializeField attribute is invalid or redundant for property or field(s): enableDistortionMobile
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Effekseer\Scripts\EffekseerSettings.cs(112,3): info UNT0013: SerializeField attribute is invalid or redundant for property or field(s): standardDistortionShader
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Effekseer\Scripts\EffekseerSettings.cs(115,3): info UNT0013: SerializeField attribute is invalid or redundant for property or field(s): standardModelShader
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Effekseer\Scripts\EffekseerSettings.cs(118,3): info UNT0013: SerializeField attribute is invalid or redundant for property or field(s): standardModelDistortionShader
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Effekseer\Scripts\EffekseerSettings.cs(128,3): info UNT0013: SerializeField attribute is invalid or redundant for property or field(s): NetworkPort
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Effekseer\Scripts\EffekseerSettings.cs(137,3): info UNT0013: SerializeField attribute is invalid or redundant for property or field(s): DoStartNetworkAutomatically
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Effekseer\Scripts\EffekseerSettings.cs(149,17): info UNT0011: ScriptableObject "EffekseerSettings" should not be instantiated directly.
+------ ビルド開始: プロジェクト: EffekseerEditor, 構成: Debug Any CPU ------
+------ ビルド開始: プロジェクト: Assembly-CSharp, 構成: Debug Any CPU ------
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\SceneGame\GameMgr.cs(127,13): warning CS0162: 到達できないコードが検出されました
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\StageEditer\StageEditerMgr.cs(281,37): error CS0029: 型 'UnityEngine.Transform' を 'UnityEngine.GameObject' に暗黙的に変換できません
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Effekseer\Example\EfkBasic.cs(36,7): info UNT0001: The Unity message "OnEnable" is empty.
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\SceneGame\GameMgr.cs(798,9): info UNT0012: Coroutine EndScene should be called using StartCoroutine().
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\SceneGame\GameMgr.cs(789,9): info UNT0012: Coroutine EndScene should be called using StartCoroutine().
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\StageEditer\EditerUICreate.cs(28,10): info UNT0001: The Unity message "Update" is empty.
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\SceneGame\GameMgr.cs(814,9): info UNT0012: Coroutine EndScene should be called using StartCoroutine().
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\SceneGame\GameMgr.cs(805,9): info UNT0012: Coroutine EndScene should be called using StartCoroutine().
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\SceneGame\UIFuseCreate.cs(34,10): info UNT0001: The Unity message "Start" is empty.
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\StageEditer\RayPoint.cs(42,10): info UNT0001: The Unity message "Update" is empty.
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\System\FuseBase.cs(63,10): info UNT0001: The Unity message "Start" is empty.
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\System\FuseBase.cs(69,10): info UNT0001: The Unity message "Update" is empty.
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\StageSelect\Tree.cs(11,10): info UNT0001: The Unity message "Start" is empty.
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\StageSelect\StageNum.cs(8,10): info UNT0001: The Unity message "Start" is empty.
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\StageSelect\StageNum.cs(14,10): info UNT0001: The Unity message "Update" is empty.
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\System\UiFunction.cs(120,10): info UNT0001: The Unity message "Start" is empty.
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\StageSelect\Stage.cs(63,18): info UNT0001: The Unity message "Update" is empty.
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\SceneGame\Tutorial.cs(14,10): info UNT0001: The Unity message "Start" is empty.
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\StageSelect\SelectMgr.cs(158,21): info UNT0002: Comparing tags using == is inefficient.
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\StageSelect\SelectMgr.cs(170,26): info UNT0002: Comparing tags using == is inefficient.
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\System\ObjectFunction.cs(82,10): info UNT0001: The Unity message "Start" is empty.
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\StageSelect\Rat.cs(19,10): info UNT0001: The Unity message "Start" is empty.
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\StageSelect\Rat.cs(25,10): info UNT0001: The Unity message "Update" is empty.
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\Effect\Spark.cs(13,18): info UNT0001: The Unity message "Awake" is empty.
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\SceneGame\GameButton.cs(36,10): info UNT0001: The Unity message "Update" is empty.
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\StageEditer\StageEditerMgr.cs(108,21): info UNT0002: Comparing tags using == is inefficient.
+C:\Users\reo_d\Documents\CESA2020\CESA_BASE\Assets\Script\StageEditer\StageEditerMgr.cs(536,14): info UNT0002: Comparing tags using == is inefficient.
+========== ビルド: 正常終了または最新の状態 2、失敗 1、スキップ 0 ==========

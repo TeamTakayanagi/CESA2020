@@ -238,7 +238,8 @@ public class MainCamera : MonoBehaviour
         // カメラ手前移動
         else if (scroll != 0.0f)
         {
-            Vector3 _pos = transform.position + transform.forward * scroll * AdjustParameter.Camera_Constant.VALUE_SCROLL;
+            Vector3 _pos = transform.position + transform.forward * 
+                scroll * AdjustParameter.Camera_Constant.VALUE_SCROLL;
             float dis = Vector3.Distance(_pos, m_target);
             if (dis > AdjustParameter.Camera_Constant.CAMERA_NEAR &&
                 dis < AdjustParameter.Camera_Constant.CAMERA_FAR)
