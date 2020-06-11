@@ -77,7 +77,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     override protected void Awake()
     {
-        Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + SelectMgr.SelectStage);
+        Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(
+            ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + 0);
         StageCreateMgr.Instance.CreateStage(transform, info);
         m_stageSize = info.size;
         m_gameStep = GameStart;
@@ -378,7 +379,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
         Vector3Int half = new Vector3Int((int)Mathf.Floor(m_stageSize.x / 2.0f),
             (int)Mathf.Floor(m_stageSize.y / 2.0f), (int)Mathf.Floor(m_stageSize.z / 2.0f));
-        Vector3Int stageMax = half;
+        Vector3Int stageMax = half - 
+            new Vector3Int((m_stageSize.x + 1) % 2, (m_stageSize.y + 1) % 2, (m_stageSize.z + 1) % 2);
         Vector3Int stageMin = -half;
 
         foreach (GameObject _obj in m_fieldObject)

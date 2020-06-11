@@ -164,6 +164,8 @@ public class Spark : EffekseerEmitter
         spark.m_moveVector = move;
         spark.m_fuseClass = fuse;
         spark.m_instanceID = haveEffect;
+        // 導火線に自信を追加
+        fuse.AddEffect(spark);
 
         return spark;
     }

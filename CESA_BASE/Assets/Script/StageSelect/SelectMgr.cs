@@ -219,7 +219,6 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         Sound.Instance.PlaySE("se_click", GetInstanceID());
     }
 
-
     private void SetArrowUI(Stage stage)
     {
         Vector3 distance = Vector3.zero;

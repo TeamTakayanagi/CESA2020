@@ -25,7 +25,7 @@ namespace AdjustParameter
 
     public readonly struct Fuse_Constant
     {
-        public const float BURN_MAX_TIME = 7.5f;                        // 燃えてる時間(秒)
+        public const float BURN_MAX_TIME = 700.5f;                        // 燃えてる時間(秒)
         public const float OUT_MAX_TIME = 5.0f;                         // 燃え尽きた後消える時間(秒)
         public const float WET_MAX_TIME = 5.0f;                         // 濡れた状態がいつまで続くか
         public const float MOVE_VALUE = 2.0f;                           // 導火線の移動速度（ギミック）

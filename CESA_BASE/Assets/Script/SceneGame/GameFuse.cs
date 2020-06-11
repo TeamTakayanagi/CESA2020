@@ -26,7 +26,8 @@ public class GameFuse : FuseBase
 
 
     private float m_countTime = 0.0f;                                       // 汎用カウント変数
-    private HashSet<GameObject> m_collObj = new HashSet<GameObject>();
+    private HashSet<GameFuse> m_collFuse = new HashSet<GameFuse>();
+    private HashSet<GameGimmick> m_collGimmick = new HashSet<GameGimmick>();
 
     // UI用
     private Vector3 m_endPos = Vector3.zero;
@@ -59,7 +60,26 @@ public class GameFuse : FuseBase
         }
         return collList;
     }
+    public void AddEffect(Spark spark)
+    {
+        m_haveEffect.Add(spark);
+    }
 
+    public bool Moved
+    {
+        get
+        {
+            return m_isMoved;
+        }
+
+    }
+    public bool Rotate
+    {
+        get
+        {
+            return m_isRotate;
+        }
+    }
     public Vector3 EndPos
     {
         get
@@ -109,14 +129,13 @@ public class GameFuse : FuseBase
     public void GameStart()
     {
         m_state = FuseState.Burn;
-        Spark spark = Spark.Instantiate(transform.position + m_targetDistance, m_targetDistance * -2.0f, this, m_haveEffect.Count);
+        Spark.Instantiate(transform.position + m_targetDistance, m_targetDistance * -2.0f, this, m_haveEffect.Count);
         Renderer modelRender = m_childModel.GetComponent<Renderer>();
 
         // 導火線の燃えてきた方向にシェーダー用のオブジェクトを移動
         m_childTarget.position = transform.position + m_targetDistance;
         modelRender.material.SetVector("_Target", m_childTarget.position);
         modelRender.material.SetVector("_Center", m_childModel.position);
-        m_haveEffect.Add(spark);
     }
 
     private void Awake()
@@ -231,46 +250,39 @@ public class GameFuse : FuseBase
                             m_childTarget.position = transform.position;
 
                             // 当たっている導火線に引火
-                            foreach (GameObject _obj in m_collObj)
+                            foreach (GameFuse _fuse in m_collFuse)
                             {
-                                if (Utility.TagSeparate.getParentTagName(_obj.transform.tag) == NameDefine.TagName.Fuse)
+                                _fuse.State = FuseState.Burn;
+                                GameMgr.Instance.BurnCount += 1;
+
+                                _fuse.m_targetDistance = new Vector3(
+                                    transform.position.x - _fuse.transform.position.x,
+                                    transform.position.y - _fuse.transform.position.y,
+                                    transform.position.z - _fuse.transform.position.z) * 0.5f;
+
+                                // 導火線の燃えてきた方向にシェーダー用のオブジェクトを移動
+                                _fuse.m_childTarget.position =
+                                    _fuse.transform.position + _fuse.m_targetDistance;
+                                _fuse.m_collFuse.Clear();
+                                // エフェクトも同じ場所に生成
+                                Spark.Instantiate(_fuse.transform.position + _fuse.m_targetDistance,
+                                    _fuse.m_targetDistance * -2.0f, _fuse, _fuse.m_haveEffect.Count);
+
+                                // 導火線本体の中心座標を設定
+                                Transform childModel = _fuse.m_childModel;
+                                Renderer childRendere = _fuse.m_childRenderer;
+                                childRendere.material.SetVector("_Center", childModel.position);
+                            }
+                            foreach (GameGimmick _gimmick in m_collGimmick)
+                            {
+                                // 当たったものがゴールなら
+                                if (_gimmick.Type == GameGimmick.GimmickType.Goal && !_gimmick.GimmickStart)
                                 {
-                                    GameFuse _fuse = _obj.GetComponent<GameFuse>();
-                                    _fuse.State = FuseState.Burn;
+                                    // 燃えたゴールを登録
+                                    GameMgr.Instance.FireGoal(false);
+                                    // 燃えているオブジェクトを加算
                                     GameMgr.Instance.BurnCount += 1;
-
-                                    _fuse.m_targetDistance = new Vector3(
-                                        transform.position.x - _fuse.transform.position.x,
-                                        transform.position.y - _fuse.transform.position.y,
-                                        transform.position.z - _fuse.transform.position.z) * 0.5f;
-
-                                    // 導火線の燃えてきた方向にシェーダー用のオブジェクトを移動
-                                    _fuse.m_childTarget.position =
-                                        _fuse.transform.position + _fuse.m_targetDistance;
-
-                                    // エフェクトも同じ場所に生成
-                                    Spark spark = Spark.Instantiate(_fuse.transform.position + _fuse.m_targetDistance,
-                                        _fuse.m_targetDistance * - 2.0f, _fuse, _fuse.m_haveEffect.Count);
-                                    _fuse.m_haveEffect.Add(spark);
-
-                                    // 導火線本体の中心座標を設定
-                                    Transform childModel = _fuse.m_childModel;
-                                    Renderer childRendere = _fuse.m_childRenderer;
-                                    childRendere.material.SetVector("_Center", childModel.position);
-                                }
-                                else if (Utility.TagSeparate.getParentTagName(_obj.transform.tag) == NameDefine.TagName.Gimmick)
-                                {
-                                    GameGimmick _gimmick = _obj.gameObject.GetComponent<GameGimmick>();
-
-                                    // 当たったものがゴールなら
-                                    if (_gimmick.Type == GameGimmick.GimmickType.Goal && !_gimmick.GimmickStart)
-                                    {
-                                        // 燃えたゴールを登録
-                                        GameMgr.Instance.FireGoal(false);
-                                        // 燃えているオブジェクトを加算
-                                        GameMgr.Instance.BurnCount += 1;
-                                        _gimmick.GimmickStart = true;
-                                    }
+                                    _gimmick.GimmickStart = true;
                                 }
                             }
 
@@ -365,10 +377,21 @@ public class GameFuse : FuseBase
             if (!_fuse || _fuse.State != FuseState.None)
                 return;
 
+            // 元の移動先のものとは当たらない
             if (transform.position == _fuse.transform.position - m_targetDistance * 2)
                 return;
 
-            m_collObj.Add(_fuse.gameObject);
+            // ギミック動作中なら
+            if (_fuse.m_isMoved || _fuse.m_isRotate)
+                return;
+
+            m_collFuse.Add(_fuse);
+
+            if (_fuse.Type <= FuseType.Start)
+                return;
+
+            // ギミックなら相手を記憶しておく
+            _fuse.m_collFuse.Add(this);
         }
         else if (Utility.TagSeparate.getParentTagName(other.transform.tag) == NameDefine.TagName.Gimmick)
         {
@@ -378,7 +401,7 @@ public class GameFuse : FuseBase
             if (_gimmick.Type == GameGimmick.GimmickType.Water)
                 return;
 
-            m_collObj.Add(_gimmick.gameObject);
+            m_collGimmick.Add(_gimmick);
         }
     }
 
@@ -404,8 +427,11 @@ public class GameFuse : FuseBase
         {
             case FuseType.Rotate:
                 {
-                    if(!m_isRotate)
+                    if (!m_isRotate)
+                    {
                         StartCoroutine(RotateFuse());
+                        OutRangeFuse();
+                    }
                     break;
                 }
             case FuseType.MoveLeft:
@@ -413,6 +439,7 @@ public class GameFuse : FuseBase
                     m_rot = Quaternion.Euler(0.0f, 0.0f, 0.0f);
                     m_afterRot = Quaternion.Euler(0.0f, 180.0f, 0.0f);
                     GimmickMove(Vector3.left);
+                    OutRangeFuse();
                     break;
                 }
             case FuseType.MoveRight:
@@ -420,6 +447,7 @@ public class GameFuse : FuseBase
                     m_rot = Quaternion.Euler(0.0f, 180.0f, 0.0f);
                     m_afterRot = Quaternion.Euler(0.0f, 0.0f, 0.0f);
                     GimmickMove(Vector3.right);
+                    OutRangeFuse();
                     break;
                 }
             case FuseType.MoveDown:
@@ -427,6 +455,7 @@ public class GameFuse : FuseBase
                     m_rot = Quaternion.Euler(0.0f, 0.0f, -90.0f);
                     m_afterRot = Quaternion.Euler(0.0f, 0.0f, 90.0f);
                     GimmickMove(Vector3.up);    // down
+                    OutRangeFuse();
                     break;
                 }
             case FuseType.MoveUp:
@@ -434,6 +463,7 @@ public class GameFuse : FuseBase
                     m_rot = Quaternion.Euler(0.0f, 0.0f, 90.0f);
                     m_afterRot = Quaternion.Euler(0.0f, 0.0f, -90.0f);
                     GimmickMove(Vector3.down);  // up
+                    OutRangeFuse();
                     break;
                 }
             case FuseType.MoveBack:
@@ -441,6 +471,7 @@ public class GameFuse : FuseBase
                     m_rot = Quaternion.Euler(0.0f, -90.0f, 0.0f);
                     m_afterRot = Quaternion.Euler(0.0f, 90.0f, 0.0f);
                     GimmickMove(Vector3.back);
+                    OutRangeFuse();
                     break;
                 }
             case FuseType.MoveForward:
@@ -448,6 +479,7 @@ public class GameFuse : FuseBase
                     m_rot = Quaternion.Euler(0.0f, 90.0f, 0.0f);
                     m_afterRot = Quaternion.Euler(0.0f, -90.0f, 0.0f);
                     GimmickMove(Vector3.forward);
+                    OutRangeFuse();
                     break;
                 }
             default:
@@ -480,6 +512,17 @@ public class GameFuse : FuseBase
     }
 
     /// <summary>
+    /// 当たった先の導火線から自信を削除
+    /// </summary>
+    private void OutRangeFuse()
+    {
+        foreach(GameFuse _fuse in m_collFuse)
+        {
+            _fuse.m_collFuse.Remove(this);
+        }
+    }
+
+    /// <summary>
     /// 導火線の回転
     /// </summary>
     public IEnumerator RotateFuse()
@@ -496,10 +539,11 @@ public class GameFuse : FuseBase
                 fuseAngle -= sumAngle - 90f;
 
             transform.RotateAround(transform.position, Vector3.down, fuseAngle);
-
             yield return null;
         }
 
+        m_collFuse.Clear();
+        m_collGimmick.Clear();
         yield break;
     }
 
@@ -518,19 +562,34 @@ public class GameFuse : FuseBase
             float sum = 0.0f;
             while (sum < 1.0f)
             {
+                // 時間加算
                 sum += AdjustParameter.Fuse_Constant.MOVE_VALUE * Time.deltaTime;
-                transform.position = Vector3.MoveTowards(transform.position, target, AdjustParameter.Fuse_Constant.MOVE_VALUE * Time.deltaTime);
 
+                Vector3 defPos = transform.position;
+                Vector3 difference = Vector3.MoveTowards(transform.position,
+                    target, AdjustParameter.Fuse_Constant.MOVE_VALUE * Time.deltaTime) - defPos;
+                
+                // その導火線のエフェクトも一緒に移動
+                for(int i = 0; i < m_haveEffect.Count; ++i)
+                {
+                    Spark spark = m_haveEffect[i];
+                    if (!spark)
+                        continue;
+
+                    spark.transform.position += difference;
+                }
+                transform.position = difference + transform.position;
                 yield return null;
             }
 
             //矢印回転
             m_arrow.transform.rotation = rotate;
+            m_collFuse.Clear();
+            m_collGimmick.Clear();
         }
         else
         {
             // 移動先に他のFuseがある場合その場で揺らす
-
             transform.position = m_fuseCurrentPos;              // Fuseを現在の位置に固定
 
             // Tree,Grassと同じ処理
@@ -542,6 +601,7 @@ public class GameFuse : FuseBase
 
                 yield return null;
             }
+
             m_arrow.transform.localPosition = m_arrowCurrentPos;    // Arrowをもとの位置に
         }
         yield break;
@@ -576,15 +636,5 @@ public class GameFuse : FuseBase
             m_state = FuseState.Wet;
             m_countTime = AdjustParameter.Fuse_Constant.WET_MAX_TIME;
         }
-    }
-
-    // GameGimmick.cs に送る
-    public bool SetMoveFrag()
-    {
-        return m_isMoved;
-    }
-    public bool SetRotFrag()
-    {
-        return m_isRotate;
     }
 }

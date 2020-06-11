@@ -160,15 +160,11 @@ public class GameGimmick : MonoBehaviour
                 GameFuse _fuse = hit.collider.gameObject.GetComponent<GameFuse>();
                 _fuse.FuseWet();
 
-                // Fuseがギミック動作中か取得
-                bool isMoved = _fuse.SetMoveFrag();
-                bool isRotate = _fuse.SetRotFrag();
-
                 // 水が当たってる時の長さ
                 m_particle.transform.localScale = new Vector3(0.3f, 0.3f, hit.distance * 0.2f);
 
                 // water drop のパーティクルが暴れるのでFuseのギミック中は表示しない
-                if (isMoved || isRotate)
+                if (_fuse.Moved || _fuse.Rotate)
                     childParticle.gameObject.SetActive(false);
                 else
                     childParticle.gameObject.SetActive(true);
