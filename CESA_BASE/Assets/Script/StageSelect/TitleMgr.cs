@@ -6,9 +6,9 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     private const float GUID_TIME = 1.0f;
     private const float UP_SPEED = 0.5f;
 
-    private readonly Vector3 InitLogoPos = new Vector3(0.0f, 0.4f, 1.0f);
-    private readonly Vector3 m_initGuidPos = new Vector3(0.0f, 0.0f, 0.0f);
-    private readonly Vector3 LogoUpPos = new Vector3(0.0f, 0.8f, 1.0f);
+    private readonly Vector3 InitLogoPos = new Vector3(0.0f, -0.2f, 1.0f);
+    private readonly Vector3 m_initGuidPos = new Vector3(0.0f, -0.6f, 0.0f);
+    private readonly Vector3 LogoUpPos = new Vector3(0.0f, 0.2f, 1.0f);
 
     private readonly Quaternion InitCameraRot = Quaternion.Euler(new Vector3(-60, 0, 0));
     private readonly Quaternion InitObjRot = Quaternion.Euler(new Vector3(30, 0, 0));
