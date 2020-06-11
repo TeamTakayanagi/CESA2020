@@ -94,7 +94,6 @@ public class GameGimmick : MonoBehaviour
         {
             m_isGimmickStart = false;
             m_function.Stop = false;
-
         }
         else
         {

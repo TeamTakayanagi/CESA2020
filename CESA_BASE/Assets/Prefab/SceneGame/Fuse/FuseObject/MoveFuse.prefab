@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7490941040691658274}
   - component: {fileID: 377809930789888747}
+  - component: {fileID: -2780548175855945204}
   m_Layer: 0
   m_Name: MoveFuse
   m_TagString: Untagged
@@ -25,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1587527042974671339}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children:
   - {fileID: 633574468345334091}
@@ -46,6 +47,26 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 7.5, y: 7.5, z: 7.5}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-2780548175855945204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1587527042974671339}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76cbcb46b2f19b04eade04985dd2ea8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_function:
+  - _functionType: 1
+    _sinType: 1
+    _isLooping: 1
+    _deleyTime: 0
+    _startAngle: {x: 0, y: 0, z: 0}
+    _speed: {x: 20, y: 20, z: 20}
+    _amp: {x: 0, y: 0.1, z: 0}
 --- !u!1001 &2074377060332375086
 PrefabInstance:
   m_ObjectHideFlags: 0

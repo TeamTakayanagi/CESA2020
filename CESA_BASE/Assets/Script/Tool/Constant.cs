@@ -32,6 +32,13 @@ namespace AdjustParameter
         public const float ROT_VALUE = 5.0f;                            // 導火線の回転速度（ギミック）
     }
 
+    public readonly struct Arrow_Constant
+    {
+        public const float SWAYS_SPEED = 20;
+        public const float SWAYS_POS = 0.05f;
+        public const float MAX_REDIAN = 12;
+    }
+
     public readonly struct UI_Object_Constant
     {
         public const int UI_AMOUNT_MAX = 10;                            // UIの導火線の最大数
