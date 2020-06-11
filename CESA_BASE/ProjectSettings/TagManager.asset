@@ -16,22 +16,19 @@ TagManager:
   - Fuse/LL
   - Fuse/TT
   - Fuse/XX
-  - TerrainBlock
-  - Fuse
   - UICanvas
   - Gimmick/Goal
   - Gimmick/Hose
-  - Gimmick/SubMission
   - Gimmick/Wall
   - Stage
-  - Fade
   - UI/Retire
   - UI/GameSpeed
   - ClickObject
   - StageParent
   - fuseParent
-  - UI/Arrow
   - UI/GameButton
+  - UI/Start
+  - UI/ArrowR
   layers:
   - Default
   - TransparentFX

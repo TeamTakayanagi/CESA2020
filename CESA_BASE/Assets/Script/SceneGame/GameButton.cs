@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class GameButton : MonoBehaviour
 {
-    private const float SLIDE_RATE = 3.0f / 5.0f;
     private const float SLIDE_TIME = 1.0f;
+    private const float SLIDE_VALUE = 1.5f;     // 1つとその半分移動
     private enum ChildType
     {
         Sride,
@@ -18,18 +18,14 @@ public class GameButton : MonoBehaviour
     // スライドして画面に出てきているかどうか
     private bool m_isSride = false;
     private Vector3 m_defaultPos;
+    private RectTransform rectTrans;
 
     // Start is called before the first frame update
     void Start()
     {
-        RectTransform rect = GetComponent<RectTransform>();
+        rectTrans = GetComponent<RectTransform>();
 
-        if (!m_isSride)
-        {
-            rect.localPosition -= new Vector3(rect.sizeDelta.x * SLIDE_RATE, 0.0f, 0.0f);
-        }
-
-        m_defaultPos = rect.localPosition;
+        m_defaultPos = rectTrans.localPosition;
     }
 
     // Update is called once per frame
@@ -43,18 +39,14 @@ public class GameButton : MonoBehaviour
         // サウンド
         Sound.Instance.PlaySE("se_click", GetInstanceID());
 
-        RectTransform rect = GetComponent<RectTransform>();
-
         if (!m_isSride)
         {
-            rect.DOLocalMove(m_defaultPos + new Vector3(rect.sizeDelta.x * SLIDE_RATE, 0.0f, 0.0f), SLIDE_TIME);
-            m_defaultPos += new Vector3(rect.sizeDelta.x * SLIDE_RATE, 0.0f, 0.0f);
+            rectTrans.DOLocalMove(m_defaultPos + new Vector3(rectTrans.sizeDelta.x * SLIDE_VALUE, 0.0f, 0.0f), SLIDE_TIME);
             m_isSride = true;
         }
         else
         {
-            rect.DOLocalMove(m_defaultPos - new Vector3(rect.sizeDelta.x * SLIDE_RATE, 0.0f, 0.0f), SLIDE_TIME);
-            m_defaultPos -= new Vector3(rect.sizeDelta.x * SLIDE_RATE, 0.0f, 0.0f);
+            rectTrans.DOLocalMove(m_defaultPos, SLIDE_TIME);
             m_isSride = false;
         }
     }

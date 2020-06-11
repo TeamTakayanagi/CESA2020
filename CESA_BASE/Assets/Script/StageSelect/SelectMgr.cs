@@ -5,6 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
 {
+    // UIの矢印のポジション
+    private float UI_POS_X = 430.0f;
+    private float UI_POS_Y = 220.0f;
+
     private const float CAMERA_ATTENTION = 3.5f;
     private static int ms_selectStage = 0;          // 直前に遊んだステージ
     private static int ms_tryStage = -1;            // ステージ選択から当選したステージ
@@ -166,6 +170,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                 {
                     Stage _stage = _hit.transform.GetComponent<Stage>();
                     m_zoomObj = _stage;
+                    SetArrowUI(m_zoomObj);
                     m_zoomObj.MoveCoroutine(true);
                     m_camera.StartZoomIn(_stage.transform.position);
 
@@ -187,23 +192,68 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     /// <summary>
     /// 矢印をクリック
     /// </summary>
-    /// <param name="gameObj">そのボタンのオブジェクト</param>
-    public void ClickArrow(GameObject gameObj)
+    /// <param name="arrow">そのボタンのオブジェクト</param>
+    public void ClickArrow(Transform arrow)
     {
         if (FadeMgr.Instance.State != FadeBase.FadeState.None)
             return;
 
+        // 現在のステージ番号UIの動きを止める
         m_zoomObj.MoveCoroutine(false);
-        gameObj.GetComponent<Animator>().ResetTrigger("Highlighted");
 
-        int direct = gameObj.transform.position.x > gameObj.transform.root.position.x ? 1 : -1;
+        // ボタンの処理
+        arrow.GetComponent<Animator>().ResetTrigger("Highlighted");
+        int direct = arrow.tag == "UI/ArrowR" ? 1 : -1;
         m_zoomObj = m_stageList[Mathf.Clamp(m_zoomObj.StageNum - 1 + direct, 0, m_stageList.Count - 1)];
+        arrow.localScale = Vector3.one;
+
+        // 移動後の場所のステージを注視する
         m_camera.StartZoomIn(m_zoomObj.transform.position);
-        gameObj.transform.localScale = Vector3.one;
+        // 変更後ののステージ番号UIの動きを始める
         m_zoomObj.MoveCoroutine(true);
 
-        // サウンド
+        // 矢印の位置を変更する
+        SetArrowUI(m_zoomObj);
+
+        // クリックサウンド
         Sound.Instance.PlaySE("se_click", GetInstanceID());
+    }
+
+
+    private void SetArrowUI(Stage stage)
+    {
+        Vector3 distance = Vector3.zero;
+        Vector3 absolute = Vector3.zero;
+
+        // 最終ステージではない
+        if (stage.StageNum != m_stageList.Count)
+        {
+            Vector3 aft = m_stageList[Mathf.Clamp(m_zoomObj.StageNum, 0, m_stageList.Count - 1)].transform.position;
+            distance = aft - stage.transform.position;
+            // Y座標は比較しない
+            distance.y = distance.z;
+            distance.z = 0.0f;
+            // 変化が一番大きい要素が１の変数を取得
+            absolute = Utility.MyMath.GetMaxDirectSign(distance);
+            Transform UIRight = m_uiArrow.transform.GetChild(0);
+            UIRight.localPosition = new Vector3(absolute.x * UI_POS_X, absolute.y * UI_POS_Y, 0.0f);
+            UIRight.eulerAngles = new Vector3(0.0f, 0.0f, Vector3.Angle(Vector3.left, absolute) * -Vector3.Dot(Vector3.one, absolute));
+        }
+        // 最初のステージではない
+        if (stage.StageNum != 1)
+        {
+            Vector3 bef = m_stageList[Mathf.Clamp(m_zoomObj.StageNum - 2, 0, m_stageList.Count - 1)].transform.position;
+            distance = bef - stage.transform.position;
+            // Y座標は比較しない
+            distance.y = distance.z;
+            distance.z = 0.0f;
+            // 変化が一番大きい要素が１の変数を取得
+            absolute = Utility.MyMath.GetMaxDirectSign(distance);
+            Transform UILeft = m_uiArrow.transform.GetChild(1);
+            UILeft.localPosition = new Vector3(absolute.x * UI_POS_X, absolute.y * UI_POS_Y, 0.0f);
+            UILeft.eulerAngles = new Vector3(0.0f, 0.0f, Vector3.Angle(Vector3.left, absolute) * -Vector3.Dot(Vector3.one, absolute));
+        }
+
     }
 
     /// <summary>

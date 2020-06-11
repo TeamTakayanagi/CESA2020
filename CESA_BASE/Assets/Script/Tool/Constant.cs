@@ -141,8 +141,7 @@ namespace NameDefine
         public const string UICanvas = "UICanvas";
         public const string UIGameClear = "UI/GameClear";
         public const string UIGameOver = "UI/GameOver";
-        public const string UIGameButton = "UI/GameButton";
-        public const string TerrainBlock = "TerrainBlock";
+        public const string UIStart = "UI/Start";
         public const string Gimmick = "Gimmick";
         public const string Stage = "Stage";
         public const string ClickObj = "ClickObject";

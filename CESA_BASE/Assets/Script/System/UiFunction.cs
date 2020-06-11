@@ -46,6 +46,7 @@ public class UiFunction : MonoBehaviour
         public FunctionType _functionType;  // 機能タイプ
         public SinType _sinType;            // sin値タイプ
         public bool _isLooping;             // ループするかどうか  
+        public bool _isDestroy;             // ループしない場合、削除されるか  
         public float _deleyTime;            // 遅延
 
         public Vector3  _startAngle;        // 初期値
@@ -54,8 +55,20 @@ public class UiFunction : MonoBehaviour
 
         [System.NonSerialized]
         public Vector3 _angleValue;        // 移動量
+        [System.NonSerialized]
+        public bool _stop = false;         // 停止
     }
 
+    public bool Stop
+    {
+        set
+        {
+            for (int i = 0, size = m_function.Count; i < size; ++i)
+            {
+                m_function[i]._stop = value;
+            }
+        }
+    }
     [SerializeField]
     private AlphaChange m_alphaChange = null;   // α値変化
 
@@ -101,7 +114,6 @@ public class UiFunction : MonoBehaviour
                 case FunctionType.Scaling:
                     m_standardValue = transform.localScale;
                     break;
-
                 case FunctionType.Shaking:
                     m_standardValue = transform.localPosition;
                     break;
@@ -153,6 +165,9 @@ public class UiFunction : MonoBehaviour
         // Function
         for (int _typeNum = 0; _typeNum < m_function.Count; _typeNum++)
         {
+            if (m_function[_typeNum]._stop)
+                continue;
+
             if (m_function[_typeNum]._deleyTime > 0.0f)
             {
                 m_function[_typeNum]._deleyTime -= 1 * Time.deltaTime;
@@ -172,6 +187,11 @@ public class UiFunction : MonoBehaviour
             }
             else
             {
+                if (m_function[_typeNum]._isDestroy)
+                {
+                    DestroyImmediate(gameObject);
+                    return;
+                }
                 if (m_function[_typeNum]._sinType == SinType.PlusOnly || m_function[_typeNum]._sinType == SinType.MinusOnly)
                 {
                     if (m_function[_typeNum]._angleValue.x >= 180.0f)

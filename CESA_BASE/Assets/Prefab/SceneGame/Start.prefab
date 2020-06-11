@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2321382420129644839
+--- !u!1 &9218463025531300343
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,52 +8,51 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4197050542627759115}
-  - component: {fileID: 9145192046551381193}
-  - component: {fileID: 7681682228291354321}
-  - component: {fileID: 1105800399606296184}
-  - component: {fileID: 6481979955196159752}
+  - component: {fileID: 9218463025531300328}
+  - component: {fileID: 9218463025531300331}
+  - component: {fileID: 9218463025531300330}
+  - component: {fileID: 9218463025531300329}
   m_Layer: 5
-  m_Name: Guid
-  m_TagString: Untagged
+  m_Name: Start
+  m_TagString: UI/Start
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &4197050542627759115
+--- !u!224 &9218463025531300328
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2321382420129644839}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_GameObject: {fileID: 9218463025531300343}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.05, z: 0.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 16, y: 9}
+  m_AnchoredPosition: {x: -90, y: 0}
+  m_SizeDelta: {x: 300, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &9145192046551381193
+--- !u!222 &9218463025531300331
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2321382420129644839}
+  m_GameObject: {fileID: 9218463025531300343}
   m_CullTransparentMesh: 0
---- !u!114 &7681682228291354321
+--- !u!114 &9218463025531300330
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2321382420129644839}
+  m_GameObject: {fileID: 9218463025531300343}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
@@ -65,9 +64,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 27bd481f6a3cb7e4e895d70ffeb2bf35, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 208dba12a50c76e4884ded780b8c541c, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -75,28 +74,29 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1105800399606296184
+--- !u!114 &9218463025531300329
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2321382420129644839}
+  m_GameObject: {fileID: 9218463025531300343}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 716d6900a09026b439a4e3841954d0f5, type: 3}
+  m_Script: {fileID: 11500000, guid: 2a3d7da001d616f4caeb0bd57f5cd77a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_speed: 1
---- !u!114 &6481979955196159752
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2321382420129644839}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 363d1981e05df5d449a836a811dff65d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_alphaChange:
+    _alphaType: 0
+    _min: 0
+    _max: 1
+    _time: 2
+  m_function:
+  - _functionType: 0
+    _sinType: 1
+    _isLooping: 0
+    _isDestroy: 1
+    _deleyTime: 0.5
+    _startAngle: {x: 0.5, y: 0.5, z: 0.5}
+    _speed: {x: 0.3, y: 0.3, z: 0.3}
+    _amp: {x: 0.2, y: 0.2, z: 0.2}

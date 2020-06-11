@@ -112,16 +112,4 @@ public class FadeRat : FadeBase
             }
         }
     }
-
-
-    private IEnumerator Move(float time)
-    {
-        float f = 0.0f;
-        while(f < 1)
-        {
-            f += Time.deltaTime / 5;
-            yield return null;
-        }
-        yield break;
-    }
 }

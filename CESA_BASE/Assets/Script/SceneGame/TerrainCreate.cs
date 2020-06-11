@@ -44,7 +44,6 @@ public class TerrainCreate : MonoBehaviour
                     {
                         GameObject　_obj = Instantiate(m_groundPrefab, new Vector3(x - half.x, underPosY, y - half.y), Quaternion.identity);
                         _obj.transform.parent = transform.GetChild((int)TerrainChild.Ground);
-                        _obj.transform.tag = NameDefine.TagName.TerrainBlock;
                     }
                 }
             }
