@@ -120,6 +120,7 @@ public class GameGimmick : MonoBehaviour
                     Vector3.one, Quaternion.identity);
                 GameMgr.Instance.FireGoal(true, effect.gameObject);
                 m_isGimmickStart = false;
+                
             }
         }
     }

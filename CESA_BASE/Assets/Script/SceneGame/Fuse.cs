@@ -57,6 +57,10 @@ public class Fuse : MonoBehaviour
     private Vector3 m_oldPos = Vector3.zero;    // position保存用
     private Vector3 m_oldRot = Vector3.zero;    // rotation保存用
 
+    private GameObject m_moveFuse = null;
+    private Quaternion m_rot = Quaternion.identity;
+    private Quaternion m_nrot = Quaternion.identity; 
+
     public float CountTime
     {
         get
@@ -251,8 +255,13 @@ public class Fuse : MonoBehaviour
             modelRender.material.SetFloat("_Ration", 0);
         }
 
-        // 元の位置を保存
-        if (m_state != FuseState.UI)
+        if (m_type >= Fuse.FuseType.MoveLeft && m_type <= Fuse.FuseType.MoveForward)
+        {
+            m_moveFuse = transform.GetChild(2).gameObject;
+        }
+
+            // 元の位置を保存
+            if (m_state != FuseState.UI)
         m_defaultPos = transform.position;
     }
 
@@ -466,31 +475,43 @@ public class Fuse : MonoBehaviour
                 }
             case FuseType.MoveLeft:
                 {
+                    m_rot = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+                    m_nrot = Quaternion.Euler(0.0f, 180.0f, 0.0f);
                     GimmickMove(Vector3.left);
                     break;
                 }
             case FuseType.MoveRight:
                 {
+                    m_rot = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+                    m_nrot = Quaternion.Euler(0.0f, 0.0f, 0.0f);
                     GimmickMove(Vector3.right);
                     break;
                 }
             case FuseType.MoveDown:
                 {
-                    GimmickMove(Vector3.down);
+                    m_rot = Quaternion.Euler(0.0f, 0.0f, -90.0f);
+                    m_nrot = Quaternion.Euler(0.0f, 0.0f, 90.0f);
+                    GimmickMove(Vector3.up);    // 下がる
                     break;
                 }
             case FuseType.MoveUp:
                 {
-                    GimmickMove(Vector3.up);
+                    m_rot = Quaternion.Euler(0.0f, 0.0f, 90.0f);
+                    m_nrot = Quaternion.Euler(0.0f, 0.0f, -90.0f);
+                    GimmickMove(Vector3.down);  // 上がる
                     break;
                 }
             case FuseType.MoveBack:
                 {
+                    m_rot = Quaternion.Euler(0.0f, -90.0f, 0.0f);
+                    m_nrot = Quaternion.Euler(0.0f, 90.0f, 0.0f);
                     GimmickMove(Vector3.back);
                     break;
                 }
             case FuseType.MoveForward:
                 {
+                    m_rot = Quaternion.Euler(0.0f, 90.0f, 0.0f);
+                    m_nrot = Quaternion.Euler(0.0f, -90.0f, 0.0f);
                     GimmickMove(Vector3.forward);
                     break;
                 }
@@ -510,12 +531,12 @@ public class Fuse : MonoBehaviour
             if (!isMove)
             {
                 movePos = m_defaultPos;
-                StartCoroutine(MoveFuse(movePos, direct));
+                StartCoroutine(MoveFuse(movePos, direct, m_rot));
             }
             else
             {
                 movePos = m_defaultPos - direct;
-                StartCoroutine(MoveFuse(movePos, -direct));
+                StartCoroutine(MoveFuse(movePos, -direct, m_nrot));
             }
         }
     }
@@ -553,8 +574,10 @@ public class Fuse : MonoBehaviour
     /// </summary>
     /// <param name="target">目的地</param>
     /// <param name="direction">向き</param>
-    public IEnumerator MoveFuse(Vector3 target, Vector3 direction)
+    public IEnumerator MoveFuse(Vector3 target, Vector3 direction, Quaternion rotate)
     {
+        Vector3 defaPos = transform.position;
+
         RaycastHit hit = new RaycastHit();
         float dist = 0.5f;
 
@@ -569,10 +592,39 @@ public class Fuse : MonoBehaviour
                 transform.position = Vector3.MoveTowards(transform.position, target, AdjustParameter.Fuse_Constant.MOVE_VALUE * Time.deltaTime);
                 yield return null;
             }
+
+            //ここで矢印回転
+            m_moveFuse.transform.rotation = rotate;
+        }
+        else
+        {
+            //StartCoroutine("SwaysFuse");
+            // ものがあったら元の位置に戻る
+            transform.position = defaPos;
         }
 
         yield break;
     }
+
+    // 動けないときにその場でバウンドする（仮
+    //private IEnumerator SwaysFuse()
+    //{
+    //    Vector3 sway = new Vector3(1f, 1f, 0);
+    //    float m_redian = 0;
+    //    while (m_redian < ProcessedtParameter.ClickObj.Grass.MAX_REDIAN)
+    //    {
+    //        m_redian += Time.deltaTime * ProcessedtParameter.ClickObj.Grass.SWAYS_SPEED;
+    //        m_moveFuse.transform.position += sway * ProcessedtParameter.ClickObj.Grass.SWAYS_POS * Mathf.Sin(m_redian);
+
+    //        yield return null;
+    //    }
+
+    //    m_moveFuse.transform.position = m_defaultPos;
+    //    m_redian = 0;
+    //    StopCoroutine("SwaysFuse");
+    //    yield return null;
+    //}
+
 
     /// <summary>
     /// 導火線が濡れた時の処理

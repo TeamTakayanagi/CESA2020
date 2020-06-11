@@ -26,6 +26,7 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
     [SerializeField]
     private List<GameGimmick> m_gimmkList = new List<GameGimmick>();
 
+
     private void Start()
     {
         // 昇順に並び替え
@@ -156,6 +157,9 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
                             Quaternion rot = Quaternion.identity;
                             switch (_fuse.Type)
                             {
+                                case Fuse.FuseType.MoveLeft:
+                                    rot = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+                                    break;
                                 case Fuse.FuseType.MoveRight:
                                     rot = Quaternion.Euler(0.0f, 180.0f, 0.0f);
                                     break;
@@ -163,14 +167,13 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
                                     rot = Quaternion.Euler(0.0f, 0.0f, 90.0f);
                                     break;
                                 case Fuse.FuseType.MoveDown:
-                                    rot = Quaternion.Euler(180.0f, 0.0f, 90.0f);
+                                    rot = Quaternion.Euler(0.0f, 0.0f, -90.0f);
                                     break;
                                 case Fuse.FuseType.MoveForward:
                                     rot = Quaternion.Euler(0.0f, 90.0f, 0.0f);
-
                                     break;
                                 case Fuse.FuseType.MoveBack:
-                                    rot = Quaternion.Euler(0.0f, 270.0f, 0.0f);
+                                    rot = Quaternion.Euler(0.0f, -90.0f, 0.0f);
                                     break;
                                 default:
                                     break;

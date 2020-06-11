@@ -98,7 +98,7 @@ namespace ProcessedtParameter
         public struct Grass
         {
             public const float SWAYS_SPEED = 20;
-            public const float SWAYS_POS = 0.01f;
+            public const float SWAYS_POS = 0.005f;
             public const float MAX_REDIAN = 12;
             public const float ANIME_DURATION = 60;
         }

@@ -155,7 +155,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         m_uiStartBack.SetActive(false);
         m_camera.StartZoomOut();
 
-        //m_zoomObj = null;   // 
+        m_zoomObj = null;   // 
     }
 
     public void SceneLoad()
