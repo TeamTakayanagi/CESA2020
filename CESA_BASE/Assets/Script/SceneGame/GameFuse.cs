@@ -40,7 +40,18 @@ public class GameFuse : FuseBase
 
     private Vector3 m_oldPos = Vector3.zero;    // position保存用
     private Vector3 m_oldRot = Vector3.zero;    // rotation保存用
-
+    protected List<Spark> m_haveEffect = new List<Spark>();                   // この導火線についているエフェクト   
+    public List<BoxCollider> HaveEffect(Spark spark)
+    {
+        List<Spark> sparkList = m_haveEffect;
+        //sparkList.Remove(spark);
+        List<BoxCollider> collList = new List<BoxCollider>();
+        for (int i = 0; i < sparkList.Count; ++i)
+        {
+            collList.AddRange(sparkList[i].GetComponents<BoxCollider>());
+        }
+        return collList;
+    }
 
     public Vector3 EndPos
     {

@@ -25,6 +25,7 @@ namespace Effekseer
 			fireworks_green,
 			fireworks_lightblue,
 			fireworks_orange,
+			Spark_Select,
 		}
 
 		/// <summary xml:lang="en">

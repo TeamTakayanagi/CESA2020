@@ -25,18 +25,7 @@ public class FuseBase : MonoBehaviour
     protected Transform m_childModel = null;
     protected Transform m_childTarget = null;
     protected Renderer m_childRenderer = null;
-    protected List<Spark> m_haveEffect = new List<Spark>();                   // この導火線についているエフェクト   
-    public List<BoxCollider> HaveEffect(Spark spark)
-    {
-        List<Spark> sparkList = m_haveEffect;
-        //sparkList.Remove(spark);
-        List<BoxCollider> collList = new List<BoxCollider>();
-        for (int i = 0; i < sparkList.Count; ++i)
-        {
-            collList.AddRange(sparkList[i].GetComponents<BoxCollider>());
-        }
-        return collList;
-    }
+
     public FuseState State
     {
         get

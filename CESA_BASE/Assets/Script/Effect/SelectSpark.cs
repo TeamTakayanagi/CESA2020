@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Effekseer;
 
-public class Spark : EffekseerEmitter
+public class SelectSpark : EffekseerEmitter
 {
     private int m_instanceID = 0;                                            // 導火線から見てこのエフェクトが何個目か
-    private GameFuse m_fuseClass = null;                                        // 導火線キューブ取得用
+    private int m_speed = 0;                                                 // 導火線から見てこのエフェクトが何個目か
+    private FuseBase m_fuseClass = null;                                     // 導火線キューブ取得用
     private BoxCollider m_enterCollider = null;                             // 進入方向の導火線コライダ
     private List<BoxCollider> m_fuseCollider = new List<BoxCollider>();     // 進入方向以外導火線のコライダ
 
@@ -28,7 +29,8 @@ public class Spark : EffekseerEmitter
         // その導火線の進行方向のコライダーを取得
         for (int i = 0; i < m_fuseCollider.Count; ++i)
         {
-            if (Mathf.Abs(Vector3.Dot(m_moveVector, m_fuseClass.transform.rotation * m_fuseCollider[i].size)) < 0.5f)
+            if (Mathf.Abs(Vector3.Dot(m_moveVector,
+                m_fuseClass.transform.rotation * m_fuseCollider[i].size)) < 0.5f)
                 continue;
 
             m_enterCollider = m_fuseCollider[i];
@@ -56,20 +58,22 @@ public class Spark : EffekseerEmitter
         }
 
         // 移動量計算
-        Vector3 move = m_moveVector * Time.deltaTime / AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
+        Vector3 move = m_moveVector * m_speed * Time.deltaTime / AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
         Vector3 afterPos = transform.position;
 
         // 移動
         if (m_fuseClass.State == FuseBase.FuseState.Burn)
             afterPos += move;
 
+        float posD = Vector3.Dot((afterPos - m_fuseClass.transform.position) / 1,
+            (transform.position - m_fuseClass.transform.position) / 1);
+        float moveD = Vector3.Dot(move, m_moveVector);
         // 中心に来た時
         if (m_instanceID == 0 && afterPos != Vector3.zero &&
-            (Vector3.Dot(afterPos - m_fuseClass.transform.position, transform.position - m_fuseClass.transform.position) *
-                Vector3.Dot(move, m_moveVector)) < 0)
+            posD * moveD < 0)
         {
             // 導火線の
-            SparkBranch(m_fuseClass.HaveEffect(this));
+            SparkBranch();
             // 進入方向が短いコライダの場合
             if (m_enterCollider.center != Vector3.zero)
             {
@@ -82,21 +86,10 @@ public class Spark : EffekseerEmitter
         transform.position = afterPos;
     }
 
-    private void SparkBranch(List<BoxCollider> coliderList)
+    private void SparkBranch()
     {
         for (int i = 0; i < m_fuseCollider.Count; i++)
         {
-            bool _skip = false;
-            for (int j = 0; j < coliderList.Count; j++)
-            {
-                if (Vector3.Cross(m_fuseCollider[i].size, coliderList[j].size) != Vector3.zero)
-                    continue;
-
-                _skip = true;
-            }
-            if (_skip)
-                continue;
-
             CreateBranchEffect(m_fuseCollider[i]);
         }
     }
@@ -111,18 +104,18 @@ public class Spark : EffekseerEmitter
 
             if (_mostLong == _collider.bounds.size.x)
             {
-                Instantiate(transform.position, Vector3.right, m_fuseClass, -1);
-                Instantiate(transform.position, Vector3.left, m_fuseClass, -1);
+                Instantiate(transform.position, Vector3.right, m_fuseClass, -1, m_speed);
+                Instantiate(transform.position, Vector3.left, m_fuseClass, -1, m_speed);
             }
             else if (_mostLong == _collider.bounds.size.y)
             {
-                Instantiate(transform.position, Vector3.up, m_fuseClass, -1);
-                Instantiate(transform.position, Vector3.down, m_fuseClass, -1);
+                Instantiate(transform.position, Vector3.up, m_fuseClass, -1, m_speed);
+                Instantiate(transform.position, Vector3.down, m_fuseClass, -1, m_speed);
             }
             else if (_mostLong == _collider.bounds.size.z)
             {
-                Instantiate(transform.position, Vector3.forward, m_fuseClass, -1);
-                Instantiate(transform.position, Vector3.back, m_fuseClass, -1);
+                Instantiate(transform.position, Vector3.forward, m_fuseClass, -1, m_speed);
+                Instantiate(transform.position, Vector3.back, m_fuseClass, -1, m_speed);
             }
         }
         else
@@ -132,15 +125,15 @@ public class Spark : EffekseerEmitter
 
             if (_judgeVector == Mathf.Abs(_moveVector.x))
             {
-                Instantiate(transform.position, new Vector3(-Mathf.Sign(_moveVector.x), 0.0f, 0.0f), m_fuseClass, -1);
+                Instantiate(transform.position, new Vector3(-Mathf.Sign(_moveVector.x), 0.0f, 0.0f), m_fuseClass, -1, m_speed);
             }
             else if (_judgeVector == Mathf.Abs(_moveVector.y))
             {
-                Instantiate(transform.position, new Vector3(0.0f, -Mathf.Sign(_moveVector.y), 0.0f), m_fuseClass, -1);
+                Instantiate(transform.position, new Vector3(0.0f, -Mathf.Sign(_moveVector.y), 0.0f), m_fuseClass, -1, m_speed);
             }
             else if (_judgeVector == Mathf.Abs(_moveVector.z))
             {
-                Instantiate(transform.position, new Vector3(0.0f, 0.0f, -Mathf.Sign(_moveVector.z)), m_fuseClass, -1);
+                Instantiate(transform.position, new Vector3(0.0f, 0.0f, -Mathf.Sign(_moveVector.z)), m_fuseClass, -1, m_speed);
             }
         }
 
@@ -154,16 +147,17 @@ public class Spark : EffekseerEmitter
     /// <param name="fuse">エフェクトのある導火線</param>
     /// <param name="haveEffect">導火線の何個目のエフェクトか（追加生成はー１）</param>
     /// <returns></returns>
-    static public Spark Instantiate(Vector3 pos, Vector3 move, GameFuse fuse, int haveEffect)
+    static public SelectSpark Instantiate(Vector3 pos, Vector3 move, FuseBase fuse, int haveEffect, int speed)
     {
-        EffekseerEmitter effect = EffectManager.Instance.EffectCreate(EffectType.Spark, pos, Quaternion.identity);
-         if (!effect)
+        EffekseerEmitter effect = EffectManager.Instance.EffectCreate(EffectType.Spark_Select, pos, Quaternion.identity);
+        if (!effect)
             return null;
-       Spark spark = effect.GetComponent<Spark>();
+        SelectSpark spark = effect.GetComponent<SelectSpark>();
 
         spark.m_moveVector = move;
         spark.m_fuseClass = fuse;
         spark.m_instanceID = haveEffect;
+        spark.m_speed = speed;
 
         return spark;
     }

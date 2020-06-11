@@ -5,7 +5,7 @@ using UnityEngine;
 public class SelectFuse : FuseBase
 {
     private SelectFuse m_nextFuse = null;
-
+    private int m_sparkSpeed = 1;
     public SelectFuse NextFuse
     {
         set
@@ -25,13 +25,12 @@ public class SelectFuse : FuseBase
         m_state = FuseState.None;
     }
 
-    // Update is called once per frame
     void Update()
     {
         // 色変更用オブジェクトが中心にいないなら
         if (m_state == FuseState.Burn && m_childTarget.localPosition != Vector3.zero)
         {
-            float burnRate = Time.deltaTime / AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
+            float burnRate = Time.deltaTime * m_sparkSpeed / AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
             m_childTarget.localScale += new Vector3(burnRate, burnRate, burnRate);
 
             // 移動
@@ -54,11 +53,12 @@ public class SelectFuse : FuseBase
                         transform.position.x - _fuse.transform.position.x,
                         transform.position.y - _fuse.transform.position.y,
                         transform.position.z - _fuse.transform.position.z) * 0.5f;
-
+                    _fuse.m_sparkSpeed = m_sparkSpeed;
                     // 導火線の燃えてきた方向にシェーダー用のオブジェクトを移動
                     _fuse.m_childTarget.position =
                         _fuse.transform.position + _fuse.m_targetDistance;
-                    Spark.Instantiate(_fuse.transform.position + _fuse.m_targetDistance, _fuse.m_targetDistance * -2.0f, _fuse, 0);
+                    SelectSpark.Instantiate(_fuse.transform.position + _fuse.m_targetDistance,
+                        _fuse.m_targetDistance * -2.0f, _fuse, 0, m_sparkSpeed);
 
                     // 導火線本体の中心座標を設定
                     Transform childModel = _fuse.m_childModel;
@@ -77,14 +77,15 @@ public class SelectFuse : FuseBase
     /// <summary>
     /// クリア演出
     /// </summary>
-    public void BurnStart()
+    public void BurnStart(int speed)
     {
+        m_sparkSpeed = speed;
         // 導火線の燃えてきた方向にシェーダー用のオブジェクトを移動
         Renderer modelRender = m_childModel.GetComponent<Renderer>();
         m_childTarget.position = transform.position + m_targetDistance;
         modelRender.material.SetVector("_Target", m_childTarget.position);
         modelRender.material.SetVector("_Center", m_childModel.position);
-        Spark.Instantiate(transform.position + m_targetDistance, m_targetDistance * -2.0f, this, 0);
+        SelectSpark.Instantiate(transform.position + m_targetDistance, m_targetDistance * -2.0f, this, 0, m_sparkSpeed);
         m_state = FuseState.Burn;
     }
 

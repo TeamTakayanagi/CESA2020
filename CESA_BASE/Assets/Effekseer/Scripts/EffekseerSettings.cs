@@ -153,8 +153,9 @@ namespace Effekseer
 		}
 
 #if UNITY_EDITOR
-		[MenuItem("Edit/Project Settings/Effekseer")]
-		public static void EditOrCreateAsset()
+		//[MenuItem("Edit/Project Settings/Effekseer")]
+		[SettingsProvider]
+		public static SettingsProvider EditOrCreateAsset()
 		{
 			const string assetDir = "Assets/Effekseer";
 			const string materialDir = assetDir + "/Materials";
@@ -179,6 +180,7 @@ namespace Effekseer
 
 			EditorGUIUtility.PingObject(asset);
 			Selection.activeObject = asset;
+			return null;
 		}
 #endif
 	}

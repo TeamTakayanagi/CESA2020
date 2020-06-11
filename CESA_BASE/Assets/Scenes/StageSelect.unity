@@ -380,13 +380,19 @@ PrefabInstance:
     - target: {fileID: 3635842658707396759, guid: 8face8b7527d3594f99d16593c98bccb,
         type: 3}
       propertyPath: m_effectList.Array.size
-      value: 11
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 3635842658707396759, guid: 8face8b7527d3594f99d16593c98bccb,
         type: 3}
       propertyPath: m_effectList.Array.data[10]
       value: 
       objectReference: {fileID: 889436816876985903, guid: 38b219066a7b2464c848bf709e8098a2,
+        type: 3}
+    - target: {fileID: 3635842658707396759, guid: 8face8b7527d3594f99d16593c98bccb,
+        type: 3}
+      propertyPath: m_effectList.Array.data[11]
+      value: 
+      objectReference: {fileID: 4927328833983519579, guid: d9aebed25e1b27348a24ac2d86e370e6,
         type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8face8b7527d3594f99d16593c98bccb, type: 3}
@@ -8273,6 +8279,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: fuse
+      objectReference: {fileID: 0}
+    - target: {fileID: 1900164302777096755, guid: 3399a618526e0f74fabcec057b8f961d,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9086626050399644192, guid: 3399a618526e0f74fabcec057b8f961d,
         type: 3}

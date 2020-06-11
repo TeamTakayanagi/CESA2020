@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
 {
-    private static int ms_selectStage = 0;          // 直前に遊んだステージ
+    private static int ms_selectStage = 2;          // 直前に遊んだステージ
     private static int ms_tryStage = -1;            // ステージ選択から当選したステージ
     private int m_clearStage = 0;                   // クリアした一番先のステージ
     private const float CAMERA_ATTENTION = 3.0f;
@@ -66,19 +66,23 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         m_stageList.AddRange(GameObject.FindGameObjectWithTag(NameDefine.TagName.StageParent).GetComponentsInChildren<Stage>());
         for (int i = 0, size = m_stageList.Count; i < size; ++i)
         {
+            int newState = int.Parse(ms_saveData.data[i]);
             m_stageList[i].StageNum = i + 1;
-            m_stageList[i].ClearState = int.Parse(ms_saveData.data[i]);
 
             // 最後までクリアしたか、もしくは次のステージがクリアされていないなら
-            if (m_stageList[i].ClearState > 0)
+            if (newState > 0)
             {
-                // クリアした一番先のステージは
-                m_clearStage = i + 1;
+                if (true)
+                {
+                    // クリアした一番先のステージは
+                    m_clearStage = i + 1;
+                }
             }
+            m_stageList[i].ClearState = newState;
         }
 
         // クリアしたステージがあるなら
-        if(m_clearStage > 0)
+        if (m_clearStage > 0 && ms_selectStage > 0)
             m_stageList[m_clearStage - 1].ClearState *= -1;
     }
 
@@ -106,7 +110,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                 // 1つ目には、ステージの座標を参照して進行向きを求める
                 _fuseList[0].SetTarget(m_stageList[m_clearStage - 1].transform.position);
                 // 先頭に着火
-                _fuseList[0].BurnStart();
+                _fuseList[0].BurnStart(_fuseList.Length);
                 // まとまりごとに開放していく
                 for (int j = 0, size = _fuseList.Length; j < size - 1; ++j)
                 {
@@ -128,15 +132,17 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         // カメラの初期化（角度はタイトル演出で使うので、タイトルで設定）
         m_camera = Camera.main.GetComponent<MainCamera>();
         m_camera.Type = MainCamera.CameraType.SwipeMove;
-        int attention = m_clearStage;
-        // 完全クリアなら
-        if (attention == m_stageList.Count)
-            attention -= 1;     // 最終ステージに注目
-
-        Vector3 zoom = m_stageList[attention].transform.position;
-        m_camera.transform.position = new Vector3(zoom.x,
-            zoom.y + CAMERA_ATTENTION * Mathf.Sin(Mathf.Deg2Rad * m_camera.transform.localEulerAngles.x),
-            zoom.z - CAMERA_ATTENTION * Mathf.Cos(Mathf.Deg2Rad * m_camera.transform.localEulerAngles.x));
+        int attention = ms_selectStage - 1;
+        if (attention > 0)
+        {
+            // 完全クリアなら
+            if (attention == m_stageList.Count)
+                attention -= 1;     // 最終ステージに注目
+            Vector3 zoom = m_stageList[attention].transform.position;
+            m_camera.transform.position = new Vector3(zoom.x,
+                zoom.y + CAMERA_ATTENTION * Mathf.Sin(Mathf.Deg2Rad * m_camera.transform.localEulerAngles.x),
+                zoom.z - CAMERA_ATTENTION * Mathf.Cos(Mathf.Deg2Rad * m_camera.transform.localEulerAngles.x));
+        }
 
 
         // ステージ番号順にソート
