@@ -107,7 +107,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // ゲームオーバー用のUIの親オブジェクト取得
         m_resultGameover = GameObject.FindGameObjectWithTag(NameDefine.TagName.UIGameOver);
         // ゲームのポーズ処理の親オブジェクト取得
-        m_slide = FindObjectOfType<GameButton>().gameObject;
+        m_slide = GameObject.FindGameObjectWithTag(NameDefine.TagName.UIGameButton);
         // ゲームスタート用のオブジェクト格納
         m_start = FindObjectOfType<StartProduction>();
         // UIの導火線生成オブジェクト取得し、動きを止める
@@ -779,8 +779,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
         m_resultClear.SetActive(false);
         m_resultGameover.SetActive(false);
-        //DestroyImmediate(m_resultClear);
-        //DestroyImmediate(m_resultGameover);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -816,11 +814,15 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         EndScene();
         FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, NameDefine.Scene_Name.STAGE_SELECT);
     }
-
     public void ChangeGameSpeed()
     {
-        int store = m_gameSpeed - 1;
+        int store = m_gameSpeed;
         m_gameSpeed = store % 2 + 1;
+    }
+
+    private void OnGUI()
+    {
+        GUI.Label(new Rect(10, 10, 300, 400), m_gameSpeed.ToString());
     }
 }
 

@@ -28,7 +28,6 @@ public class GameFuse : FuseBase
     private float m_countTime = 0.0f;                                       // 汎用カウント変数
     private HashSet<GameObject> m_collObj = new HashSet<GameObject>();
 
-
     // UI用
     private Vector3 m_endPos = Vector3.zero;
     private Vector3 m_defaultPos = Vector3.zero;
@@ -102,8 +101,6 @@ public class GameFuse : FuseBase
             m_type = value;
         }
     }
-
-
 
 
     /// <summary>
@@ -316,27 +313,32 @@ public class GameFuse : FuseBase
                 break;
         }
 
-        // 導火線のギミック動作中判定
-        if (m_oldPos == transform.position)
+        if (m_type >= FuseType.MoveLeft && m_type <= FuseType.MoveForward)
         {
-            m_isMoved = false;
+            // 導火線のギミック動作中判定
+            if (m_oldPos == transform.position)
+            {
+                m_isMoved = false;
+            }
+            else
+            {
+                m_isMoved = true;
+            }
+            m_oldPos = transform.position;
         }
-        else
+        else if (m_type == FuseType.Rotate)
         {
-            m_isMoved = true;
+            // 回転中
+            if (m_oldRot == transform.eulerAngles)
+            {
+                m_isRotate = false;
+            }
+            else
+            {
+                m_isRotate = true;
+            }
+            m_oldRot = transform.eulerAngles;
         }
-        m_oldPos = transform.position;
-
-        // 回転中
-        if (m_oldRot == transform.eulerAngles)
-        {
-            m_isRotate = false;
-        }
-        else
-        {
-            m_isRotate = true;
-        }
-        m_oldRot = transform.eulerAngles;
     }
 
     private void FixedUpdate()

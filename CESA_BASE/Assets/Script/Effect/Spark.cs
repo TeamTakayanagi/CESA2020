@@ -56,7 +56,7 @@ public class Spark : EffekseerEmitter
         }
 
         // 移動量計算
-        Vector3 move = m_moveVector * Time.deltaTime / AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
+        Vector3 move = m_moveVector * GameMgr.Instance.GameSpeed * Time.deltaTime / AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
         Vector3 afterPos = transform.position;
 
         // 移動
