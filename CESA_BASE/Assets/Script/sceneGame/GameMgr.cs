@@ -141,16 +141,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         Camera.main.GetComponent<MainCamera>().Control = true;
         Sound.Instance.PlayBGM("bgm_game");
 
-        GameObject _gameButton = GameObject.FindGameObjectWithTag(NameDefine.TagName.UIGameButton);
-        if (SelectMgr.SelectStage == 1)
-        {
-            _gameButton.transform.GetChild(0).gameObject.SetActive(false);
-        }
-        else
-        {
-            Destroy(_gameButton.transform.GetChild(3).gameObject);
-        }
-
         m_uiSpeed = GameObject.FindGameObjectWithTag(NameDefine.TagName.UIGameButton).transform.GetChild(0).GetChild(0).GetComponent<Image>();
     }
 
@@ -562,6 +552,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     {
         EffectManager.Instance.DestoryEffects();
         m_gameStep = null;
+        m_slide.SlideVar(false);
 
         if(Camera.main.rect != new Rect(0.0f, 0.0f, 1.0f, 1.0f))
             Camera.main.DORect(new Rect(0.0f, 0.0f, 1.0f, 1.0f), SLIDE_UI);

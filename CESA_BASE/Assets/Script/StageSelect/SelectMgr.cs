@@ -111,16 +111,8 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         {
             _fuseGroup = fuseParent.GetChild(i);
             _fuseList = _fuseGroup.GetComponentsInChildren<SelectFuse>();
-            // クリア済みのステージなら（クリア済み挑戦してリタイヤもここ）
-            if (i < m_clearStage - 1 ||
-                (ms_selectStage - 1 <= m_clearStage && i == m_clearStage - 1))
-            {
-                // 導火線のまとまりごとに開放していく
-                for (int j = 0, size = _fuseList.Length; j < size; ++j)
-                    _fuseList[j].BurnOut();
-            }
             // 未クリアのステージをクリアした(クリア演出)
-            else if (i == m_clearStage - 1 && ms_tryStage < ms_selectStage)
+            if (i == m_clearStage - 1 && ms_tryStage < ms_selectStage)
             {
                 // 1つ目には、ステージの座標を参照して進行向きを求める
                 _fuseList[0].SetTarget(m_stageList[m_clearStage - 1].transform.position);
@@ -133,6 +125,14 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                     // 次の導火線を格納
                     _fuse.NextFuse = _fuseList[j + 1];
                 }
+            }
+            // クリア済みのステージなら（クリア済み挑戦してリタイヤもここ）
+            else if (i < m_clearStage - 1 ||
+                (ms_selectStage - 1 <= m_clearStage && i == m_clearStage - 1))
+            {
+                // 導火線のまとまりごとに開放していく
+                for (int j = 0, size = _fuseList.Length; j < size; ++j)
+                    _fuseList[j].BurnOut();
             }
         }
 
