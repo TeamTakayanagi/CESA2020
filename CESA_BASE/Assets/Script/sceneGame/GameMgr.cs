@@ -20,9 +20,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     [SerializeField]
     private Vector3Int m_stageSize = Vector3Int.zero;                   // ステージサイズ
     [SerializeField]
-    private Sprite m_normalSpeed = null;
-    [SerializeField]
-    private Sprite m_x2Speed = null;
+    private Sprite[] m_SpeedTex = null;
 
     // 定数
     private readonly Vector3 TEXT_POS = new Vector3(0.0f, 150, 0.0f);           // リザルトテキストの移動距離
@@ -622,15 +620,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         Sound.Instance.PlaySE("se_click", GetInstanceID());
 
         m_gameSpeed = m_gameSpeed % 2 + 1;
+        m_uiSpeed.sprite = m_SpeedTex[m_gameSpeed - 1];
 
-        if (m_gameSpeed == 1)
-        {
-            m_uiSpeed.sprite = m_normalSpeed;
-        }
-        else if (m_gameSpeed == 2)
-        {
-            m_uiSpeed.sprite = m_x2Speed;
-        }
     }
 }
 
