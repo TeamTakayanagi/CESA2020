@@ -245,6 +245,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
             Transform UIRight = m_uiArrow.transform.GetChild(0);
             UIRight.localPosition = new Vector3(absolute.x * UI_POS_X, absolute.y * UI_POS_Y, 0.0f);
             UIRight.eulerAngles = new Vector3(0.0f, 0.0f, Vector3.Angle(Vector3.left, absolute) * -Vector3.Dot(Vector3.one, absolute));
+            UIRight.GetChild(0).rotation = Quaternion.identity;
         }
         // 最初のステージではない
         if (stage.StageNum != 1)
@@ -259,6 +260,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
             Transform UILeft = m_uiArrow.transform.GetChild(1);
             UILeft.localPosition = new Vector3(absolute.x * UI_POS_X, absolute.y * UI_POS_Y, 0.0f);
             UILeft.eulerAngles = new Vector3(0.0f, 0.0f, Vector3.Angle(Vector3.left, absolute) * -Vector3.Dot(Vector3.one, absolute));
+            UILeft.GetChild(0).rotation = Quaternion.identity;
         }
 
     }
