@@ -54,7 +54,6 @@ public class GameButton : MonoBehaviour
     {
         if (m_isSride == isSlide)
             return;
-
         // サウンド
         Sound.Instance.PlaySE("se_click", GetInstanceID());
 

@@ -1,5 +1,13 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
+<<<<<<< HEAD:CESA_BASE/Assets/Texture/Game/kuro.png.meta
 guid: c4d0be0eb1a008646898028885a465e5
+=======
+guid: 2799ad4330dc2e24c885d512599d8a8a
+>>>>>>> f5fb68361a9aa86a2904ebafaac78a81c92c0322:CESA_BASE/Assets/Texture/Game/minus (1).png.meta
+=======
+guid: 34bb4608a2172e34f89a347b077ae7a9
+>>>>>>> f5fb68361a9aa86a2904ebafaac78a81c92c0322
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}

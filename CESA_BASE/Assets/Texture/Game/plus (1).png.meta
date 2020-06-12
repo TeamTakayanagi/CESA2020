@@ -1,13 +1,5 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
-guid: 925154c21f824944cab8dbf0ed2ba61b
-=======
-<<<<<<< HEAD:CESA_BASE/Assets/Texture/UI/minus.png.meta
-guid: 62acc6ef89ea3ad468c91e021654793f
-=======
-guid: 847a01e9d3cbd9a4da959630eea1cc81
->>>>>>> f5fb68361a9aa86a2904ebafaac78a81c92c0322:CESA_BASE/Assets/Texture/Game/arrow10.png.meta
->>>>>>> f5fb68361a9aa86a2904ebafaac78a81c92c0322
+guid: 87757bef3206aaf4ea657c81e804842d
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
