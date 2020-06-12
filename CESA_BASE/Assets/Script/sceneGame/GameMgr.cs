@@ -139,6 +139,16 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
         Camera.main.GetComponent<MainCamera>().Control = true;
         Sound.Instance.PlayBGM("bgm_game");
+
+        GameObject _gameButton = GameObject.FindGameObjectWithTag(NameDefine.TagName.UIGameButton);
+        if (SelectMgr.SelectStage == 1)
+        {
+            _gameButton.transform.GetChild(0).gameObject.SetActive(false);
+        }
+        else
+        {
+            Destroy(_gameButton.transform.GetChild(3).gameObject);
+        }
     }
 
     // Update is called once per frame
