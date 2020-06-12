@@ -111,16 +111,8 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         {
             _fuseGroup = fuseParent.GetChild(i);
             _fuseList = _fuseGroup.GetComponentsInChildren<SelectFuse>();
-            // クリア済みのステージなら（クリア済み挑戦してリタイヤもここ）
-            if (i < m_clearStage - 1 ||
-                (ms_selectStage - 1 <= m_clearStage && i == m_clearStage - 1))
-            {
-                // 導火線のまとまりごとに開放していく
-                for (int j = 0, size = _fuseList.Length; j < size; ++j)
-                    _fuseList[j].BurnOut();
-            }
             // 未クリアのステージをクリアした(クリア演出)
-            else if (i == m_clearStage - 1 && ms_tryStage < ms_selectStage)
+            if (i == m_clearStage - 1 && ms_tryStage < ms_selectStage && ms_tryStage > 0)
             {
                 // 1つ目には、ステージの座標を参照して進行向きを求める
                 _fuseList[0].SetTarget(m_stageList[m_clearStage - 1].transform.position);
@@ -133,6 +125,14 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                     // 次の導火線を格納
                     _fuse.NextFuse = _fuseList[j + 1];
                 }
+            }
+            // クリア済みのステージなら（クリア済み挑戦してリタイヤもここ）
+            else if (i < m_clearStage - 1 ||
+                (ms_selectStage - 1 <= m_clearStage && i == m_clearStage - 1))
+            {
+                // 導火線のまとまりごとに開放していく
+                for (int j = 0, size = _fuseList.Length; j < size; ++j)
+                    _fuseList[j].BurnOut();
             }
         }
 
@@ -150,9 +150,10 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         int attention = ms_selectStage - 1;
         if (attention > 0)
         {
-            // 完全クリアなら
+            // 最終ステージまでクリアなら
             if (attention == m_stageList.Count)
                 attention -= 1;     // 最終ステージに注目
+
             Vector3 zoom = m_stageList[attention].transform.position;
             m_camera.transform.position = new Vector3(
                 zoom.x, m_camera.transform.position.y, m_camera.transform.position.z);
@@ -245,6 +246,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
             Transform UIRight = m_uiArrow.transform.GetChild(0);
             UIRight.localPosition = new Vector3(absolute.x * UI_POS_X, absolute.y * UI_POS_Y, 0.0f);
             UIRight.eulerAngles = new Vector3(0.0f, 0.0f, Vector3.Angle(Vector3.left, absolute) * -Vector3.Dot(Vector3.one, absolute));
+            UIRight.transform.GetChild(0).rotation = Quaternion.identity;
         }
         // 最初のステージではない
         if (stage.StageNum != 1)
@@ -259,6 +261,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
             Transform UILeft = m_uiArrow.transform.GetChild(1);
             UILeft.localPosition = new Vector3(absolute.x * UI_POS_X, absolute.y * UI_POS_Y, 0.0f);
             UILeft.eulerAngles = new Vector3(0.0f, 0.0f, Vector3.Angle(Vector3.left, absolute) * -Vector3.Dot(Vector3.one, absolute));
+            UILeft.transform.GetChild(0).rotation = Quaternion.identity;
         }
 
     }

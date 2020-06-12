@@ -18,7 +18,7 @@ public class Sound : SingletonMonoBehaviour<Sound>
     public bool sound = false;
     [SerializeField]
     private List<AudioClip> m_bgmList = new List<AudioClip>();
-    [SerializeField] 
+    [SerializeField]
     private List<AudioClip> m_seList = new List<AudioClip>();
     [SerializeField]
     private int MAX_PLAY_SE = 0;
@@ -53,42 +53,23 @@ public class Sound : SingletonMonoBehaviour<Sound>
         m_seList.ForEach(se => AddClipDict(m_seDict, se));
     }
 
-    private void Update()
-    {
-        List<Tuple<string, int>> _Remover = new List<Tuple<string, int>>();
-        foreach (KeyValuePair<Tuple<string, int>, AudioSource> pair in m_seSources)
-        {
-            if (!pair.Value.isPlaying)
-            {
-                _Remover.Add(pair.Key);
-            }
-        }
-
-        for (int i = 0; i < _Remover.Count; i++)
-        {
-            m_seSources.Remove(_Remover[i]);
-        }
-    }
-
     /// <summary>
     /// SEを再生
     /// </summary>
     /// <param name="seName">ハンドル名</param>
     public void PlaySE(string seName, int instanceID, float volume = 1.0f)
     {
-        if (!sound || !m_seDict.ContainsKey(seName)) 
+        if (!sound || !m_seDict.ContainsKey(seName))
             return;
 
         AudioSource _source = m_seSources.FirstOrDefault(s => s.Value.isPlaying).Value;
-
         if (_source == null)
         {
-            if (m_seSources.Count >= MAX_PLAY_SE) 
+            if (m_seSources.Count >= MAX_PLAY_SE)
                 return;
 
             _source = gameObject.AddComponent<AudioSource>();
-            Tuple<string, int> _tuple = new Tuple<string, int>(seName, instanceID);
-            m_seSources.Add(_tuple, _source);
+            m_seSources.Add(Tuple.Create(seName, instanceID), _source);
         }
 
         _source.clip = m_seDict[seName];
@@ -101,7 +82,7 @@ public class Sound : SingletonMonoBehaviour<Sound>
     /// </summary>
     public void StopSE(string seName, int instanceID)
     {
-        if (!sound || !m_seSources.ContainsKey(Tuple.Create(seName, instanceID))) 
+        if (!sound || !m_seSources.ContainsKey(Tuple.Create(seName, instanceID)))
             return;
 
         AudioSource _source = m_seSources[Tuple.Create(seName, instanceID)];

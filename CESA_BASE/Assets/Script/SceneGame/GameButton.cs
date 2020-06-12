@@ -50,4 +50,23 @@ public class GameButton : MonoBehaviour
             m_isSride = false;
         }
     }
+    public void SlideVar(bool isSlide)
+    {
+        if (m_isSride == isSlide)
+            return;
+
+        // サウンド
+        Sound.Instance.PlaySE("se_click", GetInstanceID());
+
+        if (!m_isSride)
+        {
+            rectTrans.DOLocalMove(m_defaultPos + new Vector3(rectTrans.sizeDelta.x * SLIDE_VALUE, 0.0f, 0.0f), SLIDE_TIME);
+            m_isSride = true;
+        }
+        else
+        {
+            rectTrans.DOLocalMove(m_defaultPos, SLIDE_TIME);
+            m_isSride = false;
+        }
+    }
 }
