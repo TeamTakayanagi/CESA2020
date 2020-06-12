@@ -3618,7 +3618,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   effectType: 2
   effectAsset: {fileID: 11400000, guid: 73e3f18cc336aa641ba81b56848aab7a, type: 2}
-  playOnStart: 1
+  playOnStart: 0
   isLooping: 1
 --- !u!1001 &4391726461721174759
 PrefabInstance:
@@ -4025,7 +4025,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SpeedTex.Array.data[1]
       value: 
-      objectReference: {fileID: 21300000, guid: 6bdd84d921f7e7148a06da65ed8e73c4,
+      objectReference: {fileID: 21300000, guid: 300a60ff2413d2941ad9e4e7439bbf02,
         type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ea45495f56f2d0e48b1131b57ec5a879, type: 3}

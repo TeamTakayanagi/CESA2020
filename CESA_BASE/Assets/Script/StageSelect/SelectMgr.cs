@@ -12,6 +12,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     private static int ms_selectStage = 0;          // 直前に遊んだステージ
     private static int ms_tryStage = -1;            // ステージ選択から当選したステージ
     private int m_clearStage = 0;                   // クリアした一番先のステージ
+    private bool m_isSelect = false;                // 
 
     private MainCamera m_camera = null;
     private GameObject m_uiArrow = null;
@@ -41,6 +42,13 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
             m_zoomObj = value;
         }
     }
+    public bool Select
+    {
+        set
+        {
+            m_isSelect = value;
+        }
+    }
 
     public static Utility.CSVFile.BinData SaveData
     {
@@ -61,6 +69,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
 
     override protected void Awake()
     {
+        m_isSelect = false;
         // セーブデータを読み込む
         if (ms_saveData.data == null)
             ms_saveData = Utility.CSVFile.LoadBin("SaveData", m_stageList.Count);
@@ -157,7 +166,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     void Update()
     {
         if (m_camera.Type == MainCamera.CameraType.SwipeMove && 
-            Input.GetMouseButtonDown(0))
+            Input.GetMouseButtonDown(0) && m_isSelect)
         {
             RaycastHit _hit = new RaycastHit();
             Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);

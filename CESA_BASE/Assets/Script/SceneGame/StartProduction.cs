@@ -29,7 +29,10 @@ public class StartProduction : MonoBehaviour
         set
         {
             if (m_state == Production.wait && m_click)
+            {
                 m_click.enabled = false;
+                m_fire.Play();
+            }
             m_state = value;
         }
         get

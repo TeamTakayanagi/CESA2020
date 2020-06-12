@@ -178,6 +178,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
                 m_camera.Control = true;
 
                 m_step = TitleStep.Select;
+                SelectMgr.Instance.Select = true;
             }
 
             m_camera.Control = true;

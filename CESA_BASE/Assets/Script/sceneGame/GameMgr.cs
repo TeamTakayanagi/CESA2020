@@ -214,7 +214,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
             // 生成場所を取得
             m_createPos = FindNearFuse(mousePos);
-            if (m_createPos != OUTPOS)
+            if (m_createPos == OUTPOS)
+                return;
+
             {
                 // UI画面
                 if (Input.mousePosition.x > Screen.width * 0.8f)
