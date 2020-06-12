@@ -9,7 +9,6 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     private float UI_POS_X = 430.0f;
     private float UI_POS_Y = 220.0f;
 
-    private const float CAMERA_ATTENTION = 3.5f;
     private static int ms_selectStage = 0;          // 直前に遊んだステージ
     private static int ms_tryStage = -1;            // ステージ選択から当選したステージ
     private int m_clearStage = 0;                   // クリアした一番先のステージ
@@ -105,7 +104,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
             _fuseList = _fuseGroup.GetComponentsInChildren<SelectFuse>();
             // クリア済みのステージなら（クリア済み挑戦してリタイヤもここ）
             if (i < m_clearStage - 1 ||
-                (ms_selectStage <= m_clearStage && i == m_clearStage - 1))
+                (ms_selectStage - 1 <= m_clearStage && i == m_clearStage - 1))
             {
                 // 導火線のまとまりごとに開放していく
                 for (int j = 0, size = _fuseList.Length; j < size; ++j)
@@ -146,11 +145,9 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
             if (attention == m_stageList.Count)
                 attention -= 1;     // 最終ステージに注目
             Vector3 zoom = m_stageList[attention].transform.position;
-            m_camera.transform.position = new Vector3(zoom.x,
-                zoom.y + CAMERA_ATTENTION * Mathf.Sin(Mathf.Deg2Rad * m_camera.transform.localEulerAngles.x),
-                zoom.z - CAMERA_ATTENTION * Mathf.Cos(Mathf.Deg2Rad * m_camera.transform.localEulerAngles.x));
+            m_camera.transform.position = new Vector3(
+                zoom.x, m_camera.transform.position.y, m_camera.transform.position.z);
         }
-
 
         // ステージ番号順にソート
         m_stageList.Sort((a, b) => a.StageNum - b.StageNum);

@@ -29,10 +29,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     private int m_burnCount = 1;                                        // 燃えている導火線の数
     private int m_gameSpeed = 1;                                        // ゲーム加速処理
-    private Vector3 m_mousePos = Vector3.zero;                         // 導火線の生成位置
     private Vector3 m_createPos = Vector3.zero;                         // 導火線の生成位置
     private GameStep m_gameStep = null;                                 // 現在のゲームの進行状況の関数
-    private GameObject m_near = null;                            // ゲームクリア用のUIの親オブジェクト
     private GameObject m_resultClear = null;                            // ゲームクリア用のUIの親オブジェクト
     private GameObject m_resultGameover = null;                         // ゲームオーバー用のUIの親オブジェクト
     private GameButton m_slide = null;                                  // ゲームオーバー用のUIの親オブジェクト
@@ -208,7 +206,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             screen = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z);
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(screen) -
                 new Vector3(0.0f, 0.25f, 0.0f);
-            m_mousePos = mousePos;
 
             // 生成場所を取得
             m_createPos = FindNearFuse(mousePos);
@@ -364,32 +361,24 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// <returns>導火線の生成位置</returns>
     private Vector3 FindNearFuse(Vector3 mousePos)
     {
-        if (m_near)
-            m_near.GetComponent<Renderer>().material.color = new Color(0.0f, 0.0f, 0.0f, m_near.GetComponent<Renderer>().material.color.a);
-#if UNITY_EDITOR
-        m_near = m_fieldObject.First.Value;
-#else
+
         // 一番近くにあるオブジェクト探索用変数
         GameObject nearObj = m_fieldObject.First.Value;
-#endif
 
         // マウスのワールド座標に一番近いオブジェクトを取得
         foreach (GameObject _obj in m_fieldObject)
         {
             // 導火線以外は対象にしないかつ、2回目以降もしくは、距離を比べて遠ければ
             if (Utility.TagSeparate.getParentTagName(_obj.tag) != NameDefine.TagName.Fuse ||
-                Vector3.Distance(m_near.transform.position, mousePos) <
+                Vector3.Distance(nearObj.transform.position, mousePos) <
                 Vector3.Distance(_obj.transform.position, mousePos))
                 continue;
 
-            m_near = _obj;
+            nearObj = _obj;
         }
 
-#if UNITY_EDITOR
-        m_near.GetComponent<Renderer>().material.color = new Color(1.0f, 0.0f, 0.0f, m_near.GetComponent<Renderer>().material.color.a);
-#endif
 
-        if (m_near == null)
+        if (nearObj == null)
             return m_createPos;
 
         Vector3 objPos = Vector3.zero;
@@ -397,11 +386,11 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         {
             Vector3 distance, absolute;
             // 距離を求める
-            distance = mousePos - m_near.transform.position;
+            distance = mousePos - nearObj.transform.position;
             // 絶対値にしたものを入れる
             absolute = Utility.MyMath.GetMaxDirectSign(distance);
 
-            objPos = m_near.transform.position + absolute;
+            objPos = nearObj.transform.position + absolute;
         }
 
         Vector3Int half = new Vector3Int((int)Mathf.Floor(m_stageSize.x / 2.0f),
@@ -574,11 +563,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         m_resultGameover.SetActive(false);
     }
 
-    private void OnGUI()
-    {
-        GUI.Label(new Rect(1.0f, 1.0f, 300.0f, 400.0f), "MouseWorld" + m_mousePos);
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // ボタンの処理
 
@@ -629,8 +613,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // サウンド
         Sound.Instance.PlaySE("se_click", GetInstanceID());
 
-        int store = m_gameSpeed;
-        m_gameSpeed = store % 2 + 1;
+        m_gameSpeed = m_gameSpeed % 2 + 1;
     }
 }
 

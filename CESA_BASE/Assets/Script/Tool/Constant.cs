@@ -19,7 +19,7 @@ namespace AdjustParameter
         public const float ZOOM_SPEED = 1.0f;                           // ズーム速度
         public const float FADE_DURATION = 2.0f;                        // フェードのズームインでどれほどの時間をかけて進むか
         public const float EFFECT_POS_Z = 2.0f;                         // エフェクトをカメラからどのくらいの距離で出すか
-
+        public const float ZOOM_LENGTH = 3.5f;
     }
 
     public readonly struct Fuse_Constant

@@ -60,7 +60,8 @@ public class TitleLogo : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (TitleMgr.Instance.Step != TitleMgr.TitleStep.Charm) return;
+        if (TitleMgr.Instance.Step != TitleMgr.TitleStep.Charm)
+            return;
 
         // 背景のみ描画されている
         if (m_step == LogoStep.None)

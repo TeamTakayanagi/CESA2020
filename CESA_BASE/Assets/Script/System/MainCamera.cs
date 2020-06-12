@@ -175,10 +175,9 @@ public class MainCamera : MonoBehaviour
         SetState();
         m_cameraState = null;
 
-        const float LENGTH = 2.5f;
         m_target = new Vector3(_zoomObj.x,
-            _zoomObj.y + LENGTH * Mathf.Sin(Mathf.Deg2Rad * transform.localEulerAngles.x),
-            _zoomObj.z - LENGTH * Mathf.Cos(Mathf.Deg2Rad * transform.localEulerAngles.x));
+            _zoomObj.y + AdjustParameter.Camera_Constant.ZOOM_LENGTH * Mathf.Sin(Mathf.Deg2Rad * transform.localEulerAngles.x),
+            _zoomObj.z - AdjustParameter.Camera_Constant.ZOOM_LENGTH * Mathf.Cos(Mathf.Deg2Rad * transform.localEulerAngles.x));
 
         transform.DOLocalMove(m_target, AdjustParameter.Camera_Constant.ZOOM_SPEED);
     }
