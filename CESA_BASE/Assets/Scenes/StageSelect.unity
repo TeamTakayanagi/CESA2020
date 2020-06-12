@@ -1368,7 +1368,7 @@ PrefabInstance:
     - target: {fileID: 4638224155626910223, guid: e55cf2caae06b154b9e4604c9a991da7,
         type: 3}
       propertyPath: sound
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4638224155626910223, guid: e55cf2caae06b154b9e4604c9a991da7,
         type: 3}
@@ -1645,7 +1645,7 @@ GameObject:
   - component: {fileID: 564193451}
   - component: {fileID: 564193450}
   m_Layer: 2
-  m_Name: Plane
+  m_Name: CameraPlace
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2666,20 +2666,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1135890176}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1137626052 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4638224155626910222, guid: e55cf2caae06b154b9e4604c9a991da7,
-    type: 3}
-  m_PrefabInstance: {fileID: 418407496}
-  m_PrefabAsset: {fileID: 0}
---- !u!81 &1137626055
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1137626052}
-  m_Enabled: 1
 --- !u!1 &1151370272
 GameObject:
   m_ObjectHideFlags: 0

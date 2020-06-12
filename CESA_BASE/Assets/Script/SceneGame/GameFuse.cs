@@ -539,6 +539,17 @@ public class GameFuse : FuseBase
                 fuseAngle -= sumAngle - 90f;
 
             transform.RotateAround(transform.position, Vector3.down, fuseAngle);
+
+            // その導火線のエフェクトも一緒に移動
+            for (int i = 0; i < m_haveEffect.Count; ++i)
+            {
+                Spark spark = m_haveEffect[i];
+                if (!spark)
+                    continue;
+
+                spark.transform.RotateAround(transform.position, Vector3.down, fuseAngle);
+                spark.MoveVec = Quaternion.AngleAxis(fuseAngle, Vector3.down) * spark.MoveVec;
+            }
             yield return null;
         }
 

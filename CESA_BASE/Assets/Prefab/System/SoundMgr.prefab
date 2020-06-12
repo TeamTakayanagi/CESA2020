@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4638224155626910216}
   - component: {fileID: 4638224155626910223}
+  - component: {fileID: 3712388429387513710}
   m_Layer: 0
   m_Name: SoundMgr
   m_TagString: Untagged
@@ -56,3 +57,11 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 299d5a4cb73dd944c95488d87dd4af5c, type: 3}
   - {fileID: 8300000, guid: b470e27619ab98b48b2e7bd13d52da5b, type: 3}
   MAX_PLAY_SE: 10
+--- !u!81 &3712388429387513710
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4638224155626910222}
+  m_Enabled: 1

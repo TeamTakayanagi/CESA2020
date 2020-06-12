@@ -29,6 +29,7 @@ public class MainCamera : MonoBehaviour
     [SerializeField]
     private GameObject m_movePlace = null;                  // （注）取得方法模索中
 
+    private CameraState m_cameraState;                      // カメラの状態に応じて関数を格納
     private CameraType m_defType = CameraType.AroundALL;    // 格納用
 
     private Vector3 m_savePos = Vector3.zero;               // マウス移動開始地点格納変数
@@ -38,7 +39,6 @@ public class MainCamera : MonoBehaviour
     private Vector3 m_moveMax = Vector3.zero;               // 移動範囲最大値
     private Vector3 m_moveMin = Vector3.zero;               // 移動範囲最小値
 
-    private CameraState m_cameraState;                      // カメラの状態に応じて関数を格納
 
     private bool m_isScroll = false;                        // スクロール中か
     private bool m_isControl = false;                       // プレイヤーがカメラの操作をできるか

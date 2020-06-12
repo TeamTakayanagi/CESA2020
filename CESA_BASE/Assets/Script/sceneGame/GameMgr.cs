@@ -29,8 +29,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     private int m_burnCount = 1;                                        // 燃えている導火線の数
     private int m_gameSpeed = 1;                                        // ゲーム加速処理
+    private Vector3 m_mousePos = Vector3.zero;                         // 導火線の生成位置
     private Vector3 m_createPos = Vector3.zero;                         // 導火線の生成位置
     private GameStep m_gameStep = null;                                 // 現在のゲームの進行状況の関数
+    private GameObject m_near = null;                            // ゲームクリア用のUIの親オブジェクト
     private GameObject m_resultClear = null;                            // ゲームクリア用のUIの親オブジェクト
     private GameObject m_resultGameover = null;                         // ゲームオーバー用のUIの親オブジェクト
     private GameButton m_slide = null;                                  // ゲームオーバー用のUIの親オブジェクト
@@ -78,7 +80,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     override protected void Awake()
     {
         Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(
-            ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + 0);
+            ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + SelectMgr.SelectStage);
+        Debug.Log(SelectMgr.SelectStage);
         StageCreateMgr.Instance.CreateStage(transform, info);
         m_stageSize = info.size;
         m_gameStep = GameStart;
@@ -187,11 +190,16 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // 導火線を選択しているなら
         if (m_selectFuse)
         {
+            // 今のマウスの位置から中心にするオブジェクトを選択
+            Vector2 rate = new Vector2(Input.mousePosition.x / Screen.width, Input.mousePosition.y / Screen.height); 
+
             // マウス座標をワールド座標で取得
             Vector3 screen = Camera.main.WorldToScreenPoint(transform.position) -
-                new Vector3(0.0f, 0.0f, 0.005f * (int)Mathf.Floor(m_stageSize.z / 2.0f));
+                new Vector3(0.0f, 0.0f, 0.5f * m_stageSize.z);
+
             screen = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z);
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(screen);
+            m_mousePos = mousePos;
 
             // 生成場所を取得
             m_createPos = FindNearFuse(mousePos);
@@ -347,22 +355,32 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// <returns>導火線の生成位置</returns>
     private Vector3 FindNearFuse(Vector3 mousePos)
     {
+        if (m_near)
+            m_near.GetComponent<Renderer>().material.color = new Color(0.0f, 0.0f, 0.0f, m_near.GetComponent<Renderer>().material.color.a);
+#if UNITY_EDITOR
+        m_near = m_fieldObject.First.Value;
+#else
         // 一番近くにあるオブジェクト探索用変数
         GameObject nearObj = m_fieldObject.First.Value;
+#endif
 
         // マウスのワールド座標に一番近いオブジェクトを取得
         foreach (GameObject _obj in m_fieldObject)
         {
             // 導火線以外は対象にしないかつ、2回目以降もしくは、距離を比べて遠ければ
             if (Utility.TagSeparate.getParentTagName(_obj.tag) != NameDefine.TagName.Fuse ||
-                Vector3.Distance(nearObj.transform.position, mousePos) <
+                Vector3.Distance(m_near.transform.position, mousePos) <
                 Vector3.Distance(_obj.transform.position, mousePos))
                 continue;
 
-            nearObj = _obj;
+            m_near = _obj;
         }
 
-        if (nearObj == null)
+#if UNITY_EDITOR
+        m_near.GetComponent<Renderer>().material.color = new Color(1.0f, 0.0f, 0.0f, m_near.GetComponent<Renderer>().material.color.a);
+#endif
+
+        if (m_near == null)
             return m_createPos;
 
         Vector3 objPos = Vector3.zero;
@@ -370,11 +388,11 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         {
             Vector3 distance, absolute;
             // 距離を求める
-            distance = mousePos - nearObj.transform.position;
+            distance = mousePos - m_near.transform.position;
             // 絶対値にしたものを入れる
             absolute = Utility.MyMath.GetMaxDirectSign(distance);
 
-            objPos = nearObj.transform.position + absolute;
+            objPos = m_near.transform.position + absolute;
         }
 
         Vector3Int half = new Vector3Int((int)Mathf.Floor(m_stageSize.x / 2.0f),
@@ -545,6 +563,11 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
         m_resultClear.SetActive(false);
         m_resultGameover.SetActive(false);
+    }
+
+    private void OnGUI()
+    {
+        GUI.Label(new Rect(1.0f, 1.0f, 300.0f, 400.0f), "MouseWorld" + m_mousePos);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
