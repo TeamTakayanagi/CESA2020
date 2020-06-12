@@ -26,6 +26,16 @@ public class GameButton : MonoBehaviour
         rectTrans = GetComponent<RectTransform>();
 
         m_defaultPos = rectTrans.localPosition;
+
+        if (SelectMgr.SelectStage != 1)
+        {
+            Destroy(transform.GetChild(3).gameObject);
+        }
+        else
+        {
+            transform.GetChild(3).position = transform.GetChild(0).position;
+            transform.GetChild(0).gameObject.SetActive(false);
+        }
     }
 
     // Update is called once per frame

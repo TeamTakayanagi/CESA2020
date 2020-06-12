@@ -29,6 +29,7 @@ TagManager:
   - UI/GameButton
   - UI/Start
   - UI/ArrowR
+  - Result
   layers:
   - Default
   - TransparentFX

@@ -18,6 +18,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     }
 
     [SerializeField]
+    private Sprite m_normalSpeed = null;
+    [SerializeField]
+    private Sprite m_Speed2x = null;
+    [SerializeField]
     private Vector3Int m_stageSize = Vector3Int.zero;                   // ステージサイズ
 
     // 定数
@@ -41,6 +45,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private LinkedList<GameObject> m_fieldObject = new LinkedList<GameObject>();      // ゲーム画面のオブジェクト
     private LinkedList<GameGimmick> m_gimmickList = new LinkedList<GameGimmick>();      // ゲーム画面のオブジェクト
     private LinkedList<GameFuse> m_uiFuse = new LinkedList<GameFuse>();         // UI部分の導火線
+
+    private GameObject m_gameButton = null;
 
     public int BurnCount
     {
@@ -136,6 +142,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         }
         Camera.main.GetComponent<MainCamera>().Control = true;
         Sound.Instance.PlayBGM("bgm_game");
+
+        m_gameButton = GameObject.FindGameObjectWithTag(NameDefine.TagName.UIGameButtom);
     }
 
     // Update is called once per frame
@@ -599,6 +607,16 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
         int store = m_gameSpeed;
         m_gameSpeed = store % 2 + 1;
+
+        // テクスチャ変更
+        if (m_gameSpeed == 1)
+        {
+            m_gameButton.transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = m_normalSpeed;
+        }
+        else if (m_gameSpeed == 2)
+        {
+            m_gameButton.transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = m_Speed2x;
+        }
     }
 }
 

@@ -128,7 +128,7 @@ namespace NameDefine
     public readonly struct Scene_Name
     {
         public const string STAGE_SELECT = "StageSelect";
-        public const string GAME_MAIN = "GameScene";
+        public const string GAME_MAIN = "GameSceneLatte";
     }
 
     public readonly struct TagName
@@ -142,11 +142,13 @@ namespace NameDefine
         public const string UIGameClear = "UI/GameClear";
         public const string UIGameOver = "UI/GameOver";
         public const string UIStart = "UI/Start";
+        public const string UIGameButtom = "UI/GameButton";
         public const string Gimmick = "Gimmick";
         public const string Stage = "Stage";
         public const string ClickObj = "ClickObject";
         public const string StageParent = "StageParent";
         public const string FuseParent = "fuseParent";
+        public const string Result = "Result";
 
         public const string FuseI = "Fuse/I";
         public const string FuseL = "Fuse/L";
