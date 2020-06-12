@@ -11,7 +11,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     private readonly Vector3 LogoUpPos = new Vector3(0.0f, 0.2f, 1.0f);
 
     private readonly Quaternion InitObjRot = Quaternion.Euler(new Vector3(30, 0, 0));
-    private readonly Quaternion InitCameraRot = Quaternion.Euler(new Vector3(-60, 0, 0));
+    private readonly Quaternion InitCameraRot = Quaternion.Euler(new Vector3(-45, 0, 0));
     private readonly Quaternion LastCameraRot = Quaternion.Euler(new Vector3(ProcessedtParameter.Camera_Constant.FIRST_ROT_X, 0, 0)); 
 
     public enum TitleStep
@@ -93,10 +93,10 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     // Update is called once per frame
     void Update()
     {
-            // カメラが回転してくる
+        // カメラが回転してくる
         if (m_step == TitleStep.Scroll)
         {
-            m_camera.transform.Rotate(InitCameraRot * Vector3.right * 0.3f);
+            m_camera.transform.Rotate(InitCameraRot * Vector3.right * Time.deltaTime * 20);
 
             if (m_camera.transform.rotation.x >= LastCameraRot.x)
             {

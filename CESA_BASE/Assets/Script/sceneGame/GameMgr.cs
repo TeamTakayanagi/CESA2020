@@ -19,6 +19,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     [SerializeField]
     private Vector3Int m_stageSize = Vector3Int.zero;                   // ステージサイズ
+    [SerializeField]
+    private Sprite m_normalSpeed = null;
+    [SerializeField]
+    private Sprite m_x2Speed = null;
 
     // 定数
     private readonly Vector3 TEXT_POS = new Vector3(0.0f, 150, 0.0f);           // リザルトテキストの移動距離
@@ -41,6 +45,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private LinkedList<GameObject> m_fieldObject = new LinkedList<GameObject>();      // ゲーム画面のオブジェクト
     private LinkedList<GameGimmick> m_gimmickList = new LinkedList<GameGimmick>();      // ゲーム画面のオブジェクト
     private LinkedList<GameFuse> m_uiFuse = new LinkedList<GameFuse>();         // UI部分の導火線
+
+    private Image m_uiSpeed = null;
 
     public int BurnCount
     {
@@ -147,6 +153,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         {
             Destroy(_gameButton.transform.GetChild(3).gameObject);
         }
+
+        m_uiSpeed = GameObject.FindGameObjectWithTag(NameDefine.TagName.UIGameButton).transform.GetChild(0).GetChild(0).GetComponent<Image>();
     }
 
     // Update is called once per frame
@@ -614,6 +622,15 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         Sound.Instance.PlaySE("se_click", GetInstanceID());
 
         m_gameSpeed = m_gameSpeed % 2 + 1;
+
+        if (m_gameSpeed == 1)
+        {
+            m_uiSpeed.sprite = m_normalSpeed;
+        }
+        else if (m_gameSpeed == 2)
+        {
+            m_uiSpeed.sprite = m_x2Speed;
+        }
     }
 }
 
