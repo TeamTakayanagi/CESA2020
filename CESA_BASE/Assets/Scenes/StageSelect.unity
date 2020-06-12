@@ -3679,6 +3679,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: tree02 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7684556550294530809, guid: 6359a1ada63ae994fb3ad75c9591f136,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7684556550294530809, guid: 6359a1ada63ae994fb3ad75c9591f136,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7684556550294530809, guid: 6359a1ada63ae994fb3ad75c9591f136,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6359a1ada63ae994fb3ad75c9591f136, type: 3}
 --- !u!4 &1847976515 stripped

@@ -77,7 +77,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
             if (newState > 0)
             {
                 // 挑戦したステージと選択したステージが異なるなら
-                if (ms_tryStage != ms_selectStage)
+                if (m_stageList[i].StageNum != ms_selectStage)
                 {
                     // クリアした一番先のステージは
                     m_clearStage = i + 1;
@@ -86,8 +86,8 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
             m_stageList[i].ClearState = newState;
         }
 
-        // クリアしたステージがあるなら
-        if (m_clearStage > 0 && ms_selectStage > 0)
+        // クリアしたステージがあるなら(クリア演出)
+        if (m_clearStage > 0 && ms_tryStage < ms_selectStage)
             m_stageList[m_clearStage - 1].ClearState *= -1;
     }
 
@@ -103,14 +103,16 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         {
             _fuseGroup = fuseParent.GetChild(i);
             _fuseList = _fuseGroup.GetComponentsInChildren<SelectFuse>();
-            if (i < m_clearStage - 1 || (ms_selectStage < m_clearStage && i == m_clearStage - 1))
+            // クリア済みのステージなら（クリア済み挑戦してリタイヤもここ）
+            if (i < m_clearStage - 1 ||
+                (ms_selectStage <= m_clearStage && i == m_clearStage - 1))
             {
                 // 導火線のまとまりごとに開放していく
                 for (int j = 0, size = _fuseList.Length; j < size; ++j)
                     _fuseList[j].BurnOut();
             }
-            // 未クリアのステージをクリアした
-            else if (i == m_clearStage - 1 && ms_selectStage >= m_clearStage)
+            // 未クリアのステージをクリアした(クリア演出)
+            else if (i == m_clearStage - 1 && ms_tryStage < ms_selectStage)
             {
                 // 1つ目には、ステージの座標を参照して進行向きを求める
                 _fuseList[0].SetTarget(m_stageList[m_clearStage - 1].transform.position);

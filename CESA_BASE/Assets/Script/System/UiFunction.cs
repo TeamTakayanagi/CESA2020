@@ -24,6 +24,7 @@ public class UiFunction : MonoBehaviour
         Normal,     // 通常
         PlusOnly,   // +のみ
         MinusOnly,  // -のみ
+        None,       // サインなし
     }
 
     [System.Serializable]
@@ -48,15 +49,18 @@ public class UiFunction : MonoBehaviour
         public bool _isLooping;             // ループするかどうか  
         public bool _isDestroy;             // ループしない場合、削除されるか  
         public float _deleyTime;            // 遅延
+        public float _intervalTime;         // 間隔
 
-        public Vector3  _startAngle;        // 初期値
-        public Vector3  _speed;             // 速度
-        public Vector3  _amp;               // 振幅
+        public Vector3 _startAngle;        // 初期値
+        public Vector3 _speed;             // 速度
+        public Vector3 _amp;               // 振幅
 
         [System.NonSerialized]
         public Vector3 _angleValue;        // 移動量
         [System.NonSerialized]
         public bool _stop = false;         // 停止
+        [System.NonSerialized]
+        public float _interval;
     }
 
     public bool Stop
@@ -107,6 +111,7 @@ public class UiFunction : MonoBehaviour
         for (int _typeNum = 0; _typeNum < m_function.Count; _typeNum++)
         {
             m_function[_typeNum]._angleValue = Vector3.zero;            // 移動量初期化
+            m_function[_typeNum]._interval = 0.0f;
 
             // Typeごとの初期処理
             switch (m_function[_typeNum]._functionType)
@@ -122,16 +127,19 @@ public class UiFunction : MonoBehaviour
                     break;
             }
 
-            m_standardValue += new Vector3(Mathf.Sin(Mathf.Deg2Rad * m_function[_typeNum]._startAngle.x) * m_function[_typeNum]._amp.x,
-                                           Mathf.Sin(Mathf.Deg2Rad * m_function[_typeNum]._startAngle.y) * m_function[_typeNum]._amp.y,
-                                           Mathf.Sin(Mathf.Deg2Rad * m_function[_typeNum]._startAngle.z) * m_function[_typeNum]._amp.z);
+            if (m_function[_typeNum]._sinType != SinType.None)
+            {
+                m_standardValue += new Vector3(Mathf.Sin(Mathf.Deg2Rad * m_function[_typeNum]._startAngle.x) * m_function[_typeNum]._amp.x,
+                                               Mathf.Sin(Mathf.Deg2Rad * m_function[_typeNum]._startAngle.y) * m_function[_typeNum]._amp.y,
+                                               Mathf.Sin(Mathf.Deg2Rad * m_function[_typeNum]._startAngle.z) * m_function[_typeNum]._amp.z);
+            }
         }
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -173,49 +181,142 @@ public class UiFunction : MonoBehaviour
                 m_function[_typeNum]._deleyTime -= 1 * Time.deltaTime;
                 continue;
             }
+            if (m_function[_typeNum]._interval > 0.0f)
+            {
+                m_function[_typeNum]._interval -= 1 * Time.deltaTime;
+                continue;
+            }
 
             m_function[_typeNum]._angleValue += m_function[_typeNum]._speed * Time.deltaTime * 60.0f;
 
             if (m_function[_typeNum]._isLooping)
             {
-                if (m_function[_typeNum]._angleValue.x >= 360.0f)
-                    m_function[_typeNum]._angleValue.x -= 360.0f;
-                if (m_function[_typeNum]._angleValue.y >= 360.0f)
-                    m_function[_typeNum]._angleValue.y -= 360.0f;
-                if (m_function[_typeNum]._angleValue.z >= 360.0f)
-                    m_function[_typeNum]._angleValue.z -= 360.0f;
-            }
-            else
-            {
-                if (m_function[_typeNum]._isDestroy)
-                {
-                    DestroyImmediate(gameObject);
-                    return;
-                }
                 if (m_function[_typeNum]._sinType == SinType.PlusOnly || m_function[_typeNum]._sinType == SinType.MinusOnly)
                 {
                     if (m_function[_typeNum]._angleValue.x >= 180.0f)
-                        m_function[_typeNum]._angleValue.x = 180.0f;
+                    {
+                        m_function[_typeNum]._angleValue.x -= 180.0f;
+                        m_function[_typeNum]._interval = m_function[_typeNum]._intervalTime;
+                    }
                     if (m_function[_typeNum]._angleValue.y >= 180.0f)
-                        m_function[_typeNum]._angleValue.y = 180.0f;
-                    if (m_function[_typeNum]._angleValue.z >= 180.0f)
-                        m_function[_typeNum]._angleValue.z = 180.0f;
+                    {
+                        m_function[_typeNum]._angleValue.y -= 180.0f;
+                        m_function[_typeNum]._interval = m_function[_typeNum]._intervalTime;
+                    }
                 }
                 else
                 {
                     if (m_function[_typeNum]._angleValue.x >= 360.0f)
-                        m_function[_typeNum]._angleValue.x = 360.0f;
+                    {
+                        m_function[_typeNum]._angleValue.x -= 360.0f;
+                        m_function[_typeNum]._interval = m_function[_typeNum]._intervalTime;
+                    }
                     if (m_function[_typeNum]._angleValue.y >= 360.0f)
+                    {
+                        m_function[_typeNum]._angleValue.y -= 360.0f;
+                        m_function[_typeNum]._interval = m_function[_typeNum]._intervalTime;
+                    }
+                }
+            }
+            else
+            {
+                //if (m_function[_typeNum]._isDestroy)
+                //{
+                //    DestroyImmediate(gameObject);
+                //    return;
+                //}
+                if (m_function[_typeNum]._sinType == SinType.PlusOnly || m_function[_typeNum]._sinType == SinType.MinusOnly)
+                {
+                    if (m_function[_typeNum]._angleValue.x >= 180.0f)
+                    {
+                        m_function[_typeNum]._angleValue.x = 180.0f;
+                        if (m_function[_typeNum]._isDestroy)
+                        {
+                            DestroyImmediate(gameObject);
+                            return;
+                        }
+                    }
+                    if (m_function[_typeNum]._angleValue.y >= 180.0f)
+                    {
+                        m_function[_typeNum]._angleValue.y = 180.0f;
+                        if (m_function[_typeNum]._isDestroy)
+                        {
+                            DestroyImmediate(gameObject);
+                            return;
+                        }
+                    }
+                    //if (m_function[_typeNum]._angleValue.z >= 180.0f)
+                    //    m_function[_typeNum]._angleValue.z = 180.0f;
+
+                }
+                else if (m_function[_typeNum]._sinType == SinType.Normal)
+                {
+                    if (m_function[_typeNum]._angleValue.x >= 360.0f)
+                    {
+                        m_function[_typeNum]._angleValue.x = 360.0f;
+                        if (m_function[_typeNum]._isDestroy)
+                        {
+                            DestroyImmediate(gameObject);
+                            return;
+                        }
+                    }
+                    if (m_function[_typeNum]._angleValue.y >= 360.0f)
+                    {
                         m_function[_typeNum]._angleValue.y = 360.0f;
-                    if (m_function[_typeNum]._angleValue.z >= 360.0f)
-                        m_function[_typeNum]._angleValue.z = 360.0f;
+                        if (m_function[_typeNum]._isDestroy)
+                        {
+                            DestroyImmediate(gameObject);
+                            return;
+                        }
+                    }
+                    //if (m_function[_typeNum]._angleValue.z >= 360.0f)
+                    //    m_function[_typeNum]._angleValue.z = 360.0f;
+                }
+                else
+                {
+                    if (m_function[_typeNum]._amp.x != 0 && m_function[_typeNum]._angleValue.x >= m_function[_typeNum]._amp.x)
+                    {
+                        m_function[_typeNum]._angleValue.x = m_function[_typeNum]._amp.x;
+                        if (m_function[_typeNum]._isDestroy)
+                        {
+                            DestroyImmediate(gameObject);
+                            return;
+                        }
+                    }
+                    if (m_function[_typeNum]._amp.y != 0 && m_function[_typeNum]._angleValue.y >= m_function[_typeNum]._amp.y)
+                    {
+                        m_function[_typeNum]._angleValue.y = m_function[_typeNum]._amp.y;
+                        if (m_function[_typeNum]._isDestroy)
+                        {
+                            DestroyImmediate(gameObject);
+                            return;
+                        }
+                    }
+                    //if (m_function[_typeNum]._angleValue.z >= m_function[_typeNum]._amp.z)
+                    //{
+                    //    m_function[_typeNum]._angleValue.z = m_function[_typeNum]._amp.z;
+                    //    if (m_function[_typeNum]._isDestroy)
+                    //    {
+                    //        DestroyImmediate(gameObject);
+                    //        return;
+                    //    }
+                    //}
                 }
             }
 
-            Vector3 value = new Vector3(Mathf.Sin(Mathf.Deg2Rad * m_function[_typeNum]._angleValue.x) * m_function[_typeNum]._amp.x,
-                                        Mathf.Sin(Mathf.Deg2Rad * m_function[_typeNum]._angleValue.y) * m_function[_typeNum]._amp.y,
-                                        Mathf.Sin(Mathf.Deg2Rad * m_function[_typeNum]._angleValue.z) * m_function[_typeNum]._amp.z);
-            
+            Vector3 value = Vector3.zero;
+
+            if (m_function[_typeNum]._sinType == SinType.None)
+            {
+                value = m_function[_typeNum]._angleValue;
+            }
+            else
+            {
+                value = new Vector3(Mathf.Sin(Mathf.Deg2Rad * m_function[_typeNum]._angleValue.x) * m_function[_typeNum]._amp.x,
+                                            Mathf.Sin(Mathf.Deg2Rad * m_function[_typeNum]._angleValue.y) * m_function[_typeNum]._amp.y,
+                                            Mathf.Sin(Mathf.Deg2Rad * m_function[_typeNum]._angleValue.z) * m_function[_typeNum]._amp.z);
+            }
+
             if (m_function[_typeNum]._sinType == SinType.PlusOnly)
             {
                 if (value.x < 0.0f)

@@ -81,9 +81,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     {
         Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(
             ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + SelectMgr.SelectStage);
-        Debug.Log(SelectMgr.SelectStage);
         StageCreateMgr.Instance.CreateStage(transform, info);
         m_stageSize = info.size;
+        Debug.Log("Num" + SelectMgr.SelectStage + ":Size" + m_stageSize);
         m_gameStep = GameStart;
 
         base.Awake();
@@ -187,18 +187,17 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// </summary>
     void GameMain()
     {
+
         // 導火線を選択しているなら
         if (m_selectFuse)
         {
-            // 今のマウスの位置から中心にするオブジェクトを選択
-            Vector2 rate = new Vector2(Input.mousePosition.x / Screen.width, Input.mousePosition.y / Screen.height); 
-
             // マウス座標をワールド座標で取得
             Vector3 screen = Camera.main.WorldToScreenPoint(transform.position) -
-                new Vector3(0.0f, 0.0f, 0.5f * m_stageSize.z);
+                new Vector3(0.0f, 0.0f, 0.25f * m_stageSize.z);
 
             screen = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z);
-            Vector3 mousePos = Camera.main.ScreenToWorldPoint(screen);
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(screen) -
+                new Vector3(0.0f, 0.25f, 0.0f);
             m_mousePos = mousePos;
 
             // 生成場所を取得
@@ -244,7 +243,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
                         if (_fuse.State == FuseBase.FuseState.UI)
                         {
-                            if(m_selectFuse)
+                            if (m_selectFuse)
                                 m_selectFuse.SelectUIFuse(false);
                             m_selectFuse = _fuse;
                             m_selectFuse.SelectUIFuse(true);
@@ -320,7 +319,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                             // 導火線のギミック始動
                             hit.collider.gameObject.GetComponent<GameFuse>().OnGimmick();
                         }
-                        else if(parent && Utility.TagSeparate.getParentTagName(parent.tag) == NameDefine.TagName.Fuse)
+                        else if (parent && Utility.TagSeparate.getParentTagName(parent.tag) == NameDefine.TagName.Fuse)
                         {
                             // 導火線のギミック始動
                             hit.collider.transform.parent.GetComponent<GameFuse>().OnGimmick();
