@@ -2,6 +2,7 @@
 {
 	Properties
 	{
+		_AddColor("_AddColor", Color) = (0,0,0,0)
 		[HideInInspector] _Dsitance("_Distance", float) = 1.0
 		[HideInInspector] _Ration("_Ration", float) = 0.0
 		[HideInInspector] _Target("_Target", Vector) = (0, 0, 0, 0)
@@ -32,6 +33,7 @@
 			float3 _Target;
 			float3 _Center;
 			fixed4 _FireOutColor;
+			fixed4 _AddColor;
 
 			struct appdata
 			{
@@ -68,7 +70,7 @@
 				float minLength = min(length(nearTarget - i.worldPos), length(_Target - i.worldPos));
 				float dist = clamp(saturate(minLength), 0.2f, 1.0f);
 
-				return fixed4(colorTex.rgb * dist, rate);
+				return fixed4(colorTex.rgb * dist + _AddColor.rgb, rate);
 			}
 			ENDCG
 	}

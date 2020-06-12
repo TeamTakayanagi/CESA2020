@@ -152,15 +152,14 @@ public class GameGimmick : MonoBehaviour
     public IEnumerator GimmickWater()
     {
         RaycastHit hit = new RaycastHit();
-        
+
         if (Physics.Raycast(transform.position, transform.rotation * Vector3.forward, out hit, m_gimmickValue))
         {
+            // 水が当たってる時の長さ
             if (Utility.TagSeparate.getParentTagName(hit.collider.tag) == NameDefine.TagName.Fuse)
             {
                 GameFuse _fuse = hit.collider.gameObject.GetComponent<GameFuse>();
                 _fuse.FuseWet();
-
-                // 水が当たってる時の長さ
                 m_particle.transform.localScale = new Vector3(0.3f, 0.3f, hit.distance * 0.2f);
 
                 // water drop のパーティクルが暴れるのでFuseのギミック中は表示しない
@@ -169,6 +168,8 @@ public class GameGimmick : MonoBehaviour
                 else
                     childParticle.gameObject.SetActive(true);
             }
+            else
+                m_particle.transform.localScale = new Vector3(0.3f, 0.3f, hit.distance * 0.3f - 0.1f);
         }
         else
         {

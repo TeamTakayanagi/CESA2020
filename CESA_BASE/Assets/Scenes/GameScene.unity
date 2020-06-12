@@ -3346,7 +3346,7 @@ MonoBehaviour:
     _deleyTime: 0
     _intervalTime: 2
     _startAngle: {x: 0, y: 0, z: 0}
-    _speed: {x: 3, y: 0, z: 0}
+    _speed: {x: 3, y: 3, z: 0}
     _amp: {x: 0.2, y: 0.2, z: 0}
 --- !u!222 &2959810519843708854
 CanvasRenderer:
@@ -4025,7 +4025,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SpeedTex.Array.data[1]
       value: 
-      objectReference: {fileID: 21300000, guid: 54f05c010d969d34987b0e5ae4d7530a,
+      objectReference: {fileID: 21300000, guid: 6bdd84d921f7e7148a06da65ed8e73c4,
         type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ea45495f56f2d0e48b1131b57ec5a879, type: 3}

@@ -20,6 +20,7 @@ public class GameFuse : FuseBase
 
 
     private readonly Vector3 OUTPOS = new Vector3(-50, -50, -50);           // 導火線を生成できない位置
+    private readonly Color WET_COLOR = new Color(0.0f, 0.1f, 0.7f, 0.0f);   // 濡れた時の色
 
     [SerializeField]
     private FuseType m_type = FuseType.Normal;
@@ -264,6 +265,7 @@ public class GameFuse : FuseBase
                                 _fuse.m_childTarget.position =
                                     _fuse.transform.position + _fuse.m_targetDistance;
                                 _fuse.m_collFuse.Clear();
+
                                 // エフェクトも同じ場所に生成
                                 Spark.Instantiate(_fuse.transform.position + _fuse.m_targetDistance,
                                     _fuse.m_targetDistance * -2.0f, _fuse, _fuse.m_haveEffect.Count);
@@ -290,6 +292,9 @@ public class GameFuse : FuseBase
                             GameMgr.Instance.BurnOutFuse();
                             m_state = FuseState.Out;
                             m_countTime = AdjustParameter.Fuse_Constant.OUT_MAX_TIME;
+
+                            GameObject obj = transform.GetChild(transform.childCount - 1).gameObject;
+                            Destroy(obj);
                         }
 
                         // 色を変えるオブジェクトの座標
@@ -301,12 +306,13 @@ public class GameFuse : FuseBase
                 }
             case FuseState.Wet:
                 {
-                    // 濡れているとき青くする
-                    gameObject.GetComponent<Renderer>().material.color = new Color(0, 0, 1, 0.5f);
-
-                    m_countTime -= Time.deltaTime/* * GameMgr.Instance.GameSpeed*/;
+                    m_countTime -= Time.deltaTime * GameMgr.Instance.GameSpeed;
                     if (m_countTime <= 0.0f)
+                    {
                         m_state = FuseState.None;
+                        Color col = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+                        m_childRenderer.material.SetColor("_AddColor", col);
+                    }
                     break;
                 }
             case FuseState.Out:
@@ -374,16 +380,15 @@ public class GameFuse : FuseBase
             GameFuse _fuse = other.gameObject.GetComponent<GameFuse>();
 
             // 相手が燃えているもしくは燃え尽きた後なら処理を飛ばす
-            if (!_fuse || _fuse.State != FuseState.None)
+            // ギミック動作中なら
+            if (!_fuse || _fuse.State != FuseState.None ||
+                _fuse.m_isMoved || _fuse.m_isRotate)
                 return;
 
             // 元の移動先のものとは当たらない
             if (transform.position == _fuse.transform.position - m_targetDistance * 2)
                 return;
 
-            // ギミック動作中なら
-            if (_fuse.m_isMoved || _fuse.m_isRotate)
-                return;
 
             m_collFuse.Add(_fuse);
 
@@ -626,6 +631,9 @@ public class GameFuse : FuseBase
         if (m_state == FuseState.Out || m_state == FuseState.UI)
             return;
 
+        Color col = new Color(0.0f, 0.1f, 0.7f, 0.0f);
+        m_childRenderer.material.SetColor("_AddColor", col);
+
         if (m_state == FuseState.Burn)
         {
             m_state = FuseState.Wet;
@@ -637,8 +645,8 @@ public class GameFuse : FuseBase
             // 色を変えるオブジェクトの座標
             m_childRenderer.material.SetVector("_Target", m_childTarget.position);
             // 燃やす範囲（0:その場だけ ～　1:全域）
-            m_childRenderer.material.
-                SetFloat("_Ration", (m_childTarget.localScale.x + m_childTarget.localScale.y + m_childTarget.localScale.z) / 3);
+            m_childRenderer.material.SetFloat("_Ration",
+                (m_childTarget.localScale.x + m_childTarget.localScale.y + m_childTarget.localScale.z) / 3);
 
             GameMgr.Instance.BurnOutFuse();
         }

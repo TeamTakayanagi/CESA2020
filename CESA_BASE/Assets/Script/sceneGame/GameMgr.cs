@@ -85,7 +85,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + SelectMgr.SelectStage);
         StageCreateMgr.Instance.CreateStage(transform, info);
         m_stageSize = info.size;
-        Debug.Log("Num" + SelectMgr.SelectStage + ":Size" + m_stageSize);
         m_gameStep = GameStart;
 
         base.Awake();
@@ -95,7 +94,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     void Start()
     {
         Camera.main.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
-        Camera.main.GetComponent<MainCamera>().Near = Mathf.Max(m_stageSize.x, m_stageSize.z);
+        Camera.main.GetComponent<MainCamera>().Near = Mathf.Max(m_stageSize.x, m_stageSize.z) + 1;
         // マウス制御クラスにカメラの情報を渡す
         InputMouse.RoadCamera();
 
