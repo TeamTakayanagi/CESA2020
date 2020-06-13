@@ -69,6 +69,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
             Destroy(m_logo.gameObject);
             m_camera.GetComponent<MainCamera>().Control = true;
             m_camera.transform.rotation = LastCameraRot;
+            SelectMgr.Instance.Select = true;
             return;
         }
         
