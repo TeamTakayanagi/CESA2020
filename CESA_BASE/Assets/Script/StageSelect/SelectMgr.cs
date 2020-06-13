@@ -188,6 +188,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                     SetArrowUI(m_zoomObj);
                     m_zoomObj.MoveCoroutine(true);
                     m_camera.StartZoomIn(_stage.transform.position);
+                    Sound.Instance.PlaySE(Audio.SE.Click, GetInstanceID());
 
                     // UIを表示
                     m_uiArrow.SetActive(true);
@@ -207,7 +208,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     /// <summary>
     /// 矢印をクリック
     /// </summary>
-    /// <param name="arrow">そのボタンのオブジェクト</param>
+    /// <param name="arrow">その矢印のオブジェクト</param>
     public void ClickArrow(Transform arrow)
     {
         if (FadeMgr.Instance.State != FadeBase.FadeState.None)
@@ -218,9 +219,11 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
 
         // ボタンの処理
         arrow.GetComponent<Animator>().ResetTrigger("Highlighted");
+        arrow.localScale = Vector3.one;
+
+        // 注視するステージを移動
         int direct = arrow.tag == "UI/ArrowR" ? 1 : -1;
         m_zoomObj = m_stageList[Mathf.Clamp(m_zoomObj.StageNum - 1 + direct, 0, m_stageList.Count - 1)];
-        arrow.localScale = Vector3.one;
 
         // 移動後の場所のステージを注視する
         m_camera.StartZoomIn(m_zoomObj.transform.position);
@@ -234,6 +237,10 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         Sound.Instance.PlaySE(Audio.SE.Click, GetInstanceID());
     }
 
+    /// <summary>
+    /// 矢印の場所を変更
+    /// </summary>
+    /// <param name="stage">注視しているステージ情報</param>
     private void SetArrowUI(Stage stage)
     {
         Vector3 distance = Vector3.zero;
@@ -242,6 +249,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         // 最終ステージではない
         if (stage.StageNum != m_stageList.Count)
         {
+            // 一つ後のステージを見て矢印の場所を移動
             Vector3 aft = m_stageList[Mathf.Clamp(m_zoomObj.StageNum, 0, m_stageList.Count - 1)].transform.position;
             distance = aft - stage.transform.position;
             // Y座標は比較しない
@@ -257,6 +265,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         // 最初のステージではない
         if (stage.StageNum != 1)
         {
+            // 一つ前のステージを見て矢印の場所を移動
             Vector3 bef = m_stageList[Mathf.Clamp(m_zoomObj.StageNum - 2, 0, m_stageList.Count - 1)].transform.position;
             distance = bef - stage.transform.position;
             // Y座標は比較しない
@@ -269,20 +278,22 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
             UILeft.eulerAngles = new Vector3(0.0f, 0.0f, Vector3.Angle(Vector3.left, absolute) * -Vector3.Dot(Vector3.one, absolute));
             UILeft.GetChild(0).rotation = Quaternion.identity;
         }
-
     }
 
     /// <summary>
     /// ズームアウトの開始時の処理
     /// </summary>
-    public void ZoomOut()
+    public void ZoomOut(Transform botton)
     {
-        // サウンド
-        Sound.Instance.PlaySE(Audio.SE.Click, GetInstanceID());
-
         if (FadeMgr.Instance.State != FadeBase.FadeState.None)
             return;
 
+        // ボタンの処理
+        botton.GetComponent<Animator>().ResetTrigger("Highlighted");
+        botton.localScale = Vector3.one;
+
+        // サウンド
+        Sound.Instance.PlaySE(Audio.SE.Click, GetInstanceID());
         m_uiArrow.SetActive(false);
         m_uiStartBack.SetActive(false);
         m_camera.StartZoomOut();

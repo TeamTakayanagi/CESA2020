@@ -120,6 +120,7 @@ namespace ProcessedtParameter
     }
 }
 
+// サウンドの名前の定数
 namespace Audio
 {
     public readonly struct BGM
@@ -137,9 +138,12 @@ namespace Audio
         public const string Click = "se_click";
         public const string Catch = "se_catch";
         public const string Release = "se_release";
+        public const string Fade_Circle = "se_fadeCircle";
+        public const string Select = "se_select";
     }
 }
 
+// 名前を定数として
 namespace NameDefine
 {
     public readonly struct Scene_Name

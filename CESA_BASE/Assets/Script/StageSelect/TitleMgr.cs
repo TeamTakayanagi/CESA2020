@@ -50,7 +50,6 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
         }
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         Camera.main.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
