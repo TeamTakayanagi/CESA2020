@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Effekseer;
 using UnityEngine;
-using Effekseer;
-using DG.Tweening;
 
 public class Fireworks : EffekseerEmitter
 {
@@ -12,17 +9,17 @@ public class Fireworks : EffekseerEmitter
         create,
     }
 
-    private float m_createWait;
     private State m_staet;
-    private bool m_isSE = false;
+    private bool m_isSound = false;         // 音を再生するかどうか
+    private float m_waitCount;             // 
 
     new void Start()
     {
         m_moveVector = new Vector3(0.0f, m_target.y - transform.position.y, 0.0f);
-        m_createWait = AdjustParameter.Production_Constant.WAIT_TIME;
+        m_waitCount = AdjustParameter.Production_Constant.WAIT_TIME;
         m_staet = State.launch;
-        if(m_isSE)
-            Sound.Instance.PlaySE("se_hanabi_bef", gameObject.GetInstanceID());
+        if(m_isSound)
+            Sound.Instance.PlaySE(Audio.SE.FireWorks_Before, gameObject.GetInstanceID());
         base.Start();
     }
 
@@ -41,12 +38,12 @@ public class Fireworks : EffekseerEmitter
 
             // 生成までの待ち時間
             case State.create:
-                m_createWait -= Time.deltaTime;
-                if(m_createWait <= 0.0f)
+                m_waitCount -= Time.deltaTime;
+                if(m_waitCount <= 0.0f)
                 {
                     EffectManager.Instance.EffectCreate(EffectManager.Instance.GetFireworks(), transform.position, transform.localScale, Quaternion.identity);
-                    if (m_isSE)
-                        Sound.Instance.PlaySE("se_hanabi_aft", gameObject.GetInstanceID());
+                    if (m_isSound)
+                        Sound.Instance.PlaySE(Audio.SE.FireWorks_After, gameObject.GetInstanceID());
                     DestroyImmediate(gameObject);
                 }
                 break;
@@ -61,7 +58,7 @@ public class Fireworks : EffekseerEmitter
             return null;
 
         Fireworks fire = effect.GetComponent<Fireworks>();
-        fire.m_isSE = isSE;
+        fire.m_isSound = isSE;
 
         return fire;
     }

@@ -22,6 +22,11 @@ public class InputMouse : MonoBehaviour
         Right,
         Center,
     }
+    public enum Mouse_Cursol
+    {
+        Default,
+        Catch
+    }
 
 
     void Start()
@@ -67,10 +72,10 @@ public class InputMouse : MonoBehaviour
     {
         return Input.mousePosition.x > Screen.width * Camera.main.rect.width;
     } 
-    public static void ChangeCursol(bool isDefault)
+    public static void ChangeCursol(Mouse_Cursol cursol)
     {
         // マウスカーソル用の画像を変更
-        if (isDefault)
+        if (cursol == Mouse_Cursol.Default)
             Cursor.SetCursor(m_cursorDefault, CURSOR_POS, CursorMode.Auto);
         else
             Cursor.SetCursor(m_cursorCatch, CURSOR_POS, CursorMode.Auto);

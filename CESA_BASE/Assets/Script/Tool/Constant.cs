@@ -1,7 +1,5 @@
 ﻿//---調整用変数---
 // レベルデザインなどで後で数値変更を行うべき変数をここに記載
-using System.Numerics;
-
 namespace AdjustParameter
 {
     public readonly struct Camera_Constant
@@ -24,8 +22,8 @@ namespace AdjustParameter
 
     public readonly struct Fuse_Constant
     {
-        public const float BURN_MAX_TIME = 7.5f;                        // 燃えてる時間(秒)
-        public const float OUT_MAX_TIME = 5.0f;                         // 燃え尽きた後消える時間(秒)
+        public const float BURN_MAX_TIME = 10.0f;                       // 燃えてる時間(秒)
+        public const float OUT_MAX_TIME = 3.0f;                         // 燃え尽きた後消える時間(秒)
         public const float WET_MAX_TIME = 2.0f;                         // 濡れた状態がいつまで続くか
         public const float MOVE_VALUE = 2.0f;                           // 導火線の移動速度（ギミック）
         public const float ROT_VALUE = 5.0f;                            // 導火線の回転速度（ギミック）
@@ -122,6 +120,26 @@ namespace ProcessedtParameter
     }
 }
 
+namespace Audio
+{
+    public readonly struct BGM
+    {
+        public const string GameMain = "bgm_game";
+        public const string Clear = "bgm_clear";
+        public const string GameOver = "bgm_gameover";
+        public const string Title = "bgm_title";
+    }
+    public readonly struct SE
+    {
+        public const string FireWorks_Before = "se_hanabi_bef";
+        public const string FireWorks_After = "se_hanabi_aft";
+        public const string Fuse = "se_fuse";
+        public const string Click = "se_click";
+        public const string Catch = "se_catch";
+        public const string Release = "se_release";
+    }
+}
+
 namespace NameDefine
 {
     public readonly struct Scene_Name
@@ -156,18 +174,6 @@ namespace NameDefine
         public const string FuseLL = "Fuse/LL";
         public const string FuseTT = "Fuse/TT";
         public const string FuseXX = "Fuse/XX";
-    }
-
-    namespace Audio
-    {
-        public readonly struct BGM
-        {
-            public const string GameMain = "GameMain";
-        } 
-        public readonly struct SE
-        {
-
-        }
     }
 
     public readonly struct Layer

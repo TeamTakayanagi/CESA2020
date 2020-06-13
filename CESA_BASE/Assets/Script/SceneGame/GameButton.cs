@@ -20,6 +20,14 @@ public class GameButton : MonoBehaviour
     private Vector3 m_defaultPos;
     private RectTransform rectTrans;
 
+    public bool Slide
+    {
+        get
+        {
+            return m_isSride;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,34 +36,10 @@ public class GameButton : MonoBehaviour
         m_defaultPos = rectTrans.localPosition;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public void SlideVar()
     {
         // サウンド
-        Sound.Instance.PlaySE("se_click", GetInstanceID());
-
-        if (!m_isSride)
-        {
-            rectTrans.DOLocalMove(m_defaultPos + new Vector3(rectTrans.sizeDelta.x * SLIDE_VALUE, 0.0f, 0.0f), SLIDE_TIME);
-            m_isSride = true;
-        }
-        else
-        {
-            rectTrans.DOLocalMove(m_defaultPos, SLIDE_TIME);
-            m_isSride = false;
-        }
-    }
-    public void SlideVar(bool isSlide)
-    {
-        if (m_isSride == isSlide)
-            return;
-        // サウンド
-        Sound.Instance.PlaySE("se_click", GetInstanceID());
+        Sound.Instance.PlaySE(Audio.SE.Click, GetInstanceID());
 
         if (!m_isSride)
         {

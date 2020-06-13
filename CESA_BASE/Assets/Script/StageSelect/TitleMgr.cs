@@ -54,8 +54,8 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
     void Start()
     {
         Camera.main.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
-        Sound.Instance.PlayBGM("bgm_title");
-        InputMouse.ChangeCursol(true);          // カーソルをデフォルトに
+        Sound.Instance.PlayBGM(Audio.BGM.Title);
+        InputMouse.ChangeCursol(InputMouse.Mouse_Cursol.Default);          // カーソルをデフォルトに
 
         // オブジェクトの取得
         m_logo = transform.GetChild(0).GetComponent<TitleLogo>();
@@ -141,7 +141,7 @@ public class TitleMgr : SingletonMonoBehaviour<TitleMgr>
                 m_guid.GetComponent<PushButton>().Flg = false;
 
                 // サウンド
-                Sound.Instance.PlaySE("se_click", GetInstanceID());
+                Sound.Instance.PlaySE(Audio.SE.Click, GetInstanceID());
 
                 m_step = TitleStep.Retreat;
             }

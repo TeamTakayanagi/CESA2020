@@ -37,7 +37,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private GameStep m_gameStep = null;                                 // 現在のゲームの進行状況の関数
     private GameObject m_resultClear = null;                            // ゲームクリア用のUIの親オブジェクト
     private GameObject m_resultGameover = null;                         // ゲームオーバー用のUIの親オブジェクト
-    private GameButton m_slide = null;                                  // ゲームオーバー用のUIの親オブジェクト
+    private GameButton m_gameUI = null;                                  // ゲームオーバー用のUIの親オブジェクト
     private GameFuse m_selectFuse = null;                                   // 選択しているUIの導火線   
     private GameObject m_saveObj = null;                                // 各GameStepごとにオブジェクトを格納（スタート：カウントダウン数字　ゲームクリア：花火）
     private StartProduction m_start = null;                                  // ゲームオーバー用のUIの親オブジェクト
@@ -105,7 +105,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // ゲームオーバー用のUIの親オブジェクト取得
         m_resultGameover = GameObject.FindGameObjectWithTag(NameDefine.TagName.UIGameOver);
         // ゲームのポーズ処理の親オブジェクト取得
-        m_slide = FindObjectOfType<GameButton>();
+        m_gameUI = FindObjectOfType<GameButton>();
         // ゲームスタート用のオブジェクト格納
         m_start = FindObjectOfType<StartProduction>();
         // UIの導火線生成オブジェクト取得し、動きを止める
@@ -141,7 +141,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             m_fieldObject.AddLast(_gimmick.gameObject);
         }
         Camera.main.GetComponent<MainCamera>().Control = true;
-        Sound.Instance.PlayBGM("bgm_game");
+        Sound.Instance.PlayBGM(Audio.BGM.GameMain);
 
         m_uiSpeed = GameObject.FindGameObjectWithTag(NameDefine.TagName.UIGameButton).transform.GetChild(0).GetChild(0).GetComponent<Image>();
     }
@@ -180,8 +180,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             // UI部分を表示・稼働
             Camera.main.DORect(new Rect(0.0f, 0.0f, ProcessedtParameter.Camera_Constant.RECT_WIDTH, SLIDE_UI), 1.0f);
             // サウンド
-            Sound.Instance.PlaySE("se_click", GetInstanceID());
-            m_slide.SlideVar();
+            Sound.Instance.PlaySE(Audio.SE.Click, GetInstanceID());
+            m_gameUI.SlideVar();
 
             m_start.State = StartProduction.Production.moveY;
         }
@@ -192,7 +192,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// </summary>
     void GameMain()
     {
-
         // 導火線を選択しているなら
         if (m_selectFuse)
         {
@@ -239,7 +238,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     if (!m_selectFuse || m_selectFuse.gameObject != hit.collider.transform.parent.gameObject)
                     {
                         // サウンド
-                        Sound.Instance.PlaySE("se_catch", GetInstanceID());
+                        Sound.Instance.PlaySE(Audio.SE.Catch, GetInstanceID());
 
                         GameFuse _fuse = hit.collider.transform.parent.GetComponent<GameFuse>();
                         if (!_fuse || _fuse.EndPos != Vector3.zero)
@@ -252,18 +251,17 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                             m_selectFuse = _fuse;
                             m_selectFuse.SelectUIFuse(true);
                             // マウスカーソル用の画像を選択時に変更
-                            InputMouse.ChangeCursol(false);
+                            InputMouse.ChangeCursol(InputMouse.Mouse_Cursol.Catch);
                         }
                     }
                     // 選択解除
                     else
                     {
-                        //Sound.Instance.PlaySE("se_release", GetInstanceID());
-
+                        Sound.Instance.PlaySE(Audio.SE.Release, GetInstanceID());
                         m_selectFuse.SelectUIFuse(false);
                         m_selectFuse = null;
                         // マウスカーソル用の画像をデフォルトに変更
-                        InputMouse.ChangeCursol(true);
+                        InputMouse.ChangeCursol(InputMouse.Mouse_Cursol.Default);
                     }
                 }
             }
@@ -307,7 +305,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     m_selectFuse = null;
                     m_createPos = OUTPOS;
                     // マウスカーソル用の画像をデフォルトに変更
-                    InputMouse.ChangeCursol(true);
+                    InputMouse.ChangeCursol(InputMouse.Mouse_Cursol.Default);
                 }
                 // ギミック動作
                 else
@@ -316,15 +314,14 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
                     if (Physics.Raycast(ray, out hit))
                     {
+                        // 導火線のギミック始動
                         Transform parent = hit.collider.transform.parent;
                         if (Utility.TagSeparate.getParentTagName(hit.collider.tag) == NameDefine.TagName.Fuse)
                         {
-                            // 導火線のギミック始動
                             hit.collider.gameObject.GetComponent<GameFuse>().OnGimmick();
                         }
                         else if (parent && Utility.TagSeparate.getParentTagName(parent.tag) == NameDefine.TagName.Fuse)
                         {
-                            // 導火線のギミック始動
                             hit.collider.transform.parent.GetComponent<GameFuse>().OnGimmick();
                         }
                     }
@@ -357,7 +354,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// <returns>導火線の生成位置</returns>
     private Vector3 FindNearFuse(Vector3 mousePos)
     {
-
         // 一番近くにあるオブジェクト探索用変数
         GameObject nearObj = m_fieldObject.First.Value;
 
@@ -377,21 +373,16 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         if (nearObj == null)
             return m_createPos;
 
-        Vector3 objPos = Vector3.zero;
+        // 距離を求める
+        Vector3 distance = mousePos - nearObj.transform.position;
+        //  一番大きい値が大きさ１それ以外の要素が0の値を受け取る
+        Vector3 absolute = Utility.MyMath.GetMaxDirectSign(distance);
         // そのオブジェクトの上下左右前後どちらにあるのか
-        {
-            Vector3 distance, absolute;
-            // 距離を求める
-            distance = mousePos - nearObj.transform.position;
-            // 絶対値にしたものを入れる
-            absolute = Utility.MyMath.GetMaxDirectSign(distance);
-
-            objPos = nearObj.transform.position + absolute;
-        }
+        Vector3 objPos = nearObj.transform.position + absolute;
 
         Vector3Int half = new Vector3Int((int)Mathf.Floor(m_stageSize.x / 2.0f),
             (int)Mathf.Floor(m_stageSize.y / 2.0f), (int)Mathf.Floor(m_stageSize.z / 2.0f));
-        Vector3Int stageMax = half - 
+        Vector3Int stageMax = half -
             new Vector3Int((m_stageSize.x + 1) % 2, (m_stageSize.y + 1) % 2, (m_stageSize.z + 1) % 2);
         Vector3Int stageMin = -half;
 
@@ -433,8 +424,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             // ゲームオーバー
             m_gameStep = GameOver;
             m_resultGameover.SetActive(true);
-            Sound.Instance.PlayBGM("bgm_gameover");
-            Sound.Instance.PlaySE("se_gameover", gameObject.GetInstanceID());
+            Sound.Instance.PlayBGM(Audio.BGM.GameOver);
             // UIの移動
             StartCoroutine(SlideResultUI(m_resultGameover, 0.0f));
         }
@@ -488,8 +478,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             // クリアUIの移動
             StartCoroutine(SlideResultUI(m_resultClear, AdjustParameter.Production_Constant.RESULT_TIME));
 
-            Sound.Instance.PlayBGM("bgm_clear");
-            Sound.Instance.PlaySE("se_clear", gameObject.GetInstanceID());
+            Sound.Instance.PlayBGM(Audio.BGM.Clear);
         }
 
         // 花火に着火
@@ -504,10 +493,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // ライトの親を外す
         Camera.main.transform.GetChild(0).parent = null;
         Camera.main.GetComponent<MainCamera>().Control = false;
-        //Camera.main.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
         Camera.main.DORect(new Rect(0.0f, 0.0f, 1.0f, 1.0f), SLIDE_UI);
 
-        m_slide.SlideVar();
+        m_gameUI.SlideVar();
         if (m_selectFuse)
             m_selectFuse.State = GameFuse.FuseState.None;
 
@@ -549,9 +537,15 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     private void EndScene()
     {
+        // サウンド
+        Sound.Instance.PlaySE(Audio.SE.Click, GetInstanceID());
+
         EffectManager.Instance.DestoryEffects();
         m_gameStep = null;
-        m_slide.SlideVar(false);
+
+        // 画面内にUIが設置されているなら
+        if(m_gameUI.Slide)
+            m_gameUI.SlideVar();
 
         if (Camera.main.rect != new Rect(0.0f, 0.0f, 1.0f, 1.0f))
             Camera.main.DORect(new Rect(0.0f, 0.0f, 1.0f, 1.0f), SLIDE_UI);
@@ -565,18 +559,11 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     public void BackToTitle()
     {
-        // サウンド
-        Sound.Instance.PlaySE("se_click", GetInstanceID());
-
         EndScene();
-
         FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, NameDefine.Scene_Name.STAGE_SELECT);
     }
     public void Retry()
     {
-        // サウンド
-        Sound.Instance.PlaySE("se_click", GetInstanceID());
-
         if (FadeMgr.Instance.State != FadeBase.FadeState.None)
             return;
 
@@ -586,8 +573,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     }
     public void NextStsge()
     {
-        // サウンド
-        Sound.Instance.PlaySE("se_click", GetInstanceID());
 
         SelectMgr.SelectStage++;
         EndScene();
@@ -596,9 +581,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     }
     public void Retire()
     {
-        // サウンド
-        Sound.Instance.PlaySE("se_click", GetInstanceID());
-
         if (FadeMgr.Instance.State != FadeBase.FadeState.None)
             return;
 
@@ -608,7 +590,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     public void ChangeGameSpeed()
     {
         // サウンド
-        Sound.Instance.PlaySE("se_click", GetInstanceID());
+        Sound.Instance.PlaySE(Audio.SE.Click, GetInstanceID());
 
         m_gameSpeed = m_gameSpeed % 2 + 1;
         m_uiSpeed.sprite = m_SpeedTex[m_gameSpeed - 1];

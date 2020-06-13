@@ -5,15 +5,10 @@ using Effekseer;
 
 public class Spark : EffekseerEmitter
 {
-    private int m_instanceID = 0;                                            // 導火線から見てこのエフェクトが何個目か
-    private GameFuse m_fuseClass = null;                                        // 導火線キューブ取得用
+    private int m_instanceID = 0;                                           // 導火線から見てこのエフェクトが何個目か
+    private GameFuse m_fuseClass = null;                                    // 導火線キューブ取得用
     private BoxCollider m_enterCollider = null;                             // 進入方向の導火線コライダ
     private List<BoxCollider> m_fuseCollider = new List<BoxCollider>();     // 進入方向以外導火線のコライダ
-
-    private void Awake()
-    {
-
-    }
 
     // Start is called before the first frame update
     new void Start()
@@ -22,13 +17,14 @@ public class Spark : EffekseerEmitter
 
         // コライダ取得
         m_fuseCollider.AddRange(m_fuseClass.GetComponents<BoxCollider>());
-        Sound.Instance.PlaySE("se_fuse", gameObject.GetInstanceID());
+        Sound.Instance.PlaySE(Audio.SE.Fuse, gameObject.GetInstanceID());
 
 
         // その導火線の進行方向のコライダーを取得
         for (int i = 0; i < m_fuseCollider.Count; ++i)
         {
-            if (Mathf.Abs(Vector3.Dot(m_moveVector, m_fuseClass.transform.rotation * m_fuseCollider[i].size)) < 0.5f)
+            if (Mathf.Abs(Vector3.Dot(
+                m_moveVector, m_fuseClass.transform.rotation * m_fuseCollider[i].size)) < 0.5f)
                 continue;
 
             m_enterCollider = m_fuseCollider[i];
@@ -50,7 +46,7 @@ public class Spark : EffekseerEmitter
         // 導火線が燃え立つ来たのを確認して自信を即削除
         if (m_fuseClass.State == FuseBase.FuseState.Out && fuseTarget.localScale.x >= 1.0f)
         {
-            Sound.Instance.StopSE("se_fuse", gameObject.GetInstanceID());
+            Sound.Instance.StopSE(Audio.SE.Fuse, gameObject.GetInstanceID());
             DestroyImmediate(gameObject);
             return;
         }
@@ -64,16 +60,16 @@ public class Spark : EffekseerEmitter
             afterPos += move;
 
         // 中心に来た時
-        if (m_instanceID == 0 && afterPos != Vector3.zero &&
-            (Vector3.Dot(afterPos - m_fuseClass.transform.position, transform.position - m_fuseClass.transform.position) *
-                Vector3.Dot(move, m_moveVector)) < 0)
+        if (m_instanceID == 0 && afterPos != Vector3.zero && (Vector3.Dot(
+            afterPos - m_fuseClass.transform.position, 
+            transform.position - m_fuseClass.transform.position) * Vector3.Dot(move, m_moveVector)) < 0)
         {
             // 導火線の
             SparkBranch(m_fuseClass.HaveEffect(this));
             // 進入方向が短いコライダの場合
             if (m_enterCollider.center != Vector3.zero)
             {
-                Sound.Instance.StopSE("se_fuse", gameObject.GetInstanceID());
+                Sound.Instance.StopSE(Audio.SE.Fuse, gameObject.GetInstanceID());
                 DestroyImmediate(gameObject);           // 進行中のエフェクトを削除
                 return;
             }
@@ -129,7 +125,7 @@ public class Spark : EffekseerEmitter
         {// 短いコライダ
             Vector3 _moveVector = m_fuseClass.transform.position - _collider.bounds.center;
             float _judgeVector = Mathf.Max(Mathf.Abs(_moveVector.x), Mathf.Abs(_moveVector.y), Mathf.Abs(_moveVector.z));
-
+           
             if (_judgeVector == Mathf.Abs(_moveVector.x))
             {
                 Instantiate(transform.position, new Vector3(-Mathf.Sign(_moveVector.x), 0.0f, 0.0f), m_fuseClass, -1);

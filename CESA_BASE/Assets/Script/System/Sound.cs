@@ -9,23 +9,8 @@ using System;
 /// </summary>
 public class Sound : SingletonMonoBehaviour<Sound>
 {
-    public enum SE_ID
-    {
-        Hanabi_aft,
-        Hanabi_bef,
-        Click,
-        Catch,
-        Release,
-        Fuse
-    }
-
-    public struct Sound_ID
-    {
-        string name;
-        int instanceID;
-    }
-
-    public bool sound = false;
+    //[SerializeField]
+    //private GameObject m_soundObj = null;
     [SerializeField]
     private List<AudioClip> m_bgmList = new List<AudioClip>();
     [SerializeField]
@@ -63,17 +48,25 @@ public class Sound : SingletonMonoBehaviour<Sound>
         m_seList.ForEach(se => AddClipDict(m_seDict, se));
     }
 
+    private void Update()
+    {
+        
+    }
     /// <summary>
     /// SEを再生
     /// </summary>
     /// <param name="seName">ハンドル名</param>
     public void PlaySE(string seName, int instanceID, float volume = 1.0f)
     {
-        if (!sound || !m_seDict.ContainsKey(seName))
+        Tuple<string, int> key = Tuple.Create(seName, instanceID);
+        // その名前の音源がない
+        if (!m_seDict.ContainsKey(seName) ||
+            // すでにその音がそのオブジェクトkら再生されている
+            (m_seSources.ContainsKey(key) && m_seSources[key].isPlaying))
             return;
 
         AudioSource _sourceAt = null;
-        foreach (AudioSource _source in  m_seSources.Values)
+        foreach (AudioSource _source in m_seSources.Values)
         {
             if (_source.isPlaying)
                 continue;
@@ -88,17 +81,12 @@ public class Sound : SingletonMonoBehaviour<Sound>
                 return;
 
             _sourceAt = gameObject.AddComponent<AudioSource>();
-            _sourceAt.clip = m_seDict[seName];
-            _sourceAt.Play();
-            _sourceAt.volume = Mathf.Clamp01(volume);
-            m_seSources.Add(Tuple.Create(seName, instanceID), _sourceAt);
+            m_seSources.Add(key, _sourceAt);
         }
-        else
-        {
-            _sourceAt.clip = m_seDict[seName];
-            _sourceAt.Play();
-            _sourceAt.volume = Mathf.Clamp01(volume);
-        }
+
+        _sourceAt.clip = m_seDict[seName];
+        _sourceAt.Play();
+        _sourceAt.volume = Mathf.Clamp01(volume);
     }
 
     /// <summary>
@@ -106,7 +94,7 @@ public class Sound : SingletonMonoBehaviour<Sound>
     /// </summary>
     public void StopSE(string seName, int instanceID)
     {
-        if (!sound || !m_seSources.ContainsKey(Tuple.Create(seName, instanceID)))
+        if (!m_seSources.ContainsKey(Tuple.Create(seName, instanceID)))
             return;
 
         AudioSource _source = m_seSources[Tuple.Create(seName, instanceID)];
@@ -134,7 +122,7 @@ public class Sound : SingletonMonoBehaviour<Sound>
     /// <param name="bgmName">ハンドル名</param>
     public void PlayBGM(string bgmName, float volume = 1.0f)
     {
-        if (!sound || !m_bgmDict.ContainsKey(bgmName) || m_bgmSource.clip == m_bgmDict[bgmName])
+        if (!m_bgmDict.ContainsKey(bgmName) || m_bgmSource.clip == m_bgmDict[bgmName])
             return;
 
         m_bgmSource.Stop();

@@ -1394,7 +1394,7 @@ PrefabInstance:
     - target: {fileID: 4638224155626910223, guid: e55cf2caae06b154b9e4604c9a991da7,
         type: 3}
       propertyPath: MAX_PLAY_SE
-      value: 15
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4638224155626910223, guid: e55cf2caae06b154b9e4604c9a991da7,
         type: 3}

@@ -23,7 +23,7 @@ public class SelectSpark : EffekseerEmitter
 
         // コライダ取得
         m_fuseCollider.AddRange(m_fuseClass.GetComponents<BoxCollider>());
-        Sound.Instance.PlaySE("se_fuse", gameObject.GetInstanceID());
+        Sound.Instance.PlaySE(Audio.SE.Fuse, gameObject.GetInstanceID());
 
 
         // その導火線の進行方向のコライダーを取得
@@ -52,7 +52,7 @@ public class SelectSpark : EffekseerEmitter
         // 導火線が燃え立つ来たのを確認して自信を即削除
         if (m_fuseClass.State == FuseBase.FuseState.Out && fuseTarget.localScale.x >= 1.0f)
         {
-            Sound.Instance.StopSE("se_fuse", gameObject.GetInstanceID());
+            Sound.Instance.StopSE(Audio.SE.Fuse, gameObject.GetInstanceID());
             DestroyImmediate(gameObject);
             return;
         }
@@ -77,7 +77,7 @@ public class SelectSpark : EffekseerEmitter
             // 進入方向が短いコライダの場合
             if (m_enterCollider.center != Vector3.zero)
             {
-                Sound.Instance.StopSE("se_fuse", gameObject.GetInstanceID());
+                Sound.Instance.StopSE(Audio.SE.Fuse, gameObject.GetInstanceID());
                 DestroyImmediate(gameObject);           // 進行中のエフェクトを削除
                 return;
             }
