@@ -49,6 +49,10 @@ MonoBehaviour:
     type: 3}
   m_wallPrefab: {fileID: 6090473571150526217, guid: f9f4481ec51832243a534fd0db5530a1,
     type: 3}
+  m_backGround:
+  - {fileID: 2237293379482964431, guid: 5270f45c74bccf847938d09f5967b2ad, type: 3}
+  - {fileID: 795619272731109780, guid: 564668815aef9c944b26791f1dcbdf67, type: 3}
+  - {fileID: 7062887235282136562, guid: 6aad37b7dc9f5c14796f7d41b398bd8b, type: 3}
 --- !u!1 &488733824404674968
 GameObject:
   m_ObjectHideFlags: 0

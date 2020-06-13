@@ -118,6 +118,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // 地形生成
         TerrainCreate terrainCreate = FindObjectOfType<TerrainCreate>();
         terrainCreate.CreateGround(m_stageSize.x, m_stageSize.z, -m_stageSize.y / 2 - 1);
+        terrainCreate.CreateBackGround(SelectMgr.SelectStage);
 
         // フィールドオブジェクトの取得
         GameFuse[] _fuseList = FindObjectsOfType<GameFuse>();

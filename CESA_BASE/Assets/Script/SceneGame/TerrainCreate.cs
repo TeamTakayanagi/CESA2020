@@ -11,9 +11,11 @@ public class TerrainCreate : MonoBehaviour
     }
 
     [SerializeField]
-    GameObject m_groundPrefab = null;
+    private GameObject m_groundPrefab = null;
     [SerializeField]
-    GameObject m_wallPrefab = null;
+    private GameObject m_wallPrefab = null;
+    [SerializeField]
+    private List<GameObject> m_backGround = new List<GameObject>();
 
     /// <summary>
     /// 地面生成
@@ -63,6 +65,13 @@ public class TerrainCreate : MonoBehaviour
                     _ground.GetChild(width * y + x + difference).position = new Vector3(x - half.x, underPosY, y - half.y);
                 }
         }
+    }
+
+    public void CreateBackGround(int stageNum)
+    {
+        int devide = (stageNum - 1) / 10;
+        devide = Mathf.Clamp(devide, 0, 2);
+        Instantiate(m_backGround[devide], Vector3.zero, Quaternion.identity);
     }
 
     /// <summary>
