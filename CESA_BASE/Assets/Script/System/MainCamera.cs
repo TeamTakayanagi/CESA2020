@@ -87,7 +87,7 @@ public class MainCamera : MonoBehaviour
                 break;
             case CameraType.ZoomIn:
                 m_cameraState = null;
-                //m_cameraState = CameraZoomIn;
+                m_cameraState = CameraZoomIn;
                 break;
             case CameraType.ZoomOut:
                 m_cameraState = CameraZoomOut;
@@ -193,11 +193,6 @@ public class MainCamera : MonoBehaviour
         SetState();
         m_target = m_savePos;
         transform.DOLocalMove(m_target, AdjustParameter.Camera_Constant.ZOOM_SPEED);
-    }
-
-    public void Attention(float length)
-    {
-
     }
 
     ///////////////////////////////////////////////////////////////////////

@@ -17,7 +17,7 @@ public class Spark : EffekseerEmitter
 
         // コライダ取得
         m_fuseCollider.AddRange(m_fuseClass.GetComponents<BoxCollider>());
-        Sound.Instance.PlaySE(Audio.SE.Fuse, gameObject.GetInstanceID());
+        Sound.Instance.PlaySE(Audio.SE.Fuse, gameObject.GetInstanceID(), true);
 
 
         // その導火線の進行方向のコライダーを取得
@@ -139,7 +139,6 @@ public class Spark : EffekseerEmitter
                 Instantiate(transform.position, new Vector3(0.0f, 0.0f, -Mathf.Sign(_moveVector.z)), m_fuseClass, -1);
             }
         }
-
     }
 
     /// <summary>

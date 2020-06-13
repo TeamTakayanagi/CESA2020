@@ -172,7 +172,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
     // Update is called once per frame
     void Update()
     {
-        if (m_camera.Type == MainCamera.CameraType.SwipeMove && 
+        if (m_camera.Type == MainCamera.CameraType.SwipeMove &&
             Input.GetMouseButtonDown(0) && m_isSelect)
         {
             RaycastHit _hit = new RaycastHit();
@@ -186,10 +186,14 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
                     Stage _stage = _hit.transform.GetComponent<Stage>();
                     m_zoomObj = _stage;
                     SetArrowUI(m_zoomObj);
+                    // ステージ番号のUIの動きを変化
                     m_zoomObj.MoveCoroutine(true);
-                    m_camera.StartZoomIn(_stage.transform.position);
-                    Sound.Instance.PlaySE(Audio.SE.Click, GetInstanceID());
 
+                    m_camera.StartZoomIn(_stage.transform.position);
+                    // ステージ選択不可能へ
+                    m_isSelect = false;
+
+                    Sound.Instance.PlaySE(Audio.SE.Click, GetInstanceID());
                     // UIを表示
                     m_uiArrow.SetActive(true);
                     m_uiStartBack.SetActive(true);
@@ -294,10 +298,17 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
 
         // サウンド
         Sound.Instance.PlaySE(Audio.SE.Click, GetInstanceID());
+
+        // カメラのズームアウト
+        m_camera.StartZoomOut();
+        // ステージ番号のUIの動きを変化
+        m_zoomObj.MoveCoroutine(false);
+        // ステージ選択可能へ
+        m_isSelect = true;
+
+        // UIを非表示
         m_uiArrow.SetActive(false);
         m_uiStartBack.SetActive(false);
-        m_camera.StartZoomOut();
-        m_zoomObj.MoveCoroutine(false);
     }
 
     /// <summary>
@@ -311,18 +322,25 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         // クリアしたステージの次のステージもしくはクリア済みのステージか
         if (m_zoomObj.StageNum == m_clearStage + 1 || int.Parse(ms_saveData.data[m_zoomObj.StageNum - 1]) > 0)
         {
+            // UIを非表示
             m_uiArrow.SetActive(false);
             m_uiStartBack.SetActive(false);
+
+            // ステージ番号のUIの動きを変化
             m_zoomObj.MoveCoroutine(false);
+            // ステージ番号のUIの非表示
             m_zoomObj.OffText();
+            // ズーム開始
             m_camera.StartZoomFade(m_zoomObj.transform.position);
+            // 選択したステージを各変数に格納
             ms_tryStage = ms_selectStage = m_zoomObj.StageNum;
 
             // サウンド
+            Sound.Instance.StopSE(Audio.SE.Click, GetInstanceID());
             Sound.Instance.PlaySE(Audio.SE.Click, GetInstanceID());
 
             // ステージセレクト→ゲーム のフェード
-            FadeMgr.Instance.StartFade(FadeMgr.FadeType.Scale, NameDefine.Scene_Name.GAME_MAIN);
+            FadeMgr.Instance.StartFade(FadeMgr.FadeType.Zoom, NameDefine.Scene_Name.GAME_MAIN);
         }
     }
 }

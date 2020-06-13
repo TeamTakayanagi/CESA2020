@@ -56,7 +56,7 @@ public class Sound : SingletonMonoBehaviour<Sound>
     /// SEを再生
     /// </summary>
     /// <param name="seName">ハンドル名</param>
-    public void PlaySE(string seName, int instanceID, float volume = 1.0f)
+    public void PlaySE(string seName, int instanceID, bool isLoop = false, float volume = 1.0f)
     {
         Tuple<string, int> key = Tuple.Create(seName, instanceID);
         // その名前の音源がない
@@ -85,6 +85,7 @@ public class Sound : SingletonMonoBehaviour<Sound>
         }
 
         _sourceAt.clip = m_seDict[seName];
+        _sourceAt.loop = isLoop;
         _sourceAt.Play();
         _sourceAt.volume = Mathf.Clamp01(volume);
     }

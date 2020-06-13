@@ -8,7 +8,7 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
     public enum FadeType
     {
         Rat,
-        Scale,
+        Zoom,
         Alpha,
     }
 
