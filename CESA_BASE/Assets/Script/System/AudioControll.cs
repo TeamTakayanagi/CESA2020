@@ -5,8 +5,12 @@ using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
 public class AudioControll : MonoBehaviour
 {
-
+    private AudioClip m_clip;
+    [SerializeField]
+    private Sound.SE_ID m_seID;
     private AudioSource m_audio;
+
+
     // Start is called before the first frame update
     void Start()
     {

@@ -20,7 +20,6 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
 
     private List<Stage> m_stageList = new List<Stage>();
     private Stage m_zoomObj = null;
-
     private static Utility.CSVFile.BinData ms_saveData = new Utility.CSVFile.BinData();
 
     public static int SelectStage
@@ -40,6 +39,13 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         set
         {
             m_zoomObj = value;
+        }
+    }
+    public int ClearStage
+    {
+        get
+        {
+           return m_clearStage;
         }
     }
     public bool Select
@@ -95,7 +101,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         }
 
         // クリアしたステージがあるなら(クリア演出)
-        if (m_clearStage > 0 && ms_tryStage < ms_selectStage)
+        if (m_clearStage > 0 && ms_tryStage < ms_selectStage && ms_tryStage > 0)
             m_stageList[m_clearStage - 1].ClearState *= -1;
     }
 

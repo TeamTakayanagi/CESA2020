@@ -23,11 +23,13 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private Sprite[] m_SpeedTex = null;
 
     // 定数
+    private const float SLIDE_UI = 1.0f;                                // UIの移動時間
+    private const float FILED_ADJUST_VALUE_Z = 0.25f; 
+    private const float MOUSE_ADJUST_VALUE_Y = 0.25f; 
     private readonly Vector3 TEXT_POS = new Vector3(0.0f, 150, 0.0f);           // リザルトテキストの移動距離
     private readonly Vector3 BUTTON_POS = new Vector3(0.0f, -200.0f, 0.0f);      // リザルトボタンの移動距離              
     private readonly Vector3 OUTPOS = new Vector3(-50, -50, -50);       // 導火線を生成できない位置
     private readonly AnimationCurve m_animCurve = AnimationCurve.Linear(0, 0, 1, 1);   // リザルトUIの移動用
-    private const float SLIDE_UI = 1.0f;                                // UIの移動時間
 
     private int m_burnCount = 1;                                        // 燃えている導火線の数
     private int m_gameSpeed = 1;                                        // ゲーム加速処理
@@ -196,27 +198,25 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         {
             // マウス座標をワールド座標で取得
             Vector3 screen = Camera.main.WorldToScreenPoint(transform.position) -
-                new Vector3(0.0f, 0.0f, 0.25f * m_stageSize.z);
+                new Vector3(0.0f, 0.0f, FILED_ADJUST_VALUE_Z * m_stageSize.z);
 
             screen = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screen.z);
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(screen) -
-                new Vector3(0.0f, 0.25f, 0.0f);
+                new Vector3(0.0f, MOUSE_ADJUST_VALUE_Y, 0.0f);
 
             // 生成場所を取得
             m_createPos = FindNearFuse(mousePos);
             if (m_createPos == OUTPOS)
                 return;
 
+            // UI画面
+            if (Input.mousePosition.x > Screen.width * 0.8f)
+                m_selectFuse.transform.position = m_selectFuse.DefaultPos;
+            // ゲーム画面
+            else
             {
-                // UI画面
-                if (Input.mousePosition.x > Screen.width * 0.8f)
-                    m_selectFuse.transform.position = m_selectFuse.DefaultPos;
-                // ゲーム画面
-                else
-                {
-                    m_selectFuse.transform.position = m_createPos;
-                    m_selectFuse.transform.localEulerAngles = m_selectFuse.DefaultRot;
-                }
+                m_selectFuse.transform.position = m_createPos;
+                m_selectFuse.transform.localEulerAngles = m_selectFuse.DefaultRot;
             }
         }
 

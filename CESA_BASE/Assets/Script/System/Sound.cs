@@ -9,6 +9,16 @@ using System;
 /// </summary>
 public class Sound : SingletonMonoBehaviour<Sound>
 {
+    public enum SE_ID
+    {
+        Hanabi_aft,
+        Hanabi_bef,
+        Click,
+        Catch,
+        Release,
+        Fuse
+    }
+
     public struct Sound_ID
     {
         string name;
@@ -62,23 +72,37 @@ public class Sound : SingletonMonoBehaviour<Sound>
         if (!sound || !m_seDict.ContainsKey(seName))
             return;
 
-        AudioSource _source = m_seSources.FirstOrDefault(s => s.Value.isPlaying).Value;
-        if (_source == null)
+        AudioSource _sourceAt = null;
+        foreach (AudioSource _source in  m_seSources.Values)
+        {
+            if (_source.isPlaying)
+                continue;
+
+            _sourceAt = _source;
+            break;
+        }
+
+        if (_sourceAt == null)
         {
             if (m_seSources.Count >= MAX_PLAY_SE)
                 return;
 
-            _source = gameObject.AddComponent<AudioSource>();
-            m_seSources.Add(Tuple.Create(seName, instanceID), _source);
+            _sourceAt = gameObject.AddComponent<AudioSource>();
+            _sourceAt.clip = m_seDict[seName];
+            _sourceAt.Play();
+            _sourceAt.volume = Mathf.Clamp01(volume);
+            m_seSources.Add(Tuple.Create(seName, instanceID), _sourceAt);
         }
-
-        _source.clip = m_seDict[seName];
-        _source.Play();
-        _source.volume = Mathf.Clamp01(volume);
+        else
+        {
+            _sourceAt.clip = m_seDict[seName];
+            _sourceAt.Play();
+            _sourceAt.volume = Mathf.Clamp01(volume);
+        }
     }
 
     /// <summary>
-    /// SEを全て停止
+    /// SEを停止
     /// </summary>
     public void StopSE(string seName, int instanceID)
     {

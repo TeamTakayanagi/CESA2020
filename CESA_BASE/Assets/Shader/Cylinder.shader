@@ -49,8 +49,8 @@
             fixed4 tex = colorTex * (1 - _texType) + colorClear * _texType;
             half monoColor = colorTex.r * 0.298912f + colorTex.g * 0.586611f + colorTex.b * 0.114478f;
 
-            o.Albedo = float3(0, 0, 0);
-            o.Emission = monoColor * (1 - _mono) + tex * _mono;
+            o.Albedo = float3(0.3f, 0.3f, 0.3f);
+            o.Emission = monoColor * (1 - _mono) * _texType + tex * _mono;
             o.Smoothness = _Glossiness;
             o.Normal = UnpackScaleNormal(normalTex, _Bump);
             o.Occlusion = occlusion;

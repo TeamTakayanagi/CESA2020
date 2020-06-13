@@ -89,7 +89,7 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
-    - _mono: 0
+    - _mono: 1
     - _texType: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
