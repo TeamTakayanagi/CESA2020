@@ -75,14 +75,16 @@ public class Sound : SingletonMonoBehaviour<Sound>
             break;
         }
 
+
         if (_sourceAt == null)
         {
             if (m_seSources.Count >= MAX_PLAY_SE)
                 return;
 
             _sourceAt = gameObject.AddComponent<AudioSource>();
-            m_seSources.Add(key, _sourceAt);
         }
+        if(!m_seSources.ContainsKey(key))
+            m_seSources.Add(key, _sourceAt);
 
         _sourceAt.clip = m_seDict[seName];
         _sourceAt.loop = isLoop;
@@ -98,12 +100,14 @@ public class Sound : SingletonMonoBehaviour<Sound>
         if (!m_seSources.ContainsKey(Tuple.Create(seName, instanceID)))
             return;
 
-        AudioSource _source = m_seSources[Tuple.Create(seName, instanceID)];
-        if (_source)
+        foreach (AudioSource _source in m_seSources.Values)
         {
+            if (!_source.isPlaying)
+                continue;
+
             _source.Stop();
-            m_seSources.Remove(Tuple.Create(seName, instanceID));
         }
+        m_seSources.Remove(Tuple.Create(seName, instanceID));
     }
 
     /// <summary>

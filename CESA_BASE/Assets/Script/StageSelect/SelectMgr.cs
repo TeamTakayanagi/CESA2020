@@ -90,12 +90,8 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
             // 最後までクリアしたか、もしくは次のステージがクリアされていないなら
             if (newState > 0)
             {
-                // 挑戦したステージと選択したステージが異なるなら
-                if (m_stageList[i].StageNum != ms_selectStage)
-                {
-                    // クリアした一番先のステージは
-                    m_clearStage = i + 1;
-                }
+                // クリアした一番先のステージは
+                m_clearStage = i + 1;
             }
             m_stageList[i].ClearState = newState;
         }
