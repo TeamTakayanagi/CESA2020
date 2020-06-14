@@ -97,7 +97,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
         }
 
         // クリアしたステージがあるなら(クリア演出)
-        if (m_clearStage > 0 && ms_tryStage < ms_selectStage && ms_tryStage > 0)
+        if (m_clearStage > 0 && ms_tryStage <= m_clearStage && ms_tryStage > 0)
             m_stageList[m_clearStage - 1].ClearState *= -1;
     }
 
@@ -114,7 +114,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
             _fuseGroup = fuseParent.GetChild(i);
             _fuseList = _fuseGroup.GetComponentsInChildren<SelectFuse>();
             // 未クリアのステージをクリアした(クリア演出)
-            if (i == m_clearStage - 1 && ms_tryStage < ms_selectStage && ms_tryStage > 0)
+            if (i == m_clearStage - 1 && ms_tryStage <= m_clearStage && ms_tryStage > 0)
             {
                 // 1つ目には、ステージの座標を参照して進行向きを求める
                 _fuseList[0].SetTarget(m_stageList[m_clearStage - 1].transform.position);

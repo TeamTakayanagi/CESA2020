@@ -872,6 +872,11 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1683993192}
+    - target: {fileID: 5350757630119108963, guid: e94578f739901c34aa57484afdf4c750,
+        type: 3}
+      propertyPath: m_PlaneDistance
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 5350757630119108966, guid: e94578f739901c34aa57484afdf4c750,
         type: 3}
       propertyPath: m_Name
