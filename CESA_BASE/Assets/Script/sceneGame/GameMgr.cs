@@ -206,17 +206,17 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
             // 生成場所を取得
             m_createPos = FindNearFuse(mousePos);
-            if (m_createPos == OUTPOS)
-                return;
-
-            // UI画面
-            if (Input.mousePosition.x > Screen.width * 0.8f)
-                m_selectFuse.transform.position = m_selectFuse.DefaultPos;
-            // ゲーム画面
-            else
+            if (m_createPos != OUTPOS)
             {
-                m_selectFuse.transform.position = m_createPos;
-                m_selectFuse.transform.localEulerAngles = m_selectFuse.DefaultRot;
+                // UI画面
+                if (Input.mousePosition.x > Screen.width * 0.8f)
+                    m_selectFuse.transform.position = m_selectFuse.DefaultPos;
+                // ゲーム画面
+                else
+                {
+                    m_selectFuse.transform.position = m_createPos;
+                    m_selectFuse.transform.localEulerAngles = m_selectFuse.DefaultRot;
+                }
             }
         }
 
@@ -228,6 +228,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             // UI画面
             if (InputMouse.MouseEria())
             {
+                Debug.Log("UI");
                 // サブカメラ取得
                 ray = InputMouse.GetScreenCamera().GetComponent<Camera>().
                     ScreenPointToRay(Input.mousePosition);
@@ -238,6 +239,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     // 新規選択
                     if (!m_selectFuse || m_selectFuse.gameObject != hit.collider.transform.parent.gameObject)
                     {
+                        Debug.Log("選択");
+
                         // サウンド
                         Sound.Instance.PlaySE(Audio.SE.Catch, GetInstanceID());
 
@@ -258,6 +261,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     // 選択解除
                     else
                     {
+                        Debug.Log("選択解除");
+
                         Sound.Instance.PlaySE(Audio.SE.Release, GetInstanceID());
                         m_selectFuse.SelectUIFuse(false);
                         m_selectFuse = null;
@@ -272,6 +277,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 // 導火線設置
                 if (m_selectFuse)
                 {
+                    // 
+                    if (m_createPos == OUTPOS)
+                        return;
+
                     m_selectFuse.Type = GameFuse.FuseType.Normal;
                     m_selectFuse.State = GameFuse.FuseState.None;
                     m_UIFuseCreate.FuseAmount -= new Vector2Int
