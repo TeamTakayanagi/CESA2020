@@ -44,6 +44,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   effectType: 4
-  effectAsset: {fileID: 11400000, guid: 2e1f1436ee0cd104f883b9a8494ac6a9, type: 2}
+  effectAsset: {fileID: 11400000, guid: fdddfb311dd8e1e4db2e4969debee8f3, type: 2}
   playOnStart: 1
   isLooping: 0

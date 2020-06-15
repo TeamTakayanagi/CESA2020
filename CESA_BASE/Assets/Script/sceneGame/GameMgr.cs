@@ -228,7 +228,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             // UI画面
             if (InputMouse.MouseEria())
             {
-                Debug.Log("UI");
                 // サブカメラ取得
                 ray = InputMouse.GetScreenCamera().GetComponent<Camera>().
                     ScreenPointToRay(Input.mousePosition);
@@ -239,8 +238,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     // 新規選択
                     if (!m_selectFuse || m_selectFuse.gameObject != hit.collider.transform.parent.gameObject)
                     {
-                        Debug.Log("選択");
-
                         // サウンド
                         Sound.Instance.PlaySE(Audio.SE.Catch, GetInstanceID());
 
@@ -261,8 +258,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                     // 選択解除
                     else
                     {
-                        Debug.Log("選択解除");
-
                         Sound.Instance.PlaySE(Audio.SE.Release, GetInstanceID());
                         m_selectFuse.SelectUIFuse(false);
                         m_selectFuse = null;

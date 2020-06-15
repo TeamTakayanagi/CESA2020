@@ -51,15 +51,9 @@ public class GameFuse : FuseBase
     private Vector3 m_arrowCurrentPos = Vector3.zero;
 
     private List<Spark> m_haveEffect = new List<Spark>();
-    public List<BoxCollider> HaveEffect(Spark spark)
+    public List<Spark> HaveEffect(Spark spark)
     {
-        List<Spark> sparkList = m_haveEffect;
-        List<BoxCollider> collList = new List<BoxCollider>();
-        for (int i = 0; i < sparkList.Count; ++i)
-        {
-            collList.AddRange(sparkList[i].GetComponents<BoxCollider>());
-        }
-        return collList;
+        return m_haveEffect;
     }
     public void AddEffect(Spark spark)
     {
@@ -253,27 +247,31 @@ public class GameFuse : FuseBase
                             // 当たっている導火線に引火
                             foreach (GameFuse _fuse in m_collFuse)
                             {
-                                _fuse.State = FuseState.Burn;
-                                GameMgr.Instance.BurnCount += 1;
-
-                                _fuse.m_targetDistance = new Vector3(
+                                Vector3 distance = new Vector3(
                                     transform.position.x - _fuse.transform.position.x,
                                     transform.position.y - _fuse.transform.position.y,
                                     transform.position.z - _fuse.transform.position.z) * 0.5f;
-
-                                // 導火線の燃えてきた方向にシェーダー用のオブジェクトを移動
-                                _fuse.m_childTarget.position =
-                                    _fuse.transform.position + _fuse.m_targetDistance;
-                                _fuse.m_collFuse.Clear();
+                 
 
                                 // エフェクトも同じ場所に生成
-                                Spark.Instantiate(_fuse.transform.position + _fuse.m_targetDistance,
-                                    _fuse.m_targetDistance * -2.0f, _fuse, _fuse.m_haveEffect.Count);
+                                Spark.Instantiate(_fuse.transform.position + distance,
+                                    distance * -2.0f, _fuse, _fuse.m_haveEffect.Count);
 
-                                // 導火線本体の中心座標を設定
-                                Transform childModel = _fuse.m_childModel;
-                                Renderer childRendere = _fuse.m_childRenderer;
-                                childRendere.material.SetVector("_Center", childModel.position);
+                                if (_fuse.State != FuseState.Burn)
+                                {
+                                    GameMgr.Instance.BurnCount += 1;
+                                    _fuse.m_collFuse.Clear();
+                                    _fuse.m_targetDistance = distance;
+
+                                    // 導火線の燃えてきた方向にシェーダー用のオブジェクトを移動
+                                    _fuse.m_childTarget.position =
+                                        _fuse.transform.position + distance;
+                                    // 導火線本体の中心座標を設定
+                                    Transform childModel = _fuse.m_childModel;
+                                    Renderer childRendere = _fuse.m_childRenderer;
+                                    childRendere.material.SetVector("_Center", childModel.position);
+                                }
+                                _fuse.State = FuseState.Burn;
                             }
                             foreach (GameGimmick _gimmick in m_collGimmick)
                             {

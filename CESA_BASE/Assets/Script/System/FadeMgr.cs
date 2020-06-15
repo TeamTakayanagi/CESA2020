@@ -58,12 +58,6 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
     public void StartFade(FadeType type, string nextScene)
     {
         m_fade = m_fadeList[(int)type];
-        // フェード中にフェードが始まれば
-        if(m_fade.State != FadeBase.FadeState.None)
-        {
-            // 現在のフェードを中断
-
-        }
         m_fade.FadeStart(nextScene);
         EffectManager.Instance.DestoryEffects();
         EffectManager.Instance.Create = false;

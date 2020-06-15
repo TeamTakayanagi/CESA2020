@@ -11,10 +11,9 @@ public class FadeRat : FadeBase
     private const float RAT_POS_Y = 355;
     private const float FADE_RAT_TIME = 4.0f;
 
-    [SerializeField]
-    private ParticleSystem m_particleRat = null;
     private List<RectTransform> m_fuseRect = new List<RectTransform>();
     private List<RectTransform> m_ratRect = new List<RectTransform>();
+    private List<ParticleSystem> m_particleList = new List<ParticleSystem>();
     private RectTransform m_judgeTrans = null;      // フェードの終了判断となるオブジェクトの格納（正方向に移動するオブジェクト）
 
     new void Start()
@@ -31,10 +30,12 @@ public class FadeRat : FadeBase
         {
             RectTransform rect = rat.GetChild(i).GetComponent<RectTransform>();
             rect.localPosition = new Vector3(RAT_POS_X * -(i % 2 * 2 - 1), RAT_POS_Y - i * RAT_POS_Y, 0.0f);
+            ParticleSystem particle = rect.GetChild(0).GetChild(0).GetComponent<ParticleSystem>();
+            particle.Stop();
+            m_particleList.Add(particle);
             m_ratRect.Add(rect);
         }
 
-        m_particleRat.Stop();
         base.Start();
     }
 
@@ -57,8 +58,6 @@ public class FadeRat : FadeBase
 
     override protected void FadeOut()
     {
-        m_particleRat.Play();
-
         m_judgeTrans = m_ratRect[1];
         base.FadeOut();
 
@@ -66,6 +65,7 @@ public class FadeRat : FadeBase
         {
             RectTransform trans = m_ratRect[i];
             trans.DOLocalMoveX(0, FADE_RAT_TIME);
+            m_particleList[i].Play();
         }
     }
     override protected bool FadeCheack()
@@ -91,6 +91,10 @@ public class FadeRat : FadeBase
                 trans.GetChild(1).GetComponent<SpriteMask>().enabled = isDraw;
                 if (!isDraw)
                     trans.DOPause();
+            }
+            for (int i = 0; i < m_particleList.Count; ++i)
+            {
+                m_particleList[i].Stop();
             }
         }
         else

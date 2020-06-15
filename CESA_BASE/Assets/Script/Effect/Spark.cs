@@ -43,7 +43,7 @@ public class Spark : EffekseerEmitter
 
         Transform fuseTarget = m_fuseClass.ChildTarget;
 
-        // 導火線が燃え立つ来たのを確認して自信を即削除
+        // 導火線が燃え尽きたのを確認して自身を即削除
         if (m_fuseClass.State == FuseBase.FuseState.Out && fuseTarget.localScale.x >= 1.0f)
         {
             Sound.Instance.StopSE(Audio.SE.Fuse, gameObject.GetInstanceID());
@@ -64,8 +64,9 @@ public class Spark : EffekseerEmitter
             afterPos - m_fuseClass.transform.position, 
             transform.position - m_fuseClass.transform.position) * Vector3.Dot(move, m_moveVector)) < 0)
         {
+            List<Spark> sparkList = new List<Spark>(m_fuseClass.HaveEffect(this));
             // 導火線の
-            SparkBranch(m_fuseClass.HaveEffect(this));
+            SparkBranch(sparkList);
             // 進入方向が短いコライダの場合
             if (m_enterCollider.center != Vector3.zero)
             {
@@ -78,14 +79,17 @@ public class Spark : EffekseerEmitter
         transform.position = afterPos;
     }
 
-    private void SparkBranch(List<BoxCollider> coliderList)
+    private void SparkBranch(List<Spark> coliderList)
     {
         for (int i = 0; i < m_fuseCollider.Count; i++)
         {
             bool _skip = false;
             for (int j = 0; j < coliderList.Count; j++)
             {
-                if (Vector3.Cross(m_fuseCollider[i].size, coliderList[j].size) != Vector3.zero)
+                if (coliderList[j] == this)
+                    continue;
+
+                if (Vector3.Cross(Utility.MyMath.GetMaxDirect(m_fuseCollider[i].size), coliderList[j].m_moveVector) != Vector3.zero)
                     continue;
 
                 _skip = true;
