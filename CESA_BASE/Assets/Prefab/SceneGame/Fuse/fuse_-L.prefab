@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 1857275576005591990}
   - component: {fileID: 4331029774654046972}
   m_Layer: 0
-  m_Name: fuse_-L
+  m_Name: Fuse_-L
   m_TagString: Fuse/-L
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -112,8 +112,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.3, y: 0.3, z: 0.55}
-  m_Center: {x: 0, y: 0, z: -0.275}
+  m_Size: {x: 0.3, y: 0.3, z: 0.75}
+  m_Center: {x: 0, y: 0, z: -0.25}
 --- !u!65 &1857275576005591990
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -125,8 +125,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.55, y: 0.3, z: 0.3}
-  m_Center: {x: -0.275, y: 0, z: 0}
+  m_Size: {x: 0.75, y: 0.3, z: 0.3}
+  m_Center: {x: -0.25, y: 0, z: 0}
 --- !u!114 &4331029774654046972
 MonoBehaviour:
   m_ObjectHideFlags: 0

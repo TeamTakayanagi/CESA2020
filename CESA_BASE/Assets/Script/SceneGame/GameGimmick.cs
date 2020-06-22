@@ -152,6 +152,8 @@ public class GameGimmick : MonoBehaviour
     public IEnumerator GimmickWater()
     {
         RaycastHit hit = new RaycastHit();
+        Vector3 dir = transform.rotation * Vector3.forward;
+
 
         if (Physics.Raycast(transform.position, transform.rotation * Vector3.forward, out hit, m_gimmickValue))
         {

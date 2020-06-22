@@ -83,8 +83,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     override protected void Awake()
     {
+        //Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(
+        //    ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + SelectMgr.SelectStage);
         Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(
-            ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + SelectMgr.SelectStage);
+            ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + 24);
         StageCreateMgr.Instance.CreateStage(transform, info);
         m_stageSize = info.size;
         m_gameStep = GameStart;
