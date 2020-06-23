@@ -66,7 +66,7 @@
 			struct Input {
 				float2 uv_WaveTex1;
 				float4 screenPos;
-			};
+			};    
 
 			void surf(Input IN, inout SurfaceOutputStandard o) {
 				fixed4 waveTex1 = tex2D(_WaveTex1, IN.uv_WaveTex1 * _WaveTiling.x + float2(0, _Time.x * _FlowSpeed.x));

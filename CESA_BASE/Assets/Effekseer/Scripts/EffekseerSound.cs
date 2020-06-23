@@ -194,7 +194,7 @@ namespace Effekseer.Internal
 
 	public class EffekseerSoundInstance : MonoBehaviour
 	{
-		private AudioSource audio;
+		private new AudioSource audio;
 		public string audioTag;
 		public float lastPlayTime;
 

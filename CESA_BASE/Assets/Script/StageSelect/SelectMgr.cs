@@ -336,7 +336,7 @@ public class SelectMgr : SingletonMonoBehaviour<SelectMgr>
             Sound.Instance.PlaySE(Audio.SE.Click, GetInstanceID());
 
             // ステージセレクト→ゲーム のフェード
-            FadeMgr.Instance.StartFade(FadeMgr.FadeType.Zoom, NameDefine.Scene_Name.GAME_MAIN);
+            FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, NameDefine.Scene_Name.GAME_MAIN);
         }
     }
 }

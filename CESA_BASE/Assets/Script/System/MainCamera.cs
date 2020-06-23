@@ -18,6 +18,7 @@ public class MainCamera : MonoBehaviour
     {
         AroundALL,
         AroundY,
+        AroundDome,
         SwipeMove,
         ZoomIn,
         ZoomOut,
@@ -82,11 +83,13 @@ public class MainCamera : MonoBehaviour
             case CameraType.AroundY:
                 m_cameraState = CameraAroundY;
                 break;
+            case CameraType.AroundDome:
+                m_cameraState = CameraDome;
+                break;
             case CameraType.SwipeMove:
                 m_cameraState = CameraSwipeMove;
                 break;
             case CameraType.ZoomIn:
-                m_cameraState = null;
                 m_cameraState = CameraZoomIn;
                 break;
             case CameraType.ZoomOut:
@@ -121,9 +124,10 @@ public class MainCamera : MonoBehaviour
                 m_moveRadiuse * Mathf.Sin(Mathf.Deg2Rad * m_moveRotate));
             transform.LookAt(m_target);
         }
-        else if(m_type == CameraType.AroundALL)
+        else if (m_type == CameraType.AroundALL || m_type == CameraType.AroundDome)
         {
             m_target = m_targetOld = Vector3.zero;
+            m_storePos = transform.position;
         }
         else
             m_target = m_targetOld = transform.position;
@@ -309,6 +313,65 @@ public class MainCamera : MonoBehaviour
             }
         }
     }
+    void CameraDome()
+    {
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+
+        // 周り移動
+        if (!m_isScroll && Input.GetMouseButtonDown(1))
+        {
+            m_isScroll = true;
+            m_savePos = Input.mousePosition;
+        }
+        else if (m_isScroll && Input.GetMouseButtonUp(1))
+        {
+            m_isScroll = false;
+        }
+        else if (m_isScroll && Input.GetMouseButton(1))
+        {
+            Vector3 difference = Input.mousePosition - m_savePos;
+            Vector3 defPos = transform.position;
+            Quaternion defRot = transform.rotation;
+
+            if (Mathf.Abs(difference.x) > Mathf.Abs(difference.y) && Mathf.Abs(difference.x) > AdjustParameter.Camera_Constant.PERMISSION_MOVE)
+            {
+                transform.RotateAround(m_target, transform.up,
+                    difference.x * Time.deltaTime * AdjustParameter.Camera_Constant.AROUND_MOVE);
+                m_savePos = Input.mousePosition;
+            }
+            else if (Mathf.Abs(difference.y) > Mathf.Abs(difference.x) && Mathf.Abs(difference.y) > AdjustParameter.Camera_Constant.PERMISSION_MOVE)
+            {
+                transform.RotateAround(m_target, transform.right,
+                    -difference.y * Time.deltaTime * AdjustParameter.Camera_Constant.AROUND_MOVE);
+                m_savePos = Input.mousePosition;
+            }
+
+            // 範囲処理
+            if (transform.position.y < 0.0f)
+            {
+                transform.position = new Vector3(defPos.x, 0.0f, defPos.z);
+                transform.DOLookAt(Vector3.zero, 0.1f);
+            }
+            else if (transform.position.y > Vector3.Magnitude(m_storePos) -1.0f)
+            {
+                transform.position = new Vector3(defPos.x, defPos.y, defPos.z);
+                transform.LookAt(Vector3.zero);
+            }
+        }
+        // カメラ手前移動
+        else if (scroll != 0.0f)
+        {
+            Vector3 _pos = transform.position + transform.forward *
+                scroll * AdjustParameter.Camera_Constant.VALUE_SCROLL;
+
+            float dis = Vector3.Distance(_pos, m_target);
+            if (dis > AdjustParameter.Camera_Constant.CAMERA_NEAR &&
+                dis < AdjustParameter.Camera_Constant.CAMERA_FAR)
+            {
+                transform.position = _pos;
+            }
+        }
+    }
     // フリック移動
     void CameraSwipeMove()
     {
@@ -352,8 +415,8 @@ public class MainCamera : MonoBehaviour
             transform.DOMove(pos + bound, AdjustParameter.Camera_Constant.SWIPE_DERAY);
         }
     }
-    
-    // ズームアウトの動き
+
+    // ズームインの動き
     void CameraZoomIn()
     {
         if(transform.position.z == m_target.z)
@@ -363,6 +426,7 @@ public class MainCamera : MonoBehaviour
             m_cameraState = null;
         }
     }
+    // ズームアウトの動き
     void CameraZoomOut()
     {
         if(transform.position.z == m_target.z)

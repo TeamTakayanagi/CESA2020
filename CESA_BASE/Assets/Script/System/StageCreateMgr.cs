@@ -241,12 +241,16 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
     /// <param name="amount">生成量</param>
     /// <param name="parent">導火線の親オブジェクト</param>
     /// <param name="index">添え字の配列の決め方</param>
-    public void CreateUIFuse(int amount, Transform parent, SuffixType index, SuffixType rot)
+    /// <param name="isGame">ゲーム中かどうか</param>
+    public void CreateUIFuse(int amount, Transform parent, SuffixType index, SuffixType rot, bool isGame)
     {
         int[] indexList = GetSuffixList(index, amount, m_fuseList.Count, parent.GetInstanceID());
         int UIFuseCount = 0;
-        if (GameMgr.Instance)
+
+        // ゲームシーンであれば導火線の数を取得
+        if (isGame)
             UIFuseCount = GameMgr.Instance.UIFuseCount;
+
         // 
         for (int i = UIFuseCount; i < amount; ++i)
         {
@@ -271,41 +275,49 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
     /// UI部分の導火線追加生成（1個）
     /// </summary>
     /// <param name="parent">導火線の親オブジェクト</param>
-    /// <param name="index">添え字の配列の決め方</param>
+    /// <param name="indexType">添え字の配列の決め方</param>
     /// <param name="fuseRean">UIの導火線の総数（X：右　Y：左）</param>
     /// <param name="indexNum">添え字指定（デフォルト引数：-1）</param>
-    public void AddCreateUIFuse(Transform parent, SuffixType index, Vector2Int fuseRean, int indexNum = -1)
+    public void AddCreateUIFuse(Transform parent, SuffixType indexType, Vector2Int fuseRean, int indexNum = -1)
     {
-        int[] indexList;
+        int index;      // 導火線配列の添え字
+        // 添え字の指定が引数で指定内、もしくは指定が範囲外の場合
         if(indexNum < 0 || indexNum >= m_fuseList.Count)
-            indexList = GetSuffixList(index, 1, m_fuseList.Count, parent.GetInstanceID());
+            index = GetSuffixList(indexType, 1, m_fuseList.Count, parent.GetInstanceID())[0];
+        // 添え字の指定を引数でしている場合
         else
-            indexList = new int[1] { indexNum };
+            index = indexNum;
 
-        int fuseAmount = fuseRean.x + fuseRean.y;
-        // 出す場所
-        int place;
+        // 導火線の総数を右レーンと左レーンの数を足して計算
+        int fuseAmount = fuseRean.x + fuseRean.y;      
+        int place;  // 出す場所
+        // 右のレーンのほうが少ないのならば
         if (fuseRean.x <= fuseRean.y)
             place = -1;
         else
             place = 1;
 
-        GameFuse _fuse = Instantiate(m_fuseList[indexList[0]], parent);
-        _fuse.Type = GameFuse.FuseType.Normal;
-        _fuse.State = GameFuse.FuseState.UI;
+        // プレハブから
+        GameFuse _fuse = Instantiate(m_fuseList[index], parent);
+
+        _fuse.Type = GameFuse.FuseType.Normal;      // ギミックなしの導火線
+        _fuse.State = FuseBase.FuseState.UI;
+        // 生成後降って行く際の目的地
         _fuse.EndPos = new Vector3(place,
             1.0f + ((fuseAmount - (Mathf.Abs(fuseRean.x - fuseRean.y) / 2)) / 2) * ProcessedtParameter.UI_Object_Constant.INTERVAL_Y,
             ProcessedtParameter.UI_Object_Constant.DEFAULT_POS_Z);
+        // 生成時の座標
         _fuse.transform.localPosition = new Vector3(place, ProcessedtParameter.UI_Object_Constant.DEFAULT_POS_Y,
             ProcessedtParameter.UI_Object_Constant.DEFAULT_POS_Z);
+        // 導火線の回転
         _fuse.transform.localEulerAngles = new Vector3(90.0f * UnityEngine.Random.Range(0, 4), 90.0f * UnityEngine.Random.Range(0, 4), 90.0f * UnityEngine.Random.Range(0, 4));
 
-        if (GameMgr.Instance)
-            GameMgr.Instance.UIFuse = _fuse;    // リストの末尾に追加
+        GameMgr.Instance.UIFuse = _fuse;    // リストの末尾に追加
 
         // UI専用のコライダーを子供に
         Instantiate(m_uiColider, _fuse.transform);
     }
+
 
     /// <summary>
     /// ギミックのUI表示（エディタ用）

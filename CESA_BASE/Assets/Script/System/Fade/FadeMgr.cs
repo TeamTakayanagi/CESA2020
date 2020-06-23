@@ -9,7 +9,6 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
     {
         Rat,
         Zoom,
-        Alpha,
     }
 
     private Canvas m_canvas = null;
@@ -31,9 +30,10 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
     {
         if (this != Instance)
         {
-            Destroy(gameObject);
+            DestroyImmediate(gameObject);
             return;
         }
+
         DontDestroyOnLoad(gameObject);
     }
     // Start is called before the first frame update
@@ -42,9 +42,7 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
         m_canvas = GetComponent<Canvas>();
 
         for(int i = 0; i < transform.childCount; ++i)
-        {
             m_fadeList.Add(transform.GetChild(i).GetComponent<FadeBase>());
-        }
 
         m_fadeList.Sort((a, b) => a.FadeType - b.FadeType);
     }

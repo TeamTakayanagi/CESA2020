@@ -19,7 +19,7 @@ public class EditerUICreate : MonoBehaviour
         m_uiChange = GetComponentInChildren<Text>();
         m_uiChange.text = transform.GetChild(m_activeChild).name;
         StageCreateMgr.Instance.CreateUIFuse(ProcessedtParameter.GameObject_Constant.FUSE_TYPE,
-            transform.GetChild((int)Child.Fuse), StageCreateMgr.SuffixType.Turn, StageCreateMgr.SuffixType.Zero);
+            transform.GetChild((int)Child.Fuse), StageCreateMgr.SuffixType.Turn, StageCreateMgr.SuffixType.Zero, false);
         StageCreateMgr.Instance.CreateUIGimmck(transform.GetChild((int)Child.Gimmck));
         transform.GetChild(m_activeChild ^ 1).gameObject.SetActive(false);
     }

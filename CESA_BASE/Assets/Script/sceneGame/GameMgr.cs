@@ -29,7 +29,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private readonly Vector3 TEXT_POS = new Vector3(0.0f, 150, 0.0f);           // リザルトテキストの移動距離
     private readonly Vector3 BUTTON_POS = new Vector3(0.0f, -200.0f, 0.0f);      // リザルトボタンの移動距離              
     private readonly Vector3 OUTPOS = new Vector3(-50, -50, -50);       // 導火線を生成できない位置
-    private readonly AnimationCurve m_animCurve = AnimationCurve.Linear(0, 0, 1, 1);   // リザルトUIの移動用
+    [SerializeField]
+    private AnimationCurve m_animCurve = AnimationCurve.Linear(0, 0, 1, 1);   // リザルトUIの移動用
 
     private int m_burnCount = 1;                                        // 燃えている導火線の数
     private int m_gameSpeed = 1;                                        // ゲーム加速処理
@@ -520,16 +521,14 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         yield return new WaitForSeconds(waitTime);
 
         float startTime = Time.time;             // 開始時間
-        Vector3 moveDistance_text;              // 移動距離および方向
-        Vector3 moveDistance_button;            // 移動距離および方向
         Transform _text = result.transform.GetChild((int)ResultPlacement.Text);
         Transform _button = result.transform.GetChild((int)ResultPlacement.Button);
 
         Vector3 startPos_text = _text.localPosition;  // 開始位置
         Vector3 startPos_rePlay = _button.localPosition;  // 開始位置
 
-        moveDistance_text = TEXT_POS - startPos_text;
-        moveDistance_button = BUTTON_POS - startPos_rePlay;
+        Vector3 moveDistance_text = TEXT_POS - startPos_text;
+        Vector3 moveDistance_button = BUTTON_POS - startPos_rePlay;
 
         while ((Time.time - startTime) < AdjustParameter.Production_Constant.DURATION)
         {

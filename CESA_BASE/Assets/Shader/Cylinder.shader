@@ -47,6 +47,7 @@
             fixed4 normalTex = tex2D(_Normal, IN.uv_MainTex);
 
             fixed4 tex = colorTex * (1 - _texType) + colorClear * _texType;
+
             half monoColor = colorTex.r * 0.298912f + colorTex.g * 0.586611f + colorTex.b * 0.114478f;
 
             o.Albedo = float3(0.3f, 0.3f, 0.3f);
