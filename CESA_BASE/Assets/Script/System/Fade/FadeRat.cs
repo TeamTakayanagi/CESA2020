@@ -10,7 +10,7 @@ public class FadeRat : FadeBase
 
     private const float FUSE_POS_X = 3000;
     private const float FUSE_POS_Y = 370;
-    private const float RAT_POS_X = 1500;
+    private const float RAT_POS_X = 2300;
     private const float FADE_FUSE_TIME = 2.0f;
     private const float RAT_POS_Y = 330;
     private const float FADE_RAT_TIME = 2.0f;
@@ -43,7 +43,7 @@ public class FadeRat : FadeBase
         }
 
         m_fuseWidth = m_fuseImage[0].GetComponent<RectTransform>().rect.width;
-        //base.Start();
+        base.Start();
     }
 
     new void Update()

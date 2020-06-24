@@ -7,7 +7,6 @@ using UnityEngine.UI;
 public class FadeZoom : FadeBase
 {
     private Image m_sprite = null;
-    private Material m_material = null;
     private float m_radius = 0.0f;
     private Color m_color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -17,7 +16,6 @@ public class FadeZoom : FadeBase
         Transform circleText = transform.GetChild(0);
 
         m_sprite = circleText.GetComponent<Image>();
-        m_material = m_sprite.material;
         base.Start();
     }
 
@@ -56,15 +54,15 @@ public class FadeZoom : FadeBase
         if (isDraw)
         {
             m_color = new Color(0.0f, 0.0f, 0.0f, 1.0f);
-            m_material.SetFloat("_Alpha", m_color.a);
+            m_sprite.material.SetFloat("_Alpha", m_color.a);
         }
         else
         {
             m_radius = 1.0f;
-            m_material.SetFloat("_Radius", m_radius);
+            m_sprite.material.SetFloat("_Radius", m_radius);
         }
 
-        m_sprite.enabled = true;
+        m_sprite.enabled = isDraw;
     }
 
     private IEnumerator DoScaleMaterial(float target, float time)
@@ -77,16 +75,17 @@ public class FadeZoom : FadeBase
             if(timeCounter >= time)
             {
                 m_radius = target;
-                m_material.SetFloat("_Radius", m_radius);
+                m_sprite.material.SetFloat("_Radius", m_radius);
                 break;
             }
 
-            m_material.SetFloat("_Radius", m_radius);
+            m_sprite.material.SetFloat("_Radius", m_radius);
             timeCounter += Time.deltaTime;
             yield return null;
        }
         yield break;
     }
+
     private IEnumerator DoColorMaterial(Color target, float time)
     {
         Color value = (target - m_color) / time;
@@ -97,11 +96,11 @@ public class FadeZoom : FadeBase
             if(timeCounter >= time)
             {
                 m_color = target;
-                m_material.SetFloat("_Alpha", m_color.a);
+                m_sprite.material.SetFloat("_Alpha", m_color.a);
                 break;
             }
 
-            m_material.SetFloat("_Alpha", m_color.a);
+            m_sprite.material.SetFloat("_Alpha", m_color.a);
             timeCounter += Time.deltaTime;
             yield return null;
        }
