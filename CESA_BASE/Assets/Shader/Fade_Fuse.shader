@@ -112,7 +112,6 @@
                 float noise = PerlinNoise(uv);
                 half stepFront = defUV.x * (1.0f - _Direct) + noise * _Direct;
                 half stepBack = defUV.x * _Direct + noise * (1.0f - _Direct);
-                //float alphaN = step(defUV.x, noise + _Current * 2 - 1);
                 float alphaN = step(stepFront, stepBack + _Current * 2 - 1);
                 col.a = alphaN;
 
