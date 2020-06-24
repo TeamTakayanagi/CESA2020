@@ -132,7 +132,6 @@ public class MainCamera : MonoBehaviour
         else
             m_target = m_targetOld = transform.position;
 
-
         // 移動範囲のオブジェクトがある場合
         if (m_movePlace)
         {
@@ -309,7 +308,6 @@ public class MainCamera : MonoBehaviour
                     m_moveRadiuse * Mathf.Cos(Mathf.Deg2Rad * m_moveRotate),
                     m_moveRadiuse * Mathf.Sin(Mathf.Deg2Rad * AdjustParameter.Camera_Constant.AROUND_ANGLE),
                     m_moveRadiuse * Mathf.Sin(Mathf.Deg2Rad * m_moveRotate));
-                //transform.LookAt(Vector3.zero);
             }
         }
     }
@@ -331,11 +329,10 @@ public class MainCamera : MonoBehaviour
         {
             Vector3 difference = Input.mousePosition - m_savePos;
             Vector3 defPos = transform.position;
-            Quaternion defRot = transform.rotation;
 
             if (Mathf.Abs(difference.x) > Mathf.Abs(difference.y) && Mathf.Abs(difference.x) > AdjustParameter.Camera_Constant.PERMISSION_MOVE)
             {
-                transform.RotateAround(m_target, transform.up,
+                transform.RotateAround(m_target, new Vector3(0, 1, 0),
                     difference.x * Time.deltaTime * AdjustParameter.Camera_Constant.AROUND_MOVE);
                 m_savePos = Input.mousePosition;
             }

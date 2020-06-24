@@ -599,6 +599,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Main Camera
       objectReference: {fileID: 0}
+    - target: {fileID: 51461371330993495, guid: 8f40ce69c17c662488f7a61b2ceff02e,
+        type: 3}
+      propertyPath: m_type
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3522724643771510153, guid: 8f40ce69c17c662488f7a61b2ceff02e,
         type: 3}
       propertyPath: m_cursorDefaultTemp
@@ -1220,6 +1225,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_animCurve.m_Curve.Array.data[3].value
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5591644309980400434, guid: ea45495f56f2d0e48b1131b57ec5a879,
+        type: 3}
+      propertyPath: m_debugStage
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ea45495f56f2d0e48b1131b57ec5a879, type: 3}

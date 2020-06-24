@@ -48,7 +48,6 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
     }
     void Update()
     {
-        // パワー
         if(!m_canvas.worldCamera)
             m_canvas.worldCamera = Camera.main;
     }

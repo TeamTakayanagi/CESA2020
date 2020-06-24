@@ -59,9 +59,7 @@ public class InputMouse : MonoBehaviour
         m_main = Camera.main;
         GameObject obj = GameObject.FindGameObjectWithTag(NameDefine.TagName.SubCamera);
         if (obj)
-        {
             m_sub = obj.GetComponent<Camera>();
-        }
     }
 
     /// <summary>

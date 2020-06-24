@@ -17,6 +17,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         Button,
     }
 
+#if UNITY_EDITOR
+    [SerializeField]
+    private int m_debugStage = 0;                   // デバッグするステージ
+#endif
     [SerializeField]
     private Vector3Int m_stageSize = Vector3Int.zero;                   // ステージサイズ
     [SerializeField]
@@ -84,8 +88,18 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     override protected void Awake()
     {
-        Utility.CSVFile.CSVData info = Utility.CSVFile.LoadCsv(
+        Utility.CSVFile.CSVData info = null;
+#if UNITY_EDITOR
+        if (SelectMgr.SelectStage == 0 && m_debugStage > 0)
+            info = Utility.CSVFile.LoadCsv(
+                ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + m_debugStage);
+        else
+            info = Utility.CSVFile.LoadCsv(
+                ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + SelectMgr.SelectStage);
+#else
+        info = Utility.CSVFile.LoadCsv(
             ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + SelectMgr.SelectStage);
+#endif
         StageCreateMgr.Instance.CreateStage(transform, info);
         m_stageSize = info.size;
         m_gameStep = GameStart;
@@ -96,8 +110,6 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     // Start is called before the first frame update
     void Start()
     {
-        Camera.main.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
-        Camera.main.GetComponent<MainCamera>().Near = Mathf.Max(m_stageSize.x, m_stageSize.z) + 1;
         // マウス制御クラスにカメラの情報を渡す
         InputMouse.RoadCamera();
 
@@ -112,13 +124,12 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         // UIの導火線生成オブジェクト取得し、動きを止める
         m_UIFuseCreate = FindObjectOfType<UIFuseCreate>();
         m_UIFuseCreate.enabled = false;
-
         // 初期生成位置はわからないので生成不可能場所を格納
         m_createPos = OUTPOS;
 
         // 地形生成
         TerrainCreate terrainCreate = FindObjectOfType<TerrainCreate>();
-        terrainCreate.CreateGround(m_stageSize.x, m_stageSize.z, -m_stageSize.y / 2 - 1);
+        terrainCreate.CreateGround(m_stageSize.x, m_stageSize.z, - m_stageSize.y / 2 - 1);
         terrainCreate.CreateBackGround(SelectMgr.SelectStage);
 
         // フィールドオブジェクトの取得
@@ -142,7 +153,15 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
                 m_gimmickList.AddLast(_gimmick);
             m_fieldObject.AddLast(_gimmick.gameObject);
         }
-        Camera.main.GetComponent<MainCamera>().Control = true;
+
+        // カメラ操作
+        Camera.main.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
+        MainCamera mainCamera = Camera.main.GetComponent<MainCamera>();
+        mainCamera.Control = true;
+        mainCamera.Near = Mathf.Max(m_stageSize.x, m_stageSize.z) + 1;
+        mainCamera.Type = MainCamera.CameraType.AroundDome;
+
+        // BGM再生
         Sound.Instance.PlayBGM(Audio.BGM.GameMain);
 
         m_uiSpeed = GameObject.FindGameObjectWithTag(NameDefine.TagName.UIGameButton).transform.GetChild(0).GetChild(0).GetComponent<Image>();
