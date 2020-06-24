@@ -8,14 +8,16 @@ public class FadeRat : FadeBase
 {
     const int REAN = 3;
 
-    private const float FUSE_POS_X = 4500;
-    private const float FUSE_POS_Y = 355;
-    private const float RAT_POS_X = 3000;
-    private const float RAT_POS_Y = 355;
-    private const float FADE_RAT_TIME = 4.0f;
+    private const float FUSE_POS_X = 3000;
+    private const float FUSE_POS_Y = 370;
+    private const float RAT_POS_X = 1500;
+    private const float FADE_FUSE_TIME = 2.0f;
+    private const float RAT_POS_Y = 330;
+    private const float FADE_RAT_TIME = 2.0f;
 
+    private float m_target = 0.0f;
     private float m_fuseWidth = 0.0f;
-    private List<Image> m_fuseRect = new List<Image>();
+    private List<Image> m_fuseImage = new List<Image>();
     private List<Transform> m_ratRect = new List<Transform>();
     private Transform m_judgeTrans = null;      // フェードの終了判断となるオブジェクトの格納（正方向に移動するオブジェクト）
 
@@ -24,9 +26,12 @@ public class FadeRat : FadeBase
         Transform fuse = transform.GetChild(0);
         for (int i = 0; i < fuse.childCount; ++i)
         {
-            Image rect = fuse.GetChild(i).GetComponent<Image>();
-            rect.transform.localPosition = new Vector3(FUSE_POS_X * (i % 2 * 2 - 1), FUSE_POS_Y - i * FUSE_POS_Y, 0.0f);
-            m_fuseRect.Add(rect);
+            Image fuseImage = fuse.GetChild(i).GetComponent<Image>();
+            fuseImage.transform.localPosition = new Vector3(FUSE_POS_X * (i % 2 * 2 - 1), FUSE_POS_Y - i * FUSE_POS_Y, 0.0f);
+            fuseImage.material.SetFloat("_Current", 1.0f);
+            int pp = i % 2;
+            fuseImage.material.SetFloat("_Direct", pp);
+            m_fuseImage.Add(fuseImage);
         }
 
         Transform rat = transform.GetChild(1);
@@ -37,8 +42,8 @@ public class FadeRat : FadeBase
             m_ratRect.Add(rect);
         }
 
-        m_fuseWidth = m_fuseRect[0].GetComponent<RectTransform>().rect.width;
-        base.Start();
+        m_fuseWidth = m_fuseImage[0].GetComponent<RectTransform>().rect.width;
+        //base.Start();
     }
 
     new void Update()
@@ -46,41 +51,44 @@ public class FadeRat : FadeBase
         base.Update();
     }
 
+    /// <summary>
+    /// 導火線の移動
+    /// </summary>
     override protected void FadeIn()
     {
-        m_judgeTrans = m_fuseRect[0].transform;
+        m_judgeTrans = m_fuseImage[0].transform;
+        m_target = 0.0f;
         base.FadeIn();
 
-        for (int i = 0; i < m_fuseRect.Count; ++i)
+        for (int i = 0; i < m_fuseImage.Count; ++i)
         {
-            Transform trans = m_fuseRect[i].transform;
-            trans.DOLocalMoveX(0, FADE_RAT_TIME);
+            Transform trans = m_fuseImage[i].transform;
+            trans.DOLocalMoveX(m_target, FADE_FUSE_TIME);
         }
     }
 
+    /// <summary>
+    /// ネズミの移動
+    /// </summary>
     override protected void FadeOut()
     {
         m_judgeTrans = m_ratRect[1];
         base.FadeOut();
-
-        for (int i = 0; i < m_ratRect.Count; ++i)
-        {
-            Transform trans = m_ratRect[i];
-            trans.DOLocalMoveX(0, FADE_RAT_TIME);
-        }
+        StartCoroutine(DoMoveRat(FADE_RAT_TIME));
     }
+
     override protected bool FadeCheack()
     {
-        return m_judgeTrans.localPosition.x > - FUSE_POS_X * 0.1f && m_judgeTrans.localPosition.x < FUSE_POS_X * 0.1f;
+        return m_judgeTrans.localPosition.x == m_target;
     }
 
     override protected void Draw(bool isDraw)
     {
         if (!isDraw)
         {
-            for (int i = 0; i < m_fuseRect.Count; ++i)
+            for (int i = 0; i < m_fuseImage.Count; ++i)
             {
-                Image trans = m_fuseRect[i];
+                Image trans = m_fuseImage[i];
                 trans.enabled = isDraw;
             }
             for (int i = 0; i < m_ratRect.Count; ++i)
@@ -89,7 +97,7 @@ public class FadeRat : FadeBase
                 if (!trans)
                     continue;
 
-                trans.GetChild(0).GetComponent<Image>().enabled = isDraw;
+                trans.GetComponent<Image>().enabled = isDraw;
                 // 描画されていないなら
                 if (!isDraw)
                     trans.DOPause();
@@ -97,16 +105,16 @@ public class FadeRat : FadeBase
         }
         else
         {
-            for (int i = 0; i < m_fuseRect.Count; ++i)
+            for (int i = 0; i < m_fuseImage.Count; ++i)
             {
-                Image trans = m_fuseRect[i];
+                Image trans = m_fuseImage[i];
                 trans.enabled = isDraw;
                 trans.transform.localPosition = new Vector3(FUSE_POS_X * (i % 2 * 2 - 1), FUSE_POS_Y - i * FUSE_POS_Y, 0.0f);
             }
             for (int i = 0; i < m_ratRect.Count; ++i)
             {
                 Transform trans = m_ratRect[i];
-                trans.GetChild(0).GetComponent<Image>().enabled = isDraw;
+                trans.GetComponent<Image>().enabled = isDraw;
                 trans.localPosition = new Vector3(RAT_POS_X * -(i % 2 * 2 - 1), RAT_POS_Y - i * RAT_POS_Y, 0.0f);
 
                 // 描画されていないなら、Dotween
@@ -118,6 +126,7 @@ public class FadeRat : FadeBase
 
     private IEnumerator DoMoveRat(float time)
     {
+        int loop = 0;
         float timeCounter = 0.0f;
         float[] target = new float[REAN];
         float[] value = new float[REAN];
@@ -127,13 +136,15 @@ public class FadeRat : FadeBase
             target[i] = - m_ratRect[i].localPosition.x;
             value[i] = (target[i] - m_ratRect[i].localPosition.x) / time;
         }
-
+        m_target = target[1];
         while (true)
         {
-            for (int i = 0; i < REAN; ++i)
+            loop = 0;
+            for (loop = 0; loop < REAN; ++loop)
             {
-                m_ratRect[i].localPosition += new Vector3(value[i] * Time.deltaTime, 0.0f, 0.0f);
-                m_fuseRect[i].material.SetFloat("_Current", (target[i] - m_ratRect[i].localPosition.x) / m_fuseWidth);
+                m_ratRect[loop].localPosition += new Vector3(value[loop] * Time.deltaTime, 0.0f, 0.0f);
+                float curret = (target[loop] - m_ratRect[loop].localPosition.x) / target[loop] / 2;
+                m_fuseImage[loop].material.SetFloat("_Current", Mathf.Clamp01(curret));
             }
 
             if (timeCounter >= time)

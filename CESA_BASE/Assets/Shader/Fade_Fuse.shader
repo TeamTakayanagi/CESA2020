@@ -3,7 +3,8 @@
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _Current("_Current", Range(0, 1.5)) = 0.0
+        _Current("_Current", Range(0, 1.0)) = 0.0
+        _Direct("_Direct", Range(0, 1.0)) = 1.0
     }
     SubShader
     {
@@ -37,6 +38,7 @@
             sampler2D _MainTex;
             float4 _MainTex_ST;
             half _Current;
+            half _Direct;
 
             float2 RandomOut2(float2 vec)
             {
@@ -102,14 +104,17 @@
                 fixed4 col = tex2D(_MainTex, i.uv);
                 float2 uv = i.uv;
                 float2 defUV = i.uv;
+
                 // UVを分割
                 uv.x *= 50;
                 uv.y *= 10;
 
                 float noise = PerlinNoise(uv);
-                float alphaN = clamp(noise - defUV.x, 0, 1);
-                float alphaO = clamp(_Current - defUV.x, 0, 1);
-                col.a = max(alphaN, alphaO);
+                half stepFront = defUV.x * (1.0f - _Direct) + noise * _Direct;
+                half stepBack = defUV.x * _Direct + noise * (1.0f - _Direct);
+                //float alphaN = step(defUV.x, noise + _Current * 2 - 1);
+                float alphaN = step(stepFront, stepBack + _Current * 2 - 1);
+                col.a = alphaN;
 
                 // apply fog
                 //UNITY_APPLY_FOG(i.fogCoord, col);

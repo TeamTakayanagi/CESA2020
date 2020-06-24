@@ -9444,7 +9444,7 @@ GameObject:
   - component: {fileID: 6408046336859555321}
   - component: {fileID: 6408046336859555320}
   m_Layer: 2
-  m_Name: FadeFuse
+  m_Name: FadeFuseLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9722,6 +9722,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dae925f7f9326414a961408f574ab2d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_fusePrefab: {fileID: 0}
 --- !u!224 &6408046337470975610
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9829,7 +9830,7 @@ GameObject:
   - component: {fileID: 6408046337653251321}
   - component: {fileID: 6408046337653251320}
   m_Layer: 2
-  m_Name: FadeFuse
+  m_Name: FadeFuseright
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9902,7 +9903,7 @@ GameObject:
   - component: {fileID: 6408046338252821048}
   - component: {fileID: 6408046338252821047}
   m_Layer: 2
-  m_Name: FadeFuse
+  m_Name: FadeFuseRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

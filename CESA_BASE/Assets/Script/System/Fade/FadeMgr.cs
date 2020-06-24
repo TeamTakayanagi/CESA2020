@@ -57,6 +57,7 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
     {
         m_fade = m_fadeList[(int)type];
         m_fade.FadeStart(nextScene);
+
         EffectManager.Instance.DestoryEffects();
         EffectManager.Instance.Create = false;
     }
