@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Fade_FuseLeft
+  m_Name: Fade_Fuse_Left
   m_Shader: {fileID: 4800000, guid: 4351344d3ac731240a96e63107b65a46, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -57,7 +57,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _BumpScale: 1
-    - _Current: 0
+    - _Current: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _Direct: 1

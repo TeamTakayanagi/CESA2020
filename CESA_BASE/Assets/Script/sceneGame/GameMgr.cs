@@ -85,6 +85,13 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             return m_uiFuse.Count;
         }
     }
+    public Vector3Int StageSize
+    {
+        get
+        {
+            return m_stageSize;
+        }
+    }
 
     override protected void Awake()
     {
@@ -499,7 +506,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             if (m_gimmickList.Count == 1)
                 fireGoal++;
 
-            SelectMgr.SaveStage(Mathf.Clamp(fireGoal, 0, 2));
+            if(SelectMgr.SelectStage != 0)
+               SelectMgr.SaveStage(Mathf.Clamp(fireGoal, 0, 2));
+
             // クリアUIの移動
             StartCoroutine(SlideResultUI(m_resultClear, AdjustParameter.Production_Constant.RESULT_TIME));
 

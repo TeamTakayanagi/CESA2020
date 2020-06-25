@@ -84,16 +84,14 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
     {
         List<GameObject> _createList = new List<GameObject>();
 
-        for(int i = 0; i < csvData.data.Count; ++i)
+        for (int i = 0; i < csvData.data.Count; ++i)
         {
-            if (csvData.data[i].Length != ProcessedtParameter.CSV_Constant.STAGE_DATA_COUNT)
+            string objName = csvData.data[i].Substring(0, ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT);
+            string tagName = csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT);
+
+            // 配置されていないなら
+            if (objName == "f")
             {
-                string tagName = csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT);
-
-                // 配置されていないなら
-                if (tagName == "--")
-                    continue;
-
                 GameFuse _fuse = null;
                 for (int j = 0; j < m_fuseList.Count; ++j)
                 {
@@ -102,132 +100,76 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
                         continue;
 
                     Vector3 pos = Utility.CSVFile.IndexToPos(i, csvData.size.x, csvData.size.y, csvData.size.z);
-                    _fuse = Instantiate(m_fuseList[j], pos, Quaternion.identity);
-                    _fuse.transform.parent = parent;
-                    _fuse.Type = (GameFuse.FuseType)int.Parse(csvData.data[i].Substring(0, ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT));
+                    _fuse = Instantiate(m_fuseList[j], parent);
+                    _fuse.transform.position = pos;
+                    _fuse.Type = (GameFuse.FuseType)int.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT, ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT));
                     _fuse.transform.localEulerAngles = new Vector3(
-                        float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.OBJECT_ROT_COUNT, 1)),
-                        float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.OBJECT_ROT_COUNT + 1, 1)),
-                        float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.OBJECT_ROT_COUNT + 2, 1))) * 90.0f;
+                        float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT, 1)),
+                        float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT + 1, 1)),
+                        float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT + 2, 1))) * 90.0f;
+
+
+                    if (_fuse.Type >= GameFuse.FuseType.MoveLeft && _fuse.Type <= GameFuse.FuseType.MoveForward)
+                    {
+                        Quaternion rot = Quaternion.identity;
+                        switch (_fuse.Type)
+                        {
+                            case GameFuse.FuseType.MoveRight:
+                                rot = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+                                break;
+                            case GameFuse.FuseType.MoveUp:
+                                rot = Quaternion.Euler(0.0f, 0.0f, 90.0f);
+                                break;
+                            case GameFuse.FuseType.MoveDown:
+                                rot = Quaternion.Euler(180.0f, 0.0f, 90.0f);
+                                break;
+                            case GameFuse.FuseType.MoveForward:
+                                rot = Quaternion.Euler(0.0f, 90.0f, 0.0f);
+
+                                break;
+                            case GameFuse.FuseType.MoveBack:
+                                rot = Quaternion.Euler(0.0f, 270.0f, 0.0f);
+                                break;
+                            default:
+                                break;
+                        }
+                        GameObject _colider = Instantiate(m_moveMark, _fuse.transform);
+                        _colider.transform.position = _fuse.transform.position;
+                        _colider.transform.rotation = rot;
+                    }
+                    else if (_fuse.Type == GameFuse.FuseType.Rotate)
+                    {
+                        GameObject _colider = Instantiate(m_rotMark, _fuse.transform);
+                        _colider.transform.position = _fuse.transform.position;
+                        _colider.transform.rotation = Quaternion.identity;
+                    }
 
                     _createList.Add(_fuse.gameObject);
                     break;
                 }
-
-                // 導火線を生成していないなら
-                if (!_fuse)
-                {
-                    GameGimmick _gimmick = null;
-                    for (int j = 0; j < m_gimmkList.Count; ++j)
-                    {
-                        string st = Utility.TagSeparate.getChildTagName(m_gimmkList[j].tag).Substring(0, 2);
-                        // タグの一部が一致しているなら
-                        if (Utility.TagSeparate.getChildTagName(m_gimmkList[j].tag).Substring(0,
-                            ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT)
-                            != tagName)
-                            continue;
-
-                        Vector3 pos = Utility.CSVFile.IndexToPos(i, csvData.size.x, csvData.size.y, csvData.size.z);
-                        _gimmick = Instantiate(m_gimmkList[j], pos, Quaternion.identity);
-                        _gimmick.transform.parent = parent;
-                        _gimmick.Type = (GameGimmick.GimmickType)j;
-                        _gimmick.transform.localEulerAngles = new Vector3(
-                                float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.OBJECT_ROT_COUNT, 1)),
-                                float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.OBJECT_ROT_COUNT + 1, 1)),
-                                float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.OBJECT_ROT_COUNT + 2, 1))) * 90.0f;
-
-                        _createList.Add(_gimmick.gameObject);
-                        break;
-                    }
-                }
             }
-            else
+            else if (objName == "g")
             {
-                string objName = csvData.data[i].Substring(0, ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT);
-                string tagName = csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT);
-
-                // 配置されていないなら
-                if (objName == "f")
+                GameGimmick _gimmick = null;
+                for (int j = 0; j < m_gimmkList.Count; ++j)
                 {
-                    GameFuse _fuse = null;
-                    for (int j = 0; j < m_fuseList.Count; ++j)
-                    {
-                        // タグの一部が一致しているなら
-                        if (Utility.TagSeparate.getChildTagName(m_fuseList[j].tag) != tagName)
-                            continue;
+                    // タグの一部が一致しているなら
+                    if (Utility.TagSeparate.getChildTagName(m_gimmkList[j].tag).Substring(0, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT)
+                        != tagName)
+                        continue;
 
-                        Vector3 pos = Utility.CSVFile.IndexToPos(i, csvData.size.x, csvData.size.y, csvData.size.z);
-                        _fuse = Instantiate(m_fuseList[j], parent);
-                        _fuse.transform.position = pos;
-                        _fuse.Type = (GameFuse.FuseType)int.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT, ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT));
-                        _fuse.transform.localEulerAngles = new Vector3(
-                            float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT, 1)),
-                            float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT + 1, 1)),
-                            float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT + 2, 1))) * 90.0f;
-                        
+                    Vector3 pos = Utility.CSVFile.IndexToPos(i, csvData.size.x, csvData.size.y, csvData.size.z);
+                    _gimmick = Instantiate(m_gimmkList[j], parent);
+                    _gimmick.transform.position = pos;
+                    _gimmick.Type = (GameGimmick.GimmickType)j;
+                    _gimmick.Value = float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT, ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT));
+                    _gimmick.transform.localEulerAngles = new Vector3(
+                        float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT, 1)),
+                        float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT + 1, 1)),
+                        float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT + 2, 1))) * 90.0f;
 
-                        if(_fuse.Type >= GameFuse.FuseType.MoveLeft && _fuse.Type <= GameFuse.FuseType.MoveForward)
-                        {
-                            Quaternion rot = Quaternion.identity;
-                            switch (_fuse.Type)
-                            {
-                                case GameFuse.FuseType.MoveRight:
-                                    rot = Quaternion.Euler(0.0f, 180.0f, 0.0f);
-                                    break;
-                                case GameFuse.FuseType.MoveUp:
-                                    rot = Quaternion.Euler(0.0f, 0.0f, 90.0f);
-                                    break;
-                                case GameFuse.FuseType.MoveDown:
-                                    rot = Quaternion.Euler(180.0f, 0.0f, 90.0f);
-                                    break;
-                                case GameFuse.FuseType.MoveForward:
-                                    rot = Quaternion.Euler(0.0f, 90.0f, 0.0f);
-
-                                    break;
-                                case GameFuse.FuseType.MoveBack:
-                                    rot = Quaternion.Euler(0.0f, 270.0f, 0.0f);
-                                    break;
-                                default:
-                                    break;
-                            }
-                            GameObject _colider = Instantiate(m_moveMark, _fuse.transform);
-                            _colider.transform.position = _fuse.transform.position;
-                            _colider.transform.rotation = rot;
-                        }
-                        else if(_fuse.Type == GameFuse.FuseType.Rotate)
-                        {
-                            GameObject _colider = Instantiate(m_rotMark, _fuse.transform);
-                            _colider.transform.position = _fuse.transform.position;
-                            _colider.transform.rotation = Quaternion.identity;
-                        }
-
-                        _createList.Add(_fuse.gameObject);
-                        break;
-                    }
-                }
-                else if (objName == "g")
-                {
-                    GameGimmick _gimmick = null;
-                    for (int j = 0; j < m_gimmkList.Count; ++j)
-                    {
-                        // タグの一部が一致しているなら
-                        if (Utility.TagSeparate.getChildTagName(m_gimmkList[j].tag).Substring(0, ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT)
-                            != tagName)
-                            continue;
-
-                        Vector3 pos = Utility.CSVFile.IndexToPos(i, csvData.size.x, csvData.size.y, csvData.size.z);
-                        _gimmick = Instantiate(m_gimmkList[j], parent);
-                        _gimmick.transform.position = pos;
-                        _gimmick.Type = (GameGimmick.GimmickType)j;
-                        _gimmick.Value = float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT, ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT));
-                        _gimmick.transform.localEulerAngles = new Vector3(
-                            float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT, 1)),
-                            float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT + 1, 1)),
-                            float.Parse(csvData.data[i].Substring(ProcessedtParameter.CSV_Constant.TYPE_WORD_COUNT + ProcessedtParameter.CSV_Constant.ADDINFO_WORD_COUNT + ProcessedtParameter.CSV_Constant.OBJECT_WORD_COUNT + 2, 1))) * 90.0f;
-
-                        _createList.Add(_gimmick.gameObject);
-                        break;
-                    }
+                    _createList.Add(_gimmick.gameObject);
+                    break;
                 }
             }
         }
@@ -311,7 +253,8 @@ public class StageCreateMgr : SingletonMonoBehaviour<StageCreateMgr>
             ProcessedtParameter.UI_Object_Constant.DEFAULT_POS_Z);
         // 導火線の回転
         _fuse.transform.localEulerAngles = new Vector3(90.0f * UnityEngine.Random.Range(0, 4), 90.0f * UnityEngine.Random.Range(0, 4), 90.0f * UnityEngine.Random.Range(0, 4));
-
+        if (GameMgr.Instance.StageSize.y == 1 && index >= m_fuseList.Count - 2)
+            _fuse.transform.localEulerAngles = new Vector3(0.0f, _fuse.transform.localEulerAngles.y, 0.0f);
         GameMgr.Instance.UIFuse = _fuse;    // リストの末尾に追加
 
         // UI専用のコライダーを子供に

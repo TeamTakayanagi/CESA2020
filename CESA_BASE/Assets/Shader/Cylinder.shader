@@ -47,11 +47,16 @@
             fixed4 normalTex = tex2D(_Normal, IN.uv_MainTex);
 
             fixed4 tex = colorTex * (1 - _texType) + colorClear * _texType;
-
             half monoColor = colorTex.r * 0.298912f + colorTex.g * 0.586611f + colorTex.b * 0.114478f;
 
-            o.Albedo = float3(0.3f, 0.3f, 0.3f);
-            o.Emission = monoColor * (1 - _mono) * _texType + tex * _mono;
+
+            int uvY = floor(IN.uv_MainTex.y * 10) % 10;
+            int time = floor(sin(_Time.w) * 10) % 10;
+            float uvRation = step(IN.uv_MainTex.y, 0.6f) * step(0.15f, IN.uv_MainTex.y) * step(0.4f, IN.uv_MainTex.x);
+            float value = abs(0.5f - frac(IN.uv_MainTex.y * 10) % 10);
+
+            o.Albedo = monoColor * (1 - _mono) * _texType + tex * _mono;
+            o.Emission = o.Albedo + (fixed4(1, 1, 1, 1) - sqrt(value)) * step(uvY, time) * step(time, uvY) * uvRation * _mono * step(sin(_Time.w), sin(_Time.w + 0.1f));
             o.Smoothness = _Glossiness;
             o.Normal = UnpackScaleNormal(normalTex, _Bump);
             o.Occlusion = occlusion;
