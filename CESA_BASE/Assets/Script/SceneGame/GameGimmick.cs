@@ -107,9 +107,10 @@ public class GameGimmick : MonoBehaviour
             return;
 
         if (m_type == GimmickType.Water)
-            StartCoroutine(GimmickWater());
-
-        else if(m_type == GimmickType.Goal)
+        {
+                StartCoroutine(GimmickWater());
+        }
+        else if (m_type == GimmickType.Goal)
         {
             m_gimmickValue += Time.deltaTime * GameMgr.Instance.GameSpeed;
 
@@ -118,7 +119,7 @@ public class GameGimmick : MonoBehaviour
                 m_gimmickValue = AdjustParameter.Fuse_Constant.BURN_MAX_TIME;
 
                 Effekseer.EffekseerEmitter effect = Fireworks.Instantiate(
-                    Effekseer.EffekseerEmitter.EffectType.fireworks_core,  transform.position,
+                    Effekseer.EffekseerEmitter.EffectType.fireworks_core, transform.position,
                     new Vector3(transform.position.x, AdjustParameter.Production_Constant.END_FIRE_POS_Y, transform.position.z),
                     Vector3.one, Quaternion.identity, true);
                 // 継続して花火を打ち上げ
@@ -153,9 +154,9 @@ public class GameGimmick : MonoBehaviour
     {
         RaycastHit hit = new RaycastHit();
         Vector3 dir = transform.rotation * Vector3.forward;
+        int layerMask = ~(1 << 9);
 
-
-        if (Physics.Raycast(transform.position, transform.rotation * Vector3.forward, out hit, m_gimmickValue))
+        if (Physics.Raycast(transform.position, transform.rotation * Vector3.forward, out hit, m_gimmickValue, layerMask))
         {
             // 水が当たってる時の長さ
             if (Utility.TagSeparate.getParentTagName(hit.collider.tag) == NameDefine.TagName.Fuse)
@@ -178,6 +179,7 @@ public class GameGimmick : MonoBehaviour
             childParticle.gameObject.SetActive(true);
             // 当たっていないときの長さ
             m_particle.transform.localScale = new Vector3(0.3f, 0.3f, m_gimmickValue * 0.3f - 0.1f);
+
         }
 
         yield break;

@@ -16,7 +16,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         Text = 0,
         Button,
     }
-
+ 
     [SerializeField]
     private Vector3Int m_stageSize = Vector3Int.zero;                   // ステージサイズ
     [SerializeField]
@@ -24,8 +24,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     // 定数
     private const float SLIDE_UI = 1.0f;                                // UIの移動時間
-    private const float FILED_ADJUST_VALUE_Z = 0.25f; 
-    private const float MOUSE_ADJUST_VALUE_Y = 0.25f; 
+    private const float FILED_ADJUST_VALUE_Z = 0.25f;
+    private const float MOUSE_ADJUST_VALUE_Y = 0.25f;
     private readonly Vector3 TEXT_POS = new Vector3(0.0f, 150, 0.0f);           // リザルトテキストの移動距離
     private readonly Vector3 BUTTON_POS = new Vector3(0.0f, -200.0f, 0.0f);      // リザルトボタンの移動距離              
     private readonly Vector3 OUTPOS = new Vector3(-50, -50, -50);       // 導火線を生成できない位置
@@ -80,6 +80,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             return m_uiFuse.Count;
         }
     }
+
 
     override protected void Awake()
     {
