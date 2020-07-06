@@ -79,7 +79,7 @@ public class StartProduction : MonoBehaviour
         if (m_state == Production.moveY)
         {
             m_fire.transform.localPosition += new Vector3(0.0f, AdjustParameter.Production_Constant.START_FUSE_MOVE, 0.0f) * Time.deltaTime;
-            if (m_fire.transform.localPosition.y >= m_target.y)
+            if (m_fire.transform.localPosition.y >= m_target.y + m_size.y)
             {
                 m_state = Production.moveX;
             }

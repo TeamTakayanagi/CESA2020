@@ -1020,6 +1020,16 @@ PrefabInstance:
       propertyPath: m_PlaneDistance
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 5350757630119108963, guid: e94578f739901c34aa57484afdf4c750,
+        type: 3}
+      propertyPath: m_PixelPerfect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5350757630119108963, guid: e94578f739901c34aa57484afdf4c750,
+        type: 3}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5350757630119108966, guid: e94578f739901c34aa57484afdf4c750,
         type: 3}
       propertyPath: m_Name
@@ -1040,6 +1050,11 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 707804675}
+    - target: {fileID: 8838270386972756523, guid: e94578f739901c34aa57484afdf4c750,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 60.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e94578f739901c34aa57484afdf4c750, type: 3}
 --- !u!1001 &5591644310614799665

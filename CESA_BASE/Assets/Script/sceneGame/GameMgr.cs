@@ -166,7 +166,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         MainCamera mainCamera = Camera.main.GetComponent<MainCamera>();
         mainCamera.Control = true;
         mainCamera.Near = Mathf.Max(m_stageSize.x, m_stageSize.z) + 1;
-        mainCamera.Type = MainCamera.CameraType.AroundDome;
+        mainCamera.Height = 2;
+        mainCamera.Distance = -10;
+        mainCamera.InitCamera();
 
         // BGM再生
         Sound.Instance.PlayBGM(Audio.BGM.GameMain);

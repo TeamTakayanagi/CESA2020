@@ -64,7 +64,7 @@ Material:
     - _Glossiness: 0.299
     - _GlossyReflections: 1
     - _MaskX: 0
-    - _MaskY: 0.727047
+    - _MaskY: 1
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1

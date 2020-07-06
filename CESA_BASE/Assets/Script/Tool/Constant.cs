@@ -5,6 +5,8 @@ namespace AdjustParameter
     public readonly struct Camera_Constant
     {
         public const float CAMERA_NEAR = 5.0f;                          // カメラのNear
+        public const float CAMERA_HEIGHT = 5.0f;                        // カメラの高さ
+        public const float CAMERA_DISTANCE = 10.0f;                     // カメラとステージの距離
         public const float CAMERA_FAR = 11.0f;                          // カメラのFar
         public const float VALUE_SCROLL = 0.5f;                         // NearとFarの間を変化させるときの値
         public const float ROT_Y_VALUE = 7.0f;                          // Y軸固定で見渡すときの回転速度

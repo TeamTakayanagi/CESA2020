@@ -45,6 +45,8 @@ public class MainCamera : MonoBehaviour
     private bool m_isControl = false;                       // プレイヤーがカメラの操作をできるか
     private float m_moveRotate = 0.0f;                      // 回転の際の初期位置からの角度
     private float m_moveRadiuse = 0.0f;                     // 回転の際の半径
+    private float m_cameraDistance = AdjustParameter.Camera_Constant.CAMERA_DISTANCE;                     // 回転の際の半径
+    private float m_cameraHeight = AdjustParameter.Camera_Constant.CAMERA_HEIGHT;
     private float m_near = AdjustParameter.Camera_Constant.CAMERA_NEAR;
 
     public float Near
@@ -52,6 +54,20 @@ public class MainCamera : MonoBehaviour
         set
         {
             m_near = value;
+        }
+    }
+    public float Height
+    {
+        set
+        {
+            m_cameraHeight = value;
+        }
+    }
+    public float Distance
+    {
+        set
+        {
+            m_cameraDistance = value;
         }
     }
     public bool Control
@@ -101,6 +117,35 @@ public class MainCamera : MonoBehaviour
         }
     }
 
+    public void InitCamera()
+    {
+        if (m_type == CameraType.AroundY)
+        {
+            m_target = m_targetOld = Vector3.zero;
+            m_moveRadiuse = transform.position.magnitude;
+            transform.position = new Vector3(
+                m_moveRadiuse * Mathf.Cos(Mathf.Deg2Rad * m_moveRotate),
+                m_moveRadiuse * Mathf.Sin(Mathf.Deg2Rad * AdjustParameter.Camera_Constant.AROUND_ANGLE),
+                m_moveRadiuse * Mathf.Sin(Mathf.Deg2Rad * m_moveRotate));
+            transform.LookAt(m_target);
+        }
+        else if (m_type == CameraType.AroundALL)
+        {
+            m_target = m_targetOld = Vector3.zero;
+            m_storePos = transform.position;
+        }
+        else if (m_type == CameraType.AroundDome)
+        {
+            m_target = m_targetOld = Vector3.zero;
+            transform.position = new Vector3(0.0f, m_cameraHeight, m_cameraDistance);
+            m_storePos = transform.position;
+            transform.LookAt(m_target);
+            transform.RotateAround(m_target, transform.right, 30);
+        }
+        else
+            m_target = m_targetOld = transform.position;
+    }
+
     void Awake()
     {
         // キャパシティーの設定
@@ -114,23 +159,7 @@ public class MainCamera : MonoBehaviour
         Camera myCamera = GetComponent<Camera>();
         myCamera.fieldOfView = FIELD_VIEW;
 
-        if (m_type == CameraType.AroundY)
-        {
-            m_target = m_targetOld = Vector3.zero;
-            m_moveRadiuse = transform.position.magnitude;
-            transform.position = new Vector3(
-                m_moveRadiuse * Mathf.Cos(Mathf.Deg2Rad * m_moveRotate),
-                m_moveRadiuse * Mathf.Sin(Mathf.Deg2Rad * AdjustParameter.Camera_Constant.AROUND_ANGLE),
-                m_moveRadiuse * Mathf.Sin(Mathf.Deg2Rad * m_moveRotate));
-            transform.LookAt(m_target);
-        }
-        else if (m_type == CameraType.AroundALL || m_type == CameraType.AroundDome)
-        {
-            m_target = m_targetOld = Vector3.zero;
-            m_storePos = transform.position;
-        }
-        else
-            m_target = m_targetOld = transform.position;
+        InitCamera();
 
         // 移動範囲のオブジェクトがある場合
         if (m_movePlace)
@@ -311,6 +340,7 @@ public class MainCamera : MonoBehaviour
             }
         }
     }
+    // ドーム状にカメラが移動
     void CameraDome()
     {
         float scroll = Input.GetAxis("Mouse ScrollWheel");
@@ -344,10 +374,10 @@ public class MainCamera : MonoBehaviour
             }
 
             // 範囲処理
-            if (transform.position.y < 0.0f)
+            if (transform.position.y < m_cameraHeight)
             {
-                transform.position = new Vector3(defPos.x, 0.0f, defPos.z);
-                transform.DOLookAt(Vector3.zero, 0.1f);
+                transform.position = new Vector3(defPos.x, m_cameraHeight, defPos.z);
+                transform.LookAt(Vector3.zero);
             }
             else if (transform.position.y > Vector3.Magnitude(m_storePos) -1.0f)
             {
