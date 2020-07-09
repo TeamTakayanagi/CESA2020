@@ -17,14 +17,11 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         Button,
     }
 
-    const int LAST_GAME_SPEED = 4;
 
 #if UNITY_EDITOR
     [SerializeField]
     private int m_debugStage = 0;                   // デバッグするステージ
 #endif
-    [SerializeField]
-    private Vector3Int m_stageSize = Vector3Int.zero;                   // ステージサイズ
     [SerializeField]
     private Sprite[] m_SpeedTex = null;
 //    [SerializeField]
@@ -32,6 +29,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     // 定数
     private const float SLIDE_UI = 1.0f;                                // UIの移動時間
+    const int LAST_GAME_SPEED = 4;
     private const float FILED_ADJUST_VALUE_Z = 0.25f; 
     private const float MOUSE_ADJUST_VALUE_Y = 0.25f; 
     private readonly Vector3 TEXT_POS = new Vector3(0.0f, 150, 0.0f);           // リザルトテキストの移動距離
@@ -42,6 +40,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private int m_gameSpeed = 1;                                        // ゲーム加速処理
     private float m_timeCount = 0.0f;                                   // ゲーム終盤の加速のタイマー変数
     private Vector3 m_createPos = Vector3.zero;                         // 導火線の生成位置
+    private Vector3Int m_stageSize = Vector3Int.zero;                   // ステージサイズ
     private GameStep m_gameStep = null;                                 // 現在のゲームの進行状況の関数
     private GameObject m_resultClear = null;                            // ゲームクリア用のUIの親オブジェクト
     private GameObject m_resultGameover = null;                         // ゲームオーバー用のUIの親オブジェクト
@@ -249,6 +248,7 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         if(m_timeCount > 0)
         {
             m_timeCount -= Time.deltaTime;
+            // ゲーム加速
             if (m_timeCount <= 0)
             {
                 m_gameSpeed = LAST_GAME_SPEED;

@@ -19,7 +19,7 @@ public class Fireworks : EffekseerEmitter
         m_waitCount = AdjustParameter.Production_Constant.WAIT_TIME;
         m_staet = State.launch;
         if(m_isSound)
-            Sound.Instance.PlaySE(Audio.SE.FireWorks_Before, gameObject.GetInstanceID());
+            Sound.Instance.PlaySE(Audio.SE.FireWorks_Before, GetInstanceID());
         base.Start();
     }
 
@@ -44,8 +44,8 @@ public class Fireworks : EffekseerEmitter
                     EffectManager.Instance.EffectCreate(EffectManager.Instance.GetFireworks(), transform.position, transform.localScale, Quaternion.identity);
                     if (m_isSound)
                     {
-                        Sound.Instance.StopSE(Audio.SE.FireWorks_Before, gameObject.GetInstanceID());
-                        Sound.Instance.PlaySE(Audio.SE.FireWorks_After, gameObject.GetInstanceID());
+                        Sound.Instance.StopSE(Audio.SE.FireWorks_Before, GetInstanceID());
+                        Sound.Instance.PlaySE(Audio.SE.FireWorks_After, GetInstanceID());
                     }
                     DestroyImmediate(gameObject);
                 }

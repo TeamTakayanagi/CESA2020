@@ -9,8 +9,6 @@ using System;
 /// </summary>
 public class Sound : SingletonMonoBehaviour<Sound>
 {
-    //[SerializeField]
-    //private GameObject m_soundObj = null;
     [SerializeField]
     private List<AudioClip> m_bgmList = new List<AudioClip>();
     [SerializeField]
@@ -38,6 +36,7 @@ public class Sound : SingletonMonoBehaviour<Sound>
         m_bgmDict = new Dictionary<string, AudioClip>();
         m_seDict = new Dictionary<string, AudioClip>();
 
+        // 辞書追加関数
         void AddClipDict(Dictionary<string, AudioClip> dict, AudioClip clip)
         {
             if (!dict.ContainsKey(clip.name))
@@ -46,12 +45,15 @@ public class Sound : SingletonMonoBehaviour<Sound>
 
         m_bgmList.ForEach(bgm => AddClipDict(m_bgmDict, bgm));
         m_seList.ForEach(se => AddClipDict(m_seDict, se));
+
+        for(int i = 0; i < MAX_PLAY_SE; ++i)
+        {
+            AudioSource _sourceAt = new GameObject("seObj" + (i + 1)).AddComponent<AudioSource>();
+            _sourceAt.transform.parent = transform;
+            m_seSources.Add(Tuple.Create("", i), _sourceAt);
+        }
     }
 
-    private void Update()
-    {
-        
-    }
     /// <summary>
     /// SEを再生
     /// </summary>
@@ -75,16 +77,9 @@ public class Sound : SingletonMonoBehaviour<Sound>
             break;
         }
 
-
+        // 最大数SEが再生されていて再生可能なものがないなら
         if (_sourceAt == null)
-        {
-            if (m_seSources.Count >= MAX_PLAY_SE)
-                return;
-
-            _sourceAt = gameObject.AddComponent<AudioSource>();
-        }
-        if(!m_seSources.ContainsKey(key))
-            m_seSources.Add(key, _sourceAt);
+            return;
 
         _sourceAt.clip = m_seDict[seName];
         _sourceAt.loop = isLoop;
@@ -106,6 +101,7 @@ public class Sound : SingletonMonoBehaviour<Sound>
                 continue;
 
             _source.Stop();
+            break;
         }
         m_seSources.Remove(Tuple.Create(seName, instanceID));
     }
