@@ -38,6 +38,7 @@ namespace Utility
     {
         private const string CSV_PATH = "/ExternalFile/TextData/";
         private const string BIN_PATH = "/ExternalFile/Binary/";
+
         public class CSVData
         {
             public Vector3Int size;
@@ -63,11 +64,11 @@ namespace Utility
         /// <summary>
         /// CSV読み込み
         /// </summary>
-        /// <param name="stageNum"></param>
+        /// <param name="textName"></param>
         /// <returns></returns>
-        public static CSVData LoadCsv(string stageNum)
+        public static CSVData LoadCsv(string textName)
         {
-            StreamReader reader = new StreamReader(Application.dataPath + CSV_PATH + stageNum + ".csv");
+            StreamReader reader = new StreamReader(Application.dataPath + CSV_PATH + textName + ".csv");
             CSVData info = new CSVData();
             info.data = new List<string>();
 

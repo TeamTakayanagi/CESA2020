@@ -17,6 +17,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         Button,
     }
 
+    const int LAST_GAME_SPEED = 4;
+
 #if UNITY_EDITOR
     [SerializeField]
     private int m_debugStage = 0;                   // デバッグするステージ
@@ -25,6 +27,8 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private Vector3Int m_stageSize = Vector3Int.zero;                   // ステージサイズ
     [SerializeField]
     private Sprite[] m_SpeedTex = null;
+//    [SerializeField]
+    private AnimationCurve m_animCurve = AnimationCurve.Linear(0, 0, 1, 1);   // リザルトUIの移動用
 
     // 定数
     private const float SLIDE_UI = 1.0f;                                // UIの移動時間
@@ -33,11 +37,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private readonly Vector3 TEXT_POS = new Vector3(0.0f, 150, 0.0f);           // リザルトテキストの移動距離
     private readonly Vector3 BUTTON_POS = new Vector3(0.0f, -200.0f, 0.0f);      // リザルトボタンの移動距離              
     private readonly Vector3 OUTPOS = new Vector3(-50, -50, -50);       // 導火線を生成できない位置
-    [SerializeField]
-    private AnimationCurve m_animCurve = AnimationCurve.Linear(0, 0, 1, 1);   // リザルトUIの移動用
 
     private int m_burnCount = 1;                                        // 燃えている導火線の数
     private int m_gameSpeed = 1;                                        // ゲーム加速処理
+    private float m_timeCount = 0.0f;                                   // ゲーム終盤の加速のタイマー変数
     private Vector3 m_createPos = Vector3.zero;                         // 導火線の生成位置
     private GameStep m_gameStep = null;                                 // 現在のゲームの進行状況の関数
     private GameObject m_resultClear = null;                            // ゲームクリア用のUIの親オブジェクト
@@ -95,20 +98,22 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
 
     override protected void Awake()
     {
-        Utility.CSVFile.CSVData info = null;
+        Utility.CSVFile.CSVData stageData = null;
+
 #if UNITY_EDITOR
         if (SelectMgr.SelectStage == 0 && m_debugStage > 0)
-            info = Utility.CSVFile.LoadCsv(
+            stageData = Utility.CSVFile.LoadCsv(
                 ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + m_debugStage);
         else
-            info = Utility.CSVFile.LoadCsv(
+            stageData = Utility.CSVFile.LoadCsv(
                 ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + SelectMgr.SelectStage);
 #else
         info = Utility.CSVFile.LoadCsv(
             ProcessedtParameter.CSV_Constant.STAGE_DATA_PATH + SelectMgr.SelectStage);
 #endif
-        StageCreateMgr.Instance.CreateStage(transform, info);
-        m_stageSize = info.size;
+
+        StageCreateMgr.Instance.CreateStage(transform, stageData);
+        m_stageSize = stageData.size;
         m_gameStep = GameStart;
 
         base.Awake();
@@ -117,6 +122,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     // Start is called before the first frame update
     void Start()
     {
+        // ステージの追加情報を読み取り（制限時間・カメラ距離）
+        Utility.CSVFile.CSVData stageExternal = Utility.CSVFile.LoadCsv("StageExternal");
+
         // マウス制御クラスにカメラの情報を渡す
         InputMouse.RoadCamera();
 
@@ -167,7 +175,22 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
         mainCamera.Control = true;
         mainCamera.Near = Mathf.Max(m_stageSize.x, m_stageSize.z) + 1;
         mainCamera.Height = 2;
-        mainCamera.Distance = -10;
+        // 制限時間とカメラの距離をテキストから取得
+#if UNITY_EDITOR
+        if (SelectMgr.SelectStage == 0 && m_debugStage > 0)
+        {
+            mainCamera.Distance = float.Parse(stageExternal.data[stageExternal.size.x * m_debugStage + ProcessedtParameter.CSV_Constant.STAGE_DISTANCE]);
+            m_timeCount = float.Parse(stageExternal.data[stageExternal.size.x * m_debugStage + ProcessedtParameter.CSV_Constant.STAGE_TIME]);
+        }
+        else
+        {
+            mainCamera.Distance = float.Parse(stageExternal.data[stageExternal.size.x * SelectMgr.SelectStage + ProcessedtParameter.CSV_Constant.STAGE_DISTANCE]);
+            m_timeCount = float.Parse(stageExternal.data[stageExternal.size.x * SelectMgr.SelectStage + ProcessedtParameter.CSV_Constant.STAGE_TIME]);
+        }
+#else
+        mainCamera.Distance = float.Parse(stageExternal.data[stageExternal.size.x * SelectMgr.SelectStage + ProcessedtParameter.CSV_Constant.STAGE_DISTANCE]);
+        m_timeCount = float.Parse(stageExternal.data[stageExternal.size.x * SelectMgr.SelectStage + ProcessedtParameter.CSV_Constant.STAGE_TIME]);
+#endif
         mainCamera.InitCamera();
 
         // BGM再生
@@ -222,6 +245,16 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     /// </summary>
     void GameMain()
     {
+        //　ゲーム終盤に加速させる処理
+        if(m_timeCount > 0)
+        {
+            m_timeCount -= Time.deltaTime;
+            if (m_timeCount <= 0)
+            {
+                m_gameSpeed = LAST_GAME_SPEED;
+            }
+        }
+
         // 導火線を選択しているなら
         if (m_selectFuse)
         {
@@ -623,6 +656,9 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     }
     public void ChangeGameSpeed()
     {
+        if (m_gameSpeed >= LAST_GAME_SPEED)
+            return;
+
         // サウンド
         Sound.Instance.PlaySE(Audio.SE.Click, GetInstanceID());
 

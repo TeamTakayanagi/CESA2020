@@ -89,6 +89,8 @@ namespace ProcessedtParameter
     public readonly struct CSV_Constant
     {
         public const string STAGE_DATA_PATH = "StageData";
+        public const int STAGE_TIME = 1;                                    // 追加情報のテキストの時間が格納されている場所への差分
+        public const int STAGE_DISTANCE = 2;                                    // 追加情報のテキストの距離が格納されている場所への差分
         public const int TYPE_WORD_COUNT = 1;                                    // オブジェクトの追加情報の文字数
         public const int ADDINFO_WORD_COUNT = 1;                                    // オブジェクトの追加情報の文字数
         public const int OBJECT_WORD_COUNT = 2;                                     // オブジェクトの種類の情報の文字数
