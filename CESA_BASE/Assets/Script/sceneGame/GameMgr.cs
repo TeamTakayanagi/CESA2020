@@ -44,10 +44,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
     private GameStep m_gameStep = null;                                 // 現在のゲームの進行状況の関数
     private GameObject m_resultClear = null;                            // ゲームクリア用のUIの親オブジェクト
     private GameObject m_resultGameover = null;                         // ゲームオーバー用のUIの親オブジェクト
-    private GameButton m_gameUI = null;                                  // ゲームオーバー用のUIの親オブジェクト
-    private GameFuse m_selectFuse = null;                                   // 選択しているUIの導火線   
+    private GameButton m_gameUI = null;                                 // ゲームオーバー用のUIの親オブジェクト
+    private GameFuse m_selectFuse = null;                               // 選択しているUIの導火線   
     private GameObject m_saveObj = null;                                // 各GameStepごとにオブジェクトを格納（スタート：カウントダウン数字　ゲームクリア：花火）
-    private StartProduction m_start = null;                                  // ゲームオーバー用のUIの親オブジェクト
+    private StartProduction m_start = null;                             // ゲームオーバー用のUIの親オブジェクト
     private UIFuseCreate m_UIFuseCreate = null;                         // UIの導火線生成オブジェクト
     private LinkedList<GameObject> m_fieldObject = new LinkedList<GameObject>();      // ゲーム画面のオブジェクト
     private LinkedList<GameGimmick> m_gimmickList = new LinkedList<GameGimmick>();      // ゲーム画面のオブジェクト
@@ -635,12 +635,10 @@ public class GameMgr : SingletonMonoBehaviour<GameMgr>
             return;
 
         EndScene();
-
         FadeMgr.Instance.StartFade(FadeMgr.FadeType.Rat, SceneManager.GetActiveScene().name);
     }
     public void NextStsge()
     {
-
         SelectMgr.SelectStage++;
         EndScene();
 

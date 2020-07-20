@@ -57,7 +57,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _BumpScale: 1
-    - _Current: 1
+    - _Current: 0.9948562
     - _Cutoff: 0.265
     - _DetailNormalMapScale: 1
     - _Direct: 0

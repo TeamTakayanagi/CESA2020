@@ -43,6 +43,7 @@ public class FadeZoom : FadeBase
         {
             if(m_radius <= 0.0f)
                 return true;
+
             return false;
         }
         else

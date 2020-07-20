@@ -14,6 +14,8 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
     private Canvas m_canvas = null;
     private FadeBase m_fade = null;
     private List<FadeBase> m_fadeList = new List<FadeBase>();
+    [SerializeField]
+    private List<FadeBase> m_fadePrefab = new List<FadeBase>();
 
     public FadeBase.FadeState State
     {
@@ -45,11 +47,6 @@ public class FadeMgr : SingletonMonoBehaviour<FadeMgr>
             m_fadeList.Add(transform.GetChild(i).GetComponent<FadeBase>());
 
         m_fadeList.Sort((a, b) => a.FadeType - b.FadeType);
-    }
-    void Update()
-    {
-        if(!m_canvas.worldCamera)
-            m_canvas.worldCamera = Camera.main;
     }
 
     public void StartFade(FadeType type, string nextScene)

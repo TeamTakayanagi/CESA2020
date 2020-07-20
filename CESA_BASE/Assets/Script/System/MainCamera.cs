@@ -379,11 +379,11 @@ public class MainCamera : MonoBehaviour
                 transform.position = new Vector3(defPos.x, m_cameraHeight, defPos.z);
                 transform.LookAt(Vector3.zero);
             }
-            else if (transform.position.y > Vector3.Magnitude(m_storePos) -1.0f)
-            {
-                transform.position = new Vector3(defPos.x, defPos.y, defPos.z);
-                transform.LookAt(Vector3.zero);
-            }
+            //else if (transform.position.y > Vector3.Magnitude(m_storePos) -1.0f)
+            //{
+            //    transform.position = new Vector3(defPos.x, defPos.y, defPos.z);
+            //    transform.LookAt(Vector3.zero);
+            //}
         }
         // カメラ手前移動
         else if (scroll != 0.0f)
@@ -397,6 +397,7 @@ public class MainCamera : MonoBehaviour
             {
                 transform.position = _pos;
             }
+            transform.position = _pos;
         }
     }
     // フリック移動

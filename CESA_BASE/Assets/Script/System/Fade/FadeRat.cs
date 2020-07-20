@@ -79,7 +79,7 @@ public class FadeRat : FadeBase
 
     override protected bool FadeCheack()
     {
-        return m_judgeTrans.localPosition.x == m_target;
+        return m_judgeTrans.localPosition.x >= m_target;
     }
 
     override protected void Draw(bool isDraw)
@@ -90,14 +90,17 @@ public class FadeRat : FadeBase
             {
                 Image trans = m_fuseImage[i];
                 trans.enabled = isDraw;
+                trans.transform.localPosition = new Vector3(FUSE_POS_X * (i % 2 * 2 - 1), FUSE_POS_Y - i * FUSE_POS_Y, 0.0f);
             }
             for (int i = 0; i < m_ratRect.Count; ++i)
             {
                 Transform trans = m_ratRect[i];
+
                 if (!trans)
                     continue;
 
                 trans.GetComponent<Image>().enabled = isDraw;
+                trans.localPosition = new Vector3(RAT_POS_X * -(i % 2 * 2 - 1), RAT_POS_Y - i * RAT_POS_Y, 0.0f);
                 // 描画されていないなら
                 if (!isDraw)
                     trans.DOPause();
@@ -109,13 +112,11 @@ public class FadeRat : FadeBase
             {
                 Image trans = m_fuseImage[i];
                 trans.enabled = isDraw;
-                trans.transform.localPosition = new Vector3(FUSE_POS_X * (i % 2 * 2 - 1), FUSE_POS_Y - i * FUSE_POS_Y, 0.0f);
             }
             for (int i = 0; i < m_ratRect.Count; ++i)
             {
                 Transform trans = m_ratRect[i];
                 trans.GetComponent<Image>().enabled = isDraw;
-                trans.localPosition = new Vector3(RAT_POS_X * -(i % 2 * 2 - 1), RAT_POS_Y - i * RAT_POS_Y, 0.0f);
 
                 // 描画されていないなら、Dotween
                 if (!isDraw)

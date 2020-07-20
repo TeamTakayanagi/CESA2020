@@ -78,7 +78,7 @@ namespace Utility
             while (reader.Peek() != -1) // reader.Peaekが-1になるまで
             {
                 counter = 0;
-                while (line != "!n")
+                while (line != "!n" && reader.Peek() != -1)
                 {
                     string[] data = line.Split(',');
                     info.data.AddRange(data);

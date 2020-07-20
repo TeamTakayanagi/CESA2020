@@ -8,8 +8,8 @@
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
-        LOD 100
+		Tags { "RenderType" = "Opaque" "Queue" = "Transparent"}
+		LOD 100
         Blend SrcAlpha OneMinusSrcAlpha
 
         Pass
@@ -17,8 +17,6 @@
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            // make fog work
-            #pragma multi_compile_fog
 
             #include "UnityCG.cginc"
 
@@ -95,7 +93,6 @@
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-                UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
 
@@ -103,20 +100,16 @@
             {
                 fixed4 col = tex2D(_MainTex, i.uv);
                 float2 uv = i.uv;
-                float2 defUV = i.uv;
 
                 // UVを分割
                 uv.x *= 50;
                 uv.y *= 10;
 
                 float noise = PerlinNoise(uv);
-                half stepFront = defUV.x * (1.0f - _Direct) + noise * _Direct;
-                half stepBack = defUV.x * _Direct + noise * (1.0f - _Direct);
-                float alphaN = step(stepFront, stepBack + _Current * 2 - 1);
-                col.a = alphaN;
+                half stepFront = i.uv.x * (1.0f - _Direct) + noise * _Direct;
+                half stepBack = i.uv.x * _Direct + noise * (1.0f - _Direct);
+				col.a = step(stepFront, stepBack + _Current * 2 - 1);
 
-                // apply fog
-                //UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
             }
             ENDCG
